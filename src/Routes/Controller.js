@@ -125,6 +125,35 @@ const filterProductByPrice = async (req, res) => {
   }
 };
 
+const sortActivities = async (req, res) => {
+  try {
+      const { sortBy } = req.query; // Extract sorting criteria from query parameters
+      const sortOptions = {};
+
+      // Determine the sort order based on the provided parameter
+      if (sortBy === 'price') {
+          sortOptions.Price = 1; // Ascending order
+      } else if (sortBy === 'rating') {
+          sortOptions.Rating = 1; // Ascending order
+      } else {
+          return res.status(400).json({ message: 'Invalid sort criteria. Use "price" or "rating".' });
+      }
+
+      // Fetch upcoming activities and sort them accordingly
+      const sortedActivities = await activitys.find() // Assuming true means upcoming
+          .sort(sortOptions)
+          .exec();
+
+      if (!sortedActivities || sortedActivities.length === 0) {
+          return res.status(404).json({ message: 'No activities found.' });
+      }
+
+      res.status(200).json(sortedActivities);
+  } catch (error) {
+      res.status(500).json({ error: 'Error sorting activities', details: error.message });
+  }
+};
+
   
 //Tourist - admin - seller : Sort Product by ratings
   const getProductsSortedByRating = async (req, res) => {
@@ -393,6 +422,7 @@ module.exports = {
     getAllProducts ,
     searchProductByName,
     filterProductByPrice,
+    sortActivities,
     getProductsSortedByRating, 
     addProduct,
     updateProduct,
