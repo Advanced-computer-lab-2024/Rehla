@@ -1,7 +1,8 @@
 const Admin = require('../Models/Admin');
 const Product = require('../Models/Product');
 const activity = require('../Models/activitys');
-const itinerary = require('../Models/itinerarys') 
+const itinerary = require('../Models/itinerarys') ;
+const touristm = require('../Models/tourists');
 // Creating a new Admin user or Tourism Governor
 const createUserAdmin = async (req, res) => {
     try {
@@ -357,6 +358,32 @@ const viewAllUpcomingEvents = async (req, res) => {
   }
 };
 
+// Tourist : view Tourist profile
+const getTouristProfile = async (req, res) => {
+  try {
+      // Extract the email from the request body
+      const { Email } = req.body; // Destructure Email from req.body
+
+      // Check if Email is provided
+      if (!Email) {
+          return res.status(400).json({ message: 'Email is required' });
+      }
+
+      // Find the tourist by email
+      const tourist = await touristm.findOne({ Email });
+      
+      // Check if the tourist was found
+      if (!tourist) {
+          return res.status(404).json({ message: 'Tourist not found' });
+      }
+
+      // Return the tourist profile
+      res.status(200).json(tourist);
+  } catch (error) {
+      res.status(500).json({ message: 'Error retrieving tourist profile', error: error.message });
+  }
+};
+
 // ----------------- Activity Category CRUD ------------------
 
 
@@ -372,6 +399,7 @@ module.exports = {
     filterByPrice,
     filterByDate, 
     filterByRating,
-    viewAllUpcomingEvents
+    viewAllUpcomingEvents,
+    getTouristProfile 
     
 };
