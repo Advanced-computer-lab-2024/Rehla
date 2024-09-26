@@ -154,6 +154,27 @@ const sortActivities = async (req, res) => {
   }
 };
 
+const filterByTag = async (req, res) => {
+  try {
+      const { tag } = req.query;
+
+      // Check if the tag is provided
+      if (!tag) {
+          return res.status(400).json({ message: "Tag is required to filter activities." });
+      }
+
+      // Query to filter activities by the tag
+      const activities = await activitys.find({ Tag: tag });
+
+      if (!activities || activities.length === 0) {
+          return res.status(404).json({ message: 'No activities found for the given tag.' });
+      }
+
+      res.status(200).json(activities);
+  } catch (error) {
+      res.status(500).json({ error: 'Error filtering activities by tag', details: error.message });
+  }
+};
   
 //Tourist - admin - seller : Sort Product by ratings
   const getProductsSortedByRating = async (req, res) => {
@@ -423,6 +444,7 @@ module.exports = {
     searchProductByName,
     filterProductByPrice,
     sortActivities,
+    filterByTag,
     getProductsSortedByRating, 
     addProduct,
     updateProduct,
