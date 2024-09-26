@@ -1,6 +1,7 @@
 const Admin = require('../Models/Admin');
 const Product = require('../Models/Product');
-const activity = require('../Models/activitys'); 
+const activity = require('../Models/activitys');
+const itinerary = require('../Models/itinerarys') 
 // Creating a new Admin user or Tourism Governor
 const createUserAdmin = async (req, res) => {
     try {
@@ -62,8 +63,7 @@ const getAllProducts = async (req, res) => {
     }
   };
   
-
-
+//Tourist - admin - seller : Sort Product by ratings
   const getProductsSortedByRating = async (req, res) => {
     try {
       // Fetch all products and sort by Rating in descending order (-1)
@@ -76,7 +76,7 @@ const getAllProducts = async (req, res) => {
       res.status(500).json({ message: 'Error fetching products', error: error.message });
     }
   };
-
+//Admin - seller : add a product with its details , price and available quantities 
   const addProduct = async (req, res) => {
     try {
       // Destructure product attributes from the request body
@@ -109,7 +109,7 @@ const getAllProducts = async (req, res) => {
       res.status(500).json({ message: 'Error adding product', error: error.message });
     }
   };
-
+//Admin - seller : edit product details and price 
   const updateProduct = async (req, res) => {
     try {
       // Destructure Product_Name from the request body
@@ -154,6 +154,8 @@ const getAllProducts = async (req, res) => {
     }
   };
 
+
+  //Tourist - Guest :Activities Filter 
   const filterByPrice = async (req, res) => {
     try {
         const { minPrice, maxPrice } = req.params;
@@ -223,6 +225,76 @@ const filterByDate = async (req, res) => {
   }
 };
 
+const filterByRating = async (req, res) => {
+  try {
+      // Get the rating from the request parameters
+      const rating = parseFloat(req.params.rating);
+
+      // Validate the rating (ensure it's a number and within a valid range)
+      if (isNaN(rating) || rating < 0 || rating > 5) {
+          return res.status(400).json({ message: 'Invalid rating parameter. Please provide a number between 0 and 5.' });
+      }
+
+      // Find activities with the exact rating
+      const activities = await activity.find({
+          Rating: rating // Filter for activities with the exact rating
+      });
+
+      // Check if any activities were found
+      if (activities.length === 0) {
+          return res.status(404).json({ message: 'No activities found with the exact given rating' });
+      }
+
+      // Return the found activities
+      res.status(200).json({
+          message: `Activities found with an exact rating of: ${rating}`,
+          activities
+      });
+  } catch (error) {
+      // Log the error for debugging
+      console.error("Error filtering activities by rating:", error);
+
+      // Handle errors and send a 500 response
+      res.status(500).json({ message: 'Error filtering activities by rating', error: error.message });
+  }
+};
+
+//Tourist - Guest : View activities-itineraries- museums/historical places
+const viewAllUpcomingEvents = async (req, res) => {
+  try {
+      // Get current date to filter upcoming activities
+      const today = new Date();
+
+      // Filter for upcoming activities (including historical places and museums)
+      const activitiesFilter = {
+          Date: { $gte: today }, // Only future activities
+      };
+
+      // Find upcoming activities in general
+      const upcomingActivities = await activity.find(activitiesFilter);
+
+      // Filter specifically for historical places and museums within the activity table
+      const historicalPlacesAndMuseums = await activity.find({
+          ...activitiesFilter,
+          Category: { $in: ["historic place", "museum"] } // Categories for places and museums
+      });
+
+      // Query the itineraries table (no Date filter since it might not have dates)
+      const itineraries = await itinerary.find();
+
+      // Return all data
+      res.status(200).json({
+          message: 'All upcoming activities, itineraries, and historical places/museums',
+          upcomingActivities: upcomingActivities,
+          itineraries: itineraries,
+          historicalPlacesAndMuseums: historicalPlacesAndMuseums
+      });
+  } catch (error) {
+      // Handle errors
+      res.status(500).json({ message: 'Error fetching data', error: error.message });
+  }
+};
+
 // ----------------- Activity Category CRUD ------------------
 
 
@@ -235,4 +307,6 @@ module.exports = {
     updateProduct,
     filterByPrice,
     filterByDate, 
+    filterByRating,
+    viewAllUpcomingEvents
 };

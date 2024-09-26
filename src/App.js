@@ -7,7 +7,9 @@ const {createUserAdmin,deleteUserAdmin,getAllProducts , getProductsSortedByRatin
   addProduct,
   updateProduct,
   filterByPrice,
-  filterByDate,} = require("./Routes/Controller");
+  filterByDate,filterByRating,
+  viewAllUpcomingEvents
+} = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
 
@@ -39,10 +41,11 @@ app.use(express.json());
 // Routes for Admin actions with admin access control
 app.post("/addUser", createUserAdmin);  // Admins can add a user
 app.delete("/deleteUser/:id", deleteUserAdmin);  // Admins can delete users
-app.get("/getProducts", getAllProducts);
-app.get("/getProductsSortedByRating" , getProductsSortedByRating);
-app.post("/addProduct" ,addProduct);
-app.put("/updateProduct" , updateProduct);
-app.get("/filterByPrice/:minPrice/:maxPrice", filterByPrice);
-app.get("/filterByDate/:startDate/:endDate", filterByDate);
-
+app.get("/getProducts", getAllProducts); //
+app.get("/getProductsSortedByRating" , getProductsSortedByRating); //Tourist-Admin-Seller :sort products by rating 
+app.post("/addProduct" ,addProduct); //Admin - Seller : add a new product
+app.put("/updateProduct" , updateProduct);//Admin - Seller : edit products 
+app.get("/filterByPrice/:minPrice/:maxPrice", filterByPrice); //Tourist - Guest : Filter activities 
+app.get("/filterByDate/:startDate/:endDate", filterByDate);//Tourist - Guest : Filter activities 
+app.get("/filterByRating/:rating", filterByRating);//Tourist - Guest : Filter activities 
+app.get("/allupcomingEvents" , viewAllUpcomingEvents);//Tourist - Guest : View all upcoming events 
