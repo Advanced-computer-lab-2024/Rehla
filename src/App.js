@@ -3,7 +3,11 @@ const express = require("express");
 const mongoose = require('mongoose');
 mongoose.set('strictQuery', false);
 require("dotenv").config();
-const {createUserAdmin,deleteUserAdmin,getAllProducts} = require("C:/Users/abdul/OneDrive/Documents/GitHub/Rehla/src/Routes/Controller.js");
+const {createUserAdmin,deleteUserAdmin,getAllProducts , getProductsSortedByRating, 
+  addProduct,
+  updateProduct,
+  filterByPrice,
+  filterByDate,} = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
 
@@ -36,4 +40,9 @@ app.use(express.json());
 app.post("/addUser", createUserAdmin);  // Admins can add a user
 app.delete("/deleteUser/:id", deleteUserAdmin);  // Admins can delete users
 app.get("/getProducts", getAllProducts);
+app.get("/getProductsSortedByRating" , getProductsSortedByRating);
+app.post("/addProduct" ,addProduct);
+app.put("/updateProduct" , updateProduct);
+app.get("/filterByPrice/:minPrice/:maxPrice", filterByPrice);
+app.get("/filterByDate/:startDate/:endDate", filterByDate);
 
