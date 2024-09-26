@@ -36,6 +36,3 @@ app.use(express.json());
 app.post("/addUser", createUserAdmin);  // Admins can add a user
 app.delete("/deleteUser/:id", deleteUserAdmin);  // Admins can delete users
 
-
-
-console.log("Amr hena ");
