@@ -87,6 +87,43 @@ const searchProductByName = async (req, res) => {
     return res.status(500).json({ message: "An error occurred while searching for the product." });
   }
 };
+
+//test
+const filterProductByPrice = async (req, res) => {
+  try {
+      const { minPrice, maxPrice } = req.params;
+
+      // Convert minPrice and maxPrice to numbers
+      const min = parseFloat(minPrice);
+      const max = parseFloat(maxPrice);
+
+      // Validate if they are numbers
+      if ((minPrice && isNaN(min)) || (maxPrice && isNaN(max))) {
+          return res.status(400).json({ message: 'Invalid price parameters.' });
+      }
+
+      // Construct price filter query
+      const priceFilter = {};
+      if (minPrice) priceFilter.$gte = min; // Greater than or equal to minPrice
+      if (maxPrice) priceFilter.$lte = max; // Less than or equal to maxPrice
+
+      // Find products that match the price filter
+      const products = await Product.find({ Price: priceFilter });
+
+      if (!products || products.length === 0) {
+          return res.status(404).json({ message: 'No products found within the specified price range.' });
+      }
+
+      // Return the filtered products
+      res.status(200).json({
+          message: 'Products filtered by price range',
+          products
+      });
+  } catch (error) {
+      res.status(500).json({ message: 'Error filtering products by price', error: error.message });
+  }
+};
+
   
 //Tourist - admin - seller : Sort Product by ratings
   const getProductsSortedByRating = async (req, res) => {
@@ -328,6 +365,7 @@ module.exports = {
     deleteUserAdmin,
     getAllProducts ,
     searchProductByName,
+    filterProductByPrice,
     getProductsSortedByRating, 
     addProduct,
     updateProduct,
@@ -335,4 +373,5 @@ module.exports = {
     filterByDate, 
     filterByRating,
     viewAllUpcomingEvents
+    
 };

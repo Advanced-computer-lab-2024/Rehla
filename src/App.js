@@ -7,6 +7,7 @@ const {createUserAdmin,
   deleteUserAdmin,
   getAllProducts , 
   searchProductByName,
+  filterProductByPrice,
   getProductsSortedByRating, 
   addProduct,
   updateProduct,
@@ -47,6 +48,7 @@ app.post("/addUser", createUserAdmin);  // Admins can add a user
 app.delete("/deleteUser/:id", deleteUserAdmin);  // Admins can delete users
 app.get("/getProducts", getAllProducts); //
 app.get("/getProductByName/:productName", searchProductByName);
+app.get("/filterProductsByPrice/:minPrice/:maxPrice", filterProductByPrice); // Filter products based on price range
 app.get("/getProductsSortedByRating" , getProductsSortedByRating); //Tourist-Admin-Seller :sort products by rating 
 app.post("/addProduct" ,addProduct); //Admin - Seller : add a new product
 app.put("/updateProduct" , updateProduct);//Admin - Seller : edit products 
