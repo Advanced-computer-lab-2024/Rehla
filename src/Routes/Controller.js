@@ -62,6 +62,31 @@ const getAllProducts = async (req, res) => {
       return res.status(500).json({ message: "An error occurred while fetching products." });
     }
   };
+
+const searchProductByName = async (req, res) => {
+    const { productName } = req.params; // Get product name from request body
+
+  try {
+    // Check if productName is provided in the request body
+    if (!productName) {
+      return res.status(400).json({ message: "Product name is required." });
+    }
+
+    // Search for the product by name (case-insensitive search)
+    const product = await Product.findOne({ Product_Name: { $regex: new RegExp(productName, 'i') } });
+
+    // If no product is found
+    if (!product) {
+      return res.status(404).json({ message: "Product not found." });
+    }
+
+    // Return the found product
+    return res.status(200).json(product);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "An error occurred while searching for the product." });
+  }
+};
   
 //Tourist - admin - seller : Sort Product by ratings
   const getProductsSortedByRating = async (req, res) => {
@@ -302,6 +327,7 @@ module.exports = {
     createUserAdmin, 
     deleteUserAdmin,
     getAllProducts ,
+    searchProductByName,
     getProductsSortedByRating, 
     addProduct,
     updateProduct,

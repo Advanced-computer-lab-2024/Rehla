@@ -3,7 +3,11 @@ const express = require("express");
 const mongoose = require('mongoose');
 mongoose.set('strictQuery', false);
 require("dotenv").config();
-const {createUserAdmin,deleteUserAdmin,getAllProducts , getProductsSortedByRating, 
+const {createUserAdmin,
+  deleteUserAdmin,
+  getAllProducts , 
+  searchProductByName,
+  getProductsSortedByRating, 
   addProduct,
   updateProduct,
   filterByPrice,
@@ -42,6 +46,7 @@ app.use(express.json());
 app.post("/addUser", createUserAdmin);  // Admins can add a user
 app.delete("/deleteUser/:id", deleteUserAdmin);  // Admins can delete users
 app.get("/getProducts", getAllProducts); //
+app.get("/getProductByName/:productName", searchProductByName);
 app.get("/getProductsSortedByRating" , getProductsSortedByRating); //Tourist-Admin-Seller :sort products by rating 
 app.post("/addProduct" ,addProduct); //Admin - Seller : add a new product
 app.put("/updateProduct" , updateProduct);//Admin - Seller : edit products 
