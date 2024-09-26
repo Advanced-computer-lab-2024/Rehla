@@ -3,7 +3,7 @@ const express = require("express");
 const mongoose = require('mongoose');
 mongoose.set('strictQuery', false);
 require("dotenv").config();
-const {createUserAdmin,deleteUserAdmin} = require("C:/Users/abdul/OneDrive/Desktop/Rehla/src/Routes/Controller.js");
+const {createUserAdmin,deleteUserAdmin} = require("C:/Users/abdul/OneDrive/Documents/GitHub/Rehla/src/Routes/Controller.js");
 
 const MongoURI = process.env.MONGO_URI;
 

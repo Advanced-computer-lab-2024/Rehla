@@ -1,4 +1,4 @@
-const Admin = require('C:/Users/abdul/OneDrive/Desktop/Rehla/src/Models/Admin.js');
+const Admin = require('C:/Users/abdul/OneDrive/Documents/GitHub/Rehla/src/Models/Admin.js');
 
 // Creating a new Admin user or Tourism Governor
 const createUserAdmin = async (req, res) => {
