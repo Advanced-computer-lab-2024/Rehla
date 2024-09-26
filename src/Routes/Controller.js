@@ -293,7 +293,7 @@ const filterByRating = async (req, res) => {
       const rating = parseFloat(req.params.rating);
 
       // Validate the rating (ensure it's a number and within a valid range)
-      if (isNaN(rating) || rating < 0 || rating > 5) {
+      if (isNaN(rating) || rating < 0 || rating > 10) {
           return res.status(400).json({ message: 'Invalid rating parameter. Please provide a number between 0 and 5.' });
       }
 
