@@ -1,4 +1,5 @@
 const Admin = require('C:/Users/abdul/OneDrive/Documents/GitHub/Rehla/src/Models/Admin.js');
+const Product = require('C:/Users/abdul/OneDrive/Documents/GitHub/Rehla/src/Models/Product.js');
 
 // Creating a new Admin user or Tourism Governor
 const createUserAdmin = async (req, res) => {
@@ -42,6 +43,24 @@ const deleteUserAdmin = async (req, res) => {
         res.status(500).json({ error: 'Error deleting user', details: error });
     }
 };
+
+const getAllProducts = async (req, res) => {
+    try {
+      // Fetch all products from the database
+      const products = await Product.find(); 
+  
+      // Check if there are any products
+      if (!products || products.length === 0) {
+        return res.status(404).json({ message: "No products found." });
+      }
+  
+      // Send the list of products as a response
+      return res.status(200).json(products);
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: "An error occurred while fetching products." });
+    }
+  };
   
 
 
@@ -50,5 +69,6 @@ const deleteUserAdmin = async (req, res) => {
 
 module.exports = { 
     createUserAdmin, 
-    deleteUserAdmin  
+    deleteUserAdmin,
+    getAllProducts  
 };
