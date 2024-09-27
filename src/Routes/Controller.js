@@ -175,6 +175,47 @@ const filterByTag = async (req, res) => {
       res.status(500).json({ error: 'Error filtering activities by tag', details: error.message });
   }
 };
+
+// Controller function to filter itineraries based on criteria
+const filterItineraries = async (req, res) => {
+    try {
+        const { minPrice, maxPrice, startDate, endDate, preferences, language } = req.query;
+        
+        // Build the filter object based on the query params
+        let filters = {};
+
+        // Filter by price range
+        if (minPrice && maxPrice) {
+            filters.Tour_Price = { $gte: Number(minPrice), $lte: Number(maxPrice) };
+        }
+
+        // Filter by date range
+        if (startDate && endDate) {
+            filters.Available_Date_Time = { $gte: new Date(startDate), $lte: new Date(endDate) };
+        }
+
+        // Filter by language
+        if (language) {
+            filters.Language = language;
+        }
+
+        // Filter by preferences (like beaches, historic areas, etc.)
+        if (preferences) {
+            const preferenceList = preferences.split(',').map(pref => pref.trim());
+            filters.Locations_to_be_Visited = { $in: preferenceList };
+        }
+
+        // Find the itineraries that match the filters
+        const itineraries = await itinerarym.find(filters);
+
+        // Respond with the filtered itineraries
+        res.status(200).json(itineraries);
+    } catch (err) {
+        res.status(500).json({ message: "Error while filtering itineraries", error: err.message });
+    }
+};
+
+
 const createActivityCategory = async (req, res) => {
   try {
       const { Name, Location, Time, Duration, Price, Date, Tag, Category, Discount_Percent, Booking_Available, Available_Spots, Booked_Spots, Rating } = req.body;
@@ -519,6 +560,7 @@ module.exports = {
     filterProductByPrice,
     sortActivities,
     filterByTag,
+    filterItineraries,
     createActivityCategory,
     getProductsSortedByRating, 
     addProduct,
