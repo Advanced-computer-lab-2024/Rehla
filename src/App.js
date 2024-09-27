@@ -20,7 +20,9 @@ const {createUserAdmin,
   viewAllUpcomingEvents,
   getTouristProfile ,
   updateTouristProfile,
-  createSellerProfile 
+  createSellerProfile ,
+  getSellerProfile,
+  updateSellerProfile
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -70,4 +72,5 @@ app.get("/allupcomingEvents" , viewAllUpcomingEvents);//Tourist - Guest : View a
 app.get("/getTouristProfile", getTouristProfile); //Tourist : view my profile 
 app.put("/updateTouristProfile" , updateTouristProfile); //Tourist : update my profile 
 app.post("/createSellerProfile", createSellerProfile); //Seller : createSellerProfile 
-
+app.get("/getSellerProfile", getSellerProfile);//Seller : get seller profile 
+app.put("/updateSellerProfile" , updateSellerProfile);//Seller : update seller profile 

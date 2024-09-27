@@ -576,6 +576,67 @@ const createSellerProfile = async (req, res) => {
     }
 };
 
+//Seller : get my profile 
+const getSellerProfile = async (req, res) => {
+    try {
+      const { Email } = req.body; // Destructure to extract Email correctly
+      if (!Email) {
+        return res.status(400).json({ message: 'Email is required' });
+      }
+  
+      const seller = await sellerm.findOne({ Email: Email });
+  
+      if (!seller) {
+        return res.status(404).json({ message: 'Seller not found' });
+      }
+  
+      res.status(200).json(seller);
+    } catch (error) {
+      res.status(500).json({ message: 'Error retrieving seller profile', error: error.message });
+    }
+  };
+
+  const updateSellerProfile = async (req, res) => {
+    try {
+        // Extract email and the fields to update from the request body
+        const {Username, Email, Password, Shop_Name, Description, Shop_Location,Type } = req.body;
+
+        // Check if email is provided
+        if (!Email) {
+            return res.status(400).json({ message: 'Email is required' });
+        }
+
+        // Find the seller by email
+        const seller = await sellerm.findOne({ Email: Email });
+
+        // If seller is not found
+        if (!seller) {
+            return res.status(404).json({ message: 'Seller not found' });
+        }
+
+        // Only update the fields that are provided in the request body
+        if (Username) seller.Username = Username;
+        if (Password) seller.Password = Password;
+        if (Shop_Name) seller.Shop_Name = Shop_Name;
+        if (Description) seller.Description = Description;
+        if (Shop_Location) seller.Shop_Location = Shop_Location;
+        if (Type) seller.Type = Type;
+
+        // Save the updated seller profile
+        const updatedSeller = await seller.save();
+
+        // Return the updated seller profile
+        res.status(200).json({
+            message: 'Seller profile updated successfully',
+            seller: updatedSeller
+        });
+    } catch (error) {
+        // Handle errors
+        res.status(500).json({ message: 'Error updating seller profile', error: error.message });
+    }
+};
+  
+
 
 // ----------------- Activity Category CRUD ------------------
 
@@ -599,6 +660,8 @@ module.exports = {
     viewAllUpcomingEvents,
     getTouristProfile ,
     updateTouristProfile,
-    createSellerProfile 
+    createSellerProfile ,
+    getSellerProfile,
+    updateSellerProfile
     
 };
