@@ -48,7 +48,7 @@ app.use(express.json());
 
 // Routes for Admin actions with admin access control
 app.post("/addUser", createUserAdmin);  // Admins can add a user
-app.delete("/deleteUser/:id", deleteUserAdmin);  // Admins can delete users
+app.delete("/deleteUser/:email", deleteUserAdmin);  // Admins can delete users
 app.get("/getProducts", getAllProducts); //
 app.get("/getProductByName/:productName", searchProductByName);
 app.get("/filterProductsByPrice/:minPrice/:maxPrice", filterProductByPrice); // Filter products based on price range

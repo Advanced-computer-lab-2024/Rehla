@@ -31,10 +31,10 @@ const createUserAdmin = async (req, res) => {
 // Deleting an Admin user
 const deleteUserAdmin = async (req, res) => {
     try {
-        const id = req.params.id;
+        const { email } = req.params; // Get the email from URL parameters
 
-        // Find the user by ID and delete it
-        const deletedUser = await Admin.findByIdAndDelete(id);
+        // Find the user by email and delete
+        const deletedUser = await Admin.findOneAndDelete({ Email: email });
 
         if (!deletedUser) {
             return res.status(404).json({ error: 'User not found' });
@@ -42,7 +42,7 @@ const deleteUserAdmin = async (req, res) => {
 
         res.status(200).json({ message: 'User deleted successfully' });
     } catch (error) {
-        res.status(500).json({ error: 'Error deleting user', details: error });
+        res.status(500).json({ error: 'Error deleting user', details: error.message });
     }
 };
 
