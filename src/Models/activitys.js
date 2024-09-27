@@ -68,5 +68,5 @@ const activitysSchema = new Schema({
 });
 
 
-const activity = mongoose.model('activitys', activitysSchema);
-module.exports = activity;
+const Activity = mongoose.model('Activity', activitysSchema);
+module.exports = Activity;
