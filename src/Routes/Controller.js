@@ -1,7 +1,7 @@
 const Admin = require('../Models/Admin');
 const Product = require('../Models/Product');
-const activity = require('../Models/activitys');
-const itinerarym = require('../Models/itinerarys') ;
+const activity = require('../Models/activities');
+const itinerarym = require('../Models/itineraries') ;
 const touristm = require('../Models/tourists');
 
 // Creating a new Admin user or Tourism Governor
