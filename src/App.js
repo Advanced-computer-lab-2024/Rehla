@@ -62,3 +62,4 @@ app.get("/filterByDate/:startDate/:endDate", filterByDate);//Tourist - Guest : F
 app.get("/filterByRating/:rating", filterByRating);//Tourist - Guest : Filter activities 
 app.get("/allupcomingEvents" , viewAllUpcomingEvents);//Tourist - Guest : View all upcoming events 
 app.get("/getTouristProfile", getTouristProfile); //Tourist : view my profile 
+

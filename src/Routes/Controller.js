@@ -1,8 +1,9 @@
 const Admin = require('../Models/Admin');
 const Product = require('../Models/Product');
 const activity = require('../Models/activitys');
-const itinerary = require('../Models/itinerarys') ;
+const itinerarym = require('../Models/itinerarys') ;
 const touristm = require('../Models/tourists');
+
 // Creating a new Admin user or Tourism Governor
 const createUserAdmin = async (req, res) => {
     try {
@@ -26,7 +27,6 @@ const createUserAdmin = async (req, res) => {
         res.status(500).json({ error: 'Error creating user', details: error });
     }
 };
-
 
 // Deleting an Admin user
 const deleteUserAdmin = async (req, res) => {
@@ -177,10 +177,10 @@ const filterByTag = async (req, res) => {
 };
   
 //Tourist - admin - seller : Sort Product by ratings
-  const getProductsSortedByRating = async (req, res) => {
+const getProductsSortedByRating = async (req, res) => {
     try {
       // Fetch all products and sort by Rating in descending order (-1)
-      const products = await products.find().sort({ Rating: -1 });
+      const products = await Product.find().sort({ Rating: -1 });
   
       // Return the sorted list of products
       res.status(200).json({ message: 'Products sorted by rating', products: products });
@@ -188,9 +188,10 @@ const filterByTag = async (req, res) => {
       // Handle errors
       res.status(500).json({ message: 'Error fetching products', error: error.message });
     }
-  };
+ };
+
 //Admin - seller : add a product with its details , price and available quantities 
-  const addProduct = async (req, res) => {
+const addProduct = async (req, res) => {
     try {
       // Destructure product attributes from the request body
       const { Product_Name, Picture, Price, Quantity, Seller_Name, Description, Rating, Reviews } = req.body;
@@ -201,7 +202,7 @@ const filterByTag = async (req, res) => {
       }
   
       // Create a new product instance using the product model
-      const newProduct = new product({
+      const newProduct = new Product({
         Product_Name,   // e.g. "Product 1"
         Picture,        // e.g. "url_to_image.jpg"
         Price,          // e.g. 10
@@ -221,9 +222,10 @@ const filterByTag = async (req, res) => {
       // Handle errors
       res.status(500).json({ message: 'Error adding product', error: error.message });
     }
-  };
+};
+
 //Admin - seller : edit product details and price 
-  const updateProduct = async (req, res) => {
+const updateProduct = async (req, res) => {
     try {
       // Destructure Product_Name from the request body
       const { Product_Name, picture, Price, Description, Seller_Name, Rating, Reviews, Quantity } = req.body;
@@ -247,7 +249,7 @@ const filterByTag = async (req, res) => {
       console.log('Querying for Product_Name:', Product_Name);
   
       // Find the product by name and update the fields
-      const updatedProduct = await product.findOneAndUpdate(
+      const updatedProduct = await Product.findOneAndUpdate(
         { Product_Name: { $regex: new RegExp(`^${Product_Name.trim()}$`, 'i') } }, // Case-insensitive search
         updateFields,
         { new: true }
@@ -265,11 +267,11 @@ const filterByTag = async (req, res) => {
       // Handle errors
       res.status(500).json({ message: 'Error updating product', error: error.message });
     }
-  };
+};
 
 
   //Tourist - Guest :Activities Filter 
-  const filterByPrice = async (req, res) => {
+const filterByPrice = async (req, res) => {
     try {
         const { minPrice, maxPrice } = req.params;
 
@@ -393,7 +395,7 @@ const viewAllUpcomingEvents = async (req, res) => {
       });
 
       // Query the itineraries table (no Date filter since it might not have dates)
-      const itinerary = await itinerary.find();
+      const itinerary = await itinerarym.find();
 
       // Return all data
       res.status(200).json({
