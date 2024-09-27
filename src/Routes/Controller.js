@@ -471,6 +471,43 @@ const getTouristProfile = async (req, res) => {
   }
 };
 
+const updateTouristProfile= async (req, res) => {
+  try {
+      // Extract the email and fields to update from the request body
+      const { Email, Password, Mobile_Number, Nationality, Job_Student, Type } = req.body;
+
+      if (!Email) {
+          return res.status(400).json({ message: 'Email is required' });
+      }
+
+      // Find tourist by email
+      const tourist = await touristm.findOne({ Email: Email });
+
+      if (!tourist) {
+          return res.status(404).json({ message: 'Tourist not found' });
+      }
+
+      // Only update the fields that are allowed to be modified
+      if (Password) tourist.Password = Password;
+      if (Mobile_Number) tourist.Mobile_Number = Mobile_Number;
+      if (Nationality) tourist.Nationality = Nationality;
+      if (Job_Student) tourist.Job_Student = Job_Student;
+      if (Type) tourist.Type = Type;
+
+      // Save the updated profile
+      const updatedTourist = await tourist.save();
+
+      // Return the updated profile
+      res.status(200).json({
+          message: 'Tourist profile updated successfully',
+          tourist: updatedTourist
+      });
+  } catch (error) {
+      // Handle errors
+      res.status(500).json({ message: 'Error updating tourist profile', error: error.message });
+  }
+};
+
 // ----------------- Activity Category CRUD ------------------
 
 
@@ -490,6 +527,7 @@ module.exports = {
     filterByDate, 
     filterByRating,
     viewAllUpcomingEvents,
-    getTouristProfile 
+    getTouristProfile ,
+    updateTouristProfile
     
 };

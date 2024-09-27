@@ -5,6 +5,7 @@ const touristsSchema = new Schema({
     Username : {
         type: String,
         required : true,
+        immutable : true,
     },
 
     Email : {
@@ -45,6 +46,7 @@ const touristsSchema = new Schema({
      
     Wallet : {
         type : Number ,
+        immutable : true,
     } ,
 });
 
