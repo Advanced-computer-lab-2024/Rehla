@@ -3,6 +3,7 @@ const Product = require('../Models/Product');
 const activity = require('../Models/activities');
 const itinerarym = require('../Models/itineraries') ;
 const touristm = require('../Models/tourists');
+const sellerm = require('../Models/sellers');
 
 // Creating a new Admin user or Tourism Governor
 const createUserAdmin = async (req, res) => {
@@ -549,6 +550,33 @@ const updateTouristProfile= async (req, res) => {
   }
 };
 
+
+//Seller : Create my profile 
+const createSellerProfile = async (req, res) => {
+    try {
+        const { Username, Email, Password, Shop_Name, Description, Shop_Location,Type } = req.body;
+
+        // Use the correct model name (sellerm)
+        const newSeller = new sellerm({
+            Username,
+            Email,
+            Password,
+            Shop_Name,
+            Description,
+            Shop_Location,
+            Type
+        });
+
+        // Save the new seller profile
+        const savedSeller = await newSeller.save();
+        res.status(201).json(savedSeller);
+    } catch (error) {
+        // Handle errors
+        res.status(500).json({ message: 'Error creating seller profile', error: error.message });
+    }
+};
+
+
 // ----------------- Activity Category CRUD ------------------
 
 
@@ -570,6 +598,7 @@ module.exports = {
     filterByRating,
     viewAllUpcomingEvents,
     getTouristProfile ,
-    updateTouristProfile
+    updateTouristProfile,
+    createSellerProfile 
     
 };

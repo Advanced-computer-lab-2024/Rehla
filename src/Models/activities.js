@@ -65,7 +65,7 @@ const activitysSchema = new Schema({
         type : Number ,
         required : true,
     },
-});
+},{ versionKey: false });
 
 
 const Activity = mongoose.model('Activity', activitysSchema);

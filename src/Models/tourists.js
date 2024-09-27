@@ -48,7 +48,7 @@ const touristsSchema = new Schema({
         type : Number ,
         immutable : true,
     } ,
-});
+},{ versionKey: false });
 
 const tourist = mongoose.model('Tourist', touristsSchema);
 module.exports = tourist;
