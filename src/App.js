@@ -68,3 +68,4 @@ app.get("/filterByRating/:rating", filterByRating);//Tourist - Guest : Filter ac
 app.get("/allupcomingEvents" , viewAllUpcomingEvents);//Tourist - Guest : View all upcoming events 
 app.get("/getTouristProfile", getTouristProfile); //Tourist : view my profile 
 app.put("/updateTouristProfile" , updateTouristProfile); //Tourist : update my profile 
+console.log("salamo 3aleko");
