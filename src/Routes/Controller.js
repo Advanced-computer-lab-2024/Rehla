@@ -140,7 +140,7 @@ const sortActivities = async (req, res) => {
       }
 
       // Fetch upcoming activities and sort them accordingly
-      const sortedActivities = await activitys.find() // Assuming true means upcoming
+      const sortedActivities = await activity.find() // Assuming true means upcoming
           .sort(sortOptions)
           .exec();
 
@@ -164,7 +164,7 @@ const filterByTag = async (req, res) => {
       }
 
       // Query to filter activities by the tag
-      const activities = await activitys.find({ Tag: tag });
+      const activities = await activity.find({ Tag: tag });
 
       if (!activities || activities.length === 0) {
           return res.status(404).json({ message: 'No activities found for the given tag.' });
@@ -393,13 +393,13 @@ const viewAllUpcomingEvents = async (req, res) => {
       });
 
       // Query the itineraries table (no Date filter since it might not have dates)
-      const itineraries = await itinerary.find();
+      const itinerary = await itinerary.find();
 
       // Return all data
       res.status(200).json({
           message: 'All upcoming activities, itineraries, and historical places/museums',
           upcomingActivities: upcomingActivities,
-          itineraries: itineraries,
+          itinerary: itinerary,
           historicalPlacesAndMuseums: historicalPlacesAndMuseums
       });
   } catch (error) {
