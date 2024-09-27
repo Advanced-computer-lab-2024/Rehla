@@ -57,7 +57,7 @@ const activitysSchema = new Schema({
         required : true,
     },
 
-    Boooked_Spots : {
+    Booked_Spots : {
         type : Number ,
         required : true,
     },
