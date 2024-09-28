@@ -3,6 +3,8 @@ const Product = require('../Models/Product');
 const activity = require('../Models/activities');
 const itinerarym = require('../Models/itineraries') ;
 const touristm = require('../Models/tourists');
+const sellerm = require('../Models/sellers');
+const tour_guidem=require('../Models/tour_guides');
 
 // Creating a new Admin user or Tourism Governor
 const createUserAdmin = async (req, res) => {
@@ -549,6 +551,185 @@ const updateTouristProfile= async (req, res) => {
   }
 };
 
+
+//Seller : Create my profile 
+const createSellerProfile = async (req, res) => {
+    try {
+        const { Username, Email, Password, Shop_Name, Description, Shop_Location,Type } = req.body;
+
+        // Use the correct model name (sellerm)
+        const newSeller = new sellerm({
+            Username,
+            Email,
+            Password,
+            Shop_Name,
+            Description,
+            Shop_Location,
+            Type
+        });
+
+        // Save the new seller profile
+        const savedSeller = await newSeller.save();
+        res.status(201).json(savedSeller);
+    } catch (error) {
+        // Handle errors
+        res.status(500).json({ message: 'Error creating seller profile', error: error.message });
+    }
+};
+
+//Seller : get my profile 
+const getSellerProfile = async (req, res) => {
+    try {
+      const { Email } = req.body; // Destructure to extract Email correctly
+      if (!Email) {
+        return res.status(400).json({ message: 'Email is required' });
+      }
+  
+      const seller = await sellerm.findOne({ Email: Email });
+  
+      if (!seller) {
+        return res.status(404).json({ message: 'Seller not found' });
+      }
+  
+      res.status(200).json(seller);
+    } catch (error) {
+      res.status(500).json({ message: 'Error retrieving seller profile', error: error.message });
+    }
+  };
+
+  const updateSellerProfile = async (req, res) => {
+    try {
+        // Extract email and the fields to update from the request body
+        const {Username, Email, Password, Shop_Name, Description, Shop_Location,Type } = req.body;
+
+        // Check if email is provided
+        if (!Email) {
+            return res.status(400).json({ message: 'Email is required' });
+        }
+
+        // Find the seller by email
+        const seller = await sellerm.findOne({ Email: Email });
+
+        // If seller is not found
+        if (!seller) {
+            return res.status(404).json({ message: 'Seller not found' });
+        }
+
+        // Only update the fields that are provided in the request body
+        if (Username) seller.Username = Username;
+        if (Password) seller.Password = Password;
+        if (Shop_Name) seller.Shop_Name = Shop_Name;
+        if (Description) seller.Description = Description;
+        if (Shop_Location) seller.Shop_Location = Shop_Location;
+        if (Type) seller.Type = Type;
+
+        // Save the updated seller profile
+        const updatedSeller = await seller.save();
+
+        // Return the updated seller profile
+        res.status(200).json({
+            message: 'Seller profile updated successfully',
+            seller: updatedSeller
+        });
+    } catch (error) {
+        // Handle errors
+        res.status(500).json({ message: 'Error updating seller profile', error: error.message });
+    }
+};
+
+//Tour guide: Create Profile 
+const createTourGuideProfile = async (req, res) => {
+    try {
+        const { Username, Email, Password, Type ,Mobile_Number, Experience, Previous_work } = req.body;
+
+        const newTourGuide = new tour_guidem({
+            Username,
+            Email,
+            Password, 
+            Mobile_Number,
+            Experience,
+            Previous_work
+        });
+
+        const savedTourGuide = await newTourGuide.save();
+        res.status(201).json({
+            message: 'Tour guide profile created successfully',
+            tourGuide: savedTourGuide
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error creating tour guide profile', error: error.message });
+    }
+};
+  
+//Tour guide : update profile
+const updateTourGuideProfile = async (req, res) => {
+    try {
+        // Extract the email and fields to update from the request body
+        const { Username, Email, Password, Type, Mobile_Number, Experience, Previous_work } = req.body;
+
+        if (!Email) {
+            return res.status(400).json({ message: 'Email is required' });
+        }
+
+        // Find tour guide by email
+        const tour_guide = await tour_guidem.findOne({ Email: Email });
+
+        if (!tour_guide) {
+            return res.status(404).json({ message: 'Tour guide not found' });
+        }
+
+        // Only update the fields that are allowed to be modified
+        if (Username) tour_guide.Username = Username;
+        if (Password) tour_guide.Password = Password;
+        if (Type) tour_guide.Type = Type;
+        if (Mobile_Number) tour_guide.Mobile_Number = Mobile_Number;
+        if (Experience) tour_guide.Experience = Experience;
+        if (Previous_work) tour_guide.Previous_work = Previous_work;
+
+        // Save the updated profile
+        const updatedTourGuide = await tour_guide.save();
+
+        // Return the updated profile
+        res.status(200).json({
+            message: 'Tour guide profile updated successfully',
+            tour_guide: updatedTourGuide
+        });
+    } catch (error) {
+        // Handle errors
+        res.status(500).json({ message: 'Error updating tour guide profile', error: error.message });
+    }
+};
+
+//Tour guide : Get profile 
+const getTourGuideProfile = async (req, res) => {
+    try {
+        const { Email } = req.body;
+
+        if (!Email) {
+            return res.status(400).json({ message: 'Email is required' });
+        }
+
+        // Find tour guide by email
+        const tour_guide = await tour_guidem.findOne({ Email: Email });
+
+        if (!tour_guide) {
+            return res.status(404).json({ message: 'Tour guide not found' });
+        }
+
+        // Return the tour guide profile
+        res.status(200).json({
+            message: 'Tour guide profile retrieved successfully',
+            tour_guide: tour_guide
+        });
+    } catch (error) {
+        // Handle errors
+        res.status(500).json({ message: 'Error retrieving tour guide profile', error: error.message });
+    }
+};
+
+
+
+
 // ----------------- Activity Category CRUD ------------------
 
 
@@ -570,6 +751,12 @@ module.exports = {
     filterByRating,
     viewAllUpcomingEvents,
     getTouristProfile ,
-    updateTouristProfile
+    updateTouristProfile,
+    createSellerProfile ,
+    getSellerProfile,
+    updateSellerProfile,
+    createTourGuideProfile,
+    updateTourGuideProfile ,
+    getTourGuideProfile
     
 };

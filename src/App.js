@@ -19,7 +19,13 @@ const {createUserAdmin,
   filterByDate,filterByRating,
   viewAllUpcomingEvents,
   getTouristProfile ,
-  updateTouristProfile
+  updateTouristProfile,
+  createSellerProfile ,
+  getSellerProfile,
+  updateSellerProfile,
+  createTourGuideProfile,
+  updateTourGuideProfile ,
+  getTourGuideProfile
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -27,6 +33,9 @@ const MongoURI = process.env.MONGO_URI;
 // App variables
 const app = express();
 const port = process.env.PORT || "8000";
+console.log("freg");
+console.log("freg1");
+
 
 
 // MongoDB connection
@@ -68,4 +77,3 @@ app.get("/filterByRating/:rating", filterByRating);//Tourist - Guest : Filter ac
 app.get("/allupcomingEvents" , viewAllUpcomingEvents);//Tourist - Guest : View all upcoming events 
 app.get("/getTouristProfile", getTouristProfile); //Tourist : view my profile 
 app.put("/updateTouristProfile" , updateTouristProfile); //Tourist : update my profile 
-console.log("salamo 3aleko");

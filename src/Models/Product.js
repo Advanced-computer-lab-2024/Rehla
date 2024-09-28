@@ -42,7 +42,7 @@ const productsSchema = new Schema({
         required: true,
     } , 
 
-});
+},{ versionKey: false });
 
 const product = mongoose.model('Product', productsSchema);
 module.exports = product;
