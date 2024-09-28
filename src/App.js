@@ -34,6 +34,8 @@ const MongoURI = process.env.MONGO_URI;
 const app = express();
 const port = process.env.PORT || "8000";
 console.log("freg");
+console.log("freg1");
+
 
 
 // MongoDB connection
