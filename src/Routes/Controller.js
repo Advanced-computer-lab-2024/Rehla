@@ -896,5 +896,4 @@ module.exports = {
     createItinerary,
     updateItinerary,
     getItinerariesByName
-    
 };
