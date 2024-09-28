@@ -1013,6 +1013,27 @@ const deleteActivityByAdvertiser = async (req, res) => {
     }
 };
 
+//rana 
+const createUserTourism_Governer = async(req,res) => {
+    //add a new user to the database with 
+    //Name, Email and Age
+    try {
+       const {Username, Email, Password, Type} = req.body;
+   
+       // Create a new user instance with the data
+       const newUser = new Tourism_governer({ Username, Email, Password, Type});
+   
+       // Save the user to the database
+       await newUser.save();
+   
+       // Return success response
+       res.status(201).json({ message: 'User created successfully', user: newUser });
+     } catch (error) {
+       // Handle errors
+       res.status(500).json({ message: 'Error creating user', error: error.message });
+     }
+ };
+
 
 
 // ----------------- Activity Category CRUD ------------------
