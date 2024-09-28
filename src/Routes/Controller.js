@@ -7,7 +7,7 @@ const sellerm = require('../Models/sellers');
 const tour_guidem=require('../Models/tour_guides');
 const Activity = require('../Models/activities');
 const AdvertisersModel = require('../Models/Advertisers.js');
-const RequestsModel= require('../Models/Requests.js.js');
+//const RequestsModel= require('../Models/Requests.js.js');
 
 
 // Creating a new Admin user or Tourism Governor
@@ -868,17 +868,24 @@ const getItinerariesByName = async (req, res) => {
 //Creating Advertiser as a request
 const createUserAdvertiser = async (req, res) => {
     try {
-        const { Username, Email, Password, Type } = req.body;
-        if (!Username || !Password || !Email || !Type) {
+        const {  Username,Email,Password, Type,Link_to_website,
+            Hotline,Company_Profile,Company_Name } = req.body;
+        
+            if (!Username || !Password || !Email || !Type ||!Link_to_website
+                ||!Hotline||!Company_Profile||!Company_Name) {
             return res.status(400).json({ error: 'All fields are required.' });
         }
-        const newrequests = new RequestsModel({
+        const newadvertiser = new AdvertisersModel({
             Username,
             Email,
             Password, 
-            Type
+            Type,
+            Link_to_website,
+            Hotline,
+            Company_Profile,
+            Company_Name
         });
-        const savedUser= await newrequests.save();
+        const savedUser= await newadvertiser.save();
         res.status(201).json({ message: 'User created successfully', user: savedUser });
     } 
     catch (error) {
@@ -1015,7 +1022,7 @@ const deleteActivityByAdvertiser = async (req, res) => {
 
 
 
-// ----------------- Activity Category CRUD ------------------
+// ----------------- Activity Category CRUD -------------------
 module.exports = { 
     createUserAdmin, 
     deleteUserAdmin,
