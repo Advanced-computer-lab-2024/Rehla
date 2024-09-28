@@ -36,10 +36,6 @@ const MongoURI = process.env.MONGO_URI;
 // App variables
 const app = express();
 const port = process.env.PORT || "8000";
-console.log("freg");
-console.log("freg1yh");
-
-console.log("balah");
 
 // MongoDB connection
 mongoose.connect(MongoURI)

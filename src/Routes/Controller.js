@@ -5,6 +5,7 @@ const itinerarym = require('../Models/itineraries') ;
 const touristm = require('../Models/tourists');
 const sellerm = require('../Models/sellers');
 const tour_guidem=require('../Models/tour_guides');
+const Activity = require('../Models/activities');
 
 // Creating a new Admin user or Tourism Governor
 const createUserAdmin = async (req, res) => {
@@ -347,7 +348,6 @@ const updateProduct = async (req, res) => {
     }
 };
 
-
   //Tourist - Guest :Activities Filter 
 const filterByPrice = async (req, res) => {
     try {
@@ -550,7 +550,6 @@ const updateTouristProfile= async (req, res) => {
       res.status(500).json({ message: 'Error updating tourist profile', error: error.message });
   }
 };
-
 
 //Seller : Create my profile 
 const createSellerProfile = async (req, res) => {
@@ -896,4 +895,5 @@ module.exports = {
     createItinerary,
     updateItinerary,
     getItinerariesByName
+    
 };
