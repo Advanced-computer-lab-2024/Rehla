@@ -836,6 +836,35 @@ const updateItinerary = async (req, res) => {
     }
 };
 
+const getItineraryByName = async (req, res) => {
+    try {
+        // Extract the itinerary name from the request params or query
+        const {Itinerary_Name} = req.body;
+
+        if (!Itinerary_Name) {
+            return res.status(400).json({ message: 'Itinerary name is required' });
+        }
+
+        // Find the itinerary by name
+        const itinerary = await itinerarym.find({ Itinerary_Name: Itinerary_Name });
+
+        if (!itinerary) {
+            return res.status(404).json({ message: 'Itinerary not found' });
+        }
+
+        // Return the itinerary details
+        res.status(200).json({
+            message: 'Itinerary retrieved successfully',
+            itinerary: itinerary
+        });
+    } catch (error) {
+        // Handle errors
+        res.status(500).json({ message: 'Error retrieving itinerary', error: error.message });
+    }
+};
+
+
+
 
 // ----------------- Activity Category CRUD ------------------
 
@@ -866,6 +895,7 @@ module.exports = {
     updateTourGuideProfile ,
     getTourGuideProfile,
     createItinerary,
-    updateItinerary
+    updateItinerary,
+    getItineraryByName
     
 };
