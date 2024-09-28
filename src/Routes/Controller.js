@@ -5,7 +5,6 @@ const itinerarym = require('../Models/itineraries') ;
 const touristm = require('../Models/tourists');
 const sellerm = require('../Models/sellers');
 const tour_guidem=require('../Models/tour_guides');
-const Activity = require('../Models/activities');
 const AdvertisersModel = require('../Models/Advertisers.js');
 const RequestsModel= require('../Models/Requests.js');
 const tourism_governers = require('../Models/tourism_governers');
@@ -869,17 +868,24 @@ const getItinerariesByName = async (req, res) => {
 //Creating Advertiser as a request
 const createUserAdvertiser = async (req, res) => {
     try {
-        const { Username, Email, Password, Type } = req.body;
-        if (!Username || !Password || !Email || !Type) {
+        const {  Username,Email,Password, Type,Link_to_website,
+            Hotline,Company_Profile,Company_Name } = req.body;
+        
+            if (!Username || !Password || !Email || !Type ||!Link_to_website
+                ||!Hotline||!Company_Profile||!Company_Name) {
             return res.status(400).json({ error: 'All fields are required.' });
         }
-        const newrequests = new RequestsModel({
+        const newadvertiser = new AdvertisersModel({
             Username,
             Email,
             Password, 
-            Type
+            Type,
+            Link_to_website,
+            Hotline,
+            Company_Profile,
+            Company_Name
         });
-        const savedUser= await newrequests.save();
+        const savedUser= await newadvertiser.save();
         res.status(201).json({ message: 'User created successfully', user: savedUser });
     } 
     catch (error) {
@@ -938,7 +944,7 @@ const createActivityByAdvertiser = async (req, res) => {
             Booking_Available||!Available_Spots||!Booked_Spots||!Rating) {
             return res.status(400).json({ error: 'All fields are required.' });
         }
-        const newActivity = new Activity({
+        const newActivity = new activity({
             Name,Location,Time,Duration,Price,Date,Tag,Category,Discount_Percent,
             Booking_Available,Available_Spots,Booked_Spots,Rating
         });
@@ -956,7 +962,7 @@ const createActivityByAdvertiser = async (req, res) => {
 const readActivity = async (req,res)=>{
     try{
         const { name } = req.body; // Assuming email is passed as a URL parameter
-        const activityDetails = await Activity.findOne({ Name: name });
+        const activityDetails = await activity.findOne({ Name: name });
 
         if (!activityDetails) {
             return res.status(404).json({ message: 'Activity not found' });
@@ -977,7 +983,7 @@ const updateActivityByAdvertiser = async (req, res) => {
     try{
         const {Name,Location,Time,Duration,Price,Date,Tag,Category,Discount_Percent,
             Booking_Available,Available_Spots,Booked_Spots,Rating } = req.body;
-        const updatedActivity = await Activity.findOneAndUpdate(
+        const updatedActivity = await activity.findOneAndUpdate(
             {Name: Name },
             {Name,Location,Time,Duration,Price,Date,Tag,Category,Discount_Percent,
               Booking_Available,Available_Spots,Booked_Spots,Rating },  // Fields to update
@@ -1001,7 +1007,7 @@ const deleteActivityByAdvertiser = async (req, res) => {
         const {Name} = req.body;
 
         // Find the activity by name and delete it
-        const deletedActivity = await Activity.findOneAndDelete({ Name: Name });
+        const deletedActivity = await activity.findOneAndDelete({ Name: Name });
 
         if (!deletedActivity) {
             return res.status(404).json({ error: 'Activity not found' });
@@ -1054,7 +1060,7 @@ const createUserTourism_Governer = async(req,res) => {
 };
 
 
-// ----------------- Activity Category CRUD ------------------
+// ----------------- Activity Category CRUD -------------------
 module.exports = { 
     createUserAdmin, 
     deleteUserAdmin,
