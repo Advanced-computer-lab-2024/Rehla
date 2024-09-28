@@ -836,33 +836,32 @@ const updateItinerary = async (req, res) => {
     }
 };
 
-const getItineraryByName = async (req, res) => {
+const getItinerariesByName = async (req, res) => {
     try {
-        // Extract the itinerary name from the request params or query
-        const {Itinerary_Name} = req.body;
+        // Extract the itinerary name from the request body
+        const { Itinerary_Name } = req.body;
 
-        if (!Itinerary_Name) {
-            return res.status(400).json({ message: 'Itinerary name is required' });
+        if (!Itinerary_Name || typeof Itinerary_Name !== 'string') {
+            return res.status(400).json({ message: 'Itinerary name is required and must be a string' });
         }
 
-        // Find the itinerary by name
-        const itinerary = await itinerarym.find({ Itinerary_Name: Itinerary_Name });
+        // Find all itineraries with the same name
+        const itineraries = await itinerarym.find({ Itinerary_Name: Itinerary_Name });
 
-        if (!itinerary) {
-            return res.status(404).json({ message: 'Itinerary not found' });
+        if (itineraries.length === 0) {
+            return res.status(404).json({ message: 'No itineraries found' });
         }
 
-        // Return the itinerary details
+        // Return the list of itineraries
         res.status(200).json({
-            message: 'Itinerary retrieved successfully',
-            itinerary: itinerary
+            message: 'Itineraries retrieved successfully',
+            itineraries: itineraries
         });
     } catch (error) {
         // Handle errors
-        res.status(500).json({ message: 'Error retrieving itinerary', error: error.message });
+        res.status(500).json({ message: 'Error retrieving itineraries', error: error.message });
     }
 };
-
 
 
 
@@ -896,6 +895,6 @@ module.exports = {
     getTourGuideProfile,
     createItinerary,
     updateItinerary,
-    getItineraryByName
+    getItinerariesByName
     
 };

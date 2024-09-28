@@ -28,7 +28,7 @@ const {createUserAdmin,
   getTourGuideProfile,
   createItinerary,
   updateItinerary,
-  getItineraryByName
+  getItinerariesByName
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -37,10 +37,9 @@ const MongoURI = process.env.MONGO_URI;
 const app = express();
 const port = process.env.PORT || "8000";
 console.log("freg");
-console.log("freg1");
-console.log("test");
+console.log("freg1yh");
 
-
+console.log("balah");
 
 // MongoDB connection
 mongoose.connect(MongoURI)
@@ -89,4 +88,4 @@ app.put("/updateTourGuideProfile" , updateTourGuideProfile );//Tour Guide: updat
 app.get("/getTourGuideProfile", getTourGuideProfile);//Tour Guide: getTourGuideProfile
 app.post("/createItinerary" , createItinerary);//tour Guide : Create itinerary 
 app.put("/updateItinerary" , updateItinerary); //tour guide : update itinerary 
-app.get("/getItineraryByName", getItineraryByName);// Tour Guide: getItineraryByName
+app.get("/getItinerariesByName", getItinerariesByName);//getItinerariesByName
