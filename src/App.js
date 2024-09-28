@@ -28,7 +28,14 @@ const {createUserAdmin,
   getTourGuideProfile,
   createItinerary,
   updateItinerary,
-  getItinerariesByName
+  getItinerariesByName,
+  createUserAdvertiser,
+  readAdvertiser, 
+  updateUserAdvertiser,
+  createActivityByAdvertiser,
+  readActivity,
+  updateActivityByAdvertiser,
+  deleteActivityByAdvertiser
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -87,3 +94,12 @@ app.get("/getTourGuideProfile", getTourGuideProfile);//Tour Guide: getTourGuideP
 app.post("/createItinerary" , createItinerary);//tour Guide : Create itinerary 
 app.put("/updateItinerary" , updateItinerary); //tour guide : update itinerary 
 app.get("/getItinerariesByName", getItinerariesByName);//getItinerariesByName
+
+app.post("/addUserAdvertisers", createUserAdvertiser);  // Advertiser request
+app.post("/readAdvertisers", readAdvertiser); // Route for reading an advertiser by email
+app.put("/updateUserAdvertisers", updateUserAdvertiser); //updating advertiser
+
+app.post("/createActivityByAdvert", createActivityByAdvertiser);
+app.post("/readActivity", readActivity);
+app.put("/updateActivity", updateActivityByAdvertiser);
+app.delete("/deleteActivityByAdvert", deleteActivityByAdvertiser);

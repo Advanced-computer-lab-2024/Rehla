@@ -6,6 +6,9 @@ const touristm = require('../Models/tourists');
 const sellerm = require('../Models/sellers');
 const tour_guidem=require('../Models/tour_guides');
 const Activity = require('../Models/activities');
+const AdvertisersModel = require('../Models/Advertisers.js');
+const RequestsModel= require('../Models/Requests.js.js');
+
 
 // Creating a new Admin user or Tourism Governor
 const createUserAdmin = async (req, res) => {
@@ -862,6 +865,154 @@ const getItinerariesByName = async (req, res) => {
     }
 };
 
+//Creating Advertiser as a request
+const createUserAdvertiser = async (req, res) => {
+    try {
+        const { Username, Email, Password, Type } = req.body;
+        if (!Username || !Password || !Email || !Type) {
+            return res.status(400).json({ error: 'All fields are required.' });
+        }
+        const newrequests = new RequestsModel({
+            Username,
+            Email,
+            Password, 
+            Type
+        });
+        const savedUser= await newrequests.save();
+        res.status(201).json({ message: 'User created successfully', user: savedUser });
+    } 
+    catch (error) {
+        console.error("Error details:", error.message, error.stack); // Log full error details
+        res.status(500).json({ error: 'Error creating user', details: error.message });
+    }
+};
+
+//Reading all advertiser detail by email
+
+const readAdvertiser = async (req,res)=>{
+    try{
+        const { email } = req.body; 
+        const advertiserProfile = await AdvertisersModel.findOne({ Email: email });
+
+        if (!advertiserProfile) {
+            return res.status(404).json({ message: 'Company profile not found' });
+        }
+        res.status(200).json({ message: 'Advertiser fetched successfully', data: advertiserProfile });
+    }
+    catch(error){
+        console.error("Error fetching company profile:", error.message);
+        res.status(500).json({ error: 'Error fetching company profile', details: error.message });
+    }
+}
+
+//Updating advertiser using email
+
+const updateUserAdvertiser = async (req, res) => {
+    //update a user in the database
+    try{
+        const {Username,Email,Password,type,Link_to_website, Hotline ,Company_Profile,Company_Name } = req.body;
+        const updatedUser = await AdvertisersModel.findOneAndUpdate(
+            {Email: Email },
+            {Username,Email,Password,type,Link_to_website, Hotline ,Company_Profile,Company_Name },  // Fields to update
+            {new: true, runValidators: true }  // Options: return the updated document and run schema validators
+    );
+    if (!updatedUser) {
+        return res.status(404).json({ message: 'User not found' });
+    }
+    res.status(200).json({ message: 'User updated successfully', user: updatedUser });
+    }
+    catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+    }
+};
+
+
+//Advertiser Creating An Activity
+const createActivityByAdvertiser = async (req, res) => {
+    try {
+        const { Name,Location,Time,Duration,Price,Date,Tag,Category,Discount_Percent,
+            Booking_Available,Available_Spots,Booked_Spots,Rating } = req.body;
+        if (!Name||!Location||!Time||!Duration||!Price||!Date||!Tag||!Category||!Discount_Percent||!
+            Booking_Available||!Available_Spots||!Booked_Spots||!Rating) {
+            return res.status(400).json({ error: 'All fields are required.' });
+        }
+        const newActivity = new Activity({
+            Name,Location,Time,Duration,Price,Date,Tag,Category,Discount_Percent,
+            Booking_Available,Available_Spots,Booked_Spots,Rating
+        });
+        const savedActivity= await newActivity.save();
+        res.status(201).json({ message: 'Activity created successfully', activity: savedActivity });
+    } 
+    catch (error) {
+        console.error("Error details:", error.message, error.stack); // Log full error details
+        res.status(500).json({ error: 'Error creating activity', details: error.message });
+    }
+};
+
+//Advertiser Reading Activity
+
+const readActivity = async (req,res)=>{
+    try{
+        const { name } = req.body; // Assuming email is passed as a URL parameter
+        const activityDetails = await Activity.findOne({ Name: name });
+
+        if (!activityDetails) {
+            return res.status(404).json({ message: 'Activity not found' });
+        }
+        res.status(200).json({ message: 'Activity fetched successfully', data: activityDetails });
+    }
+    catch(error){
+        console.error("Error fetching company profile:", error.message);
+        res.status(500).json({ error: 'Error fetching company profile', details: error.message });
+    }
+}
+
+
+//Advertiser Updates Activity
+
+const updateActivityByAdvertiser = async (req, res) => {
+    //update a user in the database
+    try{
+        const {Name,Location,Time,Duration,Price,Date,Tag,Category,Discount_Percent,
+            Booking_Available,Available_Spots,Booked_Spots,Rating } = req.body;
+        const updatedActivity = await Activity.findOneAndUpdate(
+            {Name: Name },
+            {Name,Location,Time,Duration,Price,Date,Tag,Category,Discount_Percent,
+              Booking_Available,Available_Spots,Booked_Spots,Rating },  // Fields to update
+            {new: true, runValidators: true }  // Options: return the updated document and run schema validators
+    );
+    if (!updatedActivity) {
+        return res.status(404).json({ message: 'Activity not found' });
+    }
+    res.status(200).json({ message: 'Activity updated successfully', activity: updatedActivity });
+    }
+    catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+    }
+};
+
+//Advertiser deletes activity
+
+const deleteActivityByAdvertiser = async (req, res) => {
+    try {
+        const {Name} = req.body;
+
+        // Find the activity by name and delete it
+        const deletedActivity = await Activity.findOneAndDelete({ Name: Name });
+
+        if (!deletedActivity) {
+            return res.status(404).json({ error: 'Activity not found' });
+        }
+
+        res.status(200).json({ message: 'Activity deleted successfully' });
+    } catch (error) {
+        console.error("Error details:", error.message, error.stack); // Log full error details
+        res.status(500).json({ error: 'Error deleting user', details: error.message });
+    }
+};
+
 
 
 // ----------------- Activity Category CRUD ------------------
@@ -892,6 +1043,13 @@ module.exports = {
     getTourGuideProfile,
     createItinerary,
     updateItinerary,
-    getItinerariesByName
+    getItinerariesByName,
+    createUserAdvertiser,
+    readAdvertiser, 
+    updateUserAdvertiser,
+    createActivityByAdvertiser,
+    readActivity,
+    updateActivityByAdvertiser,
+    deleteActivityByAdvertiser
     
 };
