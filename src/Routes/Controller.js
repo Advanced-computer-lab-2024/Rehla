@@ -7,7 +7,7 @@ const sellerm = require('../Models/sellers');
 const tour_guidem=require('../Models/tour_guides');
 const Activity = require('../Models/activities');
 const AdvertisersModel = require('../Models/Advertisers.js');
-//const RequestsModel= require('../Models/Requests.js.js');
+const RequestsModel= require('../Models/Requests.js.js');
 
 
 // Creating a new Admin user or Tourism Governor
@@ -1022,6 +1022,44 @@ const deleteActivityByAdvertiser = async (req, res) => {
 
 
 
+//rana 
+const createUserTourism_Governer = async(req,res) => {
+    //add a new user to the database with 
+    //Name, Email and Age
+    try {
+       const {Username, Email, Password, Type} = req.body;
+   
+       // Create a new user instance with the data
+       const newUser = new Tourism_governer({ Username, Email, Password, Type});
+   
+       // Save the user to the database
+       await newUser.save();
+   
+       // Return success response
+       res.status(201).json({ message: 'User created successfully', user: newUser });
+     } catch (error) {
+       // Handle errors
+       res.status(500).json({ message: 'Error creating user', error: error.message });
+     }
+ };
+ const deleteUserTourism_Governer = async (req, res) => {
+    try {
+        const Email = req.body;
+
+        // Find the user by ID and delete it
+        const deleteUserTourism_Governer = await Tourism_governer.findOneAndDelete(Email);
+
+        if (!deleteUserTourism_Governer) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        res.status(200).json({ message: 'User deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: 'Error deleting user', details: error });
+    }
+};
+
+
 // ----------------- Activity Category CRUD -------------------
 module.exports = { 
     createUserAdmin, 
@@ -1057,6 +1095,8 @@ module.exports = {
     createActivityByAdvertiser,
     readActivity,
     updateActivityByAdvertiser,
-    deleteActivityByAdvertiser
+    deleteActivityByAdvertiser,
+    createUserTourism_Governer,
+    deleteUserTourism_Governer 
     
 };
