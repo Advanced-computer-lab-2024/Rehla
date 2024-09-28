@@ -18,7 +18,7 @@ const Tourism_governerSchema = new Schema({
     type: String,
     required: true
   }
-}, { timestamps: true });
+}, { versionKey: false });
 
-const Tourism_governer = mongoose.model('Tourism_governer', Tourism_governerSchema);
-module.exports = Tourism_governer;
+const tourism_governers = mongoose.model('Tourism_governer', Tourism_governerSchema);
+module.exports = tourism_governers;
