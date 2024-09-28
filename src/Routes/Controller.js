@@ -865,10 +865,6 @@ const getItinerariesByName = async (req, res) => {
 
 
 // ----------------- Activity Category CRUD ------------------
-//test
-//sfr
-//testttt
-//exports 
 module.exports = { 
     createUserAdmin, 
     deleteUserAdmin,
