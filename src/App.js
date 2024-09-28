@@ -35,7 +35,9 @@ const {createUserAdmin,
   createActivityByAdvertiser,
   readActivity,
   updateActivityByAdvertiser,
-  deleteActivityByAdvertiser
+  deleteActivityByAdvertiser,
+  createUserTourism_Governer,
+  deleteUserTourism_Governer
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
