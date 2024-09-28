@@ -105,3 +105,8 @@ app.post("/createActivityByAdvert", createActivityByAdvertiser);
 app.post("/readActivity", readActivity);
 app.put("/updateActivity", updateActivityByAdvertiser);
 app.delete("/deleteActivityByAdvert", deleteActivityByAdvertiser);
+
+
+
+app.post("/createUserTourism_Governer", createUserTourism_Governer);
+app.delete("/deleteUserTourism_Governer", deleteUserTourism_Governer);
