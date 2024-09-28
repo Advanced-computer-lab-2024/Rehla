@@ -1058,6 +1058,28 @@ const createUserTourism_Governer = async(req,res) => {
         res.status(500).json({ error: 'Error deleting user', details: error });
     }
 };
+const filterByCategory = async (req, res) => {
+    try {
+        const {category} = req.params;
+        
+        // Check if the category is provided
+        if (!category) {
+            return res.status(400).json({ message: "Category is required to filter activities." });
+        }
+  
+        // Query to filter activities by the category
+        const activities = await activity.find({ Category: category });
+        console.log(category);
+        console.log(activities);
+        if (!activities || activities.length === 0) {
+            return res.status(404).json({ message: 'No activities found for the given category.' });
+        }
+  
+        res.status(200).json(activities);
+    } catch (error) {
+        res.status(500).json({ error: 'Error filtering activities by category', details: error.message });
+    }
+};
 
 
 // ----------------- Activity Category CRUD -------------------
@@ -1097,6 +1119,7 @@ module.exports = {
     updateActivityByAdvertiser,
     deleteActivityByAdvertiser,
     createUserTourism_Governer,
-    deleteUserTourism_Governer 
+    deleteUserTourism_Governer,
+    filterByCategory
     
 };
