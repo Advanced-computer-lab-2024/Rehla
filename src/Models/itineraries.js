@@ -74,6 +74,11 @@ const itinerarysSchema = new Schema({
         type : String , 
         required : true ,
     },
+
+    Rating : {
+        type: Number ,
+        required : true,
+    }
     
 },{ versionKey: false });
 
