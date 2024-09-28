@@ -33,6 +33,7 @@ const MongoURI = process.env.MONGO_URI;
 // App variables
 const app = express();
 const port = process.env.PORT || "8000";
+console.log("freg");
 
 
 // MongoDB connection
