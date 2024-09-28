@@ -866,6 +866,7 @@ const getItinerariesByName = async (req, res) => {
 
 // ----------------- Activity Category CRUD ------------------
 //test
+//sfr
 //exports 
 module.exports = { 
     createUserAdmin, 
