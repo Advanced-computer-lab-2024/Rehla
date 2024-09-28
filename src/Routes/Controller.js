@@ -5,7 +5,6 @@ const itinerarym = require('../Models/itineraries') ;
 const touristm = require('../Models/tourists');
 const sellerm = require('../Models/sellers');
 const tour_guidem=require('../Models/tour_guides');
-const Activity = require('../Models/activities');
 const AdvertisersModel = require('../Models/Advertisers.js');
 const RequestsModel= require('../Models/Requests.js');
 
@@ -944,7 +943,7 @@ const createActivityByAdvertiser = async (req, res) => {
             Booking_Available||!Available_Spots||!Booked_Spots||!Rating) {
             return res.status(400).json({ error: 'All fields are required.' });
         }
-        const newActivity = new Activity({
+        const newActivity = new activity({
             Name,Location,Time,Duration,Price,Date,Tag,Category,Discount_Percent,
             Booking_Available,Available_Spots,Booked_Spots,Rating
         });
@@ -962,7 +961,7 @@ const createActivityByAdvertiser = async (req, res) => {
 const readActivity = async (req,res)=>{
     try{
         const { name } = req.body; // Assuming email is passed as a URL parameter
-        const activityDetails = await Activity.findOne({ Name: name });
+        const activityDetails = await activity.findOne({ Name: name });
 
         if (!activityDetails) {
             return res.status(404).json({ message: 'Activity not found' });
@@ -983,7 +982,7 @@ const updateActivityByAdvertiser = async (req, res) => {
     try{
         const {Name,Location,Time,Duration,Price,Date,Tag,Category,Discount_Percent,
             Booking_Available,Available_Spots,Booked_Spots,Rating } = req.body;
-        const updatedActivity = await Activity.findOneAndUpdate(
+        const updatedActivity = await activity.findOneAndUpdate(
             {Name: Name },
             {Name,Location,Time,Duration,Price,Date,Tag,Category,Discount_Percent,
               Booking_Available,Available_Spots,Booked_Spots,Rating },  // Fields to update
@@ -1007,7 +1006,7 @@ const deleteActivityByAdvertiser = async (req, res) => {
         const {Name} = req.body;
 
         // Find the activity by name and delete it
-        const deletedActivity = await Activity.findOneAndDelete({ Name: Name });
+        const deletedActivity = await activity.findOneAndDelete({ Name: Name });
 
         if (!deletedActivity) {
             return res.status(404).json({ error: 'Activity not found' });
