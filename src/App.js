@@ -25,7 +25,10 @@ const {createUserAdmin,
   updateSellerProfile,
   createTourGuideProfile,
   updateTourGuideProfile ,
-  getTourGuideProfile
+  getTourGuideProfile,
+  createItinerary,
+  updateItinerary,
+  getItinerariesByName
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -82,3 +85,6 @@ app.put("/updateSellerProfile" , updateSellerProfile);//Seller : update seller p
 app.post("/createTourGuideProfile",createTourGuideProfile);//Tour Guide: createTourGuideProfile
 app.put("/updateTourGuideProfile" , updateTourGuideProfile );//Tour Guide: updateTourGuideProfile 
 app.get("/getTourGuideProfile", getTourGuideProfile);//Tour Guide: getTourGuideProfile
+app.post("/createItinerary" , createItinerary);//tour Guide : Create itinerary 
+app.put("/updateItinerary" , updateItinerary); //tour guide : update itinerary 
+app.get("/getItinerariesByName", getItinerariesByName);//getItinerariesByName
