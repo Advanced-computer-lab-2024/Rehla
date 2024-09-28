@@ -7,7 +7,7 @@ const sellerm = require('../Models/sellers');
 const tour_guidem=require('../Models/tour_guides');
 const Activity = require('../Models/activities');
 const AdvertisersModel = require('../Models/Advertisers.js');
-const RequestsModel= require('../Models/Requests.js.js');
+const RequestsModel= require('../Models/Requests.js');
 
 
 // Creating a new Admin user or Tourism Governor
