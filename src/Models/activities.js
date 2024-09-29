@@ -32,16 +32,6 @@ const activitysSchema = new Schema({
         required : true,
     },
 
-    Tag : {
-        type : String ,
-        required : true,
-    },
-
-    Category : {
-        type : String ,
-        required : true,
-    },
-
     Discount_Percent : {
         type : Number ,
         required : true,

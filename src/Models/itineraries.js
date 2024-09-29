@@ -7,16 +7,6 @@ const itinerarysSchema = new Schema({
         required : true,
     },
 
-    Activities : {
-        type : String , 
-        required : true ,
-    },
-
-    Locations_to_be_Visited : {
-        type : String , 
-        required : true ,
-    },
-
     Timeline : {
         type : String , 
         required : true ,
@@ -74,6 +64,10 @@ const itinerarysSchema = new Schema({
         type : String , 
         required : true ,
     },
+    Rating:{
+        type:Number,
+        required: true,
+    }
     
 },{ versionKey: false });
 
