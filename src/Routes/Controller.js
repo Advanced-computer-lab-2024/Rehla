@@ -237,7 +237,7 @@ const sortItineraries = async (req, res) => {
             const matchingNames = tagDetails.map(detail => detail.Name);
 
             // Step 3: Find historical places that have matching names
-            results = await historical_places.find({ Name: { $in: matchingNames } });
+            results = await historical_placesm.find({ Name: { $in: matchingNames } });
         } else if (category === 'museums') {
             // Step 1: Find museums that match the specified tag
             results = await museumsm.find({ Tag: value });
