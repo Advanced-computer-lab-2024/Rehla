@@ -2,7 +2,7 @@ const Admin = require('../Models/Admin');
 const Product = require('../Models/Product');
 const activity = require('../Models/activities');
 const itinerarym = require('../Models/itineraries') ;
-const touristm = require('../Models/tourists');
+const Tourist = require('../Models/tourists');
 const sellerm = require('../Models/sellers');
 const tour_guidem=require('../Models/tour_guides');
 const AdvertisersModel = require('../Models/Advertisers.js');
@@ -257,6 +257,40 @@ const createActivityCategory = async (req, res) => {
       res.status(500).json({ error: 'Error creating activity category', details: error.message || error });
     }
 };
+
+const registerTourist = async (req, res) => {
+    try {
+        const { Username, Email, Password, Mobile_Number, Nationality, DOB, Job_Student } = req.body;
+
+        // Ensure all required fields are provided
+        if (!Username || !Email || !Password || !Mobile_Number || !Nationality || !DOB || !Job_Student) {
+            return res.status(400).json({ error: 'All fields are required.' });
+        }
+
+        // Create a new tourist object without password hashing
+        const newTourist = new Tourist({
+            Username,
+            Email,
+            Password,  // No password hashing here
+            Mobile_Number,
+            Nationality,
+            DOB,
+            Job_Student,  // The field will be either "Job" or "Student"
+            Type: 'Tourist', // Default type is Tourist
+            Wallet: 0 // Initial wallet balance
+        });
+
+        // Save the tourist to the database
+        await newTourist.save();
+
+        // Return the created tourist
+        return res.status(201).json(newTourist);
+
+    } catch (error) {
+        console.error('Error details:', error);
+        return res.status(500).json({ error: 'Error registering tourist', details: error.message });
+    }
+};
   
 //Tourist - admin - seller : Sort Product by ratings
 const getProductsSortedByRating = async (req, res) => {
@@ -503,7 +537,7 @@ const getTouristProfile = async (req, res) => {
       }
 
       // Find the tourist by email
-      const tourist = await touristm.findOne({ Email });
+      const tourist = await Tourist.findOne({ Email });
       
       // Check if the tourist was found
       if (!tourist) {
@@ -527,7 +561,7 @@ const updateTouristProfile= async (req, res) => {
       }
 
       // Find tourist by email
-      const tourist = await touristm.findOne({ Email: Email });
+      const tourist = await Tourist.findOne({ Email: Email });
 
       if (!tourist) {
           return res.status(404).json({ message: 'Tourist not found' });
@@ -1093,6 +1127,7 @@ module.exports = {
     filterByTag,
     filterItineraries,
     createActivityCategory,
+    registerTourist,
     getProductsSortedByRating, 
     addProduct,
     updateProduct,
