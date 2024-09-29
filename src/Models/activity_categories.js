@@ -12,5 +12,5 @@ const activity_categoriesSchema = new Schema({
     }
 },{ versionKey: false });
 
-const Activitycategory = mongoose.model('activity_categories', activity_categoriesSchema);
+const Activitycategory = mongoose.model('activity_category', activity_categoriesSchema);
 module.exports = Activitycategory;
