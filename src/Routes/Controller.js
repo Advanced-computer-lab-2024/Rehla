@@ -194,36 +194,6 @@ const sortActivities = async (req, res) => {
   }
 };
 
-const sortItineraries = async (req, res) => {
-    try {
-        const { sortBy } = req.query; // Extract sorting criteria from query parameters
-        const sortOptions = {};
-  
-        // Determine the sort order based on the provided parameter
-        if (sortBy === 'price') {
-            sortOptions.Tour_Price = 1; // Ascending order
-        } else if (sortBy === 'rating') {
-            sortOptions.Rating = 1; // Ascending order
-        } else {
-            return res.status(400).json({ message: 'Invalid sort criteria. Use "price" or "rating".' });
-        }
-  
-        // Fetch upcoming activities and sort them accordingly
-        const sortedItineraries = await itinerary.find() // Assuming true means upcoming
-            .sort(sortOptions)
-            .exec();
-  
-        if (!sortedItineraries || sortedItineraries.length === 0) {
-            return res.status(404).json({ message: 'No itinerary found.' });
-        }
-  
-        res.status(200).json(sortedItineraries);
-    } catch (error) {
-        res.status(500).json({ error: 'Error sorting itinerary', details: error.message });
-    }
-  };
-
-
 const filterByTag = async (req, res) => {
   try {
       const { tag } = req.query;
@@ -1195,7 +1165,6 @@ const deleteActivityByAdvertiser = async (req, res) => {
 
 
 
-//rana 
 const createUserTourism_Governer = async(req,res) => {
     //add a new user to the database with 
     //Name, Email and Age
@@ -1254,6 +1223,41 @@ const filterByCategory = async (req, res) => {
     }
 };
 
+const viewMyCreatedActivities = async (req, res) => {
+    try{
+        // Get current date to filter upcoming activities
+      const today = new Date();
+
+      // Filter for upcoming activities (including historical places and museums)
+      const activitiesFilter = {
+          Date: { $gte: today }, // Only future activities
+      };
+
+      // Find upcoming activities in general
+      const upcomingActivities = await activity.find(activitiesFilter);
+
+      // Filter specifically for historical places and museums within the activity table
+      const historicalPlacesAndMuseums = await activity.find({
+          ...activitiesFilter,
+          Category: { $in: ["historic place", "museum"] } // Categories for places and museums
+      });
+
+      // Query the itineraries table (no Date filter since it might not have dates)
+      const itinerary = await itinerarym.find();
+
+      // Return all data
+      res.status(200).json({
+          message: 'All upcoming activities, itineraries, and historical places/museums',
+          upcomingActivities: upcomingActivities,
+          itinerary: itinerary,
+          historicalPlacesAndMuseums: historicalPlacesAndMuseums
+      });
+    }catch(error){
+        res.status(500).json({ message: 'Error fetching data', error: error.message });
+    }
+};
+
+
 
 // ----------------- Activity Category CRUD -------------------
 module.exports = { 
@@ -1263,7 +1267,6 @@ module.exports = {
     searchProductByName,
     filterProductByPrice,
     sortActivities,
-    sortItineraries,
     filterByTag,
     filterItineraries,
     createActivityCategory,
