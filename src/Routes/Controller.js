@@ -403,6 +403,80 @@ const registerRequest = async (req, res) => {
         return res.status(500).json({ error: 'Error submitting request', details: error.message });
     }
 };
+
+const searchByNameCategoryTag = async (req, res) => {
+    try {
+        const { searchTerm } = req.query;
+  
+        if (!searchTerm) {
+            return res.status(400).json({ error: 'Search term is required.' });
+        }
+  
+        // Define a regex to match the search term (case-insensitive)
+        const searchRegex = new RegExp(searchTerm, 'i');
+  
+        // Search in the museum collection by Name or Tag
+        const museums = await museumsm.find({
+            $or: [
+                { Name: searchRegex },
+                { Tag: searchRegex }
+            ]
+        });
+  
+        // Search in the historical places collection by Name
+        const historicalPlaces = await historical_placesm.find({
+            Name: searchRegex
+        });
+  
+        const historicalTags = await historical_places_tagsm.find({
+            Type: searchRegex
+        })
+  
+        const activityName = await activity.find({
+            Name: searchRegex
+        })
+  
+        // Search in the activity tags by Tag and fetch corresponding activities
+        const activityTags = await activity_tagsm.find({
+            Tag: searchRegex
+        });
+  
+        // Search in the activity categories by Category
+        const activityCategories = await activity_categoriesm.find({
+            Category: searchRegex
+        })
+  
+        // Search in the itineraries collection by Itinerary_Name or Tag (P_Tag)
+        const itineraries = await itinerarym.find({
+            $or: [
+                { Itinerary_Name: searchRegex },
+                { P_Tag: searchRegex }
+            ]
+        });
+  
+        // Combine all search results into one object
+        const searchResults = {
+            museums,
+            historicalPlaces:{
+                name : historicalPlaces,
+                tag : historicalTags
+            },
+            activities: {
+                name: activityName,
+                tags: activityTags,
+                categories: activityCategories
+            },
+            itineraries
+        };
+  
+        // Return the results as JSON
+        res.status(200).json(searchResults);
+  
+    } catch (error) {
+        console.error('Error during search:', error);
+        res.status(500).json({ error: 'Error searching for data', details: error.message });
+    }
+  };
   
 //Tourist - admin - seller : Sort Product by ratings
 const getProductsSortedByRating = async (req, res) => {
@@ -1355,6 +1429,7 @@ module.exports = {
     createActivityCategory,
     registerTourist,
     registerRequest,
+    searchByNameCategoryTag,
     getProductsSortedByRating, 
     addProduct,
     updateProduct,
