@@ -358,34 +358,40 @@ const getProductsSortedByRating = async (req, res) => {
 //Admin - seller : add a product with its details , price and available quantities 
 const addProduct = async (req, res) => {
     try {
-      // Destructure product attributes from the request body
-      const { Product_Name, Picture, Price, Quantity, Seller_Name, Description, Rating, Reviews } = req.body;
+        // Destructure product attributes from the request body
+        const { Product_Name, Picture, Price, Quantity, Seller_Name, Description, Rating, Reviews } = req.body;
   
-      // Check if the Picture is provided in the request body
-      if (!Picture) {
-        return res.status(400).json({ message: "Error: 'Picture' field is required." });
-      }
+        // Check if the Picture is provided in the request body
+        if (!Picture) {
+            return res.status(400).json({ message: "Error: 'Picture' field is required." });
+        }
+
+        // Check if a product with the same name already exists in the database
+        const existingProduct = await Product.findOne({ Product_Name });
+        if (existingProduct) {
+            return res.status(400).json({ message: "Error: Product with this name already exists." });
+        }
   
-      // Create a new product instance using the product model
-      const newProduct = new Product({
-        Product_Name,   // e.g. "Product 1"
-        Picture,        // e.g. "url_to_image.jpg"
-        Price,          // e.g. 10
-        Quantity,       // e.g. 100
-        Seller_Name,    // e.g. "Egyptian Treasures"
-        Description,    // e.g. "Description of Product 1"
-        Rating,         // e.g. 4.5
-        Reviews         // e.g. 150
-      });
+        // Create a new product instance using the product model
+        const newProduct = new Product({
+            Product_Name,   // e.g. "Product 1"
+            Picture,        // e.g. "url_to_image.jpg"
+            Price,          // e.g. 10
+            Quantity,       // e.g. 100
+            Seller_Name,    // e.g. "Egyptian Treasures"
+            Description,    // e.g. "Description of Product 1"
+            Rating,         // e.g. 4.5
+            Reviews         // e.g. 150
+        });
   
-      // Save the new product to the database
-      await newProduct.save();
+        // Save the new product to the database
+        await newProduct.save();
   
-      // Return success response
-      res.status(201).json({ message: 'Product added successfully', product: newProduct });
+        // Return success response
+        res.status(201).json({ message: 'Product added successfully', product: newProduct });
     } catch (error) {
-      // Handle errors
-      res.status(500).json({ message: 'Error adding product', error: error.message });
+        // Handle errors
+        res.status(500).json({ message: 'Error adding product', error: error.message });
     }
 };
 
@@ -640,9 +646,15 @@ const updateTouristProfile= async (req, res) => {
 //Seller : Create my profile 
 const createSellerProfile = async (req, res) => {
     try {
-        const { Username, Email, Password, Shop_Name, Description, Shop_Location,Type } = req.body;
+        const { Username, Email, Password, Shop_Name, Description, Shop_Location, Type } = req.body;
 
-        // Use the correct model name (sellerm)
+        // Check if a seller with the same email already exists in the database
+        const existingSeller = await sellerm.findOne({ Email });
+        if (existingSeller) {
+            return res.status(400).json({ message: "Error: A seller with this email already exists." });
+        }
+
+        // Create a new seller profile
         const newSeller = new sellerm({
             Username,
             Email,
@@ -655,6 +667,8 @@ const createSellerProfile = async (req, res) => {
 
         // Save the new seller profile
         const savedSeller = await newSeller.save();
+
+        // Return success response
         res.status(201).json(savedSeller);
     } catch (error) {
         // Handle errors
@@ -725,26 +739,38 @@ const getSellerProfile = async (req, res) => {
 //Tour guide: Create Profile 
 const createTourGuideProfile = async (req, res) => {
     try {
-        const { Username, Email, Password, Type ,Mobile_Number, Experience, Previous_work } = req.body;
+        const { Username, Email, Password, Type, Mobile_Number, Experience, Previous_work } = req.body;
 
+        // Check if a tour guide with the same email already exists in the database
+        const existingTourGuide = await tour_guidem.findOne({ Email });
+        if (existingTourGuide) {
+            return res.status(400).json({ message: "Error: A tour guide with this email already exists." });
+        }
+
+        // Create a new tour guide profile
         const newTourGuide = new tour_guidem({
             Username,
             Email,
-            Password, 
+            Password,
             Mobile_Number,
             Experience,
             Previous_work
         });
 
+        // Save the new tour guide to the database
         const savedTourGuide = await newTourGuide.save();
+        
+        // Return success response
         res.status(201).json({
             message: 'Tour guide profile created successfully',
             tourGuide: savedTourGuide
         });
     } catch (error) {
+        // Handle errors
         res.status(500).json({ message: 'Error creating tour guide profile', error: error.message });
     }
 };
+
   
 //Tour guide : update profile
 const updateTourGuideProfile = async (req, res) => {
