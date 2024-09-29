@@ -1129,6 +1129,41 @@ const deleteItinerary = async (req, res) => {
     }
 };
 
+//view all upcoming: itineraries , activities & historical places and museums
+const getAllUpcomingEventsAndPlaces = async (req, res) => {
+    try {
+        // Get the current date
+        const currentDate = new Date();
+
+        // Query itineraries where Available_Date_Time is in the future
+        const upcomingItineraries = await itinerarym.find({
+            Available_Date_Time: { $gt: currentDate }
+        });
+
+        // Query activities where Date is greater than or equal to the current date
+        const upcomingActivities = await activity.find({
+            Date: { $gte: currentDate }
+        });
+
+        // Query to find all museums in the database
+        const museums = await museumsm.find();
+
+        // Query to find all historical places in the database
+        const historicalPlaces = await historical_placesm.find();
+
+        // Prepare the response
+        res.status(200).json({
+            message: 'Upcoming events and places retrieved successfully',
+            upcomingItineraries: upcomingItineraries.length > 0 ? upcomingItineraries : 'No upcoming itineraries found',
+            upcomingActivities: upcomingActivities.length > 0 ? upcomingActivities : 'No upcoming activities found',
+            museums: museums.length > 0 ? museums : 'No museums found',
+            historicalPlaces: historicalPlaces.length > 0 ? historicalPlaces : 'No historical places found'
+        });
+    } catch (error) {
+        // Handle errors
+        res.status(500).json({ message: 'Error retrieving data', error: error.message });
+    }
+};
 
 //Creating Advertiser as a request
 const createUserAdvertiser = async (req, res) => {
@@ -1473,6 +1508,6 @@ module.exports = {
     readMuseum,
     createHistoricalPlace,
     deleteItinerary,
-    updateItinerary
+    updateItinerary,getAllUpcomingEventsAndPlaces
 
 };
