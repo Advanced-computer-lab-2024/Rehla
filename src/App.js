@@ -39,7 +39,8 @@ const {createUserAdmin,
   deleteActivityByAdvertiser,
   createUserTourism_Governer,
   deleteUserTourism_Governer,
-  filterByCategory
+  filterByCategory,
+  getItineraryByName
   
 } = require("./Routes/Controller");
 
@@ -100,6 +101,7 @@ app.post("/createTourGuideProfile",createTourGuideProfile);//Tour Guide: createT
 app.put("/updateTourGuideProfile" , updateTourGuideProfile );//Tour Guide: updateTourGuideProfile 
 app.get("/getTourGuideProfile", getTourGuideProfile);//Tour Guide: getTourGuideProfile
 app.post("/createItinerary" , createItinerary);//tour Guide : Create itinerary 
+app.get("/getItineraryByName", getItineraryByName);//getItineraryByName
 
 app.post("/addUserAdvertisers", createUserAdvertiser);  // Advertiser request
 app.post("/readAdvertisers", readAdvertiser); // Route for reading an advertiser by email

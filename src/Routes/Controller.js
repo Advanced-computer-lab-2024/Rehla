@@ -902,8 +902,7 @@ const getTourGuideProfile = async (req, res) => {
 };
 
 
-
-const createItinerary = async (req, res) => {
+ const createItinerary = async (req, res) => {
     try {
         // Destructure the itinerary data from the request body
         const { 
@@ -968,6 +967,33 @@ const createItinerary = async (req, res) => {
         res.status(500).json({ message: 'Error creating itinerary', error: error.message });
     }
 };
+
+const getItineraryByName = async (req, res) => {
+    try {
+        const { Itinerary_Name } = req.body;
+
+        if (!Itinerary_Name) {
+            return res.status(400).json({ message: 'Itinerary name is required' });
+        }
+
+        // Find itinerary by name
+        const itinerary = await itinerarym.findOne({ Itinerary_Name: Itinerary_Name });
+
+        if (!itinerary) {
+            return res.status(404).json({ message: 'Itinerary not found' });
+        }
+
+        // Return the itinerary
+        res.status(200).json({
+            message: 'Itinerary retrieved successfully',
+            itinerary: itinerary
+        });
+    } catch (error) {
+        // Handle errors
+        res.status(500).json({ message: 'Error retrieving itinerary', error: error.message });
+    }
+};
+
 
 
 //Creating Advertiser as a request
@@ -1226,6 +1252,7 @@ module.exports = {
     deleteActivityByAdvertiser,
     createUserTourism_Governer,
     deleteUserTourism_Governer,
-    filterByCategory
+    filterByCategory,
+    getItineraryByName
     
 };
