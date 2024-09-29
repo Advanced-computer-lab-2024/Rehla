@@ -17,6 +17,7 @@ const itinerary_activitiesm = require('../Models/itenerary_activities') ;
 const museumsm = require('../Models/museums') ;
 const p_tagsm = require('../Models/p_tags') ;
 const tourist_itinerariesm = require('../Models/tourist_iteneraries') ;
+const advertiser_activitiesm = require('../Models/advertiser_activities');
 
 
 // Creating a new Admin user or Tourism Governor
@@ -192,36 +193,6 @@ const sortActivities = async (req, res) => {
       res.status(500).json({ error: 'Error sorting activities', details: error.message });
   }
 };
-
-const sortItineraries = async (req, res) => {
-    try {
-        const { sortBy } = req.query; // Extract sorting criteria from query parameters
-        const sortOptions = {};
-  
-        // Determine the sort order based on the provided parameter
-        if (sortBy === 'price') {
-            sortOptions.Tour_Price = 1; // Ascending order
-        } else if (sortBy === 'rating') {
-            sortOptions.Rating = 1; // Ascending order
-        } else {
-            return res.status(400).json({ message: 'Invalid sort criteria. Use "price" or "rating".' });
-        }
-  
-        // Fetch upcoming activities and sort them accordingly
-        const sortedItineraries = await itinerary.find() // Assuming true means upcoming
-            .sort(sortOptions)
-            .exec();
-  
-        if (!sortedItineraries || sortedItineraries.length === 0) {
-            return res.status(404).json({ message: 'No itinerary found.' });
-        }
-  
-        res.status(200).json(sortedItineraries);
-    } catch (error) {
-        res.status(500).json({ error: 'Error sorting itinerary', details: error.message });
-    }
-  };
-
 
 const filterByTag = async (req, res) => {
   try {
@@ -902,6 +873,7 @@ const getTourGuideProfile = async (req, res) => {
 };
 
 
+//Create an itinerary 
  const createItinerary = async (req, res) => {
     try {
         // Destructure the itinerary data from the request body
@@ -994,6 +966,88 @@ const getItineraryByName = async (req, res) => {
     }
 };
 
+//Update itinerary by name
+const updateItinerary = async (req, res) => {
+    try {
+        // Extract itinerary name and the fields to update from the request body
+        const { Itinerary_Name, Timeline, Duration, Language, Tour_Price, Available_Date_Time, Accessibility, Pick_Up_Point, Drop_Of_Point, Booked, Empty_Spots, Country, Rating, P_Tag } = req.body;
+
+        // Check if itinerary name is provided
+        if (!Itinerary_Name) {
+            return res.status(400).json({ message: 'Itinerary name is required' });
+        }
+
+        // Find the itinerary by name
+        const itinerary = await itinerarym.findOne({ Itinerary_Name: Itinerary_Name });
+
+        // If itinerary is not found
+        if (!itinerary) {
+            return res.status(404).json({ message: 'Itinerary not found' });
+        }
+
+        // Only update the fields that are provided in the request body
+        if (Timeline) itinerary.Timeline = Timeline;
+        if (Duration) itinerary.Duration = Duration;
+        if (Language) itinerary.Language = Language;
+        if (Tour_Price) itinerary.Tour_Price = Tour_Price;
+        if (Available_Date_Time) itinerary.Available_Date_Time = Available_Date_Time;
+        if (Accessibility != null) itinerary.Accessibility = Accessibility;
+        if (Pick_Up_Point) itinerary.Pick_Up_Point = Pick_Up_Point;
+        if (Drop_Of_Point) itinerary.Drop_Of_Point = Drop_Of_Point;
+        if (Booked) itinerary.Booked = Booked;
+        if (Empty_Spots) itinerary.Empty_Spots = Empty_Spots;
+        if (Country) itinerary.Country = Country;
+        if (Rating) itinerary.Rating = Rating;
+        if (P_Tag) itinerary.P_Tag = P_Tag;
+
+        // Save the updated itinerary
+        const updatedItinerary = await itinerary.save();
+
+        // Return the updated itinerary
+        res.status(200).json({
+            message: 'Itinerary updated successfully',
+            itinerary: updatedItinerary
+        });
+    } catch (error) {
+        // Handle errors
+        res.status(500).json({ message: 'Error updating itinerary', error: error.message });
+    }
+};
+
+//Delete Itinerary 
+const deleteItinerary = async (req, res) => {
+    try {
+        // Extract itinerary name from the request body
+        const { Itinerary_Name } = req.body;
+
+        // Check if itinerary name is provided
+        if (!Itinerary_Name) {
+            return res.status(400).json({ message: 'Itinerary name is required' });
+        }
+
+        // Find the itinerary by name
+        const itinerary = await itinerarym.findOne({ Itinerary_Name: Itinerary_Name });
+
+        // If itinerary is not found
+        if (!itinerary) {
+            return res.status(404).json({ message: 'Itinerary not found' });
+        }
+
+        // Check if the itinerary has any bookings (Booked > 0)
+        if (itinerary.Booked > 0) {
+            return res.status(400).json({ message: 'Cannot delete itinerary with active bookings' });
+        }
+
+        // If no bookings, delete the itinerary
+        await itinerarym.deleteOne({ Itinerary_Name: Itinerary_Name });
+
+        // Return success message
+        res.status(200).json({ message: 'Itinerary deleted successfully' });
+    } catch (error) {
+        // Handle errors
+        res.status(500).json({ message: 'Error deleting itinerary', error: error.message });
+    }
+};
 
 
 //Creating Advertiser as a request
@@ -1153,7 +1207,6 @@ const deleteActivityByAdvertiser = async (req, res) => {
 
 
 
-//rana 
 const createUserTourism_Governer = async(req,res) => {
     //add a new user to the database with 
     //Name, Email and Age
@@ -1303,7 +1356,6 @@ module.exports = {
     searchProductByName,
     filterProductByPrice,
     sortActivities,
-    sortItineraries,
     filterByTag,
     filterItineraries,
     createActivityCategory,

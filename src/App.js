@@ -103,6 +103,9 @@ app.put("/updateTourGuideProfile" , updateTourGuideProfile );//Tour Guide: updat
 app.get("/getTourGuideProfile", getTourGuideProfile);//Tour Guide: getTourGuideProfile
 app.post("/createItinerary" , createItinerary);//tour Guide : Create itinerary 
 app.get("/getItineraryByName", getItineraryByName);//getItineraryByName
+app.put("/updateItinerary" , updateItinerary);//updateItinerary
+app.delete("/deleteItinerary", deleteItinerary);//deleteItinerary
+
 
 app.post("/addUserAdvertisers", createUserAdvertiser);  // Advertiser request
 app.post("/readAdvertisers", readAdvertiser); // Route for reading an advertiser by email
