@@ -3,15 +3,15 @@ const Schema = mongoose.Schema;
 
 const historical_places_tagsSchema = new Schema({
     Name : {
-        Type: String,
+        type: String,
         required: true,
     },
     Historical_Period : {
-        Type: String,
+        type: String,
         required: true,
     },
     Type : {
-        Type: String,
+        type: String,
         required: true,
     },
 },{ versionKey: false });

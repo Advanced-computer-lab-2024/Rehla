@@ -3,11 +3,11 @@ const Schema = mongoose.Schema;
 
 const activity_tagsSchema = new Schema({
     Activity : {
-        Type: String,
+        type: String,
         required: true,
     },
     Tag : {
-        Type: String,
+        type: String,
         required: true,
     }
 },{ versionKey: false });

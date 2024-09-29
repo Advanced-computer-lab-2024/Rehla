@@ -3,11 +3,11 @@ const Schema = mongoose.Schema;
 
 const activity_categoriesSchema = new Schema({
     Activity : {
-        Type: String,
+        type: String,
         required: true,
     },
     Category : {
-        Type: String,
+        type: String,
         required: true,
     }
 },{ versionKey: false });
