@@ -15,22 +15,46 @@ const createUserAdmin = async (req, res) => {
     try {
         const { Username, Password, Email, Type } = req.body;
 
+        // Check if all fields are provided
         if (!Username || !Password || !Email || !Type) {
             return res.status(400).json({ error: 'All fields are required.' });
-          }
+        }
 
-        const admin = new Admin({
-            Username,
-            Email,
-            Password, 
-            Type
-        });
+        // Ensure only "Admin" or "Tourism Governor" are allowed as Type
+        if (Type !== 'Admin' && Type !== 'Tourism Governor') {
+            return res.status(400).json({ error: 'Invalid type. Only "Admin" or "Tourism Governor" are allowed.' });
+        }
 
-        await admin.save();
-        res.status(201).json(admin);
+        let newUser;
+
+        // If Type is Admin, save to Admin collection
+        if (Type === 'Admin') {
+            newUser = new Admin({
+                Username,
+                Email,
+                Password,
+                Type
+            });
+        } 
+        // If Type is Tourism Governor, save to TourismGovernor collection
+        else if (Type === 'Tourism Governor') {
+            newUser = new tourism_governers({
+                Username,
+                Email,
+                Password,
+                Type
+            });
+        }
+
+        // Save the user to the correct table based on Type
+        await newUser.save();
+
+        // Respond with the created user
+        return res.status(201).json(newUser);
+
     } catch (error) {
-        console.error(error); // Log the error for more details
-        res.status(500).json({ error: 'Error creating user', details: error });
+        console.error('Error creating user:', error); // Log error details
+        return res.status(500).json({ error: 'Error creating user', details: error.message });
     }
 };
 
