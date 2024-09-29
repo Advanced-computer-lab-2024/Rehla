@@ -1255,7 +1255,45 @@ const readMuseum = async (req,res)=>{
         console.error("Error fetching Museum:", error.message);
         res.status(500).json({ error: 'Error fetching Museum', details: error.message });
     }
-}
+};
+
+const createHistoricalPlace = async (req, res) => {
+    try {
+        const {  Name, 
+            Description, 
+            Pictures, 
+            Location, 
+            Country, 
+            Opens_At, 
+            Closes_At, 
+            S_Ticket_Prices, 
+            F_Ticket_Prices, 
+            N_Ticket_Prices } = req.body;
+        
+            if (!Name || !Description || !Pictures || !Location ||!Country
+                ||!Opens_At ||!Closes_At ||!S_Ticket_Prices||!F_Ticket_Prices||!N_Ticket_Prices) {
+            return res.status(400).json({ error: 'All fields are required.' });
+        }
+        const newHistoricalPlace = new historical_placesm({
+            Name,
+            Description,
+            Pictures, 
+            Location,
+            Country,
+            Opens_At,
+            Closes_At,
+            S_Ticket_Prices,F_Ticket_Prices,N_Ticket_Prices
+        });
+        const savedHistorical= await newHistoricalPlace.save();
+        res.status(201).json({ message: 'Historical Place created successfully', HistoricalPlace: savedHistorical });
+    } 
+    catch (error) {
+        console.error("Error details:", error.message, error.stack); // Log full error details
+        res.status(500).json({ error: 'Error creating Historical Place', details: error.message });
+    }
+};
+
+
 
 // ----------------- Activity Category CRUD -------------------
 module.exports = { 
@@ -1299,5 +1337,6 @@ module.exports = {
     filterByCategory,
     getItineraryByName,
     createMuseum,
-    readMuseum
+    readMuseum,
+    createHistoricalPlace
 };
