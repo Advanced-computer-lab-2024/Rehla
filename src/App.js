@@ -9,6 +9,7 @@ const {createUserAdmin,
   searchProductByName,
   filterProductByPrice,
   sortActivities,
+  sortItineraries,
   filterByTag,
   filterItineraries,
   createActivityCategory,
@@ -79,6 +80,7 @@ app.get("/getProducts", getAllProducts); //
 app.get("/getProductByName/:productName", searchProductByName);
 app.get("/filterProductsByPrice/:minPrice/:maxPrice", filterProductByPrice); // Filter products based on price range
 app.get("/sortActivities", sortActivities); // Route for sorting activities
+app.get("/sortItineraries", sortItineraries);
 app.get("/filterByTag", filterByTag);
 app.get("/filterItineraries", filterItineraries);
 app.post("/addCategory",createActivityCategory);

@@ -42,6 +42,10 @@ const museumsSchema = new Schema({
         type: Number,
         required : true,
     },
+    Tag : {
+        type: String,
+        required : true,
+    },
 
 },{ versionKey: false });
 
