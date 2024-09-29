@@ -35,6 +35,16 @@ const createUserAdmin = async (req, res) => {
             return res.status(400).json({ error: 'Invalid type. Only "Admin" or "Tourism Governor" are allowed.' });
         }
 
+        const existingGoverner = await tourism_governers.findOne({ Email });
+        if (existingGoverner) {
+            return res.status(400).json({ error: 'Email is already in use.' });
+        }
+
+        const existingAdmin = await Admin.findOne({ Email });
+        if (existingAdmin) {
+            return res.status(400).json({ error: 'Email is already in use.' });
+        }
+
         let newUser;
 
         // If Type is Admin, save to Admin collection
