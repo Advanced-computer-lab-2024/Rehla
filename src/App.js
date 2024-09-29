@@ -43,6 +43,12 @@ const {createUserAdmin,
   getItineraryByName,
   createMuseum,
   readMuseum,
+  createHistoricalPlace,
+  readHistoricalPlace,
+  updateMuseum,
+  updateHistoricalPlace,
+  deleteMuseum,
+  deleteHistoricalPlace,
   updateItinerary,
   deleteItinerary,getAllUpcomingEventsAndPlaces
 
@@ -127,3 +133,10 @@ app.get("/filterByCategory", filterByCategory);
 
 app.post("/creatingMuseum",createMuseum);
 app.post("/readMuseum",readMuseum);
+app.post("/createHistoricalPlace",createHistoricalPlace);
+app.post("/readHistoricalPlace",readHistoricalPlace);
+app.put("/updateMuseum",updateMuseum);
+app.put("/updateHistoricalPlace",updateHistoricalPlace);
+app.delete("/deleteMuseum",deleteMuseum);
+app.delete("/deleteHistoricalPlace",deleteHistoricalPlace);
+

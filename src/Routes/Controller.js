@@ -1471,6 +1471,119 @@ const createHistoricalPlace = async (req, res) => {
     }
 };
 
+const readHistoricalPlace = async (req,res)=>{
+    try{
+        const { name } = req.body; 
+        const hpProfile = await historical_placesm.findOne({ Name: name });
+
+        if (!hpProfile) {
+            return res.status(404).json({ message: 'Historical Place not found' });
+        }
+        res.status(200).json({ message: 'Historical Place fetched successfully', data: hpProfile });
+    }
+    catch(error){
+        console.error("Error fetching Historical Place:", error.message);
+        res.status(500).json({ error: 'Error fetching Historical Place', details: error.message });
+    }
+}
+const updateMuseum = async (req, res) => {
+    //update a user in the database
+    try{
+        const {Name,
+            description,
+            pictures, 
+            location,
+            Country,
+            Opening_Hours,
+            S_Tickets_Prices,
+            F_Tickets_Prices,
+            N_Tickets_Prices,
+            Tag} = req.body;
+        const updatedMuseum = await museumsm.findOneAndUpdate(
+            {Name: Name },
+            {Name,description,pictures, location,Country,
+            Opening_Hours,S_Tickets_Prices,F_Tickets_Prices,N_Tickets_Prices,Tag },  // Fields to update
+            {new: true, runValidators: true }  // Options: return the updated document and run schema validators
+        );
+    if (!updatedMuseum) {
+        return res.status(404).json({ message: 'Museum not found' });
+    }
+    res.status(200).json({ message: 'Museum updated successfully', user: updatedMuseum });
+    }
+    catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+    }
+};
+
+
+const updateHistoricalPlace = async (req, res) => {
+    //update a user in the database
+    try{
+        const {Name, 
+            Description, 
+            Pictures, 
+            Location, 
+            Country, 
+            Opens_At, 
+            Closes_At, 
+            S_Ticket_Prices, 
+            F_Ticket_Prices, 
+            N_Ticket_Prices} = req.body;
+        const updatedHistoricalPlace = await historical_placesm.findOneAndUpdate(
+            {Name: Name },
+            {Name, Description,Pictures, Location,Country,Opens_At, 
+            Closes_At, S_Ticket_Prices,F_Ticket_Prices, N_Ticket_Prices },  // Fields to update
+            {new: true, runValidators: true }  // Options: return the updated document and run schema validators
+        );
+    if (!updatedHistoricalPlace) {
+        return res.status(404).json({ message: 'Historical Place not found' });
+    }
+    res.status(200).json({ message: 'Historical Place updated successfully', user: updatedHistoricalPlace });
+    }
+    catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+    }
+};
+
+
+const deleteMuseum = async (req, res) => {
+    try {
+        const {Name} = req.body;
+
+        // Find the museum by name and delete it
+        const deletedMuseum = await museumsm.findOneAndDelete({ Name: Name });
+
+        if (!deletedMuseum) {
+            return res.status(404).json({ error: 'Museum not found' });
+        }
+
+        res.status(200).json({ message: 'Museum deleted successfully' });
+    } catch (error) {
+        console.error("Error details:", error.message, error.stack); // Log full error details
+        res.status(500).json({ error: 'Error deleting Museum', details: error.message });
+    }
+};
+
+const deleteHistoricalPlace= async (req, res) => {
+    try {
+        const {Name} = req.body;
+
+        // Find the historical place by name and delete it
+        const deletedPlace = await historical_placesm.findOneAndDelete({ Name: Name });
+
+        if (!deletedPlace) {
+            return res.status(404).json({ error: 'Historical Place not found' });
+        }
+
+        res.status(200).json({ message: 'Historical Place deleted successfully' });
+    } catch (error) {
+        console.error("Error details:", error.message, error.stack); // Log full error details
+        res.status(500).json({ error: 'Error deleting Historical Place', details: error.message });
+    }
+};
+
 
 
 // ----------------- Activity Category CRUD -------------------
@@ -1517,6 +1630,11 @@ module.exports = {
     createMuseum,
     readMuseum,
     createHistoricalPlace,
+    readHistoricalPlace,
+    updateMuseum,
+    updateHistoricalPlace,
+    deleteMuseum,
+    deleteHistoricalPlace,
     deleteItinerary,
     updateItinerary,getAllUpcomingEventsAndPlaces
 
