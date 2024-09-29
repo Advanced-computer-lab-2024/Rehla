@@ -902,6 +902,7 @@ const getTourGuideProfile = async (req, res) => {
 };
 
 
+//Create an itinerary 
  const createItinerary = async (req, res) => {
     try {
         // Destructure the itinerary data from the request body
@@ -994,6 +995,88 @@ const getItineraryByName = async (req, res) => {
     }
 };
 
+//Update itinerary by name
+const updateItinerary = async (req, res) => {
+    try {
+        // Extract itinerary name and the fields to update from the request body
+        const { Itinerary_Name, Timeline, Duration, Language, Tour_Price, Available_Date_Time, Accessibility, Pick_Up_Point, Drop_Of_Point, Booked, Empty_Spots, Country, Rating, P_Tag } = req.body;
+
+        // Check if itinerary name is provided
+        if (!Itinerary_Name) {
+            return res.status(400).json({ message: 'Itinerary name is required' });
+        }
+
+        // Find the itinerary by name
+        const itinerary = await itinerarym.findOne({ Itinerary_Name: Itinerary_Name });
+
+        // If itinerary is not found
+        if (!itinerary) {
+            return res.status(404).json({ message: 'Itinerary not found' });
+        }
+
+        // Only update the fields that are provided in the request body
+        if (Timeline) itinerary.Timeline = Timeline;
+        if (Duration) itinerary.Duration = Duration;
+        if (Language) itinerary.Language = Language;
+        if (Tour_Price) itinerary.Tour_Price = Tour_Price;
+        if (Available_Date_Time) itinerary.Available_Date_Time = Available_Date_Time;
+        if (Accessibility != null) itinerary.Accessibility = Accessibility;
+        if (Pick_Up_Point) itinerary.Pick_Up_Point = Pick_Up_Point;
+        if (Drop_Of_Point) itinerary.Drop_Of_Point = Drop_Of_Point;
+        if (Booked) itinerary.Booked = Booked;
+        if (Empty_Spots) itinerary.Empty_Spots = Empty_Spots;
+        if (Country) itinerary.Country = Country;
+        if (Rating) itinerary.Rating = Rating;
+        if (P_Tag) itinerary.P_Tag = P_Tag;
+
+        // Save the updated itinerary
+        const updatedItinerary = await itinerary.save();
+
+        // Return the updated itinerary
+        res.status(200).json({
+            message: 'Itinerary updated successfully',
+            itinerary: updatedItinerary
+        });
+    } catch (error) {
+        // Handle errors
+        res.status(500).json({ message: 'Error updating itinerary', error: error.message });
+    }
+};
+
+//Delete Itinerary 
+const deleteItinerary = async (req, res) => {
+    try {
+        // Extract itinerary name from the request body
+        const { Itinerary_Name } = req.body;
+
+        // Check if itinerary name is provided
+        if (!Itinerary_Name) {
+            return res.status(400).json({ message: 'Itinerary name is required' });
+        }
+
+        // Find the itinerary by name
+        const itinerary = await itinerarym.findOne({ Itinerary_Name: Itinerary_Name });
+
+        // If itinerary is not found
+        if (!itinerary) {
+            return res.status(404).json({ message: 'Itinerary not found' });
+        }
+
+        // Check if the itinerary has any bookings (Booked > 0)
+        if (itinerary.Booked > 0) {
+            return res.status(400).json({ message: 'Cannot delete itinerary with active bookings' });
+        }
+
+        // If no bookings, delete the itinerary
+        await itinerarym.deleteOne({ Itinerary_Name: Itinerary_Name });
+
+        // Return success message
+        res.status(200).json({ message: 'Itinerary deleted successfully' });
+    } catch (error) {
+        // Handle errors
+        res.status(500).json({ message: 'Error deleting itinerary', error: error.message });
+    }
+};
 
 
 //Creating Advertiser as a request
@@ -1253,6 +1336,8 @@ module.exports = {
     createUserTourism_Governer,
     deleteUserTourism_Governer,
     filterByCategory,
-    getItineraryByName
+    getItineraryByName,
+    updateItinerary,
+    deleteItinerary
     
 };
