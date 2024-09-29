@@ -40,8 +40,9 @@ const {createUserAdmin,
   createUserTourism_Governer,
   deleteUserTourism_Governer,
   filterByCategory,
-  getItineraryByName
-  
+  getItineraryByName,
+  createMuseum,
+  readMuseum
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -117,3 +118,6 @@ app.delete("/deleteActivityByAdvert", deleteActivityByAdvertiser);
 app.post("/createUserTourism_Governer", createUserTourism_Governer);
 app.delete("/deleteUserTourism_Governer", deleteUserTourism_Governer);
 app.get("/filterByCategory", filterByCategory);
+
+app.post("/creatingMuseum",createMuseum);
+app.post("/readMuseum",readMuseum);

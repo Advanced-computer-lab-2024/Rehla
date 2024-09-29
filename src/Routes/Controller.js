@@ -1189,6 +1189,7 @@ const createUserTourism_Governer = async(req,res) => {
         res.status(500).json({ error: 'Error deleting user', details: error });
     }
 };
+
 const filterByCategory = async (req, res) => {
     try {
         const {category} = req.params;
@@ -1196,22 +1197,65 @@ const filterByCategory = async (req, res) => {
         // Check if the category is provided
         if (!category) {
             return res.status(400).json({ message: "Category is required to filter activities." });
-        }
-  
+        } 
         // Query to filter activities by the category
         const activities = await activity.find({ Category: category });
         console.log(category);
         console.log(activities);
         if (!activities || activities.length === 0) {
             return res.status(404).json({ message: 'No activities found for the given category.' });
-        }
-  
+        } 
         res.status(200).json(activities);
     } catch (error) {
         res.status(500).json({ error: 'Error filtering activities by category', details: error.message });
     }
 };
 
+const createMuseum = async (req, res) => {
+    try {
+        const {  Name,description,pictures, location,Country,
+            Opening_Hours,S_Tickets_Prices,F_Tickets_Prices,N_Tickets_Prices , Tag } = req.body;
+        
+            if (!Name || !description || !pictures || !location ||!Country
+                ||!Opening_Hours||!S_Tickets_Prices||!F_Tickets_Prices||!N_Tickets_Prices ||!Tag) {
+            return res.status(400).json({ error: 'All fields are required.' });
+        }
+        const newMuseum = new museumsm({
+            Name,
+            description,
+            pictures, 
+            location,
+            Country,
+            Opening_Hours,
+            S_Tickets_Prices,
+            F_Tickets_Prices,
+            N_Tickets_Prices,
+            Tag
+        });
+        const savedMuseum= await newMuseum.save();
+        res.status(201).json({ message: 'Museum created successfully', Museum: savedMuseum });
+    } 
+    catch (error) {
+        console.error("Error details:", error.message, error.stack); // Log full error details
+        res.status(500).json({ error: 'Error creating Museum', details: error.message });
+    }
+};
+
+const readMuseum = async (req,res)=>{
+    try{
+        const { name } = req.body; 
+        const museumProfile = await museumsm.findOne({ Name: name });
+
+        if (!museumProfile) {
+            return res.status(404).json({ message: 'Museum not found' });
+        }
+        res.status(200).json({ message: 'Museum fetched successfully', data: museumProfile });
+    }
+    catch(error){
+        console.error("Error fetching Museum:", error.message);
+        res.status(500).json({ error: 'Error fetching Museum', details: error.message });
+    }
+}
 
 // ----------------- Activity Category CRUD -------------------
 module.exports = { 
@@ -1253,6 +1297,7 @@ module.exports = {
     createUserTourism_Governer,
     deleteUserTourism_Governer,
     filterByCategory,
-    getItineraryByName
-    
+    getItineraryByName,
+    createMuseum,
+    readMuseum
 };

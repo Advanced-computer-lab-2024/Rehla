@@ -49,5 +49,5 @@ const museumsSchema = new Schema({
 
 },{ versionKey: false });
 
-const Meuseum = mongoose.model('Meuseum', museumsSchema);
-module.exports = Meuseum;
+const Museums = mongoose.model('Museums', museumsSchema);
+module.exports = Museums;
