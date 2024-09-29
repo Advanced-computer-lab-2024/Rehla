@@ -20,7 +20,6 @@ const {createUserAdmin,
   updateProduct,
   filterByPrice,
   filterByDate,filterByRating,
-  viewAllUpcomingEvents,
   getTouristProfile ,
   updateTouristProfile,
   createSellerProfile ,
@@ -95,7 +94,6 @@ app.put("/updateProduct" , updateProduct);//Admin - Seller : edit products
 app.get("/filterByPrice/:minPrice/:maxPrice", filterByPrice); //Tourist - Guest : Filter activities 
 app.get("/filterByDate/:startDate/:endDate", filterByDate);//Tourist - Guest : Filter activities 
 app.get("/filterByRating/:rating", filterByRating);//Tourist - Guest : Filter activities 
-app.get("/allupcomingEvents" , viewAllUpcomingEvents);//Tourist - Guest : View all upcoming events 
 app.get("/getTouristProfile", getTouristProfile); //Tourist : view my profile 
 app.put("/updateTouristProfile" , updateTouristProfile); //Tourist : update my profile 
 app.post("/createSellerProfile", createSellerProfile); //Seller : createSellerProfile 

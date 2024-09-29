@@ -607,42 +607,6 @@ const filterByRating = async (req, res) => {
   }
 };
 
-//Tourist - Guest : View activities-itineraries- museums/historical places
-const viewAllUpcomingEvents = async (req, res) => {
-  try {
-      // Get current date to filter upcoming activities
-      const today = new Date();
-
-      // Filter for upcoming activities (including historical places and museums)
-      const activitiesFilter = {
-          Date: { $gte: today }, // Only future activities
-      };
-
-      // Find upcoming activities in general
-      const upcomingActivities = await activity.find(activitiesFilter);
-
-      // Filter specifically for historical places and museums within the activity table
-      const historicalPlacesAndMuseums = await activity.find({
-          ...activitiesFilter,
-          Category: { $in: ["historic place", "museum"] } // Categories for places and museums
-      });
-
-      // Query the itineraries table (no Date filter since it might not have dates)
-      const itinerary = await itinerarym.find();
-
-      // Return all data
-      res.status(200).json({
-          message: 'All upcoming activities, itineraries, and historical places/museums',
-          upcomingActivities: upcomingActivities,
-          itinerary: itinerary,
-          historicalPlacesAndMuseums: historicalPlacesAndMuseums
-      });
-  } catch (error) {
-      // Handle errors
-      res.status(500).json({ message: 'Error fetching data', error: error.message });
-  }
-};
-
 // Tourist : view Tourist profile
 const getTouristProfile = async (req, res) => {
   try {
@@ -1397,7 +1361,6 @@ module.exports = {
     filterByPrice,
     filterByDate, 
     filterByRating,
-    viewAllUpcomingEvents,
     getTouristProfile ,
     updateTouristProfile,
     createSellerProfile ,
