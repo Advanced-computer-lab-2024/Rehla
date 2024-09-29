@@ -6,7 +6,7 @@ const Tourist = require('../Models/tourists');
 const sellerm = require('../Models/sellers');
 const tour_guidem=require('../Models/tour_guides');
 const AdvertisersModel = require('../Models/Advertisers.js');
-const RequestsModel= require('../Models/Requests.js');
+const Request= require('../Models/Requests.js');
 const tourism_governers = require('../Models/tourism_governers');
 
 
@@ -267,6 +267,12 @@ const registerTourist = async (req, res) => {
             return res.status(400).json({ error: 'All fields are required.' });
         }
 
+        // Check if email already exists
+        const existingRequest = await Tourist.findOne({ Email });
+        if (existingRequest) {
+            return res.status(400).json({ error: 'Email is already in use.' });
+        }
+
         // Create a new tourist object without password hashing
         const newTourist = new Tourist({
             Username,
@@ -289,6 +295,49 @@ const registerTourist = async (req, res) => {
     } catch (error) {
         console.error('Error details:', error);
         return res.status(500).json({ error: 'Error registering tourist', details: error.message });
+    }
+};
+
+const registerRequest = async (req, res) => {
+    try {
+        const { Username, Email, Password, Type } = req.body;
+
+        // Ensure all required fields are provided
+        if (!Username || !Email || !Password || !Type) {
+            return res.status(400).json({ error: 'All fields are required.' });
+        }
+
+        // Allowed types for registration requests
+        const allowedTypes = ['Tour Guide', 'Advertiser', 'Seller'];
+
+        // Check if the Type is valid
+        if (!allowedTypes.includes(Type)) {
+            return res.status(400).json({ error: 'Invalid registration type. Must be Tour Guide, Advertiser, or Seller.' });
+        }
+
+        // Check if email already exists
+        const existingRequest = await Request.findOne({ Email });
+        if (existingRequest) {
+            return res.status(400).json({ error: 'Email is already in use.' });
+        }
+
+        // Create a new request object
+        const newRequest = new Request({
+            Username,
+            Email,
+            Password,  // No password hashing here
+            Type
+        });
+
+        // Save the request to the database
+        await newRequest.save();
+
+        // Return the created request
+        return res.status(201).json({ message: "Request successfully submitted", request: newRequest });
+
+    } catch (error) {
+        console.error('Error details:', error);
+        return res.status(500).json({ error: 'Error submitting request', details: error.message });
     }
 };
   
@@ -1128,6 +1177,7 @@ module.exports = {
     filterItineraries,
     createActivityCategory,
     registerTourist,
+    registerRequest,
     getProductsSortedByRating, 
     addProduct,
     updateProduct,
