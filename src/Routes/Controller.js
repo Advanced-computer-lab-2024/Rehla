@@ -17,6 +17,7 @@ const itinerary_activitiesm = require('../Models/itenerary_activities') ;
 const museumsm = require('../Models/museums') ;
 const p_tagsm = require('../Models/p_tags') ;
 const tourist_itinerariesm = require('../Models/tourist_iteneraries') ;
+const advertiser_activitiesm = require('../Models/advertiser_activities');
 
 
 // Creating a new Admin user or Tourism Governor
