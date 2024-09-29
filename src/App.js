@@ -42,7 +42,10 @@ const {createUserAdmin,
   filterByCategory,
   getItineraryByName,
   createMuseum,
-  readMuseum
+  readMuseum,
+  updateItinerary,
+  deleteItinerary
+
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;

@@ -1390,5 +1390,8 @@ module.exports = {
     getItineraryByName,
     createMuseum,
     readMuseum,
-    createHistoricalPlace
+    createHistoricalPlace,
+    deleteItinerary,
+    updateItinerary
+
 };
