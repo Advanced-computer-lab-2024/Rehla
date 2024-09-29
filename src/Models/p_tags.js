@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const p_tagsSchema = new Schema({
     Name : {
-        Type: String,
+        type: String,
         required: true,
     },
 },{ versionKey: false });

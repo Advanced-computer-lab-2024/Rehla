@@ -3,13 +3,13 @@ const Schema = mongoose.Schema;
 
 const tourist_itenerariesSchema = new Schema({
     Tourist_Email : {
-        Type: String,
+        type: String,
         required: true,
     },
 
     
     Itinerary_Name : {
-        Type: String,
+        type: String,
         required: true,
     },
 },{ versionKey: false });

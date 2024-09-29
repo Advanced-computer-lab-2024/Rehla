@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const categoriesSchema = new Schema({
     Name : {
-        Type: String,
+        type: String,
         required: true,
     },
 },{ versionKey: false });

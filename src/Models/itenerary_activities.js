@@ -3,11 +3,11 @@ const Schema = mongoose.Schema;
 
 const itenerary_activitiesSchema = new Schema({
     Itinerary_Name : {
-        Type: String,
+        type: String,
         required: true,
     },
     Activities : {
-        Type: String,
+        type: String,
         required: true,
     },
 },{ versionKey: false });
