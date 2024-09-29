@@ -8,6 +8,16 @@ const tour_guidem=require('../Models/tour_guides');
 const AdvertisersModel = require('../Models/Advertisers.js');
 const Request= require('../Models/Requests.js');
 const tourism_governers = require('../Models/tourism_governers');
+const activity_categoriesm = require('../Models/activity_categories.js');
+const activity_tagsm = require('../Models/activity_tags.js');
+const activity_categoriesm = require('../Models/activity_categories.js');
+const categoriesm = require('../Models/categories.js');
+const historical_places_tagsm = require('../Models/historical_places_tags.js');
+const historical_placesm = require('../Models/historical_places.js');
+const itinerary_activitiesm = require('../Models/itinerary_activities') ;
+const museumsm = require('../Models/museums') ;
+const p_tagsm = require('../Models/p_tags') ;
+const tourist_itinerariesm = require('../Models/tourist_itineraries') ;
 
 
 // Creating a new Admin user or Tourism Governor
@@ -568,6 +578,42 @@ const filterByRating = async (req, res) => {
   }
 };
 
+//Tourist - Guest : View activities-itineraries- museums/historical places
+const viewAllUpcomingEvents = async (req, res) => {
+  try {
+      // Get current date to filter upcoming activities
+      const today = new Date();
+
+      // Filter for upcoming activities (including historical places and museums)
+      const activitiesFilter = {
+          Date: { $gte: today }, // Only future activities
+      };
+
+      // Find upcoming activities in general
+      const upcomingActivities = await activity.find(activitiesFilter);
+
+      // Filter specifically for historical places and museums within the activity table
+      const historicalPlacesAndMuseums = await activity.find({
+          ...activitiesFilter,
+          Category: { $in: ["historic place", "museum"] } // Categories for places and museums
+      });
+
+      // Query the itineraries table (no Date filter since it might not have dates)
+      const itinerary = await itinerarym.find();
+
+      // Return all data
+      res.status(200).json({
+          message: 'All upcoming activities, itineraries, and historical places/museums',
+          upcomingActivities: upcomingActivities,
+          itinerary: itinerary,
+          historicalPlacesAndMuseums: historicalPlacesAndMuseums
+      });
+  } catch (error) {
+      // Handle errors
+      res.status(500).json({ message: 'Error fetching data', error: error.message });
+  }
+};
+
 // Tourist : view Tourist profile
 const getTouristProfile = async (req, res) => {
   try {
@@ -826,6 +872,141 @@ const getTourGuideProfile = async (req, res) => {
     }
 };
 
+const createItinerary = async (req, res) => {
+    try {
+        // Destructure the necessary fields from the request body
+        const { 
+            Itinerary_Name, 
+            Activities, 
+            Locations_to_be_Visited, 
+            Timeline, 
+            Duration, 
+            Language, 
+            Tour_Price, 
+            Available_Date_Time, 
+            Accessibility, 
+            Pick_Up_Point, 
+            Drop_Of_Point, 
+            Booked, 
+            Empty_Spots, 
+            Country, 
+            Rating 
+        } = req.body;
+
+        // Create a new itinerary object
+        const newItinerary = new itinerarym({
+            Itinerary_Name,
+            Activities,
+            Locations_to_be_Visited,
+            Timeline,
+            Duration,
+            Language,
+            Tour_Price,
+            Available_Date_Time: new Date(Available_Date_Time), // Ensure this is a date
+            Accessibility,
+            Pick_Up_Point,
+            Drop_Of_Point,
+            Booked,
+            Empty_Spots,
+            Country,
+            Rating: Rating || 0 // Default value for rating if not provided
+        });
+
+        // Save the new itinerary to the database
+        const savedItinerary = await newItinerary.save();
+
+        // Return success response
+        res.status(201).json({ message: 'Itinerary created successfully', itinerary: savedItinerary });
+    } catch (error) {
+        // Handle errors
+        res.status(500).json({ message: 'Error creating itinerary', error: error.message });
+    }
+};
+
+const updateItinerary = async (req, res) => {
+    try {
+        // Destructure the itinerary name and fields to be updated from the request body
+        const { 
+            Itinerary_Name, 
+            Activities, 
+            Locations_to_be_Visited, 
+            Timeline, 
+            Duration, 
+            Language, 
+            Tour_Price, 
+            Available_Date_Time, 
+            Accessibility, 
+            Pick_Up_Point, 
+            Drop_Of_Point, 
+            Booked, 
+            Empty_Spots, 
+            Country, 
+            Rating 
+        } = req.body;
+
+        // Create an object to hold only the fields that are provided (not undefined)
+        const updateFields = {};
+        if (Activities) updateFields.Activities = Activities;
+        if (Locations_to_be_Visited) updateFields.Locations_to_be_Visited = Locations_to_be_Visited;
+        if (Timeline) updateFields.Timeline = Timeline;
+        if (Duration) updateFields.Duration = Duration;
+        if (Language) updateFields.Language = Language;
+        if (Tour_Price) updateFields.Tour_Price = Tour_Price;
+        if (Available_Date_Time) updateFields.Available_Date_Time = new Date(Available_Date_Time); // Ensure this is a date
+        if (Accessibility !== undefined) updateFields.Accessibility = Accessibility;
+        if (Pick_Up_Point) updateFields.Pick_Up_Point = Pick_Up_Point;
+        if (Drop_Of_Point) updateFields.Drop_Of_Point = Drop_Of_Point;
+        if (Booked) updateFields.Booked = Booked;
+        if (Empty_Spots) updateFields.Empty_Spots = Empty_Spots;
+        if (Country) updateFields.Country = Country;
+        if (Rating !== undefined) updateFields.Rating = Rating;
+
+        // Find the itinerary by name and update the fields
+        const updatedItinerary = await itinerarym.findOneAndUpdate(
+            { Itinerary_Name: Itinerary_Name }, // Find by itinerary name
+            updateFields, // Update with the fields provided
+            { new: true } // Return the updated document
+        );
+
+        // Check if the itinerary exists
+        if (!updatedItinerary) {
+            return res.status(404).json({ message: 'Itinerary not found' });
+        }
+
+        // Return success response
+        res.status(200).json({ message: 'Itinerary updated successfully', itinerary: updatedItinerary });
+    } catch (error) {
+        // Handle errors
+        res.status(500).json({ message: 'Error updating itinerary', error: error.message });
+    }
+};
+
+const getItinerariesByName = async (req, res) => {
+    try {
+        // Extract the itinerary name from the request body
+        const { Itinerary_Name } = req.body;
+
+        if (!Itinerary_Name || typeof Itinerary_Name !== 'string') {
+            return res.status(400).json({ message: 'Itinerary name is required and must be a string' });
+        }
+
+        // Find all itineraries with the same name
+        const itineraries = await itinerarym.find({ Itinerary_Name: Itinerary_Name });
+
+        if (itineraries.length === 0) {
+            return res.status(404).json({ message: 'No itineraries found' });
+        }
+
+        // Return the list of itineraries
+        res.status(200).json({
+            message: 'Itineraries retrieved successfully',
+            itineraries: itineraries
+        });
+    } catch (error) {
+        // Handle errors
+        res.status(500).json({ message: 'Error retrieving itineraries', error: error.message });
+    }
+};
 
 //Creating Advertiser as a request
 const createUserAdvertiser = async (req, res) => {
