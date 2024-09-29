@@ -307,43 +307,6 @@ const filterItineraries = async (req, res) => {
     }
 };
 
-
-const createActivityCategory = async (req, res) => {
-  try {
-      const { Name, Location, Time, Duration, Price, Date, Tag, Category, Discount_Percent, Booking_Available, Available_Spots, Booked_Spots, Rating } = req.body;
-
-      // Ensure all required fields are provided
-      if (!Name || !Location || !Time || !Duration || !Price || !Date || !Tag || !Category || !Discount_Percent || Booking_Available === undefined || !Available_Spots || !Booked_Spots || !Rating) {
-          return res.status(400).json({ error: 'All fields are required.' });
-      }
-
-      // Create a new Activity Category object
-      const activityCategory = new activity({
-          Name,
-          Location,
-          Time,
-          Duration,
-          Price,
-          Date,
-          Tag,
-          Category,
-          Discount_Percent,
-          Booking_Available,
-          Available_Spots,
-          Booked_Spots,
-          Rating
-      });
-
-      // Save the new Activity Category to the database
-      await activityCategory.save();
-      res.status(201).json(activityCategory);
-
-  } catch (error) {
-      console.error('Error details:', error); // Add detailed logging
-      res.status(500).json({ error: 'Error creating activity category', details: error.message || error });
-    }
-};
-
 const registerTourist = async (req, res) => {
     try {
         const { Username, Email, Password, Mobile_Number, Nationality, DOB, Job_Student } = req.body;
@@ -1597,7 +1560,6 @@ module.exports = {
     sortItineraries,
     filterPlacesAndMuseums,
     filterItineraries,
-    createActivityCategory,
     registerTourist,
     registerRequest,
     searchByNameCategoryTag,
