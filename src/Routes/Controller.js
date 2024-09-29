@@ -223,27 +223,40 @@ const sortItineraries = async (req, res) => {
     }
   };
 
-const filterByTag = async (req, res) => {
-  try {
-      const { tag } = req.query;
+  const filterPlacesAndMuseums = async (req, res) => {
+    const { category, value } = req.params; // Get category and value from request parameters
 
-      // Check if the tag is provided
-      if (!tag) {
-          return res.status(400).json({ message: "Tag is required to filter activities." });
-      }
+    try {
+        let results;
 
-      // Query to filter activities by the tag
-      const activities = await activity.find({ Tag: tag });
+        if (category === 'historical_places') {
+            // Step 1: Get all tags that match the specified type
+            const tagDetails = await historical_places_tagsm.find({ Type: value });
 
-      if (!activities || activities.length === 0) {
-          return res.status(404).json({ message: 'No activities found for the given tag.' });
-      }
+            // Step 2: Extract the names from the matching tags
+            const matchingNames = tagDetails.map(detail => detail.Name);
 
-      res.status(200).json(activities);
-  } catch (error) {
-      res.status(500).json({ error: 'Error filtering activities by tag', details: error.message });
-  }
+            // Step 3: Find historical places that have matching names
+            results = await historical_places.find({ Name: { $in: matchingNames } });
+        } else if (category === 'museums') {
+            // Step 1: Find museums that match the specified tag
+            results = await museumsm.find({ Tag: value });
+        } else {
+            return res.status(400).json({ message: 'Invalid category. Use "historical_places" or "museums".' });
+        }
+
+        // Step 4: Send the response
+        if (results.length > 0) {
+            res.status(200).json(results); // Return the filtered results
+        } else {
+            res.status(404).json({ message: `No ${category} found for this ${category === 'historical_places' ? 'type' : 'tag'}.` });
+        }
+    } catch (error) {
+        console.error('Error filtering:', error);
+        res.status(500).json({ error: 'Internal server error' }); // Handle error
+    }
 };
+
 
 // Controller function to filter itineraries based on criteria
 const filterItineraries = async (req, res) => {
@@ -1424,7 +1437,7 @@ module.exports = {
     filterProductByPrice,
     sortActivities,
     sortItineraries,
-    filterByTag,
+    filterPlacesAndMuseums,
     filterItineraries,
     createActivityCategory,
     registerTourist,

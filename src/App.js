@@ -10,7 +10,7 @@ const {createUserAdmin,
   filterProductByPrice,
   sortActivities,
   sortItineraries,
-  filterByTag,
+  filterPlacesAndMuseums,
   filterItineraries,
   createActivityCategory,
   registerTourist,
@@ -84,7 +84,7 @@ app.get("/getProductByName/:productName", searchProductByName);
 app.get("/filterProductsByPrice/:minPrice/:maxPrice", filterProductByPrice); // Filter products based on price range
 app.get("/sortActivities", sortActivities); // Route for sorting activities
 app.get("/sortItineraries", sortItineraries);
-app.get("/filterByTag", filterByTag);
+app.get('/filter/:category/:value', filterPlacesAndMuseums);
 app.get("/filterItineraries", filterItineraries);
 app.post("/addCategory",createActivityCategory);
 app.post("/registerTourist",registerTourist);
