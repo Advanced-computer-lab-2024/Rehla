@@ -404,14 +404,10 @@ const registerRequest = async (req, res) => {
 const createActivityCategory = async (req, res) => {
     try {
         const { Name} = req.body;
-  
-        // Ensure all required fields are provided
         if (!Name) {
             return res.status(400).json({ error: 'All fields are required.' });
         }
-  
-
-        const activityCategory = new activity_categoriesm({Name});
+        const activityCategory = new categoriesm({Name});
         const savedActivityCategory = await activityCategory.save();
         res.status(201).json(savedActivityCategory );
   
