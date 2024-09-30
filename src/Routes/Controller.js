@@ -419,7 +419,7 @@ const createActivityCategory = async (req, res) => {
   
   const readActivityCategories = async (req, res) => {
       try {
-          const categories = await activity_categoriesm.find();
+          const categories = await categoriesm.find();
           res.status(200).json(categories);
       } catch (error) {
           res.status(500).json({ error: 'Error fetching activity categories', details: error });
