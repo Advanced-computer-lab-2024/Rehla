@@ -1606,6 +1606,7 @@ const creatTouristItenrary= async(req,res)=>{
         res.status(500).json({ error: 'Error creating tourist itinerary', details: error.message });
     }
 }
+
 const filterActivities = async (req, res) => {
     try {
         const { minPrice, maxPrice, startDate, endDate, rating, category } = req.body;
