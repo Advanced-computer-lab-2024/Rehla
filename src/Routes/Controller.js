@@ -1686,6 +1686,48 @@ const deleteHistoricalPlace= async (req, res) => {
     }
 };
 
+const creatTouristItenrary= async(req,res)=>{
+    try {
+        const {Tourist_Email,Itinerary_Name}=req.body;
+
+        if (!Tourist_Email || !Itinerary_Name){
+            return res.status(400).json({ error: 'All fields are required.' });
+        }
+
+        const touristExists = await Tourist.findOne({ Email: Tourist_Email }); // Change 'email' to 'Email'
+        if (!touristExists) {
+            return res.status(404).json({ error: 'Tourist not found.' });
+        }
+
+        const itineraryExists = await itinerarym.findOne({ Itinerary_Name });
+        if (!itineraryExists) {
+            return res.status(409).json({ error: 'Itinerary name not found.' });
+        }
+
+        if (itineraryExists.Empty_Spots <= 0) {
+            return res.status(400).json({ error: 'No available spots for this itinerary.' });
+        }
+
+        const duplicateItinerary = await tourist_itinerariesm.findOne({ Tourist_Email, Itinerary_Name });
+        if (duplicateItinerary) {
+            return res.status(409).json({ error: 'This itinerary has already been booked by the tourist.' });
+        }
+
+        const newTouristItenrary = new tourist_itinerariesm({Tourist_Email,Itinerary_Name});
+        const savedTouristItenrary = await newTouristItenrary.save();
+        res.status(201).json({ message: 'Tourist itinerary created successfully', Tourist_Itinerary: savedTouristItenrary });
+
+        await itinerarym.findOneAndUpdate(
+            { Itinerary_Name },
+            { $inc: { Booked: 1, Empty_Spots: -1 } } // Increment Booked and decrement Empty_Spots
+        );
+
+    } catch (error) {
+        console.error("Error details:", error.message, error.stack); // Log full error details
+        res.status(500).json({ error: 'Error creating tourist itinerary', details: error.message });
+    }
+}
+
 // ----------------- Activity Category CRUD -------------------
 
 module.exports = { 
@@ -1745,5 +1787,6 @@ module.exports = {
     deleteHistoricalPlace,
     deleteItinerary,
     updateItinerary,
-    getAllUpcomingEventsAndPlaces
+    getAllUpcomingEventsAndPlaces,
+    creatTouristItenrary
 };

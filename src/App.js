@@ -57,7 +57,8 @@ const {createUserAdmin,
   deleteMuseum,
   deleteHistoricalPlace,
   updateItinerary,
-  deleteItinerary,getAllUpcomingEventsAndPlaces
+  deleteItinerary,getAllUpcomingEventsAndPlaces,
+  creatTouristItenrary
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -149,4 +150,4 @@ app.put("/updateMuseum",updateMuseum);
 app.put("/updateHistoricalPlace",updateHistoricalPlace);
 app.delete("/deleteMuseum",deleteMuseum);
 app.delete("/deleteHistoricalPlace",deleteHistoricalPlace);
-
+app.post("/creatTouristItenrary",creatTouristItenrary);
