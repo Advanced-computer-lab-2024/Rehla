@@ -469,6 +469,76 @@ const createActivityCategory = async (req, res) => {
     }
   };
 
+  const createPreferenceTag = async (req, res) => {
+    try {
+        const { Name} = req.body;
+        if (!Name) {
+            return res.status(400).json({ error: 'All fields are required.' });
+        }
+        const preferenceTag = new p_tagsm({Name});
+        const savedPreferenceTag = await preferenceTag.save();
+        res.status(201).json(savedPreferenceTag );
+  
+    } catch (error) {
+        console.error('Error details:', error); // Add detailed logging
+        res.status(500).json({ error: 'Error creating pereference tag', details: error.message || error });
+    }
+  };
+  
+  const readPreferenceTag = async (req, res) => {
+    try {
+        const preferences = await p_tagsm.find();
+        res.status(200).json(preferences);
+    } catch (error) {
+        res.status(500).json({ error: 'Error fetching pereference tags', details: error });
+    }
+  };
+  
+  const updatePreferenceTag = async (req, res) => {
+    try {
+        const { currentName } = req.params;
+        const { newName } = req.body;
+        if (!newName) {
+            return res.status(400).json({ error: 'New category name is required.' });
+        }
+  
+        const updatedTag = await p_tagsm.findOneAndUpdate(
+            { Name: currentName }, 
+            { Name: newName },     
+            { new: true }                   
+        );
+        if (!updatedTag) {
+            return res.status(404).json({ message: 'Tag not found' });
+        }
+  
+        res.status(200).json({ message: 'Tag updated successfully', data: updatedCategory });
+    } catch (error) {
+        console.error('Error updating Tag:', error.message);
+        res.status(500).json({ error: 'Error updating Tag', details: error.message });
+    }
+  };
+  
+  const deletePreferenceTag = async (req,res) =>{
+    try {
+  
+        const { Name } = req.body;
+  
+        if (!Name) {
+            return res.status(400).json({ message: 'Tag name is required' });
+        }
+        const tag = await p_tagsm.findOne({ Name: Name });
+  
+        if (!tag) {
+            return res.status(404).json({ message: 'Tag not found' });
+        }
+        await p_tagsm.deleteOne({ Name: Name });
+        res.status(200).json({ message: 'Tag deleted successfully' });
+    } catch (error) {
+  
+        res.status(500).json({ message: 'Error Tag Category', error: error.message });
+    }
+  };
+
 const searchByNameCategoryTag = async (req, res) => {
     try {
         const { searchTerm } = req.query;
@@ -1644,6 +1714,10 @@ module.exports = {
     readActivityCategories,
     updateActivityCategory,
     deleteActivityCategory,
+    createPreferenceTag,
+    readPreferenceTag,
+    updatePreferenceTag,
+    deletePreferenceTag,
     searchByNameCategoryTag,
     getProductsSortedByRating, 
     addProduct,
