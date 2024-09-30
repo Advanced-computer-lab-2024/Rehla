@@ -1792,6 +1792,46 @@ const updateTouristItenrary = async (req, res) => {
         res.status(500).json({ error: 'Error updating tourist itinerary', details: error.message });
     }
 };
+
+const getBookedItineraries = async (req, res) => {
+    try {
+        const { Tourist_Email } = req.body;
+
+        // Validate input
+        if (!Tourist_Email) {
+            return res.status(400).json({ error: 'Tourist email is required.' });
+        }
+
+        // Check if the tourist exists
+        const touristExists = await Tourist.findOne({ Email: Tourist_Email });
+        if (!touristExists) {
+            return res.status(404).json({ error: 'Tourist not found.' });
+        }
+
+        // Find all booked itineraries for the tourist
+        const bookedItineraries = await tourist_itinerariesm.find({ Tourist_Email });
+
+        if (bookedItineraries.length === 0) {
+            return res.status(404).json({ error: 'No itineraries found for this tourist.' });
+        }
+
+        // Retrieve full details for each booked itinerary
+        const itineraryDetails = await Promise.all(
+            bookedItineraries.map(async (booking) => {
+                const itinerary = await itinerarym.findOne({ Itinerary_Name: booking.Itinerary_Name });
+                return itinerary;
+            })
+        );
+
+        // Send response
+        res.status(200).json({ message: 'Booked itineraries retrieved successfully', itineraries: itineraryDetails });
+
+    } catch (error) {
+        console.error("Error details:", error.message, error.stack); // Log full error details
+        res.status(500).json({ error: 'Error retrieving booked itineraries', details: error.message });
+    }
+};
+
 // ----------------- Activity Category CRUD -------------------
 
 module.exports = { 
@@ -1851,5 +1891,6 @@ module.exports = {
     creatTouristItenrary,
     filterActivities,
     deleteTouristItenrary,
-    updateTouristItenrary
+    updateTouristItenrary,
+    getBookedItineraries
 };

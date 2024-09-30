@@ -58,7 +58,8 @@ const {createUserAdmin,
   creatTouristItenrary,
   filterActivities,
   deleteTouristItenrary,
-  updateTouristItenrary
+  updateTouristItenrary,
+  getBookedItineraries
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -150,3 +151,5 @@ app.post("/creatTouristItenrary",creatTouristItenrary);
 app.get("/filterActivities",filterActivities);
 app.delete("/deleteTouristItenrary",deleteTouristItenrary);
 app.put("/updateTouristItenrary",updateTouristItenrary);
+app.get("/getBookedItineraries",getBookedItineraries);
+
