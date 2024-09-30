@@ -18,6 +18,7 @@ const museumsm = require('../Models/museums') ;
 const p_tagsm = require('../Models/p_tags') ;
 const tourist_itinerariesm = require('../Models/tourist_iteneraries') ;
 const advertiser_activitiesm = require('../Models/advertiser_activities');
+const Seller = require("../Models/sellers.js");
 
 
 // Creating a new Admin user or Tourism Governor
@@ -82,19 +83,30 @@ const createUserAdmin = async (req, res) => {
 const deleteUserAdmin = async (req, res) => {
     try {
         const { email } = req.params; // Get the email from URL parameters
-
-        // Find the user by email and delete
-        const deletedUser = await Admin.findOneAndDelete({ Email: email });
-
+  
+        // Define all models where the user could exist
+        const models = [Admin, tourism_governers, Tourist, tour_guidem, AdvertisersModel, Seller]; // Add all the models here
+        
+        // Initialize an empty variable to store the deleted user
+        let deletedUser = null;
+  
+        // Use Promise.all to search all collections in parallel
+        await Promise.all(models.map(async (Model) => {
+            const user = await Model.findOneAndDelete({ Email: email });
+            if (user) deletedUser = user;  // If a user is found, store the deleted user
+        }));
+  
+        // If no user was found in any collection, return a 404 error
         if (!deletedUser) {
-            return res.status(404).json({ error: 'User not found' });
+            return res.status(404).json({ error: 'User not found in any table.' });
         }
-
-        res.status(200).json({ message: 'User deleted successfully' });
+  
+        // If a user was deleted, send success response
+        res.status(200).json({ message: 'User deleted successfully', user: deletedUser });
     } catch (error) {
         res.status(500).json({ error: 'Error deleting user', details: error.message });
     }
-};
+  };
 
 const getAllProducts = async (req, res) => {
     try {
