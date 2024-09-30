@@ -1681,6 +1681,51 @@ const filterActivities = async (req, res) => {
     }
 };
 
+const deleteTouristItenrary = async (req, res) => {
+    try {
+        const { Tourist_Email, Itinerary_Name } = req.body;
+
+        // Validate input
+        if (!Tourist_Email || !Itinerary_Name) {
+            return res.status(400).json({ error: 'All fields are required.' });
+        }
+
+        // Check if the tourist exists
+        const touristExists = await Tourist.findOne({ Email: Tourist_Email });
+        if (!touristExists) {
+            return res.status(404).json({ error: 'Tourist not found.' });
+        }
+
+        // Check if the itinerary exists
+        const itineraryExists = await itinerarym.findOne({ Itinerary_Name });
+        if (!itineraryExists) {
+            return res.status(409).json({ error: 'Itinerary name not found.' });
+        }
+
+        // Check if the tourist itinerary exists
+        const touristItineraryExists = await tourist_itinerariesm.findOne({ Tourist_Email, Itinerary_Name });
+        if (!touristItineraryExists) {
+            return res.status(404).json({ error: 'Tourist itinerary not found.' });
+        }
+
+        // Delete the tourist itinerary
+        await tourist_itinerariesm.deleteOne({ Tourist_Email, Itinerary_Name });
+
+        // Update the itinerary: decrement Booked and increment Empty_Spots
+        await itinerarym.findOneAndUpdate(
+            { Itinerary_Name },
+            { $inc: { Booked: -1, Empty_Spots: 1 } }
+        );
+
+        // Send a response
+        res.status(200).json({ message: 'Tourist itinerary deleted successfully.' });
+
+    } catch (error) {
+        console.error("Error details:", error.message, error.stack); // Log full error details
+        res.status(500).json({ error: 'Error deleting tourist itinerary', details: error.message });
+    }
+};
+
 // ----------------- Activity Category CRUD -------------------
 
 module.exports = { 
@@ -1738,5 +1783,6 @@ module.exports = {
     updateItinerary,
     getAllUpcomingEventsAndPlaces,
     creatTouristItenrary,
-    filterActivities
+    filterActivities,
+    deleteTouristItenrary
 };
