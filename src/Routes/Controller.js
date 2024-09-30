@@ -413,7 +413,7 @@ const createActivityCategory = async (req, res) => {
   
     } catch (error) {
         console.error('Error details:', error); // Add detailed logging
-        res.status(500).json({ error: 'Error creating activity category', details: error.message || error });
+        res.status(500).json({ error: 'Error creating  category', details: error.message || error });
       }
   };
   
@@ -422,7 +422,7 @@ const createActivityCategory = async (req, res) => {
           const categories = await categoriesm.find();
           res.status(200).json(categories);
       } catch (error) {
-          res.status(500).json({ error: 'Error fetching activity categories', details: error });
+          res.status(500).json({ error: 'Error fetching categories', details: error });
       }
   };
   const updateActivityCategory = async (req, res) => {
@@ -448,6 +448,27 @@ const createActivityCategory = async (req, res) => {
           res.status(500).json({ error: 'Error updating category', details: error.message });
       }
   };
+  const deleteActivityCategory = async (req,res) =>{
+    try {
+
+        const { Name } = req.body;
+
+        if (!Name) {
+            return res.status(400).json({ message: 'Category name is required' });
+        }
+        const category = await categoriesm.findOne({ Name: Name });
+
+        if (!category) {
+            return res.status(404).json({ message: 'Category not found' });
+        }
+        await categoriesm.deleteOne({ Name: Name });
+        res.status(200).json({ message: 'Category deleted successfully' });
+    } catch (error) {
+
+        res.status(500).json({ message: 'Error deleting Category', error: error.message });
+    }
+  };
+
 const searchByNameCategoryTag = async (req, res) => {
     try {
         const { searchTerm } = req.query;
@@ -1622,6 +1643,7 @@ module.exports = {
     createActivityCategory,
     readActivityCategories,
     updateActivityCategory,
+    deleteActivityCategory,
     searchByNameCategoryTag,
     getProductsSortedByRating, 
     addProduct,

@@ -17,6 +17,7 @@ const {createUserAdmin,
   createActivityCategory,
   readActivityCategories,
   updateActivityCategory,
+  deleteActivityCategory,
   searchByNameCategoryTag,
   getProductsSortedByRating, 
   addProduct,
@@ -99,6 +100,7 @@ app.post("/registerRequest",registerRequest);
 app.post("/addCategory",createActivityCategory);
 app.get("/getCategory",readActivityCategories);
 app.put("/updateCategory/:currentName",updateActivityCategory);
+app.delete("/deleteCategory",deleteActivityCategory);
 app.get("/searchByNameCategoryTag",searchByNameCategoryTag);
 app.get("/getProductsSortedByRating" , getProductsSortedByRating); //Tourist-Admin-Seller :sort products by rating 
 app.post("/addProduct" ,addProduct); //Admin - Seller : add a new product
