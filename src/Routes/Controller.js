@@ -714,108 +714,6 @@ const updateProduct = async (req, res) => {
 };
 
   //Tourist - Guest :Activities Filter 
-const filterByPrice = async (req, res) => {
-    try {
-        const { minPrice, maxPrice } = req.params;
-
-        // Ensure minPrice and maxPrice are valid numbers
-        const min = parseFloat(minPrice);
-        const max = parseFloat(maxPrice);
-
-        // Check if either min or max is NaN
-        if ((minPrice && isNaN(min)) || (maxPrice && isNaN(max))) {
-            return res.status(400).json({ message: 'Invalid price parameters' });
-        }
-
-        // Create a price filter object
-        const priceFilter = {};
-        if (minPrice) priceFilter.$gte = min; // Greater than or equal to minPrice
-        if (maxPrice) priceFilter.$lte = max; // Less than or equal to maxPrice
-
-        // Construct the filter only if priceFilter is not empty
-        const filter = Object.keys(priceFilter).length ? { Price: priceFilter } : {};
-
-        // Find and return activities based on price filter
-        const activities = await activity.find(filter).sort({ Date: 1, Rating: -1 });
-        res.status(200).json({
-            message: 'Filtered activities by price',
-            activities
-        });
-    } catch (error) {
-        res.status(500).json({ message: 'Error filtering activities by price', error: error.message });
-    }
-};
-
-const filterByDate = async (req, res) => {
-  try {
-      const { startDate, endDate } = req.params;
-
-      // Convert startDate and endDate strings into JavaScript Date objects
-      const start = new Date(startDate);
-      const end = new Date(endDate);
-
-      // Validate that the dates are valid
-      if (isNaN(start.getTime()) || isNaN(end.getTime())) {
-          return res.status(400).json({ message: 'Invalid date format' });
-      }
-
-      // Set the end date to the end of the day if you want to include activities from the whole endDate
-      end.setHours(23, 59, 59, 999);
-
-      // Define the filter to match the date range
-      const dateFilter = {
-          Date: {
-              $gte: start, // Greater than or equal to the start date
-              $lte: end    // Less than or equal to the end date
-          }
-      };
-
-      // Find the activities that match the date range
-      const activities = await activity.find(dateFilter).sort({ Date: 1 });
-
-      // Return the filtered activities
-      res.status(200).json({
-          message: 'Filtered activities by date',
-          activities
-      });
-  } catch (error) {
-      res.status(500).json({ message: 'Error filtering activities by date', error: error.message });
-  }
-};
-
-const filterByRating = async (req, res) => {
-  try {
-      // Get the rating from the request parameters
-      const rating = parseFloat(req.params.rating);
-
-      // Validate the rating (ensure it's a number and within a valid range)
-      if (isNaN(rating) || rating < 0 || rating > 10) {
-          return res.status(400).json({ message: 'Invalid rating parameter. Please provide a number between 0 and 5.' });
-      }
-
-      // Find activities with the exact rating
-      const activities = await activity.find({
-          Rating: rating // Filter for activities with the exact rating
-      });
-
-      // Check if any activities were found
-      if (activities.length === 0) {
-          return res.status(404).json({ message: 'No activities found with the exact given rating' });
-      }
-
-      // Return the found activities
-      res.status(200).json({
-          message: `Activities found with an exact rating of: ${rating}`,
-          activities
-      });
-  } catch (error) {
-      // Log the error for debugging
-      console.error("Error filtering activities by rating:", error);
-
-      // Handle errors and send a 500 response
-      res.status(500).json({ message: 'Error filtering activities by rating', error: error.message });
-  }
-};
 
 // Tourist : view Tourist profile
 const getTouristProfile = async (req, res) => {
@@ -1471,25 +1369,6 @@ const createUserTourism_Governer = async(req,res) => {
     }
 };
 
-const filterByCategory = async (req, res) => {
-    try {
-        const {category} = req.body;
-        
-        // Check if the category is provided
-        if (!category) {
-            return res.status(400).json({ message: "Category is required to filter activities." });
-        } 
-        // Query to filter activities by the category
-        const activities = await activity_categoriesm.find({ Category: category });
-        
-        if (!activities || activities.length === 0) {
-            return res.status(404).json({ message: 'No activities found for the given category.' });
-        } 
-        res.status(200).json(activities);
-    } catch (error) {
-        res.status(500).json({ error: 'Error filtering activities by category', details: error.message });
-    }
-};
 
 const createMuseum = async (req, res) => {
     try {
@@ -1727,6 +1606,79 @@ const creatTouristItenrary= async(req,res)=>{
         res.status(500).json({ error: 'Error creating tourist itinerary', details: error.message });
     }
 }
+const filterActivities = async (req, res) => {
+    try {
+        const { minPrice, maxPrice, startDate, endDate, rating, category } = req.body;
+
+        const filters = {};
+
+        // 1. Filter by Price
+        if (minPrice || maxPrice) {
+            const min = parseFloat(minPrice);
+            const max = parseFloat(maxPrice);
+
+            if ((minPrice && isNaN(min)) || (maxPrice && isNaN(max))) {
+                return res.status(400).json({ message: 'Invalid price parameters' });
+            }
+
+            filters.Price = {};
+            if (minPrice) filters.Price.$gte = min;
+            if (maxPrice) filters.Price.$lte = max;
+        }
+
+        // 2. Filter by Date
+        if (startDate || endDate) {
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+                return res.status(400).json({ message: 'Invalid date format' });
+            }
+            end.setHours(23, 59, 59, 999);
+
+            filters.Date = {
+                $gte: start,
+                $lte: end
+            };
+        }
+
+        // 3. Filter by Rating
+        if (rating) {
+            const ratingNumber = parseFloat(rating);
+            if (isNaN(ratingNumber) || ratingNumber < 0 || ratingNumber > 10) {
+                return res.status(400).json({ message: 'Invalid rating parameter. Please provide a number between 0 and 10.' });
+            }
+            filters.Rating = ratingNumber;
+        }
+
+        // 4. Filter by Category
+        if (category) {
+            // Find activities that match the given category
+            const activityCategories = await activity_categoriesm.find({ Category: category });
+
+            // Extract the activity names or IDs from the result
+            const activityNames = activityCategories.map(cat => cat.Activity);
+
+            // Add the category-related filter to the `filters` object
+            filters.Name = { $in: activityNames };
+        }
+
+        // Find activities based on the combined filters
+        const activities = await activity.find(filters).sort({ Date: 1, Rating: -1 });
+
+        // If no activities are found, return a 404
+        if (!activities || activities.length === 0) {
+            return res.status(404).json({ message: 'No activities found matching the filters.' });
+        }
+
+        // Return the filtered activities
+        res.status(200).json({
+            message: 'Filtered activities',
+            activities
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error filtering activities', error: error.message });
+    }
+};
 
 // ----------------- Activity Category CRUD -------------------
 
@@ -1754,9 +1706,6 @@ module.exports = {
     getProductsSortedByRating, 
     addProduct,
     updateProduct,
-    filterByPrice,
-    filterByDate, 
-    filterByRating,
     getTouristProfile ,
     updateTouristProfile,
     createSellerProfile ,
@@ -1775,7 +1724,6 @@ module.exports = {
     deleteActivityByAdvertiser,
     createUserTourism_Governer,
     deleteUserTourism_Governer,
-    filterByCategory,
     getItineraryByName,
     createMuseum,
     readMuseum,
@@ -1788,5 +1736,6 @@ module.exports = {
     deleteItinerary,
     updateItinerary,
     getAllUpcomingEventsAndPlaces,
-    creatTouristItenrary
+    creatTouristItenrary,
+    filterActivities
 };

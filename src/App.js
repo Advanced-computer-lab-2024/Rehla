@@ -26,8 +26,6 @@ const {createUserAdmin,
   getProductsSortedByRating, 
   addProduct,
   updateProduct,
-  filterByPrice,
-  filterByDate,filterByRating,
   getTouristProfile ,
   updateTouristProfile,
   createSellerProfile ,
@@ -46,7 +44,6 @@ const {createUserAdmin,
   deleteActivityByAdvertiser,
   createUserTourism_Governer,
   deleteUserTourism_Governer,
-  filterByCategory,
   getItineraryByName,
   createMuseum,
   readMuseum,
@@ -58,7 +55,8 @@ const {createUserAdmin,
   deleteHistoricalPlace,
   updateItinerary,
   deleteItinerary,getAllUpcomingEventsAndPlaces,
-  creatTouristItenrary
+  creatTouristItenrary,
+  filterActivities
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -112,9 +110,6 @@ app.get("/searchByNameCategoryTag",searchByNameCategoryTag);
 app.get("/getProductsSortedByRating" , getProductsSortedByRating); //Tourist-Admin-Seller :sort products by rating 
 app.post("/addProduct" ,addProduct); //Admin - Seller : add a new product
 app.put("/updateProduct" , updateProduct);//Admin - Seller : edit products 
-app.get("/filterByPrice/:minPrice/:maxPrice", filterByPrice); //Tourist - Guest : Filter activities 
-app.get("/filterByDate/:startDate/:endDate", filterByDate);//Tourist - Guest : Filter activities 
-app.get("/filterByRating/:rating", filterByRating);//Tourist - Guest : Filter activities 
 app.get("/getTouristProfile", getTouristProfile); //Tourist : view my profile 
 app.put("/updateTouristProfile" , updateTouristProfile); //Tourist : update my profile 
 app.post("/createSellerProfile", createSellerProfile); //Seller : createSellerProfile 
@@ -140,7 +135,6 @@ app.delete("/deleteActivityByAdvert", deleteActivityByAdvertiser);
 
 app.post("/createUserTourism_Governer", createUserTourism_Governer);
 app.delete("/deleteUserTourism_Governer", deleteUserTourism_Governer);
-app.get("/filterByCategory", filterByCategory);
 
 app.post("/creatingMuseum",createMuseum);
 app.post("/readMuseum",readMuseum);
@@ -151,3 +145,4 @@ app.put("/updateHistoricalPlace",updateHistoricalPlace);
 app.delete("/deleteMuseum",deleteMuseum);
 app.delete("/deleteHistoricalPlace",deleteHistoricalPlace);
 app.post("/creatTouristItenrary",creatTouristItenrary);
+app.get("/filterActivities",filterActivities);
