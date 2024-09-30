@@ -19,6 +19,7 @@ const p_tagsm = require('../Models/p_tags') ;
 const tourist_itinerariesm = require('../Models/tourist_iteneraries') ;
 const advertiser_activitiesm = require('../Models/advertiser_activities');
 const Seller = require("../Models/sellers.js");
+const advertiser_activities = require('../Models/advertiser_activities');
 
 // Creating a new Admin user or Tourism Governor
 const createUserAdmin = async (req, res) => {
@@ -1832,6 +1833,40 @@ const getBookedItineraries = async (req, res) => {
     }
 };
 
+
+// msh 3arfa attala3 el activitiessssssss
+const viewMyCreatedActivities = async(req, res) =>{
+    try{
+        const { Email } = req.body;
+        
+        // Find activities by advertiser's email
+        const email = await advertiser_activitiesm.findOne({ Email: Email });
+
+        if (!email) {
+            return res.status(404).json({ message: 'Email not found' });
+        }
+
+        // Check if any activities were found
+        if (advertiser_activities.length > 0) {
+            res.status(200).json({
+                message: 'Activities found',
+                activities: advertiser_activities,
+                //{ message: 'User created successfully', user: newUser }
+            });
+        } else {
+            res.status(404).json({
+                message: 'No activities found for this email.',
+            });
+        }
+        
+    }catch(error){
+        console.error(error);
+        res.status(500).json({ message: 'Error retrieving activities', error: error.message });
+    }
+};
+
+
+
 // ----------------- Activity Category CRUD -------------------
 
 module.exports = { 
@@ -1892,5 +1927,6 @@ module.exports = {
     filterActivities,
     deleteTouristItenrary,
     updateTouristItenrary,
-    getBookedItineraries
+    getBookedItineraries,
+    viewMyCreatedActivities
 };
