@@ -1490,45 +1490,308 @@ const updateMuseum = async (req, res) => {
     if (!updatedMuseum) {
         return res.status(404).json({ message: 'Museum not found' });
     }
-    }catch(error){
-        res.status(500).json({ message: 'Error Updating museum', error: error.message });
+    res.status(200).json({ message: 'Museum updated successfully', user: updatedMuseum });
+    }
+    catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
     }
 };
 
-const viewMyCreatedActivities = async (req, res) => {
+
+const updateHistoricalPlace = async (req, res) => {
+    //update a user in the database
     try{
-        // Get current date to filter upcoming activities
-      const today = new Date();
-
-      // Filter for upcoming activities (including historical places and museums)
-      const activitiesFilter = {
-          Date: { $gte: today }, // Only future activities
-      };
-
-      // Find upcoming activities in general
-      const upcomingActivities = await activity.find(activitiesFilter);
-
-      // Filter specifically for historical places and museums within the activity table
-      const historicalPlacesAndMuseums = await activity.find({
-          ...activitiesFilter,
-          Category: { $in: ["historic place", "museum"] } // Categories for places and museums
-      });
-
-      // Query the itineraries table (no Date filter since it might not have dates)
-      const itinerary = await itinerarym.find();
-
-      // Return all data
-      res.status(200).json({
-          message: 'All upcoming activities, itineraries, and historical places/museums',
-          upcomingActivities: upcomingActivities,
-          itinerary: itinerary,
-          historicalPlacesAndMuseums: historicalPlacesAndMuseums
-      });
-    }catch(error){
-        res.status(500).json({ message: 'Error fetching data', error: error.message });
+        const {Name, 
+            Description, 
+            Pictures, 
+            Location, 
+            Country, 
+            Opens_At, 
+            Closes_At, 
+            S_Ticket_Prices, 
+            F_Ticket_Prices, 
+            N_Ticket_Prices} = req.body;
+        const updatedHistoricalPlace = await historical_placesm.findOneAndUpdate(
+            {Name: Name },
+            {Name, Description,Pictures, Location,Country,Opens_At, 
+            Closes_At, S_Ticket_Prices,F_Ticket_Prices, N_Ticket_Prices },  // Fields to update
+            {new: true, runValidators: true }  // Options: return the updated document and run schema validators
+        );
+    if (!updatedHistoricalPlace) {
+        return res.status(404).json({ message: 'Historical Place not found' });
+    }
+    res.status(200).json({ message: 'Historical Place updated successfully', user: updatedHistoricalPlace });
+    }
+    catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
     }
 };
 
+const deleteMuseum = async (req, res) => {
+    try {
+        const {Name} = req.body;
+
+        // Find the museum by name and delete it
+        const deletedMuseum = await museumsm.findOneAndDelete({ Name: Name });
+
+        if (!deletedMuseum) {
+            return res.status(404).json({ error: 'Museum not found' });
+        }
+
+        res.status(200).json({ message: 'Museum deleted successfully' });
+    } catch (error) {
+        console.error("Error details:", error.message, error.stack); // Log full error details
+        res.status(500).json({ error: 'Error deleting Museum', details: error.message });
+    }
+};
+
+const deleteHistoricalPlace= async (req, res) => {
+    try {
+        const {Name} = req.body;
+
+        // Find the historical place by name and delete it
+        const deletedPlace = await historical_placesm.findOneAndDelete({ Name: Name });
+
+        if (!deletedPlace) {
+            return res.status(404).json({ error: 'Historical Place not found' });
+        }
+
+        res.status(200).json({ message: 'Historical Place deleted successfully' });
+    } catch (error) {
+        console.error("Error details:", error.message, error.stack); // Log full error details
+        res.status(500).json({ error: 'Error deleting Historical Place', details: error.message });
+    }
+};
+
+const creatTouristItenrary= async(req,res)=>{
+    try {
+        const {Tourist_Email,Itinerary_Name}=req.body;
+
+        if (!Tourist_Email || !Itinerary_Name){
+            return res.status(400).json({ error: 'All fields are required.' });
+        }
+
+        const touristExists = await Tourist.findOne({ Email: Tourist_Email }); // Change 'email' to 'Email'
+        if (!touristExists) {
+            return res.status(404).json({ error: 'Tourist not found.' });
+        }
+
+        const itineraryExists = await itinerarym.findOne({ Itinerary_Name });
+        if (!itineraryExists) {
+            return res.status(409).json({ error: 'Itinerary name not found.' });
+        }
+
+        if (itineraryExists.Empty_Spots <= 0) {
+            return res.status(400).json({ error: 'No available spots for this itinerary.' });
+        }
+
+        const duplicateItinerary = await tourist_itinerariesm.findOne({ Tourist_Email, Itinerary_Name });
+        if (duplicateItinerary) {
+            return res.status(409).json({ error: 'This itinerary has already been booked by the tourist.' });
+        }
+
+        const newTouristItenrary = new tourist_itinerariesm({Tourist_Email,Itinerary_Name});
+        const savedTouristItenrary = await newTouristItenrary.save();
+        res.status(201).json({ message: 'Tourist itinerary created successfully', Tourist_Itinerary: savedTouristItenrary });
+
+        await itinerarym.findOneAndUpdate(
+            { Itinerary_Name },
+            { $inc: { Booked: 1, Empty_Spots: -1 } } // Increment Booked and decrement Empty_Spots
+        );
+
+    } catch (error) {
+        console.error("Error details:", error.message, error.stack); // Log full error details
+        res.status(500).json({ error: 'Error creating tourist itinerary', details: error.message });
+    }
+}
+
+const filterActivities = async (req, res) => {
+    try {
+        const { minPrice, maxPrice, startDate, endDate, rating, category } = req.body;
+
+        const filters = {};
+
+        // 1. Filter by Price
+        if (minPrice || maxPrice) {
+            const min = parseFloat(minPrice);
+            const max = parseFloat(maxPrice);
+
+            if ((minPrice && isNaN(min)) || (maxPrice && isNaN(max))) {
+                return res.status(400).json({ message: 'Invalid price parameters' });
+            }
+
+            filters.Price = {};
+            if (minPrice) filters.Price.$gte = min;
+            if (maxPrice) filters.Price.$lte = max;
+        }
+
+        // 2. Filter by Date
+        if (startDate || endDate) {
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+                return res.status(400).json({ message: 'Invalid date format' });
+            }
+            end.setHours(23, 59, 59, 999);
+
+            filters.Date = {
+                $gte: start,
+                $lte: end
+            };
+        }
+
+        // 3. Filter by Rating
+        if (rating) {
+            const ratingNumber = parseFloat(rating);
+            if (isNaN(ratingNumber) || ratingNumber < 0 || ratingNumber > 10) {
+                return res.status(400).json({ message: 'Invalid rating parameter. Please provide a number between 0 and 10.' });
+            }
+            filters.Rating = ratingNumber;
+        }
+
+        // 4. Filter by Category
+        if (category) {
+            // Find activities that match the given category
+            const activityCategories = await activity_categoriesm.find({ Category: category });
+
+            // Extract the activity names or IDs from the result
+            const activityNames = activityCategories.map(cat => cat.Activity);
+
+            // Add the category-related filter to the `filters` object
+            filters.Name = { $in: activityNames };
+        }
+
+        // Find activities based on the combined filters
+        const activities = await activity.find(filters).sort({ Date: 1, Rating: -1 });
+
+        // If no activities are found, return a 404
+        if (!activities || activities.length === 0) {
+            return res.status(404).json({ message: 'No activities found matching the filters.' });
+        }
+
+        // Return the filtered activities
+        res.status(200).json({
+            message: 'Filtered activities',
+            activities
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error filtering activities', error: error.message });
+    }
+};
+
+const deleteTouristItenrary = async (req, res) => {
+    try {
+        const { Tourist_Email, Itinerary_Name } = req.body;
+
+        // Validate input
+        if (!Tourist_Email || !Itinerary_Name) {
+            return res.status(400).json({ error: 'All fields are required.' });
+        }
+
+        // Check if the tourist exists
+        const touristExists = await Tourist.findOne({ Email: Tourist_Email });
+        if (!touristExists) {
+            return res.status(404).json({ error: 'Tourist not found.' });
+        }
+
+        // Check if the itinerary exists
+        const itineraryExists = await itinerarym.findOne({ Itinerary_Name });
+        if (!itineraryExists) {
+            return res.status(409).json({ error: 'Itinerary name not found.' });
+        }
+
+        // Check if the tourist itinerary exists
+        const touristItineraryExists = await tourist_itinerariesm.findOne({ Tourist_Email, Itinerary_Name });
+        if (!touristItineraryExists) {
+            return res.status(404).json({ error: 'Tourist itinerary not found.' });
+        }
+
+        // Delete the tourist itinerary
+        await tourist_itinerariesm.deleteOne({ Tourist_Email, Itinerary_Name });
+
+        // Update the itinerary: decrement Booked and increment Empty_Spots
+        await itinerarym.findOneAndUpdate(
+            { Itinerary_Name },
+            { $inc: { Booked: -1, Empty_Spots: 1 } }
+        );
+
+        // Send a response
+        res.status(200).json({ message: 'Tourist itinerary deleted successfully.' });
+
+    } catch (error) {
+        console.error("Error details:", error.message, error.stack); // Log full error details
+        res.status(500).json({ error: 'Error deleting tourist itinerary', details: error.message });
+    }
+};
+
+const updateTouristItenrary = async (req, res) => {
+    try {
+        const { Tourist_Email, Itinerary_Name, newItineraryData } = req.body;
+
+        // Validate input
+        if (!Tourist_Email || !Itinerary_Name || !newItineraryData || !newItineraryData.Itinerary_Name) {
+            return res.status(400).json({ error: 'Tourist email, current itinerary name, and new itinerary name are required.' });
+        }
+
+        const newItineraryName = newItineraryData.Itinerary_Name;
+
+        // Check if the tourist exists
+        const touristExists = await Tourist.findOne({ Email: Tourist_Email });
+        if (!touristExists) {
+            return res.status(404).json({ error: 'Tourist not found.' });
+        }
+
+        // Check if the old itinerary exists
+        const oldItineraryExists = await itinerarym.findOne({ Itinerary_Name });
+        if (!oldItineraryExists) {
+            return res.status(409).json({ error: 'Current itinerary not found.' });
+        }
+
+        // Check if the new itinerary exists
+        const newItineraryExists = await itinerarym.findOne({ Itinerary_Name: newItineraryName });
+        if (!newItineraryExists) {
+            return res.status(409).json({ error: 'New itinerary not found.' });
+        }
+
+        if (newItineraryExists.Empty_Spots <= 0) {
+            return res.status(400).json({ error: 'No available spots for the new itinerary.' });
+        }
+
+        // Check if the tourist itinerary exists
+        const touristItineraryExists = await tourist_itinerariesm.findOne({ Tourist_Email, Itinerary_Name });
+        if (!touristItineraryExists) {
+            return res.status(404).json({ error: 'Tourist itinerary not found.' });
+        }
+
+        // Update the tourist itinerary with the new itinerary name
+        const updatedTouristItinerary = await tourist_itinerariesm.findOneAndUpdate(
+            { Tourist_Email, Itinerary_Name },
+            { $set: { Itinerary_Name: newItineraryName } },
+            { new: true } // Return the updated document
+        );
+
+        // Decrement Booked and increment Empty_Spots for the old itinerary
+        await itinerarym.findOneAndUpdate(
+            { Itinerary_Name },
+            { $inc: { Booked: -1, Empty_Spots: 1 } }
+        );
+
+        // Increment Booked and decrement Empty_Spots for the new itinerary
+        await itinerarym.findOneAndUpdate(
+            { Itinerary_Name: newItineraryName },
+            { $inc: { Booked: 1, Empty_Spots: -1 } }
+        );
+
+        // Send response
+        res.status(200).json({ message: 'Tourist itinerary updated successfully', updatedTouristItinerary });
+
+    } catch (error) {
+        console.error("Error details:", error.message, error.stack); // Log full error details
+        res.status(500).json({ error: 'Error updating tourist itinerary', details: error.message });
+    }
+};
 // ----------------- Activity Category CRUD -------------------
 
 module.exports = { 
@@ -1587,5 +1850,6 @@ module.exports = {
     getAllUpcomingEventsAndPlaces,
     creatTouristItenrary,
     filterActivities,
-    deleteTouristItenrary
+    deleteTouristItenrary,
+    updateTouristItenrary
 };
