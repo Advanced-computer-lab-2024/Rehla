@@ -304,7 +304,7 @@ const filterItineraries = async (req, res) => {
         // Filter by preferences (like beaches, historic areas, etc.)
         if (preferences) {
             const preferenceList = preferences.split(',').map(pref => pref.trim());
-            filters.Locations_to_be_Visited = { $in: preferenceList };
+            filters.P_Tag = { $in: preferenceList };
         }
 
         // Find the itineraries that match the filters
