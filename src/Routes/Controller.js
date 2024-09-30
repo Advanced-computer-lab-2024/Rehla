@@ -1341,8 +1341,7 @@ const filterByCategory = async (req, res) => {
         } 
         // Query to filter activities by the category
         const activities = await activity_categoriesm.find({ Category: category });
-        console.log(category);
-        console.log(activities);
+        
         if (!activities || activities.length === 0) {
             return res.status(404).json({ message: 'No activities found for the given category.' });
         } 
