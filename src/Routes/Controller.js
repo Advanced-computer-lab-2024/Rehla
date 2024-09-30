@@ -1268,7 +1268,7 @@ const filterByCategory = async (req, res) => {
 const viewMyCreatedActivities = async (req, res) => {
     try{
         // Get current date to filter upcoming activities
-      const today = new Date();
+      /*const today = new Date();
 
       // Filter for upcoming activities (including historical places and museums)
       const activitiesFilter = {
@@ -1293,7 +1293,27 @@ const viewMyCreatedActivities = async (req, res) => {
           upcomingActivities: upcomingActivities,
           itinerary: itinerary,
           historicalPlacesAndMuseums: historicalPlacesAndMuseums
-      });
+      });*/
+
+
+          const { Email } = req.body;
+          // Find activities by advertiser's email
+          const advertiser_activities = await advertiser_activitiesm.find({ Email });
+          if (!Email) {
+            return res.status(400).json({ message: "Email is required to filter activities." });
+        }
+  
+          // Check if any activities were found
+          if (activities.length > 0) {
+              res.status(200).json({
+                  message: 'Activities found',
+                  activities,
+              });
+          } else {
+              res.status(404).json({
+                  message: 'No activities found for this email.',
+              });
+          }
     }catch(error){
         res.status(500).json({ message: 'Error fetching data', error: error.message });
     }
