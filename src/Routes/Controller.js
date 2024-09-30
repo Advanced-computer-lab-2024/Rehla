@@ -21,6 +21,9 @@ const advertiser_activitiesm = require('../Models/advertiser_activities');
 const Seller = require("../Models/sellers.js");
 const advertiser_activities = require('../Models/advertiser_activities');
 const historical_places_tags = require('../Models/historical_places_tags.js');
+const tour_guide_itenrariesm = require('../Models/tour_guide_itenraries.js');
+const tourismgoverner_museumsandhistoricalplacesm = require('../Models/tourismgoverner_museumsandhistoricalplaces.js');
+
 
 // Creating a new Admin user or Tourism Governor
 const createUserAdmin = async (req, res) => {
@@ -1866,6 +1869,67 @@ const viewMyCreatedActivities = async(req, res) =>{
     }
 };
 
+const viewMyCreatedItenrary = async(req, res) =>{
+    try{
+        const { Email } = req.body;
+        
+        // Find activities by tour guide's email
+        const TEmail = await tour_guide_itenrariesm.findOne({ mail: Email });
+
+        if (!TEmail) {
+            return res.status(404).json({ message: 'Email not found' });
+        }
+
+        // Check if any itenraries were found
+        if (tour_guide_itenraries.length > 0) {
+            res.status(200).json({
+                message: 'Itenrary found',
+                itineraries: tour_guide_itenrariesm,
+                
+            });
+        } else {
+            res.status(404).json({
+                message: 'No itenrary found for this email.',
+            });
+        }
+        
+    }catch(error){
+        console.error(error);
+        res.status(500).json({ message: 'Error retrieving itenrary', error: error.message });
+    }
+};
+
+const viewMyCreatedMuseumsAndHistoricalPlaces = async(req, res) =>{
+    try{
+        const { Email } = req.body;
+        
+        // Find activities by tour guide's email
+        const email = await tourismgoverner_museumsandhistoricalplacesm.findOne({ email: Email });
+
+        if (!email) {
+            return res.status(404).json({ message: 'Email not found' });
+        }
+
+        // Check if any itenraries were found
+        if (tourismgoverner_museumsandhistoricalplacesm.length > 0) {
+            res.status(200).json({
+                message: 'Museums and Historical Placees found',
+                museums: tourismgoverner_museumsandhistoricalplacesm,
+                historical_places:tourismgoverner_museumsandhistoricalplacesm
+                
+            });
+        } else {
+            res.status(404).json({
+                message: 'No Museums and Historical Places found for this email.',
+            });
+        }
+        
+    }catch(error){
+        console.error(error);
+        res.status(500).json({ message: 'Error retrieving Museums and Historical Places', error: error.message });
+    }
+};
+
 const createHistoricalTag = async(req,res) => {
 
     try {
@@ -1949,5 +2013,7 @@ module.exports = {
     updateTouristItenrary,
     getBookedItineraries,
     viewMyCreatedActivities,
-    createHistoricalTag
+    createHistoricalTag,
+    viewMyCreatedItenrary,
+    viewMyCreatedMuseumsAndHistoricalPlaces
 };

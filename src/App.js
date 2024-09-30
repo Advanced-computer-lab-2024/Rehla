@@ -61,7 +61,9 @@ const {createUserAdmin,
   updateTouristItenrary,
   getBookedItineraries,
   viewMyCreatedActivities,
-  createHistoricalTag
+  createHistoricalTag,
+  viewMyCreatedItenrary,
+  viewMyCreatedMuseumsAndHistoricalPlaces
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -156,4 +158,6 @@ app.put("/updateTouristItenrary",updateTouristItenrary);
 app.get("/getBookedItineraries",getBookedItineraries);
 app.get("/viewMyCreatedActivities", viewMyCreatedActivities);
 app.post("/createHistoricalTag", createHistoricalTag);
+app.get("/viewMyCreatedItenrary", viewMyCreatedItenrary);
+app.get("/viewMyCreatedMuseumsAndHistoricalPlaces", viewMyCreatedMuseumsAndHistoricalPlaces);
 
