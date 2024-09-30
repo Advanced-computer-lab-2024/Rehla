@@ -401,7 +401,57 @@ const registerRequest = async (req, res) => {
         return res.status(500).json({ error: 'Error submitting request', details: error.message });
     }
 };
+const createActivityCategory = async (req, res) => {
+    try {
+        const { Name} = req.body;
+  
+        // Ensure all required fields are provided
+        if (!Name) {
+            return res.status(400).json({ error: 'All fields are required.' });
+        }
+  
 
+        const activityCategory = new activity_categoriesm({Name});
+        const savedActivityCategory = await activityCategory.save();
+        res.status(201).json(savedActivityCategory );
+  
+    } catch (error) {
+        console.error('Error details:', error); // Add detailed logging
+        res.status(500).json({ error: 'Error creating activity category', details: error.message || error });
+      }
+  };
+  
+  const readActivityCategories = async (req, res) => {
+      try {
+          const categories = await activity_categoriesm.find();
+          res.status(200).json(categories);
+      } catch (error) {
+          res.status(500).json({ error: 'Error fetching activity categories', details: error });
+      }
+  };
+  const updateActivityCategory = async (req, res) => {
+      try {
+          const { currentName } = req.params;
+          const { newName } = req.body;
+          if (!newName) {
+              return res.status(400).json({ error: 'New category name is required.' });
+          }
+  
+          const updatedCategory = await activity_categoriesm.findOneAndUpdate(
+              { Category_Name: currentName }, 
+              { Category_Name: newName },     
+              { new: true }                   
+          );
+          if (!updatedCategory) {
+              return res.status(404).json({ message: 'Category not found' });
+          }
+  
+          res.status(200).json({ message: 'Category updated successfully', data: updatedCategory });
+      } catch (error) {
+          console.error('Error updating category:', error.message);
+          res.status(500).json({ error: 'Error updating category', details: error.message });
+      }
+  };
 const searchByNameCategoryTag = async (req, res) => {
     try {
         const { searchTerm } = req.query;
@@ -1573,6 +1623,7 @@ module.exports = {
     filterItineraries,
     registerTourist,
     registerRequest,
+    createActivityCategory,
     searchByNameCategoryTag,
     getProductsSortedByRating, 
     addProduct,
