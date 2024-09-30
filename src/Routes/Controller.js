@@ -1490,6 +1490,9 @@ const updateMuseum = async (req, res) => {
     if (!updatedMuseum) {
         return res.status(404).json({ message: 'Museum not found' });
     }
+    }catch(error){
+        res.status(500).json({ message: 'Error Updating museum', error: error.message });
+    }
 };
 
 const viewMyCreatedActivities = async (req, res) => {
