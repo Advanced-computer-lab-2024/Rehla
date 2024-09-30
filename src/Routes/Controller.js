@@ -20,6 +20,7 @@ const tourist_itinerariesm = require('../Models/tourist_iteneraries') ;
 const advertiser_activitiesm = require('../Models/advertiser_activities');
 const Seller = require("../Models/sellers.js");
 const advertiser_activities = require('../Models/advertiser_activities');
+const historical_places_tags = require('../Models/historical_places_tags.js');
 
 // Creating a new Admin user or Tourism Governor
 const createUserAdmin = async (req, res) => {
@@ -1865,6 +1866,25 @@ const viewMyCreatedActivities = async(req, res) =>{
     }
 };
 
+const createHistoricalTag = async(req,res) => {
+
+    try {
+       const {Name, Historical_Period, Type} = req.body;
+   
+       // Create a new user instance with the data
+       const newTag = new historical_places_tags({ Name, Historical_Period, Type});
+   
+       // Save the user to the database
+       await newTag.save();
+   
+       // Return success response
+       res.status(201).json({ message: 'Tag created successfully', tag: newTag });
+     } catch (error) {
+       // Handle errors
+       res.status(500).json({ message: 'Error creating tag', error: error.message });
+     }
+};
+
 
 
 // ----------------- Activity Category CRUD -------------------
@@ -1928,5 +1948,6 @@ module.exports = {
     deleteTouristItenrary,
     updateTouristItenrary,
     getBookedItineraries,
-    viewMyCreatedActivities
+    viewMyCreatedActivities,
+    createHistoricalTag
 };
