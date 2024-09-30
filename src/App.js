@@ -2,7 +2,9 @@
 const express = require("express");
 const mongoose = require('mongoose');
 mongoose.set('strictQuery', false);
+const cors = require('cors');
 require("dotenv").config();
+
 const {createUserAdmin,
   deleteUserAdmin,
   getAllProducts , 
@@ -71,6 +73,7 @@ const MongoURI = process.env.MONGO_URI;
 // App variables
 const app = express();
 const port = process.env.PORT || "8000";
+app.use(cors()); // Enable CORS for all routes
 
 // MongoDB connection
 mongoose.connect(MongoURI)
