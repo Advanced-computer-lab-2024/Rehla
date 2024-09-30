@@ -10,17 +10,22 @@ const {createUserAdmin,
   filterProductByPrice,
   sortActivities,
   sortItineraries,
-  filterByTag,
+  filterPlacesAndMuseums,
   filterItineraries,
-  createActivityCategory,
   registerTourist,
   registerRequest,
+  createActivityCategory,
+  readActivityCategories,
+  updateActivityCategory,
+  deleteActivityCategory,
+  createPreferenceTag,
+  readPreferenceTag,
+  updatePreferenceTag,
+  deletePreferenceTag,
+  searchByNameCategoryTag,
   getProductsSortedByRating, 
   addProduct,
   updateProduct,
-  filterByPrice,
-  filterByDate,filterByRating,
-  viewAllUpcomingEvents,
   getTouristProfile ,
   updateTouristProfile,
   createSellerProfile ,
@@ -39,10 +44,20 @@ const {createUserAdmin,
   deleteActivityByAdvertiser,
   createUserTourism_Governer,
   deleteUserTourism_Governer,
-  filterByCategory,
   getItineraryByName,
+  createMuseum,
+  readMuseum,
+  createHistoricalPlace,
+  readHistoricalPlace,
+  updateMuseum,
+  updateHistoricalPlace,
+  deleteMuseum,
+  deleteHistoricalPlace,
   updateItinerary,
-  deleteItinerary
+  deleteItinerary,getAllUpcomingEventsAndPlaces,
+  creatTouristItenrary,
+  filterActivities,
+  deleteTouristItenrary
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -63,7 +78,6 @@ mongoose.connect(MongoURI)
 .catch(err => console.log(err));
 
 // Routes
-
 app.get("/home", (req, res) => {
   res.status(200).send("You have everything installed!");
 });
@@ -81,18 +95,22 @@ app.get("/getProductByName/:productName", searchProductByName);
 app.get("/filterProductsByPrice/:minPrice/:maxPrice", filterProductByPrice); // Filter products based on price range
 app.get("/sortActivities", sortActivities); // Route for sorting activities
 app.get("/sortItineraries", sortItineraries);
-app.get("/filterByTag", filterByTag);
+app.get('/filter/:category/:value', filterPlacesAndMuseums);
 app.get("/filterItineraries", filterItineraries);
-app.post("/addCategory",createActivityCategory);
 app.post("/registerTourist",registerTourist);
 app.post("/registerRequest",registerRequest);
+app.post("/addCategory",createActivityCategory);
+app.get("/getCategory",readActivityCategories);
+app.put("/updateCategory/:currentName",updateActivityCategory);
+app.delete("/deleteCategory",deleteActivityCategory);
+app.post("/addTag",createPreferenceTag);
+app.get("/getCategory",readPreferenceTag);
+app.put("/updateCategory/:currentName",updatePreferenceTag);
+app.delete("/deleteCategory",deletePreferenceTag);
+app.get("/searchByNameCategoryTag",searchByNameCategoryTag);
 app.get("/getProductsSortedByRating" , getProductsSortedByRating); //Tourist-Admin-Seller :sort products by rating 
 app.post("/addProduct" ,addProduct); //Admin - Seller : add a new product
 app.put("/updateProduct" , updateProduct);//Admin - Seller : edit products 
-app.get("/filterByPrice/:minPrice/:maxPrice", filterByPrice); //Tourist - Guest : Filter activities 
-app.get("/filterByDate/:startDate/:endDate", filterByDate);//Tourist - Guest : Filter activities 
-app.get("/filterByRating/:rating", filterByRating);//Tourist - Guest : Filter activities 
-app.get("/allupcomingEvents" , viewAllUpcomingEvents);//Tourist - Guest : View all upcoming events 
 app.get("/getTouristProfile", getTouristProfile); //Tourist : view my profile 
 app.put("/updateTouristProfile" , updateTouristProfile); //Tourist : update my profile 
 app.post("/createSellerProfile", createSellerProfile); //Seller : createSellerProfile 
@@ -105,7 +123,7 @@ app.post("/createItinerary" , createItinerary);//tour Guide : Create itinerary
 app.get("/getItineraryByName", getItineraryByName);//getItineraryByName
 app.put("/updateItinerary" , updateItinerary);//updateItinerary
 app.delete("/deleteItinerary", deleteItinerary);//deleteItinerary
-
+app.get("/getAllUpcomingEventsAndPlaces", getAllUpcomingEventsAndPlaces);
 
 app.post("/addUserAdvertisers", createUserAdvertiser);  // Advertiser request
 app.post("/readAdvertisers", readAdvertiser); // Route for reading an advertiser by email
@@ -116,8 +134,17 @@ app.post("/readActivity", readActivity);
 app.put("/updateActivity", updateActivityByAdvertiser);
 app.delete("/deleteActivityByAdvert", deleteActivityByAdvertiser);
 
-
-
 app.post("/createUserTourism_Governer", createUserTourism_Governer);
 app.delete("/deleteUserTourism_Governer", deleteUserTourism_Governer);
-app.get("/filterByCategory", filterByCategory);
+
+app.post("/creatingMuseum",createMuseum);
+app.post("/readMuseum",readMuseum);
+app.post("/createHistoricalPlace",createHistoricalPlace);
+app.post("/readHistoricalPlace",readHistoricalPlace);
+app.put("/updateMuseum",updateMuseum);
+app.put("/updateHistoricalPlace",updateHistoricalPlace);
+app.delete("/deleteMuseum",deleteMuseum);
+app.delete("/deleteHistoricalPlace",deleteHistoricalPlace);
+app.post("/creatTouristItenrary",creatTouristItenrary);
+app.get("/filterActivities",filterActivities);
+app.delete("/deleteTouristItenrary",deleteTouristItenrary);

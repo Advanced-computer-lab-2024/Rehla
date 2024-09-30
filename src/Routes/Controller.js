@@ -18,7 +18,7 @@ const museumsm = require('../Models/museums') ;
 const p_tagsm = require('../Models/p_tags') ;
 const tourist_itinerariesm = require('../Models/tourist_iteneraries') ;
 const advertiser_activitiesm = require('../Models/advertiser_activities');
-
+const Seller = require("../Models/sellers.js");
 
 // Creating a new Admin user or Tourism Governor
 const createUserAdmin = async (req, res) => {
@@ -33,6 +33,16 @@ const createUserAdmin = async (req, res) => {
         // Ensure only "Admin" or "Tourism Governor" are allowed as Type
         if (Type !== 'Admin' && Type !== 'Tourism Governor') {
             return res.status(400).json({ error: 'Invalid type. Only "Admin" or "Tourism Governor" are allowed.' });
+        }
+
+        const existingGoverner = await tourism_governers.findOne({ Email });
+        if (existingGoverner) {
+            return res.status(400).json({ error: 'Email is already in use.' });
+        }
+
+        const existingAdmin = await Admin.findOne({ Email });
+        if (existingAdmin) {
+            return res.status(400).json({ error: 'Email is already in use.' });
         }
 
         let newUser;
@@ -72,15 +82,26 @@ const createUserAdmin = async (req, res) => {
 const deleteUserAdmin = async (req, res) => {
     try {
         const { email } = req.params; // Get the email from URL parameters
-
-        // Find the user by email and delete
-        const deletedUser = await Admin.findOneAndDelete({ Email: email });
-
+  
+        // Define all models where the user could exist
+        const models = [Admin, tourism_governers, Tourist, tour_guidem, AdvertisersModel, Seller]; // Add all the models here
+        
+        // Initialize an empty variable to store the deleted user
+        let deletedUser = null;
+  
+        // Use Promise.all to search all collections in parallel
+        await Promise.all(models.map(async (Model) => {
+            const user = await Model.findOneAndDelete({ Email: email });
+            if (user) deletedUser = user;  // If a user is found, store the deleted user
+        }));
+  
+        // If no user was found in any collection, return a 404 error
         if (!deletedUser) {
-            return res.status(404).json({ error: 'User not found' });
+            return res.status(404).json({ error: 'User not found in any table.' });
         }
-
-        res.status(200).json({ message: 'User deleted successfully' });
+  
+        // If a user was deleted, send success response
+        res.status(200).json({ message: 'User deleted successfully', user: deletedUser });
     } catch (error) {
         res.status(500).json({ error: 'Error deleting user', details: error.message });
     }
@@ -102,7 +123,7 @@ const getAllProducts = async (req, res) => {
       console.error(error);
       return res.status(500).json({ message: "An error occurred while fetching products." });
     }
-  };
+};
 
 const searchProductByName = async (req, res) => {
     const { productName } = req.params; // Get product name from request body
@@ -194,26 +215,67 @@ const sortActivities = async (req, res) => {
   }
 };
 
-const filterByTag = async (req, res) => {
-  try {
-      const { tag } = req.query;
+const sortItineraries = async (req, res) => {
+    try {
+        const { sortBy } = req.query; // Extract sorting criteria from query parameters
+        const sortOptions = {};
+  
+        // Determine the sort order based on the provided parameter
+        if (sortBy === 'price') {
+            sortOptions.Tour_Price = 1; // Ascending order
+        } else if (sortBy === 'rating') {
+            sortOptions.Rating = 1; // Ascending order
+        } else {
+            return res.status(400).json({ message: 'Invalid sort criteria. Use "price" or "rating".' });
+        }
+  
+        // Fetch upcoming activities and sort them accordingly
+        const sortedItineraries = await itinerary.find() // Assuming true means upcoming
+            .sort(sortOptions)
+            .exec();
+  
+        if (!sortedItineraries || sortedItineraries.length === 0) {
+            return res.status(404).json({ message: 'No itinerary found.' });
+        }
+  
+        res.status(200).json(sortedItineraries);
+    } catch (error) {
+        res.status(500).json({ error: 'Error sorting itinerary', details: error.message });
+    }
+};
 
-      // Check if the tag is provided
-      if (!tag) {
-          return res.status(400).json({ message: "Tag is required to filter activities." });
-      }
+const filterPlacesAndMuseums = async (req, res) => {
+    const { category, value } = req.params; // Get category and value from request parameters
 
-      // Query to filter activities by the tag
-      const activities = await activity.find({ Tag: tag });
+    try {
+        let results;
 
-      if (!activities || activities.length === 0) {
-          return res.status(404).json({ message: 'No activities found for the given tag.' });
-      }
+        if (category === 'historical_places') {
+            // Step 1: Get all tags that match the specified type
+            const tagDetails = await historical_places_tagsm.find({ Type: value });
 
-      res.status(200).json(activities);
-  } catch (error) {
-      res.status(500).json({ error: 'Error filtering activities by tag', details: error.message });
-  }
+            // Step 2: Extract the names from the matching tags
+            const matchingNames = tagDetails.map(detail => detail.Name);
+
+            // Step 3: Find historical places that have matching names
+            results = await historical_placesm.find({ Name: { $in: matchingNames } });
+        } else if (category === 'museums') {
+            // Step 1: Find museums that match the specified tag
+            results = await museumsm.find({ Tag: value });
+        } else {
+            return res.status(400).json({ message: 'Invalid category. Use "historical_places" or "museums".' });
+        }
+
+        // Step 4: Send the response
+        if (results.length > 0) {
+            res.status(200).json(results); // Return the filtered results
+        } else {
+            res.status(404).json({ message: `No ${category} found for this ${category === 'historical_places' ? 'type' : 'tag'}.` });
+        }
+    } catch (error) {
+        console.error('Error filtering:', error);
+        res.status(500).json({ error: 'Internal server error' }); // Handle error
+    }
 };
 
 // Controller function to filter itineraries based on criteria
@@ -253,43 +315,6 @@ const filterItineraries = async (req, res) => {
     } catch (err) {
         res.status(500).json({ message: "Error while filtering itineraries", error: err.message });
     }
-};
-
-
-const createActivityCategory = async (req, res) => {
-  try {
-      const { Name, Location, Time, Duration, Price, Date, Tag, Category, Discount_Percent, Booking_Available, Available_Spots, Booked_Spots, Rating } = req.body;
-
-      // Ensure all required fields are provided
-      if (!Name || !Location || !Time || !Duration || !Price || !Date || !Tag || !Category || !Discount_Percent || Booking_Available === undefined || !Available_Spots || !Booked_Spots || !Rating) {
-          return res.status(400).json({ error: 'All fields are required.' });
-      }
-
-      // Create a new Activity Category object
-      const activityCategory = new activity({
-          Name,
-          Location,
-          Time,
-          Duration,
-          Price,
-          Date,
-          Tag,
-          Category,
-          Discount_Percent,
-          Booking_Available,
-          Available_Spots,
-          Booked_Spots,
-          Rating
-      });
-
-      // Save the new Activity Category to the database
-      await activityCategory.save();
-      res.status(201).json(activityCategory);
-
-  } catch (error) {
-      console.error('Error details:', error); // Add detailed logging
-      res.status(500).json({ error: 'Error creating activity category', details: error.message || error });
-    }
 };
 
 const registerTourist = async (req, res) => {
@@ -374,6 +399,220 @@ const registerRequest = async (req, res) => {
         return res.status(500).json({ error: 'Error submitting request', details: error.message });
     }
 };
+
+const createActivityCategory = async (req, res) => {
+    try {
+        const { Name} = req.body;
+        if (!Name) {
+            return res.status(400).json({ error: 'All fields are required.' });
+        }
+        const activityCategory = new categoriesm({Name});
+        const savedActivityCategory = await activityCategory.save();
+        res.status(201).json(savedActivityCategory );
+  
+    } catch (error) {
+        console.error('Error details:', error); // Add detailed logging
+        res.status(500).json({ error: 'Error creating  category', details: error.message || error });
+      }
+};
+  
+const readActivityCategories = async (req, res) => {
+      try {
+          const categories = await categoriesm.find();
+          res.status(200).json(categories);
+      } catch (error) {
+          res.status(500).json({ error: 'Error fetching categories', details: error });
+      }
+};
+
+const updateActivityCategory = async (req, res) => {
+      try {
+          const { currentName } = req.params;
+          const { newName } = req.body;
+          if (!newName) {
+              return res.status(400).json({ error: 'New category name is required.' });
+          }
+  
+          const updatedCategory = await categoriesm.findOneAndUpdate(
+              { Name: currentName }, 
+              { Name: newName },     
+              { new: true }                   
+          );
+          if (!updatedCategory) {
+              return res.status(404).json({ message: 'Category not found' });
+          }
+  
+          res.status(200).json({ message: 'Category updated successfully', data: updatedCategory });
+      } catch (error) {
+          console.error('Error updating category:', error.message);
+          res.status(500).json({ error: 'Error updating category', details: error.message });
+      }
+};
+
+const deleteActivityCategory = async (req,res) =>{
+    try {
+
+        const { Name } = req.body;
+
+        if (!Name) {
+            return res.status(400).json({ message: 'Category name is required' });
+        }
+        const category = await categoriesm.findOne({ Name: Name });
+
+        if (!category) {
+            return res.status(404).json({ message: 'Category not found' });
+        }
+        await categoriesm.deleteOne({ Name: Name });
+        res.status(200).json({ message: 'Category deleted successfully' });
+    } catch (error) {
+
+        res.status(500).json({ message: 'Error deleting Category', error: error.message });
+    }
+};
+
+const createPreferenceTag = async (req, res) => {
+    try {
+        const { Name} = req.body;
+        if (!Name) {
+            return res.status(400).json({ error: 'All fields are required.' });
+        }
+        const preferenceTag = new p_tagsm({Name});
+        const savedPreferenceTag = await preferenceTag.save();
+        res.status(201).json(savedPreferenceTag );
+  
+    } catch (error) {
+        console.error('Error details:', error); // Add detailed logging
+        res.status(500).json({ error: 'Error creating pereference tag', details: error.message || error });
+    }
+};
+  
+const readPreferenceTag = async (req, res) => {
+    try {
+        const preferences = await p_tagsm.find();
+        res.status(200).json(preferences);
+    } catch (error) {
+        res.status(500).json({ error: 'Error fetching pereference tags', details: error });
+    }
+};
+  
+const updatePreferenceTag = async (req, res) => {
+    try {
+        const { currentName } = req.params;
+        const { newName } = req.body;
+        if (!newName) {
+            return res.status(400).json({ error: 'New category name is required.' });
+        }
+  
+        const updatedTag = await p_tagsm.findOneAndUpdate(
+            { Name: currentName }, 
+            { Name: newName },     
+            { new: true }                   
+        );
+        if (!updatedTag) {
+            return res.status(404).json({ message: 'Tag not found' });
+        }
+  
+        res.status(200).json({ message: 'Tag updated successfully', data: updatedCategory });
+    } catch (error) {
+        console.error('Error updating Tag:', error.message);
+        res.status(500).json({ error: 'Error updating Tag', details: error.message });
+    }
+};
+  
+const deletePreferenceTag = async (req,res) =>{
+    try {
+  
+        const { Name } = req.body;
+  
+        if (!Name) {
+            return res.status(400).json({ message: 'Tag name is required' });
+        }
+        const tag = await p_tagsm.findOne({ Name: Name });
+  
+        if (!tag) {
+            return res.status(404).json({ message: 'Tag not found' });
+        }
+        await p_tagsm.deleteOne({ Name: Name });
+        res.status(200).json({ message: 'Tag deleted successfully' });
+    } catch (error) {
+  
+        res.status(500).json({ message: 'Error Tag Category', error: error.message });
+    }
+};
+
+const searchByNameCategoryTag = async (req, res) => {
+    try {
+        const { searchTerm } = req.query;
+  
+        if (!searchTerm) {
+            return res.status(400).json({ error: 'Search term is required.' });
+        }
+  
+        // Define a regex to match the search term (case-insensitive)
+        const searchRegex = new RegExp(searchTerm, 'i');
+  
+        // Search in the museum collection by Name or Tag
+        const museums = await museumsm.find({
+            $or: [
+                { Name: searchRegex },
+                { Tag: searchRegex }
+            ]
+        });
+  
+        // Search in the historical places collection by Name
+        const historicalPlaces = await historical_placesm.find({
+            Name: searchRegex
+        });
+  
+        const historicalTags = await historical_places_tagsm.find({
+            Type: searchRegex
+        })
+  
+        const activityName = await activity.find({
+            Name: searchRegex
+        })
+  
+        // Search in the activity tags by Tag and fetch corresponding activities
+        const activityTags = await activity_tagsm.find({
+            Tag: searchRegex
+        });
+  
+        // Search in the activity categories by Category
+        const activityCategories = await activity_categoriesm.find({
+            Category: searchRegex
+        })
+  
+        // Search in the itineraries collection by Itinerary_Name or Tag (P_Tag)
+        const itineraries = await itinerarym.find({
+            $or: [
+                { Itinerary_Name: searchRegex },
+                { P_Tag: searchRegex }
+            ]
+        });
+  
+        // Combine all search results into one object
+        const searchResults = {
+            museums,
+            historicalPlaces:{
+                name : historicalPlaces,
+                tag : historicalTags
+            },
+            activities: {
+                name: activityName,
+                tags: activityTags,
+                categories: activityCategories
+            },
+            itineraries
+        };
+  
+        // Return the results as JSON
+        res.status(200).json(searchResults);
+  
+    } catch (error) {
+        console.error('Error during search:', error);
+        res.status(500).json({ error: 'Error searching for data', details: error.message });
+    }
+};
   
 //Tourist - admin - seller : Sort Product by ratings
 const getProductsSortedByRating = async (req, res) => {
@@ -387,7 +626,7 @@ const getProductsSortedByRating = async (req, res) => {
       // Handle errors
       res.status(500).json({ message: 'Error fetching products', error: error.message });
     }
- };
+};
 
 //Admin - seller : add a product with its details , price and available quantities 
 const addProduct = async (req, res) => {
@@ -475,144 +714,6 @@ const updateProduct = async (req, res) => {
 };
 
   //Tourist - Guest :Activities Filter 
-const filterByPrice = async (req, res) => {
-    try {
-        const { minPrice, maxPrice } = req.params;
-
-        // Ensure minPrice and maxPrice are valid numbers
-        const min = parseFloat(minPrice);
-        const max = parseFloat(maxPrice);
-
-        // Check if either min or max is NaN
-        if ((minPrice && isNaN(min)) || (maxPrice && isNaN(max))) {
-            return res.status(400).json({ message: 'Invalid price parameters' });
-        }
-
-        // Create a price filter object
-        const priceFilter = {};
-        if (minPrice) priceFilter.$gte = min; // Greater than or equal to minPrice
-        if (maxPrice) priceFilter.$lte = max; // Less than or equal to maxPrice
-
-        // Construct the filter only if priceFilter is not empty
-        const filter = Object.keys(priceFilter).length ? { Price: priceFilter } : {};
-
-        // Find and return activities based on price filter
-        const activities = await activity.find(filter).sort({ Date: 1, Rating: -1 });
-        res.status(200).json({
-            message: 'Filtered activities by price',
-            activities
-        });
-    } catch (error) {
-        res.status(500).json({ message: 'Error filtering activities by price', error: error.message });
-    }
-};
-
-const filterByDate = async (req, res) => {
-  try {
-      const { startDate, endDate } = req.params;
-
-      // Convert startDate and endDate strings into JavaScript Date objects
-      const start = new Date(startDate);
-      const end = new Date(endDate);
-
-      // Validate that the dates are valid
-      if (isNaN(start.getTime()) || isNaN(end.getTime())) {
-          return res.status(400).json({ message: 'Invalid date format' });
-      }
-
-      // Set the end date to the end of the day if you want to include activities from the whole endDate
-      end.setHours(23, 59, 59, 999);
-
-      // Define the filter to match the date range
-      const dateFilter = {
-          Date: {
-              $gte: start, // Greater than or equal to the start date
-              $lte: end    // Less than or equal to the end date
-          }
-      };
-
-      // Find the activities that match the date range
-      const activities = await activity.find(dateFilter).sort({ Date: 1 });
-
-      // Return the filtered activities
-      res.status(200).json({
-          message: 'Filtered activities by date',
-          activities
-      });
-  } catch (error) {
-      res.status(500).json({ message: 'Error filtering activities by date', error: error.message });
-  }
-};
-
-const filterByRating = async (req, res) => {
-  try {
-      // Get the rating from the request parameters
-      const rating = parseFloat(req.params.rating);
-
-      // Validate the rating (ensure it's a number and within a valid range)
-      if (isNaN(rating) || rating < 0 || rating > 10) {
-          return res.status(400).json({ message: 'Invalid rating parameter. Please provide a number between 0 and 5.' });
-      }
-
-      // Find activities with the exact rating
-      const activities = await activity.find({
-          Rating: rating // Filter for activities with the exact rating
-      });
-
-      // Check if any activities were found
-      if (activities.length === 0) {
-          return res.status(404).json({ message: 'No activities found with the exact given rating' });
-      }
-
-      // Return the found activities
-      res.status(200).json({
-          message: `Activities found with an exact rating of: ${rating}`,
-          activities
-      });
-  } catch (error) {
-      // Log the error for debugging
-      console.error("Error filtering activities by rating:", error);
-
-      // Handle errors and send a 500 response
-      res.status(500).json({ message: 'Error filtering activities by rating', error: error.message });
-  }
-};
-
-//Tourist - Guest : View activities-itineraries- museums/historical places
-const viewAllUpcomingEvents = async (req, res) => {
-  try {
-      // Get current date to filter upcoming activities
-      const today = new Date();
-
-      // Filter for upcoming activities (including historical places and museums)
-      const activitiesFilter = {
-          Date: { $gte: today }, // Only future activities
-      };
-
-      // Find upcoming activities in general
-      const upcomingActivities = await activity.find(activitiesFilter);
-
-      // Filter specifically for historical places and museums within the activity table
-      const historicalPlacesAndMuseums = await activity.find({
-          ...activitiesFilter,
-          Category: { $in: ["historic place", "museum"] } // Categories for places and museums
-      });
-
-      // Query the itineraries table (no Date filter since it might not have dates)
-      const itinerary = await itinerarym.find();
-
-      // Return all data
-      res.status(200).json({
-          message: 'All upcoming activities, itineraries, and historical places/museums',
-          upcomingActivities: upcomingActivities,
-          itinerary: itinerary,
-          historicalPlacesAndMuseums: historicalPlacesAndMuseums
-      });
-  } catch (error) {
-      // Handle errors
-      res.status(500).json({ message: 'Error fetching data', error: error.message });
-  }
-};
 
 // Tourist : view Tourist profile
 const getTouristProfile = async (req, res) => {
@@ -728,9 +829,9 @@ const getSellerProfile = async (req, res) => {
     } catch (error) {
       res.status(500).json({ message: 'Error retrieving seller profile', error: error.message });
     }
-  };
+};
 
-  const updateSellerProfile = async (req, res) => {
+const updateSellerProfile = async (req, res) => {
     try {
         // Extract email and the fields to update from the request body
         const {Username, Email, Password, Shop_Name, Description, Shop_Location,Type } = req.body;
@@ -804,8 +905,7 @@ const createTourGuideProfile = async (req, res) => {
         res.status(500).json({ message: 'Error creating tour guide profile', error: error.message });
     }
 };
-
-  
+ 
 //Tour guide : update profile
 const updateTourGuideProfile = async (req, res) => {
     try {
@@ -872,9 +972,8 @@ const getTourGuideProfile = async (req, res) => {
     }
 };
 
-
 //Create an itinerary 
- const createItinerary = async (req, res) => {
+const createItinerary = async (req, res) => {
     try {
         // Destructure the itinerary data from the request body
         const { 
@@ -1049,6 +1148,41 @@ const deleteItinerary = async (req, res) => {
     }
 };
 
+//view all upcoming: itineraries , activities & historical places and museums
+const getAllUpcomingEventsAndPlaces = async (req, res) => {
+    try {
+        // Get the current date
+        const currentDate = new Date();
+
+        // Query itineraries where Available_Date_Time is in the future
+        const upcomingItineraries = await itinerarym.find({
+            Available_Date_Time: { $gt: currentDate }
+        });
+
+        // Query activities where Date is greater than or equal to the current date
+        const upcomingActivities = await activity.find({
+            Date: { $gte: currentDate }
+        });
+
+        // Query to find all museums in the database
+        const museums = await museumsm.find();
+
+        // Query to find all historical places in the database
+        const historicalPlaces = await historical_placesm.find();
+
+        // Prepare the response
+        res.status(200).json({
+            message: 'Upcoming events and places retrieved successfully',
+            upcomingItineraries: upcomingItineraries.length > 0 ? upcomingItineraries : 'No upcoming itineraries found',
+            upcomingActivities: upcomingActivities.length > 0 ? upcomingActivities : 'No upcoming activities found',
+            museums: museums.length > 0 ? museums : 'No museums found',
+            historicalPlaces: historicalPlaces.length > 0 ? historicalPlaces : 'No historical places found'
+        });
+    } catch (error) {
+        // Handle errors
+        res.status(500).json({ message: 'Error retrieving data', error: error.message });
+    }
+};
 
 //Creating Advertiser as a request
 const createUserAdvertiser = async (req, res) => {
@@ -1080,7 +1214,6 @@ const createUserAdvertiser = async (req, res) => {
 };
 
 //Reading all advertiser detail by email
-
 const readAdvertiser = async (req,res)=>{
     try{
         const { email } = req.body; 
@@ -1098,7 +1231,6 @@ const readAdvertiser = async (req,res)=>{
 }
 
 //Updating advertiser using email
-
 const updateUserAdvertiser = async (req, res) => {
     //update a user in the database
     try{
@@ -1118,7 +1250,6 @@ const updateUserAdvertiser = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
     }
 };
-
 
 //Advertiser Creating An Activity
 const createActivityByAdvertiser = async (req, res) => {
@@ -1143,7 +1274,6 @@ const createActivityByAdvertiser = async (req, res) => {
 };
 
 //Advertiser Reading Activity
-
 const readActivity = async (req,res)=>{
     try{
         const { name } = req.body; // Assuming email is passed as a URL parameter
@@ -1160,9 +1290,7 @@ const readActivity = async (req,res)=>{
     }
 }
 
-
 //Advertiser Updates Activity
-
 const updateActivityByAdvertiser = async (req, res) => {
     //update a user in the database
     try{
@@ -1186,7 +1314,6 @@ const updateActivityByAdvertiser = async (req, res) => {
 };
 
 //Advertiser deletes activity
-
 const deleteActivityByAdvertiser = async (req, res) => {
     try {
         const {Name} = req.body;
@@ -1204,8 +1331,6 @@ const deleteActivityByAdvertiser = async (req, res) => {
         res.status(500).json({ error: 'Error deleting user', details: error.message });
     }
 };
-
-
 
 const createUserTourism_Governer = async(req,res) => {
     //add a new user to the database with 
@@ -1225,7 +1350,8 @@ const createUserTourism_Governer = async(req,res) => {
        // Handle errors
        res.status(500).json({ message: 'Error creating user', error: error.message });
      }
- };
+};
+
  const deleteUserTourism_Governer = async (req, res) => {
     try {
         const Email = req.body;
@@ -1242,33 +1368,134 @@ const createUserTourism_Governer = async(req,res) => {
         res.status(500).json({ error: 'Error deleting user', details: error });
     }
 };
-const filterByCategory = async (req, res) => {
+
+
+const createMuseum = async (req, res) => {
     try {
-        const {category} = req.params;
+        const {  Name,description,pictures, location,Country,
+            Opening_Hours,S_Tickets_Prices,F_Tickets_Prices,N_Tickets_Prices , Tag } = req.body;
         
-        // Check if the category is provided
-        if (!category) {
-            return res.status(400).json({ message: "Category is required to filter activities." });
+            if (!Name || !description || !pictures || !location ||!Country
+                ||!Opening_Hours||!S_Tickets_Prices||!F_Tickets_Prices||!N_Tickets_Prices ||!Tag) {
+            return res.status(400).json({ error: 'All fields are required.' });
         }
-  
-        // Query to filter activities by the category
-        const activities = await activity.find({ Category: category });
-        console.log(category);
-        console.log(activities);
-        if (!activities || activities.length === 0) {
-            return res.status(404).json({ message: 'No activities found for the given category.' });
+        const newMuseum = new museumsm({
+            Name,
+            description,
+            pictures, 
+            location,
+            Country,
+            Opening_Hours,
+            S_Tickets_Prices,
+            F_Tickets_Prices,
+            N_Tickets_Prices,
+            Tag
+        });
+        const savedMuseum= await newMuseum.save();
+        res.status(201).json({ message: 'Museum created successfully', Museum: savedMuseum });
+    } 
+    catch (error) {
+        console.error("Error details:", error.message, error.stack); // Log full error details
+        res.status(500).json({ error: 'Error creating Museum', details: error.message });
+    }
+};
+
+const readMuseum = async (req,res)=>{
+    try{
+        const { name } = req.body; 
+        const museumProfile = await museumsm.findOne({ Name: name });
+
+        if (!museumProfile) {
+            return res.status(404).json({ message: 'Museum not found' });
         }
-  
-        res.status(200).json(activities);
-    } catch (error) {
-        res.status(500).json({ error: 'Error filtering activities by category', details: error.message });
+        res.status(200).json({ message: 'Museum fetched successfully', data: museumProfile });
+    }
+    catch(error){
+        console.error("Error fetching Museum:", error.message);
+        res.status(500).json({ error: 'Error fetching Museum', details: error.message });
+    }
+};
+
+const createHistoricalPlace = async (req, res) => {
+    try {
+        const {  Name, 
+            Description, 
+            Pictures, 
+            Location, 
+            Country, 
+            Opens_At, 
+            Closes_At, 
+            S_Ticket_Prices, 
+            F_Ticket_Prices, 
+            N_Ticket_Prices } = req.body;
+        
+            if (!Name || !Description || !Pictures || !Location ||!Country
+                ||!Opens_At ||!Closes_At ||!S_Ticket_Prices||!F_Ticket_Prices||!N_Ticket_Prices) {
+            return res.status(400).json({ error: 'All fields are required.' });
+        }
+        const newHistoricalPlace = new historical_placesm({
+            Name,
+            Description,
+            Pictures, 
+            Location,
+            Country,
+            Opens_At,
+            Closes_At,
+            S_Ticket_Prices,F_Ticket_Prices,N_Ticket_Prices
+        });
+        const savedHistorical= await newHistoricalPlace.save();
+        res.status(201).json({ message: 'Historical Place created successfully', HistoricalPlace: savedHistorical });
+    } 
+    catch (error) {
+        console.error("Error details:", error.message, error.stack); // Log full error details
+        res.status(500).json({ error: 'Error creating Historical Place', details: error.message });
+    }
+};
+
+const readHistoricalPlace = async (req,res)=>{
+    try{
+        const { name } = req.body; 
+        const hpProfile = await historical_placesm.findOne({ Name: name });
+
+        if (!hpProfile) {
+            return res.status(404).json({ message: 'Historical Place not found' });
+        }
+        res.status(200).json({ message: 'Historical Place fetched successfully', data: hpProfile });
+    }
+    catch(error){
+        console.error("Error fetching Historical Place:", error.message);
+        res.status(500).json({ error: 'Error fetching Historical Place', details: error.message });
+    }
+}
+
+const updateMuseum = async (req, res) => {
+    //update a user in the database
+    try{
+        const {Name,
+            description,
+            pictures, 
+            location,
+            Country,
+            Opening_Hours,
+            S_Tickets_Prices,
+            F_Tickets_Prices,
+            N_Tickets_Prices,
+            Tag} = req.body;
+        const updatedMuseum = await museumsm.findOneAndUpdate(
+            {Name: Name },
+            {Name,description,pictures, location,Country,
+            Opening_Hours,S_Tickets_Prices,F_Tickets_Prices,N_Tickets_Prices,Tag },  // Fields to update
+            {new: true, runValidators: true }  // Options: return the updated document and run schema validators
+        );
+    if (!updatedMuseum) {
+        return res.status(404).json({ message: 'Museum not found' });
     }
 };
 
 const viewMyCreatedActivities = async (req, res) => {
     try{
         // Get current date to filter upcoming activities
-      /*const today = new Date();
+      const today = new Date();
 
       // Filter for upcoming activities (including historical places and museums)
       const activitiesFilter = {
@@ -1293,35 +1520,14 @@ const viewMyCreatedActivities = async (req, res) => {
           upcomingActivities: upcomingActivities,
           itinerary: itinerary,
           historicalPlacesAndMuseums: historicalPlacesAndMuseums
-      });*/
-
-
-          const { Email } = req.body;
-          // Find activities by advertiser's email
-          const advertiser_activities = await advertiser_activitiesm.find({ Email });
-          if (!Email) {
-            return res.status(400).json({ message: "Email is required to filter activities." });
-        }
-  
-          // Check if any activities were found
-          if (activities.length > 0) {
-              res.status(200).json({
-                  message: 'Activities found',
-                  activities,
-              });
-          } else {
-              res.status(404).json({
-                  message: 'No activities found for this email.',
-              });
-          }
+      });
     }catch(error){
         res.status(500).json({ message: 'Error fetching data', error: error.message });
     }
 };
 
-
-
 // ----------------- Activity Category CRUD -------------------
+
 module.exports = { 
     createUserAdmin, 
     deleteUserAdmin,
@@ -1329,18 +1535,23 @@ module.exports = {
     searchProductByName,
     filterProductByPrice,
     sortActivities,
-    filterByTag,
+    sortItineraries,
+    filterPlacesAndMuseums,
     filterItineraries,
-    createActivityCategory,
     registerTourist,
     registerRequest,
+    createActivityCategory,
+    readActivityCategories,
+    updateActivityCategory,
+    deleteActivityCategory,
+    createPreferenceTag,
+    readPreferenceTag,
+    updatePreferenceTag,
+    deletePreferenceTag,
+    searchByNameCategoryTag,
     getProductsSortedByRating, 
     addProduct,
     updateProduct,
-    filterByPrice,
-    filterByDate, 
-    filterByRating,
-    viewAllUpcomingEvents,
     getTouristProfile ,
     updateTouristProfile,
     createSellerProfile ,
@@ -1359,9 +1570,19 @@ module.exports = {
     deleteActivityByAdvertiser,
     createUserTourism_Governer,
     deleteUserTourism_Governer,
-    filterByCategory,
     getItineraryByName,
+    createMuseum,
+    readMuseum,
+    createHistoricalPlace,
+    readHistoricalPlace,
+    updateMuseum,
+    updateHistoricalPlace,
+    deleteMuseum,
+    deleteHistoricalPlace,
+    deleteItinerary,
     updateItinerary,
-    deleteItinerary
-    
+    getAllUpcomingEventsAndPlaces,
+    creatTouristItenrary,
+    filterActivities,
+    deleteTouristItenrary
 };
