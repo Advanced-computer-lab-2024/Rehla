@@ -58,7 +58,6 @@ const {createUserAdmin,
   deleteHistoricalPlace,
   updateItinerary,
   deleteItinerary,getAllUpcomingEventsAndPlaces
-
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -79,7 +78,6 @@ mongoose.connect(MongoURI)
 .catch(err => console.log(err));
 
 // Routes
-
 app.get("/home", (req, res) => {
   res.status(200).send("You have everything installed!");
 });
@@ -138,8 +136,6 @@ app.post("/createActivityByAdvert", createActivityByAdvertiser);
 app.post("/readActivity", readActivity);
 app.put("/updateActivity", updateActivityByAdvertiser);
 app.delete("/deleteActivityByAdvert", deleteActivityByAdvertiser);
-
-
 
 app.post("/createUserTourism_Governer", createUserTourism_Governer);
 app.delete("/deleteUserTourism_Governer", deleteUserTourism_Governer);

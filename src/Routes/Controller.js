@@ -20,7 +20,6 @@ const tourist_itinerariesm = require('../Models/tourist_iteneraries') ;
 const advertiser_activitiesm = require('../Models/advertiser_activities');
 const Seller = require("../Models/sellers.js");
 
-
 // Creating a new Admin user or Tourism Governor
 const createUserAdmin = async (req, res) => {
     try {
@@ -106,7 +105,7 @@ const deleteUserAdmin = async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: 'Error deleting user', details: error.message });
     }
-  };
+};
 
 const getAllProducts = async (req, res) => {
     try {
@@ -124,7 +123,7 @@ const getAllProducts = async (req, res) => {
       console.error(error);
       return res.status(500).json({ message: "An error occurred while fetching products." });
     }
-  };
+};
 
 const searchProductByName = async (req, res) => {
     const { productName } = req.params; // Get product name from request body
@@ -243,9 +242,9 @@ const sortItineraries = async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: 'Error sorting itinerary', details: error.message });
     }
-  };
+};
 
-  const filterPlacesAndMuseums = async (req, res) => {
+const filterPlacesAndMuseums = async (req, res) => {
     const { category, value } = req.params; // Get category and value from request parameters
 
     try {
@@ -278,7 +277,6 @@ const sortItineraries = async (req, res) => {
         res.status(500).json({ error: 'Internal server error' }); // Handle error
     }
 };
-
 
 // Controller function to filter itineraries based on criteria
 const filterItineraries = async (req, res) => {
@@ -401,6 +399,7 @@ const registerRequest = async (req, res) => {
         return res.status(500).json({ error: 'Error submitting request', details: error.message });
     }
 };
+
 const createActivityCategory = async (req, res) => {
     try {
         const { Name} = req.body;
@@ -415,17 +414,18 @@ const createActivityCategory = async (req, res) => {
         console.error('Error details:', error); // Add detailed logging
         res.status(500).json({ error: 'Error creating  category', details: error.message || error });
       }
-  };
+};
   
-  const readActivityCategories = async (req, res) => {
+const readActivityCategories = async (req, res) => {
       try {
           const categories = await categoriesm.find();
           res.status(200).json(categories);
       } catch (error) {
           res.status(500).json({ error: 'Error fetching categories', details: error });
       }
-  };
-  const updateActivityCategory = async (req, res) => {
+};
+
+const updateActivityCategory = async (req, res) => {
       try {
           const { currentName } = req.params;
           const { newName } = req.body;
@@ -447,8 +447,9 @@ const createActivityCategory = async (req, res) => {
           console.error('Error updating category:', error.message);
           res.status(500).json({ error: 'Error updating category', details: error.message });
       }
-  };
-  const deleteActivityCategory = async (req,res) =>{
+};
+
+const deleteActivityCategory = async (req,res) =>{
     try {
 
         const { Name } = req.body;
@@ -467,9 +468,9 @@ const createActivityCategory = async (req, res) => {
 
         res.status(500).json({ message: 'Error deleting Category', error: error.message });
     }
-  };
+};
 
-  const createPreferenceTag = async (req, res) => {
+const createPreferenceTag = async (req, res) => {
     try {
         const { Name} = req.body;
         if (!Name) {
@@ -482,19 +483,19 @@ const createActivityCategory = async (req, res) => {
     } catch (error) {
         console.error('Error details:', error); // Add detailed logging
         res.status(500).json({ error: 'Error creating pereference tag', details: error.message || error });
-    }
-  };
+    }
+};
   
-  const readPreferenceTag = async (req, res) => {
+const readPreferenceTag = async (req, res) => {
     try {
         const preferences = await p_tagsm.find();
         res.status(200).json(preferences);
     } catch (error) {
         res.status(500).json({ error: 'Error fetching pereference tags', details: error });
     }
-  };
+};
   
-  const updatePreferenceTag = async (req, res) => {
+const updatePreferenceTag = async (req, res) => {
     try {
         const { currentName } = req.params;
         const { newName } = req.body;
@@ -516,9 +517,9 @@ const createActivityCategory = async (req, res) => {
         console.error('Error updating Tag:', error.message);
         res.status(500).json({ error: 'Error updating Tag', details: error.message });
     }
-  };
+};
   
-  const deletePreferenceTag = async (req,res) =>{
+const deletePreferenceTag = async (req,res) =>{
     try {
   
         const { Name } = req.body;
@@ -537,7 +538,7 @@ const createActivityCategory = async (req, res) => {
   
         res.status(500).json({ message: 'Error Tag Category', error: error.message });
     }
-  };
+};
 
 const searchByNameCategoryTag = async (req, res) => {
     try {
@@ -611,7 +612,7 @@ const searchByNameCategoryTag = async (req, res) => {
         console.error('Error during search:', error);
         res.status(500).json({ error: 'Error searching for data', details: error.message });
     }
-  };
+};
   
 //Tourist - admin - seller : Sort Product by ratings
 const getProductsSortedByRating = async (req, res) => {
@@ -625,7 +626,7 @@ const getProductsSortedByRating = async (req, res) => {
       // Handle errors
       res.status(500).json({ message: 'Error fetching products', error: error.message });
     }
- };
+};
 
 //Admin - seller : add a product with its details , price and available quantities 
 const addProduct = async (req, res) => {
@@ -930,9 +931,9 @@ const getSellerProfile = async (req, res) => {
     } catch (error) {
       res.status(500).json({ message: 'Error retrieving seller profile', error: error.message });
     }
-  };
+};
 
-  const updateSellerProfile = async (req, res) => {
+const updateSellerProfile = async (req, res) => {
     try {
         // Extract email and the fields to update from the request body
         const {Username, Email, Password, Shop_Name, Description, Shop_Location,Type } = req.body;
@@ -1006,8 +1007,7 @@ const createTourGuideProfile = async (req, res) => {
         res.status(500).json({ message: 'Error creating tour guide profile', error: error.message });
     }
 };
-
-  
+ 
 //Tour guide : update profile
 const updateTourGuideProfile = async (req, res) => {
     try {
@@ -1074,9 +1074,8 @@ const getTourGuideProfile = async (req, res) => {
     }
 };
 
-
 //Create an itinerary 
- const createItinerary = async (req, res) => {
+const createItinerary = async (req, res) => {
     try {
         // Destructure the itinerary data from the request body
         const { 
@@ -1317,7 +1316,6 @@ const createUserAdvertiser = async (req, res) => {
 };
 
 //Reading all advertiser detail by email
-
 const readAdvertiser = async (req,res)=>{
     try{
         const { email } = req.body; 
@@ -1335,7 +1333,6 @@ const readAdvertiser = async (req,res)=>{
 }
 
 //Updating advertiser using email
-
 const updateUserAdvertiser = async (req, res) => {
     //update a user in the database
     try{
@@ -1355,7 +1352,6 @@ const updateUserAdvertiser = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
     }
 };
-
 
 //Advertiser Creating An Activity
 const createActivityByAdvertiser = async (req, res) => {
@@ -1380,7 +1376,6 @@ const createActivityByAdvertiser = async (req, res) => {
 };
 
 //Advertiser Reading Activity
-
 const readActivity = async (req,res)=>{
     try{
         const { name } = req.body; // Assuming email is passed as a URL parameter
@@ -1397,9 +1392,7 @@ const readActivity = async (req,res)=>{
     }
 }
 
-
 //Advertiser Updates Activity
-
 const updateActivityByAdvertiser = async (req, res) => {
     //update a user in the database
     try{
@@ -1423,7 +1416,6 @@ const updateActivityByAdvertiser = async (req, res) => {
 };
 
 //Advertiser deletes activity
-
 const deleteActivityByAdvertiser = async (req, res) => {
     try {
         const {Name} = req.body;
@@ -1441,8 +1433,6 @@ const deleteActivityByAdvertiser = async (req, res) => {
         res.status(500).json({ error: 'Error deleting user', details: error.message });
     }
 };
-
-
 
 const createUserTourism_Governer = async(req,res) => {
     //add a new user to the database with 
@@ -1462,7 +1452,8 @@ const createUserTourism_Governer = async(req,res) => {
        // Handle errors
        res.status(500).json({ message: 'Error creating user', error: error.message });
      }
- };
+};
+
  const deleteUserTourism_Governer = async (req, res) => {
     try {
         const Email = req.body;
@@ -1597,6 +1588,7 @@ const readHistoricalPlace = async (req,res)=>{
         res.status(500).json({ error: 'Error fetching Historical Place', details: error.message });
     }
 }
+
 const updateMuseum = async (req, res) => {
     //update a user in the database
     try{
@@ -1658,7 +1650,6 @@ const updateHistoricalPlace = async (req, res) => {
     }
 };
 
-
 const deleteMuseum = async (req, res) => {
     try {
         const {Name} = req.body;
@@ -1695,9 +1686,8 @@ const deleteHistoricalPlace= async (req, res) => {
     }
 };
 
-
-
 // ----------------- Activity Category CRUD -------------------
+
 module.exports = { 
     createUserAdmin, 
     deleteUserAdmin,
@@ -1754,6 +1744,6 @@ module.exports = {
     deleteMuseum,
     deleteHistoricalPlace,
     deleteItinerary,
-    updateItinerary,getAllUpcomingEventsAndPlaces
-
+    updateItinerary,
+    getAllUpcomingEventsAndPlaces
 };
