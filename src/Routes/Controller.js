@@ -433,9 +433,9 @@ const createActivityCategory = async (req, res) => {
               return res.status(400).json({ error: 'New category name is required.' });
           }
   
-          const updatedCategory = await activity_categoriesm.findOneAndUpdate(
-              { Category_Name: currentName }, 
-              { Category_Name: newName },     
+          const updatedCategory = await categoriesm.findOneAndUpdate(
+              { Name: currentName }, 
+              { Name: newName },     
               { new: true }                   
           );
           if (!updatedCategory) {
@@ -1620,6 +1620,8 @@ module.exports = {
     registerTourist,
     registerRequest,
     createActivityCategory,
+    readActivityCategories,
+    updateActivityCategory,
     searchByNameCategoryTag,
     getProductsSortedByRating, 
     addProduct,
