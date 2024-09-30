@@ -1333,14 +1333,14 @@ const createUserTourism_Governer = async(req,res) => {
 
 const filterByCategory = async (req, res) => {
     try {
-        const {category} = req.params;
+        const {category} = req.body;
         
         // Check if the category is provided
         if (!category) {
             return res.status(400).json({ message: "Category is required to filter activities." });
         } 
         // Query to filter activities by the category
-        const activities = await activity.find({ Category: category });
+        const activities = await activity_categoriesm.find({ Category: category });
         console.log(category);
         console.log(activities);
         if (!activities || activities.length === 0) {
