@@ -36,3 +36,14 @@ export const deleteUser = async (email) => {
         throw error;
     }
 };
+
+export const registerTourist = async(touristData) => {
+    try {
+        const response = await axios.post(`${API_URL}/registerTourist`, touristData);
+        return response.data;
+    } catch (error) {
+        console.error('Error adding tourist:', error);
+        throw error;
+    }
+};
+
