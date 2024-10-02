@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { registerTourist } from '../services/api'; // Import the API call function
 import { Link } from 'react-router-dom';
+import '../css/signup.css';
 
 const GetTourist = () => {
     const [formin, setFormin] = useState({
@@ -123,7 +124,7 @@ const GetTourist = () => {
                         </select>
                     </label>
                 </div>
-                <Link to="/signup2">Not a Tourist?</Link>
+                <Link to="/signup2" id="Linkt">Not a Tourist?</Link>
                 <br></br>
                 <button type="submit">Sign up</button>
             </form>

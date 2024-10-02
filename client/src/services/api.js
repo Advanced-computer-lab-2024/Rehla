@@ -47,3 +47,14 @@ export const registerTourist = async(touristData) => {
     }
 };
 
+export const registerRequest= async(requestData)=>{
+    try{
+        const response = await axios.post(`${API_URL}/registerRequest`, requestData);
+        return response.data;
+    } catch (error) {
+        console.error('Error sending request:', error);
+        throw error;
+
+    }
+}
+

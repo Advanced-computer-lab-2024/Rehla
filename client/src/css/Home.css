@@ -40,7 +40,8 @@ a {
 
 .signing {
     display: flex;                /* Use flexbox */
-    justify-content: flex-end;   /* Align items to the right */
+    justify-content: flex-end; 
+    visibility: visible;
 }
 
 .signing a {

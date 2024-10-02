@@ -20,7 +20,7 @@ const Home = () => {
             <nav class="signing">
             <Link to="/signin">Sign in</Link>
             <Link to="/signup">Sign up</Link>
-            </nav>
+            </nav >
             </div>
         </div>
     );
