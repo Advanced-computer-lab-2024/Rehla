@@ -70,7 +70,7 @@ export const getAllUpcomingEventsAndPlaces = async () => {
 
 export const updateProduct = async () => {
     try {
-        const response = await fetch(`${API_URL}/updateProduct`);
+        const response = await axios.update(`${API_URL}/updateProduct`);
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
