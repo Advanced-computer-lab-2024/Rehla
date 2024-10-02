@@ -11,7 +11,7 @@ const Home = () => {
            <img src={logo} alt="" />
             <nav class="main-nav">
                 <ul class="nav-links">
-                <Link to="/Home">Home</Link>
+                <Link to="/">Home</Link>
                 <Link to="/products">Products</Link>
                 <Link to="/activities">Activities</Link>
                 <Link to="/itineraries">Itineraries</Link>
