@@ -1,0 +1,51 @@
+.NavBar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #152b52;
+    padding: 10px 20px;
+    z-index: 1000; /* Ensure it appears above other content */
+    display: flex;
+    justify-content: space-between; /* Space between items: logo, nav, and signing */
+    align-items: center; /* Center items vertically */
+    box-sizing: border-box; /* Include padding in the element's total width */
+    height: 80px; /* Height is set to ensure enough vertical space */
+    margin-top: 0; /* Reset margin-top to avoid shifting the navbar */
+}
+
+.main-nav {
+    flex-grow: 1; /* Allow this nav to grow and take up available space */
+    display: flex; /* Use flexbox for the main navigation */
+    justify-content: center; /* Center the links in the middle */
+}
+
+.main-nav .nav-links {
+    display: flex; /* Display links inline */
+    list-style: none; /* Remove bullet points */
+    padding: 0; /* Remove padding */
+}
+
+a {
+    margin-left: 15px;
+    color: aliceblue;
+    text-decoration: none; 
+    font-family: cursive;
+}
+
+.NavBar img {
+    height: 80px; /* Adjust the height as needed */
+    margin-right: 20px; /* Space between logo and nav links */
+}
+
+.signing {
+    display: flex;                /* Use flexbox */
+    justify-content: flex-end;   /* Align items to the right */
+}
+
+.signing a {
+    color: aliceblue;            /* Keep your existing styles */
+    text-decoration: none;
+    font-family: cursive;        /* Optional: space between links */
+    margin-left: 15px;          /* Optional: space between links */
+}
