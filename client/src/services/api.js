@@ -68,6 +68,20 @@ export const getAllUpcomingEventsAndPlaces = async () => {
     }
 };
 
+export const updateProduct = async () => {
+    try {
+        const response = await fetch(`${API_URL}/updateProduct`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        return data; // Return the fetched products
+    } catch (error) {
+        console.error('Failed to fetch products:', error);
+        throw error; // Rethrow the error for handling in the calling component
+    }
+};
+
 /*export const signin= async(signinData)=>{
     try{
         const response = await axios.post(`${API_URL}/getLoginPage`, signinData);
