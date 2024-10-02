@@ -56,7 +56,17 @@ export const registerRequest= async(requestData)=>{
         throw error;
 
     }
-}
+};
+
+export const getAllUpcomingEventsAndPlaces = async () => {
+    try {
+        const response = await axios.get(`${API_URL}/getAllUpcomingEventsAndPlaces`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching upcoming events and places:', error);
+        throw error;  // Rethrow for error handling in the component
+    }
+};
 
 /*export const signin= async(signinData)=>{
     try{

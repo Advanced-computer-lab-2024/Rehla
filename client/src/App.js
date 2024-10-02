@@ -7,6 +7,7 @@ import CreateUser from './components/CreateUser';
 import GetTourist from '../src/components/signup';
 import RegisterRequest from './components/signup2';
 import SignIn from './components/signin';
+import EventsPlaces from './components/UpcomingEvents.js'
 function App() {
     return (
         <div>
@@ -17,6 +18,7 @@ function App() {
                 <Route path="/signup" element={<GetTourist/>} />
                 <Route path="/signup2" element={<RegisterRequest/>} />
                 <Route path="/signin" element={<SignIn/>} />
+                <Route path="/eventsplaces" element={<EventsPlaces />} />
 
             </Routes>
         </div>
