@@ -58,3 +58,14 @@ export const registerRequest= async(requestData)=>{
     }
 }
 
+/*export const signin= async(signinData)=>{
+    try{
+        const response = await axios.post(`${API_URL}/ESM EL FUNCTION`, signinData);
+        return response.data;
+    } catch (error) {
+        console.error('Error signing in:', error);
+        throw error;
+
+    }
+}*/
+
