@@ -1,12 +1,9 @@
 // src/components/ProductList.js
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getProducts } from '../services/api'; 
-import { updateProduct } from '../services/api'; 
+import { getProducts } from '../services/api'; // Import the API call function
 
-// Import the API call function
-
-const selleraccess = () => {
+const ProductList = () => {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -55,4 +52,4 @@ const selleraccess = () => {
     );
 };
 
-export default selleraccess;
+export default ProductList;
