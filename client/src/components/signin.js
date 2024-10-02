@@ -35,18 +35,7 @@ const SignIn = () => {
         <div>
             <h1>Sign In</h1>
             <form onSubmit={handleSubmit}>
-                <div>
-                    <label>
-                        Username:
-                        <input
-                            type="text"
-                            name="Username"
-                            value={profile.Username}
-                            onChange={handleChange}
-                            required
-                        />
-                    </label>
-                </div>
+               
                 <div>
                     <label>
                         Email:
