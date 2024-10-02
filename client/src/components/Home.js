@@ -8,7 +8,7 @@ const Home = () => {
     return (
         <div>
            <div class="NavBar">
-           <img src={logo} alt="Description of image" />
+           <img src={logo} alt="" />
             <nav class="main-nav">
                 <ul class="nav-links">
                 <Link to="/Home">Home</Link>
