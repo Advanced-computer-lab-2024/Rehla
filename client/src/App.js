@@ -8,6 +8,8 @@ import GetTourist from '../src/components/signup';
 import RegisterRequest from './components/signup2';
 import SignIn from './components/signin';
 import EventsPlaces from './components/UpcomingEvents.js'
+import ProductList2 from './components/Seller.js'
+
 function App() {
     return (
         <div>
@@ -19,6 +21,8 @@ function App() {
                 <Route path="/signup2" element={<RegisterRequest/>} />
                 <Route path="/signin" element={<SignIn/>} />
                 <Route path="/eventsplaces" element={<EventsPlaces />} />
+                <Route path="/seller" element={<ProductList2 />} />
+
 
             </Routes>
         </div>

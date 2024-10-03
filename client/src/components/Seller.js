@@ -1,9 +1,9 @@
-// src/components/ProductList.js
+// src/components/ProductList2.js
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getProducts } from '../services/api'; // Import the API call function
 
-const ProductList = () => {
+const ProductList2 = () => {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -52,4 +52,4 @@ const ProductList = () => {
     );
 };
 
-export default ProductList;
+export default ProductList2;
