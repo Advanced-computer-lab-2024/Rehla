@@ -235,7 +235,7 @@ const sortItineraries = async (req, res) => {
         }
   
         // Fetch upcoming activities and sort them accordingly
-        const sortedItineraries = await itinerary.find() // Assuming true means upcoming
+        const sortedItineraries = await itinerarym.find() // Assuming true means upcoming
             .sort(sortOptions)
             .exec();
   
