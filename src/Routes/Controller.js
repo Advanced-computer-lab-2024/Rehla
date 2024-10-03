@@ -1156,17 +1156,73 @@ const deleteItinerary = async (req, res) => {
 //view all upcoming: itineraries , activities & historical places and museums
 const getAllUpcomingEventsAndPlaces = async (req, res) => {
     try {
-        // Get the current date
+        // Get the current date and time
         const currentDate = new Date();
+
+        // Helper function to convert a time string to a Date object
+        const convertToDate = (timeString, date) => {
+            const [time, modifier] = timeString.split(' ');
+            let [hours, minutes] = time.split(':');
+            if (modifier === 'PM' && hours !== '12') {
+                hours = parseInt(hours) + 12;
+            }
+            if (modifier === 'AM' && hours === '12') {
+                hours = '0';
+            }
+            return new Date(date.getFullYear(), date.getMonth(), date.getDate(), hours, minutes);
+        };
 
         // Query itineraries where Available_Date_Time is in the future
         const upcomingItineraries = await itinerarym.find({
             Available_Date_Time: { $gt: currentDate }
         });
 
-        // Query activities where Date is greater than or equal to the current date
+        // Filter upcoming itineraries based on the current time and Timeline
+        const filteredItineraries = upcomingItineraries.filter(itinerary => {
+            const [startTime, endTime] = itinerary.Timeline.split(' - ');
+            const startDate = convertToDate(startTime, currentDate);
+            const endDate = convertToDate(endTime, currentDate);
+            return (startDate >= currentDate || endDate >= currentDate);
+        });
+
+        // Query activities where Date is greater than or equal to the current date and time
         const upcomingActivities = await activity.find({
-            Date: { $gte: currentDate }
+            $expr: {
+                $and: [
+                    { 
+                        $gte: [
+                            "$Date", 
+                            currentDate.setHours(0, 0, 0, 0) // Ensure the Date is greater than or equal to today
+                        ]
+                    },
+                    {
+                        $or: [
+                            { 
+                                $gt: [
+                                    { 
+                                        $dateFromString: {
+                                            dateString: {
+                                                $concat: [
+                                                    { $dateToString: { format: "%Y-%m-%d", date: "$Date" } }, // Format the Date
+                                                    " ", // Space to separate date and time
+                                                    "$Time" // Add the Time field
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    currentDate // Compare to current date and time
+                                ]
+                            },
+                            {
+                                $and: [
+                                    { $eq: [{ $dateToString: { format: "%Y-%m-%d", date: "$Date" } }, currentDate.toISOString().slice(0, 10)] }, // Check if the dates are equal
+                                    { $gte: ["$Time", currentDate.toTimeString().slice(0, 5)] } // Ensure time is greater than or equal to current time
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
         });
 
         // Query to find all museums in the database
@@ -1178,7 +1234,7 @@ const getAllUpcomingEventsAndPlaces = async (req, res) => {
         // Prepare the response
         res.status(200).json({
             message: 'Upcoming events and places retrieved successfully',
-            upcomingItineraries: upcomingItineraries.length > 0 ? upcomingItineraries : 'No upcoming itineraries found',
+            upcomingItineraries: filteredItineraries.length > 0 ? filteredItineraries : 'No upcoming itineraries found',
             upcomingActivities: upcomingActivities.length > 0 ? upcomingActivities : 'No upcoming activities found',
             museums: museums.length > 0 ? museums : 'No museums found',
             historicalPlaces: historicalPlaces.length > 0 ? historicalPlaces : 'No historical places found'
@@ -1188,6 +1244,7 @@ const getAllUpcomingEventsAndPlaces = async (req, res) => {
         res.status(500).json({ message: 'Error retrieving data', error: error.message });
     }
 };
+
 
 //Creating Advertiser as a request
 const createUserAdvertiser = async (req, res) => {
