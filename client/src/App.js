@@ -9,6 +9,9 @@ import RegisterRequest from './components/signup2';
 import SignIn from './components/signin';
 import EventsPlaces from './components/UpcomingEvents.js'
 import Seller from './components/Seller.js'
+
+import Admin from './components/Admin.js'
+
 //import ProductList from './components/Seller.js'
 
 
@@ -24,7 +27,8 @@ function App() {
                 <Route path="/signin" element={<SignIn/>} />
                 <Route path="/eventsplaces" element={<EventsPlaces />} />
                 <Route path="/seller" element={<Seller />} />
-                <Route path="/productlist" element={<Seller />} />
+                <Route path="/admin" element={<Admin />} />
+                <Route path="/" component={Home} />
 
 
 

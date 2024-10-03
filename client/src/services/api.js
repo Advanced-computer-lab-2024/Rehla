@@ -139,6 +139,16 @@ export const addProduct = async (productData) => {
     }
 };
 
+export const searchProductByName = async (productName) => {
+    try {
+        const response = await axios.get(`${API_URL}/searchProduct/${productName}`); // Ensure this matches your backend route
+        return response.data; // Return the found product
+    } catch (error) {
+        console.error('Error searching for product:', error);
+        throw error; // Make sure to throw the error to handle it in the component
+    }
+};
+
 
 
 /*export const signin= async(signinData)=>{

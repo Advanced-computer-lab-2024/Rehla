@@ -1,6 +1,6 @@
-// src/components/Seller.js
+ // src/components/Seller.js
 import React, { useState, useEffect } from 'react';
-//import { Link } from 'react-router-dom'; // Assuming you will navigate to a view page for products
+import { Link } from 'react-router-dom'; // Assuming you will navigate to a view page for products
 import { addProduct, getProducts } from '../services/api'; // Import the addProduct and getProducts API functions
 
 const Seller = () => {
