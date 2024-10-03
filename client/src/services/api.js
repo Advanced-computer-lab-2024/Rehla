@@ -82,6 +82,65 @@ export const updateProduct = async () => {
     }
 };
 
+export const sortActivities = async (sortBy) => {
+    try {
+        const response = await axios.get(`${API_URL}/sortActivities`, {
+            params: { sortBy },
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error sorting activities:', error);
+        throw error;
+    }
+};
+
+export const sortItineraries = async (sortBy) => {
+    try {
+        const response = await axios.get(`${API_URL}/sortItineraries`, {
+            params: { sortBy },
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error sorting itineraries:', error);
+        throw error;
+    }
+};
+
+// Add a new filterActivities function
+export const filterActivities = async (filterParams) => {
+    try {
+        const response = await axios.get(`${API_URL}/filterActivities`, filterParams);
+        return response.data;
+    } catch (error) {
+        console.error('Error filtering activities:', error);
+        throw error;
+    }
+};
+
+export const filterItineraries = async (filterParams) => {
+    try {
+        const response = await axios.get(`${API_URL}/filterItineraries`, {
+            params: filterParams
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error filtering itineraries:', error);
+        throw error;
+    }
+};
+
+export const addProduct = async (productData) => {
+    try {
+        const response = await axios.post(`${API_URL}/addProduct`, productData);
+        return response.data;
+    } catch (error) {
+        console.error('Error adding product:', error);
+        throw error;
+    }
+};
+
+
+
 /*export const signin= async(signinData)=>{
     try{
         const response = await axios.post(`${API_URL}/getLoginPage`, signinData);
