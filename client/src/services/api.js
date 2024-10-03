@@ -82,6 +82,17 @@ export const updateProduct = async () => {
     }
 };
 
+export const addProduct = async (productData) => {
+    try {
+        const response = await axios.post(`${API_URL}/addProduct`, productData);
+        return response.data;
+    } catch (error) {
+        console.error('Error adding product:', error);
+        throw error;
+    }
+};
+
+
 /*export const signin= async(signinData)=>{
     try{
         const response = await axios.post(`${API_URL}/getLoginPage`, signinData);
