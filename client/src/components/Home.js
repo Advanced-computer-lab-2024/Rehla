@@ -12,7 +12,6 @@ const Home = () => {
             <nav class="main-nav">
                 <ul class="nav-links">
                 <Link to="/">Home</Link>
-                <Link to="/products">Products</Link>
                 <Link to="/eventsplaces">Events/Places</Link>
                 <Link to="/TouristHome">TouristHome</Link>
 

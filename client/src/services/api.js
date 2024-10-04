@@ -161,6 +161,26 @@ export const searchProductByName = async (productName) => {
     }
 };
 
+export const filterProductsByPrice = async (minPrice, maxPrice) => {
+    try {
+        const response = await axios.get(`${API_URL}/filterProductsByPrice/${minPrice}/${maxPrice}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching products by price:', error);
+        // Optionally, you can throw the error to handle it in the calling function
+        throw new Error('Failed to filter products by price. Please try again later.');
+    }
+};
+
+export const getProductsSortedByRating = async () => {
+    try {
+        const response = await axios.get(`${API_URL}/getProductsSortedByRating`);
+        return response.data; // Returns the sorted products from the response
+    } catch (error) {
+        throw new Error(error.response ? error.response.data.message : 'Error fetching products sorted by rating');
+    }
+};
+
 
 
 /*export const signin= async(signinData)=>{
