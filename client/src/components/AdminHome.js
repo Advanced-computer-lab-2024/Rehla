@@ -1,10 +1,9 @@
-// src/components/Home.js
 import React from 'react';
 import { Link } from 'react-router-dom';
 import '../css/Home.css';
 import logo from '../images/logo.png';
 
-const Home = () => {
+const AdminHome = () => {
     return (
         <div>
            <div class="NavBar">
@@ -12,21 +11,16 @@ const Home = () => {
             <nav class="main-nav">
                 <ul class="nav-links">
                 <Link to="/">Home</Link>
-                <Link to="/eventsplaces">Events/Places</Link>
-                <Link to="/TouristHome">TouristHome</Link>
-                <Link to="/AdminHome">AdminHome</Link>
-                <Link to="/SellerHome">SellerHome</Link>
-
+                <Link to="/products">Products</Link>
                 </ul>
             </nav>
 
             <nav class="signing">
-            <Link to="/signin">Sign in</Link>
-            <Link to="/signup">Sign up</Link>
+            <Link to="/">MyProfile</Link>
             </nav >
             </div>
         </div>
     );
 };
 
-export default Home;
+export default AdminHome;
