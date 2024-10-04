@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getProducts, getProductsSortedByRating, searchProductByName } from '../services/api'; // Import the search API call
 
-const ProductList = () => {
+const SellerProductList = () => {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [sortedProducts, setSortedProducts] = useState([]);
@@ -228,4 +228,4 @@ const productCardStyle = {
     textAlign: 'center'
 };
 
-export default ProductList;
+export default SellerProductList;

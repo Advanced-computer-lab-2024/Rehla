@@ -11,7 +11,7 @@ const AdminHome = () => {
             <nav class="main-nav">
                 <ul class="nav-links">
                 <Link to="/">Home</Link>
-                <Link to="/products">Products</Link>
+                <Link to="/Adminproducts">Products</Link>
                 </ul>
             </nav>
 

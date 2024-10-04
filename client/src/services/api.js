@@ -68,16 +68,12 @@ export const getAllUpcomingEventsAndPlaces = async () => {
     }
 };
 
-export const updateProduct = async () => {
+export const updateProduct = async (productData) => {
     try {
-        const response = await axios.update(`${API_URL}/updateProduct`);
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        return data; // Return the fetched products
+        const response = await axios.put(`${API_URL}/updateProduct`, productData);
+        return response.data; // Return the response data from the server
     } catch (error) {
-        console.error('Failed to fetch products:', error);
+        console.error('Error updating product:', error);
         throw error; // Rethrow the error for handling in the calling component
     }
 };
@@ -144,22 +140,25 @@ export const filterPlacesAndMuseums = async (filterParams) => {
 export const addProduct = async (productData) => {
     try {
         const response = await axios.post(`${API_URL}/addProduct`, productData);
-        return response.data;
+        return response.data; // Return the response data received from the backend
     } catch (error) {
-        console.error('Error adding product:', error);
-        throw error;
+        console.error('Error adding product:', error); // Log the error
+        throw error; // Rethrow the error for handling in the calling component
     }
 };
 
+
 export const searchProductByName = async (productName) => {
     try {
-        const response = await axios.get(`${API_URL}/searchProduct/${productName}`); // Ensure this matches your backend route
-        return response.data; // Return the found product
+        // Make sure the URL matches the route in your backend, including the correct route parameter
+        const response = await axios.get(`${API_URL}/getProductByName/${productName}`);
+        return response.data; // Return the found product data
     } catch (error) {
         console.error('Error searching for product:', error);
-        throw error; // Make sure to throw the error to handle it in the component
+        throw error; // Throw the error to handle it in the calling component
     }
 };
+
 
 export const filterProductsByPrice = async (minPrice, maxPrice) => {
     try {
@@ -195,14 +194,4 @@ export const signIn = async (email, password) => {
 };
 
 
-/*export const signin= async(signinData)=>{
-    try{
-        const response = await axios.post(`${API_URL}/getLoginPage`, signinData);
-        return response.data;
-    } catch (error) {
-        console.error('Error signing in:', error);
-        throw error;
-
-    }
-}*/
 

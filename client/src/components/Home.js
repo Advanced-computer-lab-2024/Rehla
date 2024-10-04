@@ -16,6 +16,9 @@ const Home = () => {
                 <Link to="/TouristHome">TouristHome</Link>
                 <Link to="/AdminHome">AdminHome</Link>
                 <Link to="/SellerHome">SellerHome</Link>
+                <Link to="/AdvertiserHome">AdvertiserHome</Link>
+                <Link to="/TourGuideHome">TourGuideHome</Link>
+                <Link to="/TourisimGovernerHome">TourisimGovernerHome</Link>
 
                 </ul>
             </nav>

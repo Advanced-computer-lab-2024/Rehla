@@ -34,6 +34,10 @@ const SignIn = () => {
         case "ADVERTISER":
           navigate("/AdvertiserHome"); // Redirect to AdvertiserHome.js
           break;
+          case "TOURISIM_GOVERNER":
+          navigate("/TourisimGovernerHome"); // Redirect to TourisimGovernerHome.js
+          break;
+
         default:
           setError("Unknown user type");
       }
