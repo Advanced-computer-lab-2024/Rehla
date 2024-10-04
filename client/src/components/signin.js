@@ -1,20 +1,42 @@
-// src/components/CreateUser.js
-import React, { useState } from 'react';
-import { signIn } from "../services/api"; // Make sure the path is correct
+import React, { useState } from "react";
+import { signIn } from "../services/api"; // Your API function
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const navigate = useNavigate(); // Initialize navigate function
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(""); // Clear previous error
 
     try {
-      const data = await signIn(email, password);
-      setSuccess(`Logged in as: ${data.Type}`);
+      const data = await signIn(email, password); // Call API to sign in
+
+      // Check user type and redirect to appropriate page
+      const userType = data.Type.toUpperCase(); // Convert type to uppercase for easier comparison
+
+      switch (userType) {
+        case "TOURIST":
+          navigate("/TouristHome"); // Redirect to TouristHome.js
+          break;
+        case "ADMIN":
+          navigate("/AdminHome"); // Redirect to AdminHome.js
+          break;
+        case "SELLER":
+          navigate("/SellerHome"); // Redirect to SellerHome.js
+          break;
+        case "TOUR_GUIDE":
+          navigate("/TourGuideHome"); // Redirect to TourGuideHome.js
+          break;
+        case "ADVERTISER":
+          navigate("/AdvertiserHome"); // Redirect to AdvertiserHome.js
+          break;
+        default:
+          setError("Unknown user type");
+      }
     } catch (err) {
       setError(err.message || "Failed to sign in");
     }
@@ -43,7 +65,6 @@ const SignIn = () => {
           />
         </div>
         {error && <p style={{ color: "red" }}>{error}</p>}
-        {success && <p style={{ color: "green" }}>{success}</p>}
         <button type="submit">Sign In</button>
       </form>
     </div>
