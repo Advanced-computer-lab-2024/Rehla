@@ -2006,6 +2006,52 @@ const createHistoricalTag = async(req,res) => {
      }
 };
 
+const signIn = async (req, res) => {
+    const { Email, Password } = req.body;
+
+    if (!Email || !Password) {
+        return res.status(400).json({ message: "Email and Password are required." });
+    }
+
+    try {
+        // Check in tourists table
+        let user = await Tourist.findOne({ Email, Password });
+        if (user) {
+            return res.status(200).json({ Type: user.Type });
+        }
+
+        // Check in admins table
+        user = await Admin.findOne({ Email, Password });
+        if (user) {
+            return res.status(200).json({ Type: user.Type });
+        }
+
+        // Check in sellers table
+        user = await Seller.findOne({ Email, Password });
+        if (user) {
+            return res.status(200).json({ Type: user.Type });
+        }
+
+        // Check in tourism governors table
+        user = await tourism_governers.findOne({ Email, Password });
+        if (user) {
+            return res.status(200).json({ Type: user.Type });
+        }
+
+        // Check in tour guides table
+        user = await tour_guidem.findOne({ Email, Password });
+        if (user) {
+            return res.status(200).json({ Type: user.Type });
+        }
+
+        // If no user found
+        return res.status(401).json({ message: "Invalid email or password." });
+    } catch (error) {
+        console.error("Error during sign-in:", error);
+        return res.status(500).json({ message: "Internal server error." });
+    }
+};
+
 
 
 // ----------------- Activity Category CRUD -------------------
@@ -2072,5 +2118,6 @@ module.exports = {
     viewMyCreatedActivities,
     createHistoricalTag,
     viewMyCreatedItenrary,
-    viewMyCreatedMuseumsAndHistoricalPlaces
+    viewMyCreatedMuseumsAndHistoricalPlaces,
+    signIn
 };

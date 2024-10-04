@@ -65,7 +65,7 @@ const {createUserAdmin,
   viewMyCreatedActivities,
   createHistoricalTag,
   viewMyCreatedItenrary,
-  viewMyCreatedMuseumsAndHistoricalPlaces
+  viewMyCreatedMuseumsAndHistoricalPlaces, signIn
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -163,4 +163,4 @@ app.get("/viewMyCreatedActivities", viewMyCreatedActivities);
 app.post("/createHistoricalTag", createHistoricalTag);
 app.get("/viewMyCreatedItenrary", viewMyCreatedItenrary);
 app.get("/viewMyCreatedMuseumsAndHistoricalPlaces", viewMyCreatedMuseumsAndHistoricalPlaces);
-
+app.get("/signIn" , signIn)
