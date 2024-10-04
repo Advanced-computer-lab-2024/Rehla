@@ -1,6 +1,6 @@
 // src/components/UpcomingEvents.js
 import React, { useEffect, useState } from 'react';
-import { getAllUpcomingEventsAndPlaces, sortActivities, sortItineraries, filterActivities, filterItineraries } from '../services/api';
+import { getAllUpcomingEventsAndPlaces, sortActivities, sortItineraries, filterActivities, filterItineraries ,filterPlacesAndMuseums } from '../services/api';
 
 const UpcomingEvents = () => {
     const [data, setData] = useState(null);
@@ -9,6 +9,7 @@ const UpcomingEvents = () => {
     const [sortedItineraries, setSortedItineraries] = useState(null);
     const [filteredActivities, setFilteredActivities] = useState(null);
     const [filteredItineraries, setFilteredItineraries] = useState(null);
+    const [filteredPlacesAndMuseums, setFilteredPlacesAndMuseums] = useState(null);
 
     // States for filters
     const [activityFilters, setActivityFilters] = useState({
@@ -27,6 +28,12 @@ const UpcomingEvents = () => {
         preferences: '',
         language: ''
     });
+    const [placesAndMuseumsFilters, setPlacesAndMuseumsFilters] = useState({
+        category: '',
+        value: ''
+    });
+
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -78,6 +85,18 @@ const UpcomingEvents = () => {
         }
     };
 
+
+
+
+    const handleFilterPlacesAndMuseums = async (e) => {
+        e.preventDefault();
+        try {
+            const filtered = await filterPlacesAndMuseums(placesAndMuseumsFilters);
+            setFilteredPlacesAndMuseums(filtered);
+        } catch (error) {
+            setError(error);
+        }
+    };
     const handleFilterChange = (e, setFilters) => {
         const { name, value } = e.target;
         setFilters(prevFilters => ({
@@ -291,6 +310,44 @@ const UpcomingEvents = () => {
             )}
 
             {/* Museums */}
+
+            <h2>Filter Places and Museums</h2>
+            <form onSubmit={handleFilterPlacesAndMuseums}>
+                <label>
+                    Category:
+                    <input
+                        type="text"
+                        name="category"
+                        value={placesAndMuseumsFilters.category}
+                        onChange={(e) => handleFilterChange(e, setPlacesAndMuseumsFilters)}
+                    />
+                </label>
+                <label>
+                    Value:
+                    <input
+                        type="text"
+                        name="value"
+                        value={placesAndMuseumsFilters.value}
+                        onChange={(e) => handleFilterChange(e, setPlacesAndMuseumsFilters)}
+                    />
+                </label>
+                <button type="submit">Apply Places and Museums Filters</button>
+            </form>
+
+            {/* Display Filtered Places and Museums */}
+            <h2>Filtered Places and Museums</h2>
+            {filteredPlacesAndMuseums ? (
+                <ul>
+                    {filteredPlacesAndMuseums.map((place) => (
+                        <li key={place._id}>
+                            {place.Name} - Category: {place.Category} - Location: {place.Location}
+                        </li>
+                    ))}
+                </ul>
+            ) : (
+                <p>No filtered places or museums available</p>
+            )}
+      
             <h2>Museums</h2>
             {data.museums !== 'No museums found' ? (
                 <ul>

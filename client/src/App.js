@@ -11,6 +11,7 @@ import EventsPlaces from './components/UpcomingEvents.js'
 import Seller from './components/Seller.js'
 
 import Admin from './components/Admin.js'
+import TouristHome from'./components/TouristHome.js'
 
 //import ProductList from './components/Seller.js'
 
@@ -28,6 +29,7 @@ function App() {
                 <Route path="/eventsplaces" element={<EventsPlaces />} />
                 <Route path="/seller" element={<Seller />} />
                 <Route path="/admin" element={<Admin />} />
+                <Route path="/TouristHome" element={<TouristHome />} />
                 <Route path="/" component={Home} />
 
 

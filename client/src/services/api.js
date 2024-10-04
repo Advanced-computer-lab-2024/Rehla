@@ -129,6 +129,18 @@ export const filterItineraries = async (filterParams) => {
     }
 };
 
+export const filterPlacesAndMuseums = async (filterParams) => {
+    const { category, value } = filterParams; // Destructure category and value from filterParams
+    try {
+        // Use category and value dynamically in the URL
+        const response = await axios.get(`${API_URL}/filter/${category}/${value}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error filtering places and museums:', error);
+        throw error;
+    }
+};
+
 export const addProduct = async (productData) => {
     try {
         const response = await axios.post(`${API_URL}/addProduct`, productData);
