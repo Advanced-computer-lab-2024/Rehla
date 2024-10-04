@@ -1,74 +1,53 @@
 // src/components/CreateUser.js
 import React, { useState } from 'react';
-import { registerRequest } from '../services/api'; // HANEMSA7 DA
-//W NEKTEB DA import { signin } from '../services/api'; // Import the API call function
-
-import '../css/signin.css';
+import { signIn } from "../services/api"; // Make sure the path is correct
 
 const SignIn = () => {
-    const [profile, setprofile] = useState({
-        Username: '',
-        Email: '',
-        Password: '',
-       
-    });
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-    const [message, setMessage] = useState('');
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError(""); // Clear previous error
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setprofile({ ...profile, [name]: value });
-    };
+    try {
+      const data = await signIn(email, password);
+      setSuccess(`Logged in as: ${data.Type}`);
+    } catch (err) {
+      setError(err.message || "Failed to sign in");
+    }
+  };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const response = await registerRequest(profile);
-            setMessage('HELLO!'+ e.target.Username);
-            console.log(response); // Log the response for debugging
-        } catch (error) {
-            setMessage('Error signing in: ' + error.message);
-        }
-    };
-
-    return (
+  return (
+    <div>
+      <h2>Sign In</h2>
+      <form onSubmit={handleSubmit}>
         <div>
-            <h1>Sign In</h1>
-            <form onSubmit={handleSubmit}>
-               
-                <div>
-                    <label>
-                        Email:
-                        <input
-                            type="email"
-                            name="Email"
-                            value={profile.Email}
-                            onChange={handleChange}
-                            required
-                        />
-                    </label>
-                </div>
-                <div>
-                    <label>
-                        Password:
-                        <input
-                            type="password"
-                            name="Password"
-                            value={profile.Password}
-                            onChange={handleChange}
-                            required
-                        />
-                    </label>
-                </div>
-
-               
-              
-                <br></br>
-                <button type="submit">Sign In</button>
-            </form>
-            {message && <p>{message}</p>} {/* Show success/error message */}
+          <label>Email:</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
         </div>
-    );
+        <div>
+          <label>Password:</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
+        {error && <p style={{ color: "red" }}>{error}</p>}
+        {success && <p style={{ color: "green" }}>{success}</p>}
+        <button type="submit">Sign In</button>
+      </form>
+    </div>
+  );
 };
 
 export default SignIn;

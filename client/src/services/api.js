@@ -181,6 +181,18 @@ export const getProductsSortedByRating = async () => {
     }
 };
 
+export const signIn = async (email, password) => {
+    try {
+        const response = await axios.post(`${API_URL}/signIn`, {
+            Email: email,
+            Password: password
+        });
+        return response.data; // Returns response from backend
+    } catch (error) {
+        console.error("Error signing in:", error);
+        throw error.response ? error.response.data : { message: "Network error" };
+    }
+};
 
 
 /*export const signin= async(signinData)=>{

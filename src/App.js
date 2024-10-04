@@ -163,4 +163,4 @@ app.get("/viewMyCreatedActivities", viewMyCreatedActivities);
 app.post("/createHistoricalTag", createHistoricalTag);
 app.get("/viewMyCreatedItenrary", viewMyCreatedItenrary);
 app.get("/viewMyCreatedMuseumsAndHistoricalPlaces", viewMyCreatedMuseumsAndHistoricalPlaces);
-app.get("/signIn" , signIn)
+app.post("/signIn" , signIn)
