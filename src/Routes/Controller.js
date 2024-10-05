@@ -1721,25 +1721,23 @@ const creatTouristItenrary= async(req,res)=>{
 
 const filterActivities = async (req, res) => {
     try {
-        const { minPrice, maxPrice, startDate, endDate, rating, category } = req.body;
+        const { minPrice, maxPrice, startDate, endDate, rating, category } = req.query;
 
         const filters = {};
 
-        // 1. Filter by Price
+        // Filter by Price
         if (minPrice || maxPrice) {
             const min = parseFloat(minPrice);
             const max = parseFloat(maxPrice);
-
             if ((minPrice && isNaN(min)) || (maxPrice && isNaN(max))) {
                 return res.status(400).json({ message: 'Invalid price parameters' });
             }
-
             filters.Price = {};
             if (minPrice) filters.Price.$gte = min;
             if (maxPrice) filters.Price.$lte = max;
         }
 
-        // 2. Filter by Date
+        // Filter by Date
         if (startDate || endDate) {
             const start = new Date(startDate);
             const end = new Date(endDate);
@@ -1747,14 +1745,10 @@ const filterActivities = async (req, res) => {
                 return res.status(400).json({ message: 'Invalid date format' });
             }
             end.setHours(23, 59, 59, 999);
-
-            filters.Date = {
-                $gte: start,
-                $lte: end
-            };
+            filters.Date = { $gte: start, $lte: end };
         }
 
-        // 3. Filter by Rating
+        // Filter by Rating
         if (rating) {
             const ratingNumber = parseFloat(rating);
             if (isNaN(ratingNumber) || ratingNumber < 0 || ratingNumber > 10) {
@@ -1763,35 +1757,26 @@ const filterActivities = async (req, res) => {
             filters.Rating = ratingNumber;
         }
 
-        // 4. Filter by Category
+        // Filter by Category
         if (category) {
-            // Find activities that match the given category
             const activityCategories = await activity_categoriesm.find({ Category: category });
-
-            // Extract the activity names or IDs from the result
             const activityNames = activityCategories.map(cat => cat.Activity);
-
-            // Add the category-related filter to the `filters` object
             filters.Name = { $in: activityNames };
         }
 
-        // Find activities based on the combined filters
+        // Find activities based on filters
         const activities = await activity.find(filters).sort({ Date: 1, Rating: -1 });
 
-        // If no activities are found, return a 404
         if (!activities || activities.length === 0) {
             return res.status(404).json({ message: 'No activities found matching the filters.' });
         }
 
-        // Return the filtered activities
-        res.status(200).json({
-            message: 'Filtered activities',
-            activities
-        });
+        res.status(200).json({ message: 'Filtered activities', activities });
     } catch (error) {
         res.status(500).json({ message: 'Error filtering activities', error: error.message });
     }
 };
+
 
 const deleteTouristItenrary = async (req, res) => {
     try {

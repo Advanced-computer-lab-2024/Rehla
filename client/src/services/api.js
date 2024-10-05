@@ -103,12 +103,18 @@ export const sortItineraries = async (sortBy) => {
 };
 
 // Add a new filterActivities function
-export const filterActivities = async (filterParams) => {
+export const filterActivities = async (filters) => {
     try {
-        const response = await axios.get(`${API_URL}/filterActivities`, filterParams);
+        // Construct query parameters from the filters object
+        const queryParams = new URLSearchParams(filters).toString();
+
+        // Make a GET request to the back-end endpoint with query parameters
+        const response = await axios.get(`${API_URL}/filterActivities?${queryParams}`);
+        
+        // Return the response data
         return response.data;
     } catch (error) {
-        console.error('Error filtering activities:', error);
+        console.error('Error fetching filtered activities:', error);
         throw error;
     }
 };
