@@ -1945,34 +1945,28 @@ const getBookedItineraries = async (req, res) => {
 };
 
 
-// msh 3arfa attala3 el activitiessssssss
-const viewMyCreatedActivities = async(req, res) =>{
-    try{
-        const { Email } = req.body;
-        
-        // Find activities by advertiser's email
-        const email = await advertiser_activitiesm.findOne({ Email: Email });
+const viewMyCreatedActivities = async (req, res) => {
+    try {
+        const { Email } = req.body;  // Extract the Email from request body
 
-        if (!email) {
-            return res.status(404).json({ message: 'Email not found' });
-        }
+        // Find all activities by advertiser's email (use find instead of findOne)
+        const activities = await advertiser_activitiesm.find({ Email: Email });
 
         // Check if any activities were found
-        if (advertiser_activities.length > 0) {
-            res.status(200).json({
+        if (activities.length > 0) {
+            return res.status(200).json({
                 message: 'Activities found',
-                activities: advertiser_activities,
-                //{ message: 'User created successfully', user: newUser }
+                activities: activities // Return the activities in the response
             });
         } else {
-            res.status(404).json({
+            return res.status(404).json({
                 message: 'No activities found for this email.',
             });
         }
-        
-    }catch(error){
+
+    } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Error retrieving activities', error: error.message });
+        return res.status(500).json({ message: 'Error retrieving activities', error: error.message });
     }
 };
 
