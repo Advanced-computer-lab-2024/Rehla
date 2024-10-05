@@ -329,5 +329,14 @@ export const deletePreferenceTag = async (tagData) => {
         throw error.response?.data || 'Error deleting preference tag';
     }
 };
+export const createHistoricalTag = async (tagData) => {
+    try {
+        const response = await axios.post(`${API_URL}/createHistoricalTag`, tagData);
+        return response.data; // Return the response from the server
+    } catch (error) {
+        console.error('Error creating tag:', error);
+        throw error; // Rethrow the error for handling in the calling component
+    }
+};
 
 

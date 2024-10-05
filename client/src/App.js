@@ -22,7 +22,7 @@ import AdminProductList from './components/AdminProductList';
 import SellerProductList from './components/SellerProductList';
 
 import AdvertiserActivities from './components/AdvertiserActivities.js';
-
+import CreateTag from './components/CreateTag.js';
 
 
 //import ProductList from './components/Seller.js'
@@ -51,6 +51,7 @@ function App() {
                 <Route path="/Adminproducts" element={<AdminProductList />} />
                 <Route path="/Sellerproducts" element={<SellerProductList />} />
                 <Route path="/AdvertiserActivities" element={<AdvertiserActivities />} />
+                <Route path="/CreateTag" element={<CreateTag />} />
                 <Route path="/" component={Home} />
 
 
