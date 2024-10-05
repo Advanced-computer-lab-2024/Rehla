@@ -340,7 +340,7 @@ const UpcomingEvents = () => {
                 <ul>
                     {filteredPlacesAndMuseums.map((place) => (
                         <li key={place._id}>
-                            {place.Name} - Category: {place.Category} - Location: {place.Location}
+                            {place.Name} 
                         </li>
                     ))}
                 </ul>
