@@ -192,39 +192,46 @@ const filterProductByPrice = async (req, res) => {
 };
 
 const sortActivities = async (req, res) => {
-  try {
-      const { sortBy } = req.query; // Extract sorting criteria from query parameters
-      const sortOptions = {};
-
-      // Determine the sort order based on the provided parameter
-      if (sortBy === 'price') {
-          sortOptions.Price = 1; // Ascending order
-      } else if (sortBy === 'rating') {
-          sortOptions.Rating = 1; // Ascending order
-      } else {
-          return res.status(400).json({ message: 'Invalid sort criteria. Use "price" or "rating".' });
-      }
-
-      // Fetch upcoming activities and sort them accordingly
-      const sortedActivities = await activity.find() // Assuming true means upcoming
-          .sort(sortOptions)
-          .exec();
-
-      if (!sortedActivities || sortedActivities.length === 0) {
-          return res.status(404).json({ message: 'No activities found.' });
-      }
-
-      res.status(200).json(sortedActivities);
-  } catch (error) {
-      res.status(500).json({ error: 'Error sorting activities', details: error.message });
-  }
-};
-
-const sortItineraries = async (req, res) => {
     try {
         const { sortBy } = req.query; // Extract sorting criteria from query parameters
         const sortOptions = {};
   
+        // Determine the sort order based on the provided parameter
+        if (sortBy === 'price') {
+            sortOptions.Price = 1; // Ascending order
+        } else if (sortBy === 'rating') {
+            sortOptions.Rating = 1; // Ascending order
+        } else {
+            return res.status(400).json({ message: 'Invalid sort criteria. Use "price" or "rating".' });
+        }
+  
+        // Get the current date and ensure it's at midnight for accurate comparison
+        const currentDateTime = new Date();
+        //currentDateTime.setHours(currentDateTime.getHours() + 3); // Adjust for 3 hours ahead
+  
+        // Fetch upcoming activities and sort them accordingly
+        const sortedActivities = await activity.find({ Date: { $gte: currentDateTime } }) // Fetch activities on or after the current date
+            .sort(sortOptions)
+            .exec();
+
+        console.log(currentDateTime)    
+  
+        if (!sortedActivities || sortedActivities.length === 0) {
+            return res.status(404).json({ message: 'No upcoming activities found.' });
+        }
+  
+        res.status(200).json(sortedActivities);
+    } catch (error) {
+        console.error('Error sorting activities:', error);
+        res.status(500).json({ error: 'Error sorting activities', details: error.message });
+    }
+  };
+
+  const sortItineraries = async (req, res) => {
+    try {
+        const { sortBy } = req.query; // Extract sorting criteria from query parameters
+        const sortOptions = {};
+
         // Determine the sort order based on the provided parameter
         if (sortBy === 'price') {
             sortOptions.Tour_Price = 1; // Ascending order
@@ -233,21 +240,30 @@ const sortItineraries = async (req, res) => {
         } else {
             return res.status(400).json({ message: 'Invalid sort criteria. Use "price" or "rating".' });
         }
-  
-        // Fetch upcoming activities and sort them accordingly
-        const sortedItineraries = await itinerarym.find() // Assuming true means upcoming
+
+        // Get the current date and ensure it's at midnight for accurate comparison
+        const currentDateTime = new Date();
+        // currentDateTime.setHours(currentDateTime.getHours() + 3); // Adjust for 3 hours ahead if needed
+
+        // Fetch upcoming itineraries (greater than or equal to current date and time) and sort them accordingly
+        const sortedItineraries = await itinerarym.find({ Available_Date_Time: { $gte: currentDateTime } })
             .sort(sortOptions)
             .exec();
-  
+
+        // Debugging step to log the upcoming itineraries
+        console.log(currentDateTime);
+
         if (!sortedItineraries || sortedItineraries.length === 0) {
-            return res.status(404).json({ message: 'No itinerary found.' });
+            return res.status(404).json({ message: 'No upcoming itineraries found.' });
         }
-  
+
         res.status(200).json(sortedItineraries);
     } catch (error) {
-        res.status(500).json({ error: 'Error sorting itinerary', details: error.message });
+        console.error('Error sorting itineraries:', error);
+        res.status(500).json({ error: 'Error sorting itineraries', details: error.message });
     }
 };
+
 
 const filterPlacesAndMuseums = async (req, res) => {
     const { category, value } = req.params; // Get category and value from request parameters
@@ -297,8 +313,11 @@ const filterItineraries = async (req, res) => {
         }
 
         // Filter by date range
+        const currentDateTime = new Date(); // Get the current date and time
         if (startDate && endDate) {
             filters.Available_Date_Time = { $gte: new Date(startDate), $lte: new Date(endDate) };
+        } else {
+            filters.Available_Date_Time = { $gte: currentDateTime }; // Default to current and future dates if no date range is specified
         }
 
         // Filter by language
@@ -314,9 +333,13 @@ const filterItineraries = async (req, res) => {
 
         // Find the itineraries that match the filters
         const itineraries = await itinerarym.find(filters);
-
+        
         // Respond with the filtered itineraries
-        res.status(200).json(itineraries);
+        if (itineraries.length > 0) {
+            res.status(200).json(itineraries);
+        } else {
+            res.status(404).json({ message: 'No upcoming itineraries found with the specified filters.' });
+        }
     } catch (err) {
         res.status(500).json({ message: "Error while filtering itineraries", error: err.message });
     }
@@ -1156,73 +1179,17 @@ const deleteItinerary = async (req, res) => {
 //view all upcoming: itineraries , activities & historical places and museums
 const getAllUpcomingEventsAndPlaces = async (req, res) => {
     try {
-        // Get the current date and time
+        // Get the current date
         const currentDate = new Date();
-
-        // Helper function to convert a time string to a Date object
-        const convertToDate = (timeString, date) => {
-            const [time, modifier] = timeString.split(' ');
-            let [hours, minutes] = time.split(':');
-            if (modifier === 'PM' && hours !== '12') {
-                hours = parseInt(hours) + 12;
-            }
-            if (modifier === 'AM' && hours === '12') {
-                hours = '0';
-            }
-            return new Date(date.getFullYear(), date.getMonth(), date.getDate(), hours, minutes);
-        };
 
         // Query itineraries where Available_Date_Time is in the future
         const upcomingItineraries = await itinerarym.find({
             Available_Date_Time: { $gt: currentDate }
         });
 
-        // Filter upcoming itineraries based on the current time and Timeline
-        const filteredItineraries = upcomingItineraries.filter(itinerary => {
-            const [startTime, endTime] = itinerary.Timeline.split(' - ');
-            const startDate = convertToDate(startTime, currentDate);
-            const endDate = convertToDate(endTime, currentDate);
-            return (startDate >= currentDate || endDate >= currentDate);
-        });
-
-        // Query activities where Date is greater than or equal to the current date and time
+        // Query activities where Date is greater than or equal to the current date
         const upcomingActivities = await activity.find({
-            $expr: {
-                $and: [
-                    { 
-                        $gte: [
-                            "$Date", 
-                            currentDate.setHours(0, 0, 0, 0) // Ensure the Date is greater than or equal to today
-                        ]
-                    },
-                    {
-                        $or: [
-                            { 
-                                $gt: [
-                                    { 
-                                        $dateFromString: {
-                                            dateString: {
-                                                $concat: [
-                                                    { $dateToString: { format: "%Y-%m-%d", date: "$Date" } }, // Format the Date
-                                                    " ", // Space to separate date and time
-                                                    "$Time" // Add the Time field
-                                                ]
-                                            }
-                                        }
-                                    },
-                                    currentDate // Compare to current date and time
-                                ]
-                            },
-                            {
-                                $and: [
-                                    { $eq: [{ $dateToString: { format: "%Y-%m-%d", date: "$Date" } }, currentDate.toISOString().slice(0, 10)] }, // Check if the dates are equal
-                                    { $gte: ["$Time", currentDate.toTimeString().slice(0, 5)] } // Ensure time is greater than or equal to current time
-                                ]
-                            }
-                        ]
-                    }
-                ]
-            }
+            Date: { $gte: currentDate }
         });
 
         // Query to find all museums in the database
@@ -1234,7 +1201,7 @@ const getAllUpcomingEventsAndPlaces = async (req, res) => {
         // Prepare the response
         res.status(200).json({
             message: 'Upcoming events and places retrieved successfully',
-            upcomingItineraries: filteredItineraries.length > 0 ? filteredItineraries : 'No upcoming itineraries found',
+            upcomingItineraries: upcomingItineraries.length > 0 ? upcomingItineraries : 'No upcoming itineraries found',
             upcomingActivities: upcomingActivities.length > 0 ? upcomingActivities : 'No upcoming activities found',
             museums: museums.length > 0 ? museums : 'No museums found',
             historicalPlaces: historicalPlaces.length > 0 ? historicalPlaces : 'No historical places found'
@@ -1244,7 +1211,6 @@ const getAllUpcomingEventsAndPlaces = async (req, res) => {
         res.status(500).json({ message: 'Error retrieving data', error: error.message });
     }
 };
-
 
 //Creating Advertiser as a request
 const createUserAdvertiser = async (req, res) => {
@@ -2006,52 +1972,6 @@ const createHistoricalTag = async(req,res) => {
      }
 };
 
-const signIn = async (req, res) => {
-    const { Email, Password } = req.body;
-
-    if (!Email || !Password) {
-        return res.status(400).json({ message: "Email and Password are required." });
-    }
-
-    try {
-        // Check in tourists table
-        let user = await Tourist.findOne({ Email, Password });
-        if (user) {
-            return res.status(200).json({ Type: user.Type });
-        }
-
-        // Check in admins table
-        user = await Admin.findOne({ Email, Password });
-        if (user) {
-            return res.status(200).json({ Type: user.Type });
-        }
-
-        // Check in sellers table
-        user = await Seller.findOne({ Email, Password });
-        if (user) {
-            return res.status(200).json({ Type: user.Type });
-        }
-
-        // Check in tourism governors table
-        user = await tourism_governers.findOne({ Email, Password });
-        if (user) {
-            return res.status(200).json({ Type: user.Type });
-        }
-
-        // Check in tour guides table
-        user = await tour_guidem.findOne({ Email, Password });
-        if (user) {
-            return res.status(200).json({ Type: user.Type });
-        }
-
-        // If no user found
-        return res.status(401).json({ message: "Invalid email or password." });
-    } catch (error) {
-        console.error("Error during sign-in:", error);
-        return res.status(500).json({ message: "Internal server error." });
-    }
-};
-
 
 
 // ----------------- Activity Category CRUD -------------------
@@ -2118,6 +2038,5 @@ module.exports = {
     viewMyCreatedActivities,
     createHistoricalTag,
     viewMyCreatedItenrary,
-    viewMyCreatedMuseumsAndHistoricalPlaces,
-    signIn
+    viewMyCreatedMuseumsAndHistoricalPlaces
 };
