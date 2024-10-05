@@ -221,6 +221,20 @@ const UpcomingEvents = () => {
                 <button type="submit">Apply Activity Filters</button>
             </form>
 
+            {/* Display Filtered Activities */}
+            <h2>Filtered Activities</h2>
+            {filteredActivities ? (
+                <ul>
+                    {filteredActivities.map((activity) => (
+                        <li key={activity._id}>
+                            {activity.Name} - ${activity.Price} - Rating: {activity.Rating}
+                        </li>
+                    ))}
+                </ul>
+            ) : (
+                <p>No filtered activities available</p>
+            )}
+
             {/* Filter Form for Itineraries */}
             <h2>Filter Itineraries</h2>
             <form onSubmit={handleFilterItineraries}>
@@ -280,20 +294,6 @@ const UpcomingEvents = () => {
                 </label>
                 <button type="submit">Apply Itinerary Filters</button>
             </form>
-
-            {/* Display Filtered Activities */}
-            <h2>Filtered Activities</h2>
-            {filteredActivities ? (
-                <ul>
-                    {filteredActivities.map((activity) => (
-                        <li key={activity._id}>
-                            {activity.Name} - ${activity.Price} - Rating: {activity.Rating}
-                        </li>
-                    ))}
-                </ul>
-            ) : (
-                <p>No filtered activities available</p>
-            )}
 
             {/* Display Filtered Itineraries */}
             <h2>Filtered Itineraries</h2>
