@@ -21,7 +21,7 @@ const advertiser_activitiesm = require('../Models/advertiser_activities');
 const Seller = require("../Models/sellers.js");
 const advertiser_activities = require('../Models/advertiser_activities');
 const historical_places_tags = require('../Models/historical_places_tags.js');
-const tour_guide_itenrariesm = require('../Models/tour_guide_itenraries.js');
+const tour_guide_itinerariesm = require('../Models/tour_guide_itineraries.js');
 const tourismgoverner_museumsandhistoricalplacesm = require('../Models/tourismgoverner_museumsandhistoricalplaces.js');
 
 
@@ -1970,36 +1970,35 @@ const viewMyCreatedActivities = async (req, res) => {
     }
 };
 
-const viewMyCreatedItenrary = async(req, res) =>{
-    try{
-        
-        const { Email } = req.body;
-        
-        // Find activities by tour guide's email
-        const TEmail = await tour_guide_itenrariesm.findOne({ Email: Email });
+const viewMyCreatedItenrary = async (req, res) => {
+    try {
+        const { Email } = req.body; // Extract email from the request body
 
-        if (!TEmail) {
-            return res.status(404).json({ message: 'Email not found' });
-        }
+        // Find itineraries by the tour guide's email
+        const itineraries = await tour_guide_itinerariesm.find({ Email: Email });
 
-        // Check if any itenraries were found
-        if (tour_guide_itenrariesm.length > 0) {
-            res.status(200).json({
-                message: 'Itenrary found',
-                itineraries: tour_guide_itenrariesm,
-                
+        // Check if any itineraries were found
+        if (itineraries.length > 0) {
+            // If found, return the itineraries in the response
+            return res.status(200).json({
+                message: 'Itineraries found',
+                itineraries: itineraries, // Return the actual itineraries found
             });
         } else {
-            res.status(404).json({
-                message: 'No itenrary found for this email.',
+            // If no itineraries are found
+            return res.status(404).json({
+                message: 'No itineraries found for this email.',
             });
         }
-        
-    }catch(error){
+    } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Error retrieving itenrary', error: error.message });
+        return res.status(500).json({
+            message: 'Error retrieving itineraries',
+            error: error.message,
+        });
     }
 };
+
 
 
 const viewMyCreatedMuseumsAndHistoricalPlaces = async(req, res) =>{

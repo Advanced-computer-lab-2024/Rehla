@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const tour_guide_itenerariesSchema = new Schema({
+const tour_guide_itinerariesSchema = new Schema({
     Email : {
         type: String,
         required: true,
@@ -14,5 +14,5 @@ const tour_guide_itenerariesSchema = new Schema({
     },
 },{ versionKey: false });
 
-const tour_guide_itenraries = mongoose.model('tour_guide_iteneraries', tour_guide_itenerariesSchema);
-module.exports = tour_guide_itenraries;
+const tour_guide_itineraries = mongoose.model('tour_guide_itineraries', tour_guide_itinerariesSchema);
+module.exports = tour_guide_itineraries;
