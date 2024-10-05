@@ -345,6 +345,90 @@ const filterItineraries = async (req, res) => {
     }
 };
 
+const viewAllRequests = async (req, res) => {
+    try {
+        // Fetch all requests from the database
+        const requests = await Request.find();
+
+        // Check if requests were found
+        if (!requests || requests.length === 0) {
+            return res.status(404).json({ message: 'No requests found.' });
+        }
+
+        // Respond with the list of requests
+        res.status(200).json(requests);
+    } catch (error) {
+        console.error('Error retrieving requests:', error);
+        res.status(500).json({ error: 'Internal server error', details: error.message });
+    }
+};
+
+// Example of setting up a route to use this function
+
+const processRequestByEmail = async (req, res) => {
+    const { email } = req.params; // Get the email from request parameters
+
+    try {
+        // Step 1: Find the request by email
+        const requests = await Request.findOne({ Email: email });
+        
+        if (!requests) {
+            return res.status(404).json({ message: 'Request not found.' });
+        }
+
+        // Step 2: Check the type of request and add to the corresponding table
+        let newRecord;
+        if (requests.Type === 'TOUR_GUIDE') {
+            newRecord = new tour_guidem({
+                Username: requests.Username,
+                Email: requests.Email,
+                Password: requests.Password,
+                Type: requests.Type,
+                //Mobile_Number: requests.Mobile_Number,
+                //Experience: requests.Experience,
+                //Previous_work: requests.Previous_work,
+            });
+        } else if (requests.Type === 'SELLER') {
+            newRecord = new Seller({
+                Username: requests.Username,
+                Email: requests.Email,
+                Password: requests.Password,
+                //Shop_Name: requests.Shop_Name,
+                //Description: requests.Description,
+                //Shop_Location: requests.Shop_Location,
+                Type: requests.Type,
+            });
+        } else if (requests.Type === 'ADVERTISER') {
+            newRecord = new AdvertisersModel({
+                Username: requests.Username,
+                Email: requests.Email,
+                Password: requests.Password,
+                //Link_to_website: requests.Link_to_website,
+                //Hotline: requests.Hotline,
+               // Company_Profile: requests.Company_Profile,
+                //Company_Name: requests.Company_Name,
+                Type: requests.Type,
+            });
+        } else {
+            return res.status(400).json({ message: 'Invalid request type.' });
+        }
+
+        // Step 3: Save the new record to the corresponding table
+        await newRecord.save();
+
+        // Optional: Delete the request after processing
+        //await RequestsModel.deleteOne({ Email: email });
+
+        // Step 4: Respond with the created record
+        res.status(201).json(newRecord);
+
+    } catch (error) {
+        console.error('Error processing request:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+
 const registerTourist = async (req, res) => {
     try {
         const { Username, Email, Password, Mobile_Number, Nationality, DOB, Job_Student } = req.body;
@@ -1986,6 +2070,8 @@ module.exports = {
     sortItineraries,
     filterPlacesAndMuseums,
     filterItineraries,
+    viewAllRequests,
+    processRequestByEmail,
     registerTourist,
     registerRequest,
     createActivityCategory,

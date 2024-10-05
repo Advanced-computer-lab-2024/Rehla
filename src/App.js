@@ -14,6 +14,8 @@ const {createUserAdmin,
   sortItineraries,
   filterPlacesAndMuseums,
   filterItineraries,
+  viewAllRequests,
+  processRequestByEmail,
   registerTourist,
   registerRequest,
   createActivityCategory,
@@ -106,6 +108,8 @@ app.get("/sortActivities", sortActivities); // Route for sorting activities
 app.get("/sortItineraries", sortItineraries);
 app.get('/filter/:category/:value', filterPlacesAndMuseums);
 app.get("/filterItineraries", filterItineraries);
+app.get('/requests', viewAllRequests);
+app.post('/processRequest/:email', processRequestByEmail);
 app.post("/registerTourist",registerTourist);
 app.post("/registerRequest",registerRequest);
 app.post("/addCategory",createActivityCategory);
