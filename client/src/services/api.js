@@ -218,3 +218,17 @@ export const deleteUserAdmin = async (email) => {
 
 
 
+// api.js
+export const viewMyCreatedActivities = async (email) => {
+    try {
+        const response = await axios.get(`${API_URL}/viewMyCreatedActivities`, {
+            params: { Email: email },  // Pass email as a query parameter
+        });
+        return response.data; // Return the response from the backend
+    } catch (error) {
+        console.error("Error fetching activities:", error);
+        throw error.response ? error.response.data : { message: "Network error" }; // Proper error handling
+    }
+};
+
+

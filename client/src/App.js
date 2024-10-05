@@ -21,6 +21,7 @@ import ProductList from './components/ProductList';
 import AdminProductList from './components/AdminProductList';
 import SellerProductList from './components/SellerProductList';
 
+import AdvertiserActivities from './components/AdvertiserActivities.js';
 
 
 
@@ -49,6 +50,7 @@ function App() {
 
                 <Route path="/Adminproducts" element={<AdminProductList />} />
                 <Route path="/Sellerproducts" element={<SellerProductList />} />
+                <Route path="/AdvertiserActivities" element={<AdvertiserActivities />} />
                 <Route path="/" component={Home} />
 
 
