@@ -78,7 +78,7 @@ const port = process.env.PORT || "8000";
 app.use(cors()); // Enable CORS for all routes
 
 // MongoDB connection
-mongoose.connect(MongoURI)
+mongoose.connect("mongodb+srv://Rehla:Rehla2024@rehla.35b5h.mongodb.net/REHLA?retryWrites=true&w=majority&appName=Rehla")
 .then(() => {
   console.log("MongoDB is now connected!");
   // Starting server

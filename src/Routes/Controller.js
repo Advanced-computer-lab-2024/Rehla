@@ -1972,17 +1972,18 @@ const viewMyCreatedActivities = async (req, res) => {
 
 const viewMyCreatedItenrary = async(req, res) =>{
     try{
+        
         const { Email } = req.body;
         
         // Find activities by tour guide's email
-        const TEmail = await tour_guide_itenrariesm.findOne({ mail: Email });
+        const TEmail = await tour_guide_itenrariesm.findOne({ Email: Email });
 
         if (!TEmail) {
             return res.status(404).json({ message: 'Email not found' });
         }
 
         // Check if any itenraries were found
-        if (tour_guide_itenraries.length > 0) {
+        if (tour_guide_itenrariesm.length > 0) {
             res.status(200).json({
                 message: 'Itenrary found',
                 itineraries: tour_guide_itenrariesm,
@@ -1999,6 +2000,7 @@ const viewMyCreatedItenrary = async(req, res) =>{
         res.status(500).json({ message: 'Error retrieving itenrary', error: error.message });
     }
 };
+
 
 const viewMyCreatedMuseumsAndHistoricalPlaces = async(req, res) =>{
     try{
