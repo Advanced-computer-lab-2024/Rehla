@@ -117,9 +117,9 @@ app.get("/getCategory",readActivityCategories);
 app.put("/updateCategory/:currentName",updateActivityCategory);
 app.delete("/deleteCategory",deleteActivityCategory);
 app.post("/addTag",createPreferenceTag);
-app.get("/getCategory",readPreferenceTag);
-app.put("/updateCategory/:currentName",updatePreferenceTag);
-app.delete("/deleteCategory",deletePreferenceTag);
+app.get("/getTag",readPreferenceTag);
+app.put("/updateTag/:currentName",updatePreferenceTag);
+app.delete("/deleteTag",deletePreferenceTag);
 app.get("/searchByNameCategoryTag",searchByNameCategoryTag);
 app.get("/getProductsSortedByRating" , getProductsSortedByRating); //Tourist-Admin-Seller :sort products by rating 
 app.post("/addProduct" ,addProduct); //Admin - Seller : add a new product

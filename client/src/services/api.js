@@ -231,4 +231,103 @@ export const viewMyCreatedActivities = async (email) => {
     }
 };
 
+export const createUserAdmin = async (userData) => {
+    try {
+        const response = await axios.post(`${API_URL}/addUser`, userData);
+        return response.data;
+    } catch (error) {
+        console.error("Error creating user:", error.response || error);
+        throw error.response?.data || 'Error creating user';
+    }
+};
+
+// Create a new activity category
+export const createActivityCategory = async (categoryData) => {
+    try {
+        const response = await axios.post(`${API_URL}/addCategory`, categoryData);
+        return response.data;
+    } catch (error) {
+        console.error("Error creating activity category:", error.response || error);
+        throw error.response?.data || 'Error creating activity category';
+    }
+};
+
+// Get all activity categories
+export const readActivityCategories = async () => {
+    try {
+        const response = await axios.get(`${API_URL}/getCategory`);
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching activity categories:", error.response || error);
+        throw error.response?.data || 'Error fetching activity categories';
+    }
+};
+
+// Update an existing activity category by current name
+export const updateActivityCategory = async (currentName, newName) => {
+    try {
+        const response = await axios.put(`${API_URL}/updateCategory/${currentName}`, newName);
+        return response.data;
+    } catch (error) {
+        console.error("Error updating activity category:", error.response || error);
+        throw error.response?.data || 'Error updating activity category';
+    }
+};
+
+// Delete an activity category by name
+export const deleteActivityCategory = async (categoryData) => {
+    try {
+        const response = await axios.delete(`${API_URL}/deleteCategory`, { data: categoryData });
+        return response.data;
+    } catch (error) {
+        console.error("Error deleting activity category:", error.response || error);
+        throw error.response?.data || 'Error deleting activity category';
+    }
+};
+
+
+// Create a new preference tag
+export const createPreferenceTag = async (tagData) => {
+    try {
+        const response = await axios.post(`${API_URL}/addTag`, tagData);
+        return response.data;
+    } catch (error) {
+        console.error("Error creating preference tag:", error.response || error);
+        throw error.response?.data || 'Error creating preference tag';
+    }
+};
+
+// Get all preference tags
+export const readPreferenceTags = async () => {
+    try {
+        const response = await axios.get(`${API_URL}/getTag`);
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching preference tags:", error.response || error);
+        throw error.response?.data || 'Error fetching preference tags';
+    }
+};
+
+// Update an existing preference tag by current name
+export const updatePreferenceTag = async (currentTagName, newTagName) => {
+    try {
+        const response = await axios.put(`${API_URL}/updateTag/${currentTagName}`, newTagName);
+        return response.data;
+    } catch (error) {
+        console.error("Error updating preference tag:", error.response || error);
+        throw error.response?.data || 'Error updating preference tag';
+    }
+};
+
+// Delete a preference tag by name
+export const deletePreferenceTag = async (tagData) => {
+    try {
+        const response = await axios.delete(`${API_URL}/deleteTag`, { data: tagData });
+        return response.data;
+    } catch (error) {
+        console.error("Error deleting preference tag:", error.response || error);
+        throw error.response?.data || 'Error deleting preference tag';
+    }
+};
+
 
