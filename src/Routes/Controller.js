@@ -784,11 +784,11 @@ const addProduct = async (req, res) => {
 const updateProduct = async (req, res) => {
     try {
       // Destructure Product_Name from the request body
-      const { Product_Name, picture, Price, Description, Seller_Name, Rating, Reviews, Quantity } = req.body;
+      const { Product_Name, Picture, Price, Description, Seller_Name, Rating, Reviews, Quantity } = req.body;
   
       // Create an object to hold only the fields that are provided (not undefined)
       const updateFields = {};
-      if (picture) updateFields.picture = picture;
+      if (Picture) updateFields.Picture = Picture;
       if (Price) updateFields.Price = Price;
       if (Description) updateFields.Description = Description;
       if (Seller_Name) updateFields.Seller_Name = Seller_Name;
