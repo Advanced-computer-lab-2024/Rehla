@@ -1,19 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getProducts, getProductsSortedByRating, searchProductByName } from '../services/api'; // Import the search API call
+import { getProducts, getProductsSortedByRating, addProduct , updateProduct } from '../services/api';
 
-const SellerProductList = () => {
+const AdminProductList = () => {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [sortedProducts, setSortedProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [priceFilters, setPriceFilters] = useState({ minPrice: '', maxPrice: '' });
     const [error, setError] = useState(null);
+    const [successMessage, setSuccessMessage] = useState(null); // New success message state
     const [isFiltered, setIsFiltered] = useState(false);
     const [isSorted, setIsSorted] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [isSearched, setIsSearched] = useState(false);
+    const [newProduct, setNewProduct] = useState({
+        Product_Name: '', Picture: '', Price: '', Quantity: '',
+        Seller_Name: '', Description: '', Rating: '', Reviews: ''
+    });
+   
+
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -30,36 +37,35 @@ const SellerProductList = () => {
         fetchProducts();
     }, []);
 
-    // Search products by name
     const handleSearchProducts = (e) => {
         e.preventDefault();
-        const results = products.filter(product => 
+        const results = products.filter(product =>
             product.Product_Name.toLowerCase().includes(searchTerm.toLowerCase())
         );
         setSearchResults(results);
-        setIsSearched(true); // Show search results after button press
+        setIsSearched(true);
     };
 
-    // Filter products by price
     const handleFilterProducts = (e) => {
         e.preventDefault();
         const { minPrice, maxPrice } = priceFilters;
+
         const filtered = products.filter(product => {
             const price = product.Price;
             const min = minPrice ? parseFloat(minPrice) : 0;
             const max = maxPrice ? parseFloat(maxPrice) : Infinity;
             return price >= min && price <= max;
         });
+
         setFilteredProducts(filtered);
-        setIsFiltered(true); // Show filtered products after button press
+        setIsFiltered(true);
     };
 
-    // Sort products by rating
     const handleSortProductsByRating = async () => {
         try {
             const sorted = await getProductsSortedByRating();
             setSortedProducts(sorted.products);
-            setIsSorted(true); // Show sorted products after button press
+            setIsSorted(true);
         } catch (error) {
             setError(error.message);
             console.error('Failed to fetch sorted products:', error);
@@ -73,6 +79,30 @@ const SellerProductList = () => {
             [name]: value
         }));
     };
+
+    const handleAddProduct = async (e) => {
+        e.preventDefault();
+        try {
+            const addedProduct = await addProduct(newProduct);
+            setProducts([...products, addedProduct]);
+            setSuccessMessage('Product added successfully!'); // Set success message
+            setNewProduct({
+                Product_Name: '', Picture: '', Price: '', Quantity: '',
+                Seller_Name: '', Description: '', Rating: '', Reviews: ''
+            });
+        } catch (err) {
+            setError('Failed to add product');
+            console.error(err);
+        }
+    };
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setNewProduct((prev) => ({ ...prev, [name]: value }));
+    };
+
+   
+
 
     if (loading) {
         return <div>Loading...</div>;
@@ -109,7 +139,7 @@ const SellerProductList = () => {
                         {products.map(product => (
                             <div key={product._id} style={productCardStyle}>
                                 <h3>{product.Product_Name}</h3>
-                                <p>Price: ${product.Price.toFixed(2)}</p>
+                                <p>Price: ${product.Price}</p>
                                 <p>{product.Description}</p>
                             </div>
                         ))}
@@ -164,7 +194,7 @@ const SellerProductList = () => {
                     <button type="submit" style={{ padding: '8px 16px' }}>Apply Price Filter</button>
                 </form>
 
-                {/* Filtered Products Output (shown only after filter button is pressed) */}
+                {/* Filtered Products Output */}
                 {isFiltered && (
                     <div style={{ marginTop: '20px' }}>
                         <h3>Filtered Products:</h3>
@@ -192,7 +222,7 @@ const SellerProductList = () => {
                     Sort Products
                 </button>
 
-                {/* Sorted Products Output (shown only after sort button is pressed) */}
+                {/* Sorted Products Output */}
                 {isSorted && (
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', justifyContent: 'center' }}>
                         {sortedProducts.length > 0 ? (
@@ -211,21 +241,101 @@ const SellerProductList = () => {
                 )}
             </div>
 
-            {/* Navigation button */}
-            <Link to="/" style={{ display: 'block', marginTop: '20px', textAlign: 'center' }}>
-                <button style={{ padding: '8px 16px' }}>Back to Home</button>
-            </Link>
+            {/* Add Product Section */}
+            <div style={{ marginTop: '40px' }}>
+                <h2>Add a New Product</h2>
+                <form onSubmit={handleAddProduct}>
+                    <input
+                        type="text"
+                        name="Product_Name"
+                        placeholder="Product Name"
+                        value={newProduct.Product_Name}
+                        onChange={handleInputChange}
+                        required
+                        style={{ padding: '8px', margin: '10px 0', width: '200px' }}
+                    />
+                    <input
+                        type="text"
+                        name="Picture"
+                        placeholder="Product Image URL"
+                        value={newProduct.Picture}
+                        onChange={handleInputChange}
+                        required
+                        style={{ padding: '8px', margin: '10px 0', width: '200px' }}
+                    />
+                    <input
+                        type="number"
+                        name="Price"
+                        placeholder="Price"
+                        value={newProduct.Price}
+                        onChange={handleInputChange}
+                        required
+                        style={{ padding: '8px', margin: '10px 0', width: '200px' }}
+                    />
+                    <input
+                        type="number"
+                        name="Quantity"
+                        placeholder="Quantity"
+                        value={newProduct.Quantity}
+                        onChange={handleInputChange}
+                        required
+                        style={{ padding: '8px', margin: '10px 0', width: '200px' }}
+                    />
+                    <input
+                        type="text"
+                        name="Seller_Name"
+                        placeholder="Seller Name"
+                        value={newProduct.Seller_Name}
+                        onChange={handleInputChange}
+                        required
+                        style={{ padding: '8px', margin: '10px 0', width: '200px' }}
+                    />
+                     <input
+                        type="text"
+                        name="Description"
+                        placeholder="Description"
+                        value={newProduct.Description}
+                        onChange={handleInputChange}
+                        style={{ padding: '8px', width: '200px' }}
+                    />
+                    <input
+                        type="number"
+                        name="Rating"
+                        placeholder="Rating"
+                        value={newProduct.Rating}
+                        onChange={handleInputChange}
+                        required
+                        style={{ padding: '8px', margin: '10px 0', width: '200px' }}
+                    />
+                    <input
+                        type="number"
+                        name="Reviews"
+                        placeholder="Reviews"
+                        value={newProduct.Reviews}
+                        onChange={handleInputChange}
+                        required
+                        style={{ padding: '8px', margin: '10px 0', width: '200px' }}
+                    />
+                    <button type="submit" style={{ padding: '8px 16px' }}>Add Product</button>
+                </form>
+
+                {/* Success Message Display */}
+                {successMessage && <div style={{ marginTop: '10px', color: 'green' }}>{successMessage}</div>}
+            </div>
+
+
+               
+
         </div>
     );
 };
 
-// Define a common style for product cards
 const productCardStyle = {
-    border: '1px solid #ccc',
-    padding: '15px',
-    borderRadius: '10px',
-    width: '250px',
+    border: '1px solid #ddd',
+    borderRadius: '5px',
+    padding: '10px',
+    width: '200px',
     textAlign: 'center'
 };
 
-export default SellerProductList;
+export default AdminProductList;
