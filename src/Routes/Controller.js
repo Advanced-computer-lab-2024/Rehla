@@ -1972,7 +1972,7 @@ const viewMyCreatedActivities = async (req, res) => {
 
 const viewMyCreatedItenrary = async (req, res) => {
     try {
-        const { Email } = req.body; // Extract email from the request body
+        const { Email } = req.query; // Extract email from the request body
 
         // Find itineraries by the tour guide's email
         const itineraries = await tour_guide_itinerariesm.find({ Email: Email });
@@ -1998,7 +1998,6 @@ const viewMyCreatedItenrary = async (req, res) => {
         });
     }
 };
-
 
 
 const viewMyCreatedMuseumsAndHistoricalPlaces = async(req, res) =>{

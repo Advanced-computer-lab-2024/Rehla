@@ -339,4 +339,16 @@ export const createHistoricalTag = async (tagData) => {
     }
 };
 
+export const viewMyCreatedItineraries = async (email) => {
+    try {
+        const response = await axios.get(`${API_URL}/viewMyCreatedItenrary`, {
+            params: { Email: email },  // Pass email as a query parameter
+        });
+        return response.data; // Return the response from the backend
+    } catch (error) {
+        console.error("Error fetching itineraries:", error);
+        throw error.response ? error.response.data : { message: "Network error" }; // Proper error handling
+    }
+};
+
 
