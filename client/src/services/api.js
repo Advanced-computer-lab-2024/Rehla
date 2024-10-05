@@ -206,5 +206,15 @@ export const searchEventsPlaces = async (searchTerm) => {
     }
 };
 
+// Function to delete a user by admin
+export const deleteUserAdmin = async (email) => {
+    try {
+        const response = await axios.delete(`${API_URL}/deleteUser/${email}`);
+        return response.data; // Return the response data (e.g., success message)
+    } catch (error) {
+        throw error.response?.data?.error || 'Error deleting user'; // Throw error to be caught in the front-end
+    }
+};
+
 
 
