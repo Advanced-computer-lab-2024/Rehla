@@ -193,5 +193,18 @@ export const signIn = async (email, password) => {
     }
 };
 
+export const searchEventsPlaces = async (searchTerm) => {
+    try {
+        const response = await fetch(`${API_URL}/searchByNameCategoryTag?searchTerm=${encodeURIComponent(searchTerm)}`); // Ensure it's correctly formed
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return await response.json(); // Return the response data
+    } catch (error) {
+        console.error("Error in searchEventsPlaces:", error);
+        throw error; // Re-throw the error to be handled in the component
+    }
+};
+
 
 

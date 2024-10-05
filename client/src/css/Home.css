@@ -50,3 +50,13 @@ a {
     font-family: cursive;        /* Optional: space between links */
     margin-left: 15px;          /* Optional: space between links */
 }
+
+.search {
+    display: flex; /* Use flexbox for alignment */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    background-color: #f0f0f0; /* Background color for search */
+    padding: 20px; /* Space around search components */
+    box-sizing: border-box; /* Include padding in height calculations */
+    margin-top: 70px; /* Space below the navbar */
+}
