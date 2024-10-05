@@ -1366,24 +1366,57 @@ const updateUserAdvertiser = async (req, res) => {
 //Advertiser Creating An Activity
 const createActivityByAdvertiser = async (req, res) => {
     try {
-        const { Name,Location,Time,Duration,Price,Date,Tag,Category,Discount_Percent,
-            Booking_Available,Available_Spots,Booked_Spots,Rating } = req.body;
-        if (!Name||!Location||!Time||!Duration||!Price||!Date||!Tag||!Category||!Discount_Percent||!
-            Booking_Available||!Available_Spots||!Booked_Spots||!Rating) {
+        const { 
+            Name, Location, Time, Duration, Price, Date, Discount_Percent, 
+            Booking_Available, Available_Spots, Booked_Spots, Rating, 
+            Category, Tag 
+        } = req.body;
+
+        // Check if all required fields are provided
+        if (!Name || !Location || !Time || !Duration || !Price || !Date || 
+            !Discount_Percent || !Booking_Available || !Available_Spots || 
+            !Booked_Spots || !Rating || !Category || !Tag) {
             return res.status(400).json({ error: 'All fields are required.' });
         }
+
+        // Create a new activity
         const newActivity = new activity({
-            Name,Location,Time,Duration,Price,Date,Tag,Category,Discount_Percent,
-            Booking_Available,Available_Spots,Booked_Spots,Rating
+            Name, Location, Time, Duration, Price, Date, 
+            Discount_Percent, Booking_Available, Available_Spots, 
+            Booked_Spots, Rating
         });
-        const savedActivity= await newActivity.save();
-        res.status(201).json({ message: 'Activity created successfully', activity: savedActivity });
+
+        // Save the new activity
+        const savedActivity = await newActivity.save();
+
+        // Create the category entry
+        const newCategory = new activity_categoriesm({
+            Activity: savedActivity.Name,  // Link category to the created activity
+            Category
+        });
+
+        await newCategory.save(); // Save the category
+
+        // Create the tag entry
+        const newTag = new activity_tagsm({
+            Activity: savedActivity.Name,  // Link tag to the created activity
+            Tag
+        });
+
+        await newTag.save(); // Save the tag
+
+        // Return success response
+        res.status(201).json({ 
+            message: 'Activity created successfully', 
+            activity: savedActivity 
+        });
     } 
     catch (error) {
         console.error("Error details:", error.message, error.stack); // Log full error details
         res.status(500).json({ error: 'Error creating activity', details: error.message });
     }
 };
+
 
 //Advertiser Reading Activity
 const readActivity = async (req,res)=>{
@@ -1402,45 +1435,87 @@ const readActivity = async (req,res)=>{
     }
 }
 
+
 //Advertiser Updates Activity
 const updateActivityByAdvertiser = async (req, res) => {
-    //update a user in the database
-    try{
-        const {Name,Location,Time,Duration,Price,Date,Tag,Category,Discount_Percent,
-            Booking_Available,Available_Spots,Booked_Spots,Rating } = req.body;
+    try {
+        const { 
+            Name, 
+            Location, 
+            Time, 
+            Duration, 
+            Price, 
+            Date, 
+            Tag, 
+            Category, 
+            Discount_Percent,
+            Booking_Available,
+            Available_Spots,
+            Booked_Spots,
+            Rating 
+        } = req.body;
+
         const updatedActivity = await activity.findOneAndUpdate(
-            {Name: Name },
-            {Name,Location,Time,Duration,Price,Date,Tag,Category,Discount_Percent,
-              Booking_Available,Available_Spots,Booked_Spots,Rating },  // Fields to update
-            {new: true, runValidators: true }  // Options: return the updated document and run schema validators
-    );
-    if (!updatedActivity) {
-        return res.status(404).json({ message: 'Activity not found' });
-    }
-    res.status(200).json({ message: 'Activity updated successfully', activity: updatedActivity });
-    }
-    catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
+            { Name }, // Find activity by Name
+            { 
+                Location,
+                Time,
+                Duration,
+                Price,
+                Date,
+                Discount_Percent,
+                Booking_Available,
+                Available_Spots,
+                Booked_Spots,
+                Rating 
+            },  // Fields to update
+            { new: true, runValidators: true }  // Options: return the updated document and run schema validators
+        );
+
+        if (!updatedActivity) {
+            return res.status(404).json({ message: 'Activity not found' });
+        }
+
+        // Update the associated activity category
+        await activity_categoriesm.findOneAndUpdate(
+            { Activity: Name }, 
+            { Category }
+        );
+
+        // Update the associated activity tag
+        await activity_tagsm.findOneAndUpdate(
+            { Activity: Name }, 
+            { Tag }
+        );
+
+        res.status(200).json({ message: 'Activity updated successfully', activity: updatedActivity });
+    } catch (error) {
+        console.error("Error updating activity:", error.message);
+        res.status(500).json({ message: 'Server error', details: error.message });
     }
 };
+
 
 //Advertiser deletes activity
 const deleteActivityByAdvertiser = async (req, res) => {
     try {
-        const {Name} = req.body;
+        const { Name } = req.body;
 
         // Find the activity by name and delete it
-        const deletedActivity = await activity.findOneAndDelete({ Name: Name });
+        const deletedActivity = await activity.findOneAndDelete({ Name });
 
         if (!deletedActivity) {
             return res.status(404).json({ error: 'Activity not found' });
         }
 
+        // Also delete the associated category and tag
+        await activity_categoriesm.findOneAndDelete({ Activity: Name });
+        await activity_tagsm.findOneAndDelete({ Activity: Name });
+
         res.status(200).json({ message: 'Activity deleted successfully' });
     } catch (error) {
-        console.error("Error details:", error.message, error.stack); // Log full error details
-        res.status(500).json({ error: 'Error deleting user', details: error.message });
+        console.error("Error deleting activity:", error.message);
+        res.status(500).json({ error: 'Error deleting activity', details: error.message });
     }
 };
 

@@ -143,7 +143,7 @@ app.post("/readAdvertisers", readAdvertiser); // Route for reading an advertiser
 app.put("/updateUserAdvertisers", updateUserAdvertiser); //updating advertiser
 
 app.post("/createActivityByAdvert", createActivityByAdvertiser);
-app.post("/readActivity", readActivity);
+app.get("/readActivity", readActivity);
 app.put("/updateActivity", updateActivityByAdvertiser);
 app.delete("/deleteActivityByAdvert", deleteActivityByAdvertiser);
 
