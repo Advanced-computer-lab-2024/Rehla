@@ -1210,8 +1210,24 @@ const getItineraryByName = async (req, res) => {
 //Update itinerary by name
 const updateItinerary = async (req, res) => {
     try {
-        // Extract itinerary name and the fields to update from the request body
-        const { Itinerary_Name, Timeline, Duration, Language, Tour_Price, Available_Date_Time, Accessibility, Pick_Up_Point, Drop_Of_Point, Booked, Empty_Spots, Country, Rating, P_Tag ,Created_By} = req.body;
+        // Extract itinerary fields from the request body
+        const { 
+            Itinerary_Name, 
+            Timeline, 
+            Duration, 
+            Language, 
+            Tour_Price, 
+            Available_Date_Time, 
+            Accessibility, 
+            Pick_Up_Point, 
+            Drop_Of_Point, 
+            Booked, 
+            Empty_Spots, 
+            Country, 
+            Rating, 
+            P_Tag,
+            Created_By 
+        } = req.body;
 
         // Check if itinerary name is provided
         if (!Itinerary_Name) {
@@ -1219,7 +1235,7 @@ const updateItinerary = async (req, res) => {
         }
 
         // Find the itinerary by name
-        const itinerary = await itinerarym.findOne({ Itinerary_Name: Itinerary_Name });
+        const itinerary = await itinerarym.findOne({ Itinerary_Name });
 
         // If itinerary is not found
         if (!itinerary) {
@@ -1227,32 +1243,42 @@ const updateItinerary = async (req, res) => {
         }
 
         // Only update the fields that are provided in the request body
-        if (Timeline) itinerary.Timeline = Timeline;
-        if (Duration) itinerary.Duration = Duration;
-        if (Language) itinerary.Language = Language;
-        if (Tour_Price) itinerary.Tour_Price = Tour_Price;
-        if (Available_Date_Time) itinerary.Available_Date_Time = Available_Date_Time;
-        if (Accessibility != null) itinerary.Accessibility = Accessibility;
-        if (Pick_Up_Point) itinerary.Pick_Up_Point = Pick_Up_Point;
-        if (Drop_Of_Point) itinerary.Drop_Of_Point = Drop_Of_Point;
-        if (Booked) itinerary.Booked = Booked;
-        if (Empty_Spots) itinerary.Empty_Spots = Empty_Spots;
-        if (Country) itinerary.Country = Country;
-        if (Rating) itinerary.Rating = Rating;
-        if (P_Tag) itinerary.P_Tag = P_Tag;
-        if (Created_By) itinerary.Created_By = Created_By;
+        const fieldsToUpdate = {
+            Timeline,
+            Duration,
+            Language,
+            Tour_Price,
+            Available_Date_Time,
+            Accessibility,
+            Pick_Up_Point,
+            Drop_Of_Point,
+            Booked,
+            Empty_Spots,
+            Country,
+            Rating,
+            P_Tag,
+            Created_By,
+        };
+
+        // Loop through the fields to update
+        Object.keys(fieldsToUpdate).forEach(field => {
+            if (fieldsToUpdate[field] != null) { // Check for both null and undefined
+                itinerary[field] = fieldsToUpdate[field];
+            }
+        });
 
         // Save the updated itinerary
         const updatedItinerary = await itinerary.save();
 
         // Return the updated itinerary
-        res.status(200).json({
+        return res.status(200).json({
             message: 'Itinerary updated successfully',
-            itinerary: updatedItinerary
+            itinerary: updatedItinerary,
         });
     } catch (error) {
         // Handle errors
-        res.status(500).json({ message: 'Error updating itinerary', error: error.message });
+        console.error('Error updating itinerary:', error); // Log the error for debugging
+        return res.status(500).json({ message: 'Error updating itinerary', error: error.message });
     }
 };
 

@@ -487,3 +487,26 @@ export const viewAllRequests = async () => {
       throw error;
     }
   };
+
+
+  export const updateItinerary = async (itineraryData) => {
+    try {
+        // Log the itinerary data being sent
+        console.log('Updating itinerary with data:', itineraryData);
+
+        // Send a PUT request to the API for updating the itinerary
+        const response = await axios.put(`${API_URL}/updateItinerary`, itineraryData);
+        
+        // Return the updated itinerary data from the server
+        return response.data;
+    } catch (error) {
+        // Enhanced error logging
+        if (error.response) {
+            console.error('Error updating itinerary:', error.response.data);
+            throw error.response.data;
+        } else {
+            console.error('Error updating itinerary:', error.message);
+            throw { message: 'Error updating itinerary' };
+        }
+    }
+};

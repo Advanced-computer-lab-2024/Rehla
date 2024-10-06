@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { createItinerary, getItineraryByName } from '../services/api'; // Importing API functions
+import { createItinerary, getItineraryByName, updateItinerary } from '../services/api'; // Importing API functions
 import logo from '../images/logo.png';
 
 const TourGuideHome = () => {
@@ -26,7 +26,22 @@ const TourGuideHome = () => {
     const [retrievedItinerary, setRetrievedItinerary] = useState(null);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
-    
+
+    const [itineraryName, setItineraryName] = useState(''); // To find the itinerary
+    const [timeline, setTimeline] = useState('');
+    const [duration, setDuration] = useState('');
+    const [language, setLanguage] = useState('');
+    const [tourPrice, setTourPrice] = useState('');
+    const [availableDateTime, setAvailableDateTime] = useState('');
+    const [accessibility, setAccessibility] = useState('');
+    const [pickUpPoint, setPickUpPoint] = useState('');
+    const [dropOfPoint, setDropOfPoint] = useState('');
+    const [booked, setBooked] = useState(false);
+    const [emptySpots, setEmptySpots] = useState('');
+    const [country, setCountry] = useState('');
+    const [rating, setRating] = useState('');
+    const [pTag, setPTag] = useState('');
+    const [updateMessage, setUpdateMessage] = useState('');
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -83,6 +98,43 @@ const TourGuideHome = () => {
         }
     };
 
+    const handleUpdateItinerary = async (e) => {
+        e.preventDefault();
+        setUpdateMessage('');
+    
+        const itineraryData = {
+            Itinerary_Name: itineraryName,
+            Timeline: timeline,
+            Duration: duration,
+            Language: language,
+            Tour_Price: tourPrice,
+            Available_Date_Time: availableDateTime,
+            Accessibility: accessibility,
+            Pick_Up_Point: pickUpPoint,
+            Drop_Of_Point: dropOfPoint,
+            Booked: booked, // This should be a number
+            Empty_Spots: emptySpots, // Ensure this is also a number
+            Country: country,
+            Rating: rating, // This should be a number too
+            P_Tag: pTag,
+        };
+    
+        console.log('Updating itinerary with data:', itineraryData); // Log the data
+    
+        try {
+            const response = await updateItinerary(itineraryData);
+            if (response.success) {
+                setUpdateMessage('Itinerary updated successfully!');
+            } else {
+                setUpdateMessage('Error updating itinerary: ' + response.message);
+            }
+        } catch (error) {
+            console.error('Error updating itinerary:', error);
+            setUpdateMessage(`Error: ${error.response ? error.response.data.message : error.message}`);
+        }
+    };
+    
+
     return (
         <div>
             {/* NavBar */}
@@ -107,11 +159,11 @@ const TourGuideHome = () => {
             }}>
                 {/* Create Itinerary Form */}
                 <div style={{
-                    padding: '10px', // Reduced padding for smaller height
+                    padding: '10px',
                     backgroundColor: '#f9f9f9',
                     borderRadius: '8px',
                     boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                    width: '35%',
+                    width: '25%',
                 }}>
                     <h2 style={{ textAlign: 'center' }}>Create New Itinerary</h2>
                     <form onSubmit={handleSubmit}>
@@ -131,7 +183,7 @@ const TourGuideHome = () => {
                             name="Timeline"
                             value={itineraryData.Timeline}
                             onChange={handleInputChange}
-                            required
+
                             style={{ width: '100%', padding: '8px', marginBottom: '10px', border: '1px solid #ccc', borderRadius: '4px' }}
                         />
                         <label>Duration:</label>
@@ -199,12 +251,12 @@ const TourGuideHome = () => {
                         />
                         <label>Booked:</label>
                         <input
-                            type="number"
-                            name="Booked"
-                            value={itineraryData.Booked}
-                            onChange={handleInputChange}
-                            required
-                            style={{ width: '100%', padding: '8px', marginBottom: '10px', border: '1px solid #ccc', borderRadius: '4px' }}
+                             type="number"
+                             name="Booked"
+                             value={itineraryData.Booked}
+                             onChange={handleInputChange}
+                             required
+                             style={{ width: '100%', padding: '8px', marginBottom: '10px', border: '1px solid #ccc', borderRadius: '4px' }}
                         />
                         <label>Empty Spots:</label>
                         <input
@@ -226,14 +278,14 @@ const TourGuideHome = () => {
                         />
                         <label>Rating:</label>
                         <input
-                            type="text"
+                            type="number"
                             name="Rating"
                             value={itineraryData.Rating}
                             onChange={handleInputChange}
                             required
                             style={{ width: '100%', padding: '8px', marginBottom: '10px', border: '1px solid #ccc', borderRadius: '4px' }}
                         />
-                        <label>P_Tag:</label>
+                        <label>P Tag:</label>
                         <input
                             type="text"
                             name="P_Tag"
@@ -251,9 +303,7 @@ const TourGuideHome = () => {
                             required
                             style={{ width: '100%', padding: '8px', marginBottom: '10px', border: '1px solid #ccc', borderRadius: '4px' }}
                         />
-                        <button type="submit" style={{ width: '100%', padding: '10px', backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
-                            Create Itinerary
-                        </button>
+                        <button type="submit" style={{ backgroundColor: '#007bff', color: 'white', padding: '10px', border: 'none', borderRadius: '4px', cursor: 'pointer', width: '100%' }}>Create Itinerary</button>
                     </form>
                     {success && <p style={{ color: 'green' }}>{success}</p>}
                     {error && <p style={{ color: 'red' }}>{error}</p>}
@@ -261,12 +311,12 @@ const TourGuideHome = () => {
 
                 {/* Search Itinerary Form */}
                 <div style={{
-                    padding: '10px', // Reduced padding for smaller height
+                    padding: '10px',
                     backgroundColor: '#f9f9f9',
                     borderRadius: '8px',
                     boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                    width: '35%',
-                    height : '10%',
+                    width: '25%',
+                   height :'10%',
                 }}>
                     <h2 style={{ textAlign: 'center' }}>Search Itinerary</h2>
                     <input
@@ -276,12 +326,10 @@ const TourGuideHome = () => {
                         placeholder="Enter itinerary name"
                         style={{ width: '100%', padding: '8px', marginBottom: '10px', border: '1px solid #ccc', borderRadius: '4px' }}
                     />
-                    <button onClick={handleRetrieveItinerary} style={{ width: '100%', padding: '10px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
-                        Search
-                    </button>
+                    <button onClick={handleRetrieveItinerary} style={{ backgroundColor: '#007bff', color: 'white', padding: '10px', border: 'none', borderRadius: '4px', cursor: 'pointer', width: '100%' }}>Search</button>
                     {error && <p style={{ color: 'red' }}>{error}</p>}
                     {retrievedItinerary && (
-                        <div style={{ marginTop: '20px' }}>
+                        <div>
                             <h3>Retrieved Itinerary:</h3>
                             <p><strong>Itinerary Name:</strong> {retrievedItinerary.Itinerary_Name}</p>
                             <p><strong>Timeline:</strong> {retrievedItinerary.Timeline}</p>
@@ -299,6 +347,131 @@ const TourGuideHome = () => {
                             <p><strong>P_Tag:</strong> {retrievedItinerary.P_Tag}</p>
                         </div>
                     )}
+                </div>
+
+                {/* Update Itinerary Form */}
+                <div style={{
+                    padding: '10px',
+                    backgroundColor: '#f9f9f9',
+                    borderRadius: '8px',
+                    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+                    width: '25%',
+                }}>
+                    <h2 style={{ textAlign: 'center' }}>Update Itinerary</h2>
+                    <form onSubmit={handleUpdateItinerary}>
+                        <label>Itinerary Name (Required):</label>
+                        <input
+                            type="text"
+                            value={itineraryName}
+                            onChange={(e) => setItineraryName(e.target.value)}
+                            required
+                            style={{ width: '100%', padding: '8px', marginBottom: '10px', border: '1px solid #ccc', borderRadius: '4px' }}
+                        />
+                        <label>Timeline:</label>
+                        <input
+                            type="text"
+                            value={timeline}
+                            onChange={(e) => setTimeline(e.target.value)}
+                            style={{ width: '100%', padding: '8px', marginBottom: '10px', border: '1px solid #ccc', borderRadius: '4px' }}
+                        />
+                        <label>Duration:</label>
+                        <input
+                            type="text"
+                            value={duration}
+                            onChange={(e) => setDuration(e.target.value)}
+                          
+                            style={{ width: '100%', padding: '8px', marginBottom: '10px', border: '1px solid #ccc', borderRadius: '4px' }}
+                        />
+                        <label>Language:</label>
+                        <input
+                            type="text"
+                            value={language}
+                            onChange={(e) => setLanguage(e.target.value)}
+                            
+                            style={{ width: '100%', padding: '8px', marginBottom: '10px', border: '1px solid #ccc', borderRadius: '4px' }}
+                        />
+                        <label>Tour Price:</label>
+                        <input
+                            type="number"
+                            value={tourPrice}
+                            onChange={(e) => setTourPrice(e.target.value)}
+                          
+                            style={{ width: '100%', padding: '8px', marginBottom: '10px', border: '1px solid #ccc', borderRadius: '4px' }}
+                        />
+                        <label>Available Date & Time:</label>
+                        <input
+                            type="datetime-local"
+                            value={availableDateTime}
+                            onChange={(e) => setAvailableDateTime(e.target.value)}
+                          
+                            style={{ width: '100%', padding: '8px', marginBottom: '10px', border: '1px solid #ccc', borderRadius: '4px' }}
+                        />
+                        <label>Accessibility:</label>
+                        <input
+                            type="text"
+                            value={accessibility}
+                            onChange={(e) => setAccessibility(e.target.value)}
+                          
+                            style={{ width: '100%', padding: '8px', marginBottom: '10px', border: '1px solid #ccc', borderRadius: '4px' }}
+                        />
+                        <label>Pick-Up Point:</label>
+                        <input
+                            type="text"
+                            value={pickUpPoint}
+                            onChange={(e) => setPickUpPoint(e.target.value)}
+                          
+                            style={{ width: '100%', padding: '8px', marginBottom: '10px', border: '1px solid #ccc', borderRadius: '4px' }}
+                        />
+                        <label>Drop-Off Point:</label>
+                        <input
+                            type="text"
+                            value={dropOfPoint}
+                            onChange={(e) => setDropOfPoint(e.target.value)}
+                            
+                            style={{ width: '100%', padding: '8px', marginBottom: '10px', border: '1px solid #ccc', borderRadius: '4px' }}
+                        />
+                        <label>Booked:</label>
+                        <input
+                            type="number"
+                            value={booked}
+                            onChange={(e) => setBooked(Number(e.target.value))} // Convert string to number
+                            style={{ width: '100%', padding: '8px', marginBottom: '10px', border: '1px solid #ccc', borderRadius: '4px' }}
+                        />
+                        <label>Empty Spots:</label>
+                        <input
+                            type="number"
+                            value={emptySpots}
+                            onChange={(e) => setEmptySpots(e.target.value)}
+                            
+                            style={{ width: '100%', padding: '8px', marginBottom: '10px', border: '1px solid #ccc', borderRadius: '4px' }}
+                        />
+                        <label>Country:</label>
+                        <input
+                            type="text"
+                            value={country}
+                            onChange={(e) => setCountry(e.target.value)}
+                          
+                            style={{ width: '100%', padding: '8px', marginBottom: '10px', border: '1px solid #ccc', borderRadius: '4px' }}
+                        />
+                        <label>Rating:</label>
+                        <input
+                            type="number"
+                            value={rating}
+                            onChange={(e) => setRating(e.target.value)}
+                          
+                            style={{ width: '100%', padding: '8px', marginBottom: '10px', border: '1px solid #ccc', borderRadius: '4px' }}
+                        />
+                        <label>P Tag:</label>
+                        <input
+                            type="text"
+                            value={pTag}
+                            onChange={(e) => setPTag(e.target.value)}
+                         
+                            style={{ width: '100%', padding: '8px', marginBottom: '10px', border: '1px solid #ccc', borderRadius: '4px' }}
+                        />
+                        <button type="submit" style={{ backgroundColor: '#007bff', color: 'white', padding: '10px', border: 'none', borderRadius: '4px', cursor: 'pointer', width: '100%' }}>Update Itinerary</button>
+                    </form>
+                    {updateMessage && <p style={{ color: 'green' }}>{updateMessage}</p>}
                 </div>
             </div>
         </div>
