@@ -6,6 +6,10 @@ const itinerarysSchema = new Schema({
         type : String , 
         required : true,
     },
+    // Email : {
+    //     type : String ,
+    //     required : true,
+    // },
 
     Timeline : {
         type : String , 
@@ -71,7 +75,11 @@ const itinerarysSchema = new Schema({
     P_Tag : {
         type:String,
         required: true,
-    }
+    },
+    Created_By : {
+        type : String ,
+        required : true,
+    },
     
 },{ versionKey: false });
 

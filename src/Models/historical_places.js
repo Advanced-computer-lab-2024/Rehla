@@ -43,6 +43,10 @@ const historical_placesSchema = new Schema({
         type: Number,
         required : true,
     },
+    Created_By : {
+        type : String ,
+        required : true,
+    },
 
 },{ versionKey: false });
 const Historical_Place = mongoose.model('historical_places', historical_placesSchema);

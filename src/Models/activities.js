@@ -55,6 +55,10 @@ const activitysSchema = new Schema({
         type : Number ,
         required : true,
     },
+    Created_By : {
+        type : String ,
+        required : true,
+    },
 },{ versionKey: false });
 
 

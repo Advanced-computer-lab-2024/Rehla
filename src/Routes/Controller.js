@@ -1089,7 +1089,6 @@ const createItinerary = async (req, res) => {
     try {
         // Destructure the itinerary data from the request body
         const { 
-            Email,
             Itinerary_Name, 
             Timeline, 
             Duration, 
@@ -1103,14 +1102,15 @@ const createItinerary = async (req, res) => {
             Empty_Spots, 
             Country, 
             Rating, 
-            P_Tag 
+            P_Tag,
+            Created_By 
         } = req.body;
 
         // Validate required fields
-        if (!Email||!Itinerary_Name || !Timeline || !Duration || !Language || 
+        if (!Itinerary_Name || !Timeline || !Duration || !Language || 
             !Tour_Price || !Available_Date_Time || !Accessibility || 
             !Pick_Up_Point || !Drop_Of_Point || !Booked || 
-            !Empty_Spots || !Country || !Rating || !P_Tag) {
+            !Empty_Spots || !Country || !Rating || !P_Tag  || !Created_By) {
             return res.status(400).json({ error: 'All fields are required.' });
         }
 
@@ -1135,25 +1135,26 @@ const createItinerary = async (req, res) => {
             Empty_Spots,
             Country,
             Rating,
-            P_Tag
+            P_Tag,
+            Created_By
         });
 
         // Save the itinerary to the database
         const savedItinerary = await newItinerary.save();
 
-        const newTourGuideItinerary = new tour_guide_itinerariesm({
-            Email,
-            Itinerary_Name
-        });
+        // const newTourGuideItinerary = new tour_guide_itinerariesm({
+        //     Email,
+        //     Itinerary_Name
+        // });
 
-        // Save the tour guide itinerary mapping to the database
-        const savedTourGuideItinerary = await newTourGuideItinerary.save();
+        // // Save the tour guide itinerary mapping to the database
+        // const savedTourGuideItinerary = await newTourGuideItinerary.save();
 
         // Return success response
         res.status(201).json({
             message: 'Itinerary created successfully',
             itinerary: savedItinerary,
-            tourGuideItinerary: savedTourGuideItinerary
+            //tourGuideItinerary: savedTourGuideItinerary
         });
     } catch (error) {
         console.error("Error creating itinerary:", error.message); // Log the error for debugging
@@ -1193,7 +1194,7 @@ const getItineraryByName = async (req, res) => {
 const updateItinerary = async (req, res) => {
     try {
         // Extract itinerary name and the fields to update from the request body
-        const { Itinerary_Name, Timeline, Duration, Language, Tour_Price, Available_Date_Time, Accessibility, Pick_Up_Point, Drop_Of_Point, Booked, Empty_Spots, Country, Rating, P_Tag } = req.body;
+        const { Itinerary_Name, Timeline, Duration, Language, Tour_Price, Available_Date_Time, Accessibility, Pick_Up_Point, Drop_Of_Point, Booked, Empty_Spots, Country, Rating, P_Tag ,Created_By} = req.body;
 
         // Check if itinerary name is provided
         if (!Itinerary_Name) {
@@ -1222,6 +1223,7 @@ const updateItinerary = async (req, res) => {
         if (Country) itinerary.Country = Country;
         if (Rating) itinerary.Rating = Rating;
         if (P_Tag) itinerary.P_Tag = P_Tag;
+        if (Created_By) itinerary.Created_By = Created_By;
 
         // Save the updated itinerary
         const updatedItinerary = await itinerary.save();
@@ -1381,13 +1383,13 @@ const createActivityByAdvertiser = async (req, res) => {
         const { 
             Name, Location, Time, Duration, Price, Date, Discount_Percent, 
             Booking_Available, Available_Spots, Booked_Spots, Rating, 
-            Category, Tag 
+            Category, Tag ,Created_By
         } = req.body;
 
         // Check if all required fields are provided
         if (!Name || !Location || !Time || !Duration || !Price || !Date || 
             !Discount_Percent || !Booking_Available || !Available_Spots || 
-            !Booked_Spots || !Rating || !Category || !Tag) {
+            !Booked_Spots || !Rating || !Category || !Tag || !Created_By) {
             return res.status(400).json({ error: 'All fields are required.' });
         }
 
@@ -1395,7 +1397,7 @@ const createActivityByAdvertiser = async (req, res) => {
         const newActivity = new activity({
             Name, Location, Time, Duration, Price, Date, 
             Discount_Percent, Booking_Available, Available_Spots, 
-            Booked_Spots, Rating
+            Booked_Spots, Rating , Created_By
         });
 
         // Save the new activity
@@ -1464,7 +1466,8 @@ const updateActivityByAdvertiser = async (req, res) => {
             Booking_Available,
             Available_Spots,
             Booked_Spots,
-            Rating 
+            Rating,
+            Created_By 
         } = req.body;
 
         const updatedActivity = await activity.findOneAndUpdate(
@@ -1479,7 +1482,8 @@ const updateActivityByAdvertiser = async (req, res) => {
                 Booking_Available,
                 Available_Spots,
                 Booked_Spots,
-                Rating 
+                Rating,
+                Created_By 
             },  // Fields to update
             { new: true, runValidators: true }  // Options: return the updated document and run schema validators
         );
@@ -1572,10 +1576,10 @@ const createUserTourism_Governer = async(req,res) => {
 const createMuseum = async (req, res) => {
     try {
         const {  Name,description,pictures, location,Country,
-            Opening_Hours,S_Tickets_Prices,F_Tickets_Prices,N_Tickets_Prices , Tag } = req.body;
+            Opening_Hours,S_Tickets_Prices,F_Tickets_Prices,N_Tickets_Prices , Tag ,Created_By } = req.body;
         
             if (!Name || !description || !pictures || !location ||!Country
-                ||!Opening_Hours||!S_Tickets_Prices||!F_Tickets_Prices||!N_Tickets_Prices ||!Tag) {
+                ||!Opening_Hours||!S_Tickets_Prices||!F_Tickets_Prices||!N_Tickets_Prices ||!Tag ||!Created_By) {
             return res.status(400).json({ error: 'All fields are required.' });
         }
         const newMuseum = new museumsm({
@@ -1588,7 +1592,8 @@ const createMuseum = async (req, res) => {
             S_Tickets_Prices,
             F_Tickets_Prices,
             N_Tickets_Prices,
-            Tag
+            Tag,
+            Created_By
         });
         const savedMuseum= await newMuseum.save();
         res.status(201).json({ message: 'Museum created successfully', Museum: savedMuseum });
@@ -1626,10 +1631,11 @@ const createHistoricalPlace = async (req, res) => {
             Closes_At, 
             S_Ticket_Prices, 
             F_Ticket_Prices, 
-            N_Ticket_Prices } = req.body;
+            N_Ticket_Prices,
+            Created_By } = req.body;
         
             if (!Name || !Description || !Pictures || !Location ||!Country
-                ||!Opens_At ||!Closes_At ||!S_Ticket_Prices||!F_Ticket_Prices||!N_Ticket_Prices) {
+                ||!Opens_At ||!Closes_At ||!S_Ticket_Prices||!F_Ticket_Prices||!N_Ticket_Prices ||!Created_By) {
             return res.status(400).json({ error: 'All fields are required.' });
         }
         const newHistoricalPlace = new historical_placesm({
@@ -1640,7 +1646,7 @@ const createHistoricalPlace = async (req, res) => {
             Country,
             Opens_At,
             Closes_At,
-            S_Ticket_Prices,F_Ticket_Prices,N_Ticket_Prices
+            S_Ticket_Prices,F_Ticket_Prices,N_Ticket_Prices,Created_By
         });
         const savedHistorical= await newHistoricalPlace.save();
         res.status(201).json({ message: 'Historical Place created successfully', HistoricalPlace: savedHistorical });
@@ -1679,11 +1685,11 @@ const updateMuseum = async (req, res) => {
             S_Tickets_Prices,
             F_Tickets_Prices,
             N_Tickets_Prices,
-            Tag} = req.body;
+            Tag, Created_By} = req.body;
         const updatedMuseum = await museumsm.findOneAndUpdate(
             {Name: Name },
             {Name,description,pictures, location,Country,
-            Opening_Hours,S_Tickets_Prices,F_Tickets_Prices,N_Tickets_Prices,Tag },  // Fields to update
+            Opening_Hours,S_Tickets_Prices,F_Tickets_Prices,N_Tickets_Prices,Tag ,Created_By},  // Fields to update
             {new: true, runValidators: true }  // Options: return the updated document and run schema validators
         );
     if (!updatedMuseum) {
@@ -1710,11 +1716,11 @@ const updateHistoricalPlace = async (req, res) => {
             Closes_At, 
             S_Ticket_Prices, 
             F_Ticket_Prices, 
-            N_Ticket_Prices} = req.body;
+            N_Ticket_Prices,Created_By} = req.body;
         const updatedHistoricalPlace = await historical_placesm.findOneAndUpdate(
             {Name: Name },
             {Name, Description,Pictures, Location,Country,Opens_At, 
-            Closes_At, S_Ticket_Prices,F_Ticket_Prices, N_Ticket_Prices },  // Fields to update
+            Closes_At, S_Ticket_Prices,F_Ticket_Prices, N_Ticket_Prices,Created_By },  // Fields to update
             {new: true, runValidators: true }  // Options: return the updated document and run schema validators
         );
     if (!updatedHistoricalPlace) {
