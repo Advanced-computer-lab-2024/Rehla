@@ -14,8 +14,11 @@ import TouristHome from'./components/TouristHome.js'
 import TouristProfile from'./components/TouristProfile.js'
 import AdminHome from'./components/AdminHome.js'
 import SellerHome from'./components/SellerHome.js'
+import SellerProfile from'./components/SellerProfile.js'
 import AdvertiserHome from'./components/AdvertiserHome.js'
+import AdvertiserProfile from'./components/AdvertiserProfile.js'
 import TourGuideHome from'./components/TourGuideHome.js'
+import TourGuideProfile from'./components/TourGuideProfile.js'
 import TourisimGovernerHome from'./components/TourisimGovernerHome.js'
 
 import ProductList from './components/ProductList';
@@ -47,8 +50,11 @@ function App() {
                 <Route path="/TouristHome/TouristProfile" element={<TouristProfile />} />
                 <Route path="/AdminHome" element={<AdminHome />} />
                 <Route path="/SellerHome" element={<SellerHome />} />
+                <Route path="/SellerHome/SellerProfile" element={<SellerProfile />} />
                 <Route path="/AdvertiserHome" element={<AdvertiserHome />} />
+                <Route path="/AdvertiserProfile" element={<AdvertiserProfile />} />
                 <Route path="/TourGuideHome" element={<TourGuideHome />} />
+                <Route path="/TourGuideHome/TourGuideProfile" element={<TourGuideProfile />} />
                 <Route path="/TourisimGovernerHome" element={<TourisimGovernerHome />} />
 
                 <Route path="/Adminproducts" element={<AdminProductList />} />

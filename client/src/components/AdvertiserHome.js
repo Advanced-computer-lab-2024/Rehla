@@ -16,7 +16,7 @@ const AdvertiserHome = () => {
             </nav>
 
             <nav class="signing">
-            <Link to="/">MyProfile</Link>
+            <Link to="/AdvertiserHome/AdvertiserProfile">MyProfile</Link>
             </nav >
             </div>
         </div>

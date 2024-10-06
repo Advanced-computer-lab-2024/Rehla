@@ -2166,6 +2166,11 @@ const signIn = async (req, res) => {
             return res.status(200).json({ Type: user.Type });
         }
 
+        user = await AdvertisersModel.findOne({ Email, Password });
+        if (user) {
+            return res.status(200).json({ Type: user.Type });
+        }
+
         // If no user found
         return res.status(401).json({ message: "Invalid email or password." });
     } catch (error) {

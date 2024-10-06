@@ -16,7 +16,7 @@ const SellerHome = () => {
             </nav>
 
             <nav class="signing">
-            <Link to="/">MyProfile</Link>
+            <Link to="/SellerHome/SellerProfile">MyProfile</Link>
             </nav >
             </div>
         </div>

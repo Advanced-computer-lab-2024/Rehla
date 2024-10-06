@@ -127,11 +127,11 @@ app.put("/updateProduct" , updateProduct);//Admin - Seller : edit products
 app.get("/getTouristProfile", getTouristProfile); //Tourist : view my profile 
 app.put("/updateTouristProfile" , updateTouristProfile); //Tourist : update my profile 
 app.post("/createSellerProfile", createSellerProfile); //Seller : createSellerProfile 
-app.get("/getSellerProfile", getSellerProfile);//Seller : get seller profile 
+app.post("/getSellerProfile", getSellerProfile);//Seller : get seller profile 
 app.put("/updateSellerProfile" , updateSellerProfile);//Seller : update seller profile 
 app.post("/createTourGuideProfile",createTourGuideProfile);//Tour Guide: createTourGuideProfile
 app.put("/updateTourGuideProfile" , updateTourGuideProfile );//Tour Guide: updateTourGuideProfile 
-app.get("/getTourGuideProfile", getTourGuideProfile);//Tour Guide: getTourGuideProfile
+app.post("/getTourGuideProfile", getTourGuideProfile);//Tour Guide: getTourGuideProfile
 app.post("/createItinerary" , createItinerary);//tour Guide : Create itinerary 
 app.get("/getItineraryByName/:itineraryName", getItineraryByName);//getItineraryByName
 app.put("/updateItinerary" , updateItinerary);//updateItinerary

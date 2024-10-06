@@ -402,3 +402,66 @@ export const getTouristProfile = async (data) => {
       throw error;
     }
   };
+
+  export const getSellerProfile = async (data) => {
+    try {
+      const response = await axios.post(`${API_URL}/getSellerProfile`, data);
+      return response.data;
+    } catch (error) {
+      throw error.response ? error.response.data : { message: 'Network error' };
+    }
+  };
+  
+  export const updateSellerProfile = async (data) => {
+    try {
+      const response = await axios.put(`${API_URL}/updateSellerProfile`, data);
+      return response.data;
+    } catch (error) {
+      throw error.response ? error.response.data : { message: 'Network error' };
+    }
+  };
+
+export const createTourGuideProfile = async (data) => {
+    const response = await axios.post(`${API_URL}/createTourGuideProfile`, data);
+    return response.data; // Return the created profile data
+};
+
+export const getTourGuideProfile = async (data) => {
+    const response = await axios.post(`${API_URL}/getTourGuideProfile`, data);
+    return response.data; // Return the profile data
+};
+
+export const updateTourGuideProfile = async (data) => {
+    const response = await axios.put(`${API_URL}/updateTourGuideProfile`, data);
+    return response.data; // Return the updated profile data
+};
+
+export const createAdvertiserProfile = async (advertiserData) => {
+    try {
+        const response = await axios.post(`${API_URL}/addUserAdvertisers`, advertiserData);
+        return response.data;
+    } catch (error) {
+        console.error("Error creating advertiser profile:", error);
+        throw error;
+    }
+};
+
+export const getAdvertiserProfile = async (email) => {
+    try {
+        const response = await axios.post(`${API_URL}/readAdvertisers`, { email });
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching advertiser profile:", error);
+        throw error;
+    }
+};
+
+export const updateAdvertiserProfile = async (advertiserData) => {
+    try {
+        const response = await axios.put(`${API_URL}/updateUserAdvertisers`, advertiserData);
+        return response.data;
+    } catch (error) {
+        console.error("Error updating advertiser profile:", error);
+        throw error;
+    }
+};

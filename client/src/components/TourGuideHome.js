@@ -95,7 +95,7 @@ const TourGuideHome = () => {
                     </ul>
                 </nav>
                 <nav className="signing">
-                    <Link to="/MyProfile" style={{ textDecoration: 'none', color: 'aliceblue' }}>MyProfile</Link>
+                    <Link to="/TourGuideHome/TourGuideProfile" style={{ textDecoration: 'none', color: 'aliceblue' }}>MyProfile</Link>
                 </nav>
             </div>
 
