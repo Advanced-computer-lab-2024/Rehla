@@ -373,7 +373,7 @@ export const createItinerary = async (itineraryData) => {
 export const getItineraryByName = async (itineraryName) => {
     try {
         // Make a GET request to the API with the itinerary name
-        const response = await axios.get(`${API_URL}/itineraries/${itineraryName}`);
+        const response = await axios.get(`${API_URL}/getItineraryByName/${itineraryName}`);
         
         // Return the data from the response
         return response.data;

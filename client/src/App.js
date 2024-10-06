@@ -11,6 +11,7 @@ import Seller from './components/Seller.js'
 
 import Admin from './components/Admin.js'
 import TouristHome from'./components/TouristHome.js'
+import TouristProfile from'./components/TouristProfile.js'
 import AdminHome from'./components/AdminHome.js'
 import SellerHome from'./components/SellerHome.js'
 import AdvertiserHome from'./components/AdvertiserHome.js'
@@ -43,6 +44,7 @@ function App() {
                 <Route path="/seller" element={<Seller />} />
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/TouristHome" element={<TouristHome />} />
+                <Route path="/TouristHome/TouristProfile" element={<TouristProfile />} />
                 <Route path="/AdminHome" element={<AdminHome />} />
                 <Route path="/SellerHome" element={<SellerHome />} />
                 <Route path="/AdvertiserHome" element={<AdvertiserHome />} />

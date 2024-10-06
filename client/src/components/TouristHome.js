@@ -42,7 +42,7 @@ const TouristHome = () => {
                 </nav>
 
                 <nav className="signing">
-                    <Link to="/">My Profile</Link>
+                    <Link to="/TouristHome/TouristProfile">My Profile</Link>
                 </nav>
             </div>
 
