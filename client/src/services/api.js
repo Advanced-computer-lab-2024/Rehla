@@ -392,3 +392,13 @@ export const getTouristProfile = async (data) => {
       throw error;
     }
   };
+
+  export const updateTouristProfile = async (profileData) => {
+    try {
+      const response = await axios.put(`${API_URL}/updateTouristProfile`, profileData);
+      return response.data;
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      throw error;
+    }
+  };
