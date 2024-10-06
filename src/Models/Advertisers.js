@@ -29,7 +29,7 @@ const AdvertisersSchema = new Schema({
     },
     Company_Name:{
         type: String,
-        required: true
+       // required: true
     }
     
 }, { timestamps: true });

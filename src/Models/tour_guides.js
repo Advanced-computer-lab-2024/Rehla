@@ -25,12 +25,12 @@ const tour_guidesSchema = new Schema({
 
     Mobile_Number : {
         type : String ,
-        required : true,
+        //required : true,
     },
 
     Experience : {
         type : Number,
-        required : true,
+        //required : true,
     },
 
     Previous_work : {

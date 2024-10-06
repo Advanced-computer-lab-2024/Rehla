@@ -19,17 +19,17 @@ const sellersSchema = new Schema({
 
     Shop_Name :{
         type : String ,
-        required : true,
+        //required : true,
     },
 
     Description :{
         type : String ,
-        required : true,
+        //required : true,
     },
 
     Shop_Location :{
         type : String ,
-        required : true,
+        //required : true,
     },
 
     
