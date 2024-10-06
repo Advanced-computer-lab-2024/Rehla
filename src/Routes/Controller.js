@@ -2179,6 +2179,39 @@ const signIn = async (req, res) => {
     }
 };
 
+const getAllCreatedByEmail = async (req, res) => {
+    try {
+        const { email } = req.params;
+
+        if (!email) {
+            return res.status(400).json({ error: 'Email is required.' });
+        }
+
+        // Fetch data from all collections in parallel
+        const [activities, historicalPlaces, museums, itineraries] = await Promise.all([
+            activity.find({ Created_By: email }),           // Ensure this matches your schema
+            historical_placesm.find({ Created_By: email }),    // Matches historical_places schema
+            museumsm.find({ Created_By: email }),             // Matches museums schema
+            itinerarym.find({ Created_By: email })           // Matches itineraries schema
+        ]);
+
+        
+
+        // Combine all results into a single object
+        const results = {
+            activities,
+            historicalPlaces,
+            museums,
+            itineraries
+        };
+
+        return res.status(200).json({ message: 'Data retrieved successfully', data: results });
+    } catch (error) {
+        console.error('Error retrieving data:', error);
+        return res.status(500).json({ error: 'An error occurred while retrieving data', details: error.message });
+    }
+};
+
 
 
 // ----------------- Activity Category CRUD -------------------
@@ -2248,5 +2281,6 @@ module.exports = {
     createHistoricalTag,
     viewMyCreatedItenrary,
     viewMyCreatedMuseumsAndHistoricalPlaces,
-    signIn
+    signIn,
+    getAllCreatedByEmail
 };
