@@ -417,7 +417,7 @@ const processRequestByEmail = async (req, res) => {
         await newRecord.save();
 
         // Optional: Delete the request after processing
-        //await RequestsModel.deleteOne({ Email: email });
+        await Request.deleteOne({ Email: email });
 
         // Step 4: Respond with the created record
         res.status(201).json(newRecord);
