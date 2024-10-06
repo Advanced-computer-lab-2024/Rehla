@@ -297,7 +297,6 @@ const TourGuideHome = () => {
                             <p><strong>Country:</strong> {retrievedItinerary.Country}</p>
                             <p><strong>Rating:</strong> {retrievedItinerary.Rating}</p>
                             <p><strong>P_Tag:</strong> {retrievedItinerary.P_Tag}</p>
-                            <p><strong>Email:</strong> {retrievedItinerary.Email}</p>
                         </div>
                     )}
                 </div>
