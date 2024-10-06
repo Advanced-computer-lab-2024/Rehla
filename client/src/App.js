@@ -52,7 +52,7 @@ function App() {
                 <Route path="/SellerHome" element={<SellerHome />} />
                 <Route path="/SellerHome/SellerProfile" element={<SellerProfile />} />
                 <Route path="/AdvertiserHome" element={<AdvertiserHome />} />
-                <Route path="/AdvertiserProfile" element={<AdvertiserProfile />} />
+                <Route path="/AdvertiserHome/AdvertiserProfile" element={<AdvertiserProfile />} />
                 <Route path="/TourGuideHome" element={<TourGuideHome />} />
                 <Route path="/TourGuideHome/TourGuideProfile" element={<TourGuideProfile />} />
                 <Route path="/TourisimGovernerHome" element={<TourisimGovernerHome />} />
