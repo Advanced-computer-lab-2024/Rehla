@@ -125,7 +125,7 @@ app.get("/searchByNameCategoryTag",searchByNameCategoryTag);
 app.get("/getProductsSortedByRating" , getProductsSortedByRating); //Tourist-Admin-Seller :sort products by rating 
 app.post("/addProduct" ,addProduct); //Admin - Seller : add a new product
 app.put("/updateProduct" , updateProduct);//Admin - Seller : edit products 
-app.get("/getTouristProfile", getTouristProfile); //Tourist : view my profile 
+app.post("/getTouristProfile", getTouristProfile); //Tourist : view my profile 
 app.put("/updateTouristProfile" , updateTouristProfile); //Tourist : update my profile 
 app.post("/createSellerProfile", createSellerProfile); //Seller : createSellerProfile 
 app.post("/getSellerProfile", getSellerProfile);//Seller : get seller profile 
