@@ -376,6 +376,22 @@ const processRequestByEmail = async (req, res) => {
             return res.status(404).json({ message: 'Request not found.' });
         }
 
+        let existingRecord;
+        if (requests.Type === 'TOUR_GUIDE') {
+            existingRecord = await tour_guidem.findOne({ Email: email });
+        } else if (requests.Type === 'SELLER') {
+            existingRecord = await Seller.findOne({ Email: email });
+        } else if (requests.Type === 'ADVERTISER') {
+            existingRecord = await AdvertisersModel.findOne({ Email: email });
+        } else {
+            return res.status(400).json({ message: 'Invalid request type.' });
+        }
+
+        // If the email already exists, return a message
+        if (existingRecord) {
+            return res.status(400).json({ message: 'Email already exists in the corresponding collection.' });
+        }
+
         // Step 2: Check the type of request and add to the corresponding table
         let newRecord;
         if (requests.Type === 'TOUR_GUIDE') {
