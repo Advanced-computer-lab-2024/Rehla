@@ -377,11 +377,11 @@ const processRequestByEmail = async (req, res) => {
         }
 
         let existingRecord;
-        if (requests.Type === 'TOUR_GUIDE') {
+        if (requests.Type === 'TOUR_GUIDE' || 'Tour Guide') {
             existingRecord = await tour_guidem.findOne({ Email: email });
-        } else if (requests.Type === 'SELLER') {
+        } else if (requests.Type === 'SELLER' || 'Seller') {
             existingRecord = await Seller.findOne({ Email: email });
-        } else if (requests.Type === 'ADVERTISER') {
+        } else if (requests.Type === 'ADVERTISER' || 'Advertiser') {
             existingRecord = await AdvertisersModel.findOne({ Email: email });
         } else {
             return res.status(400).json({ message: 'Invalid request type.' });
@@ -389,12 +389,13 @@ const processRequestByEmail = async (req, res) => {
 
         // If the email already exists, return a message
         if (existingRecord) {
+            await Request.deleteOne({ Email: email });
             return res.status(400).json({ message: 'Email already exists in the corresponding collection.' });
         }
 
         // Step 2: Check the type of request and add to the corresponding table
         let newRecord;
-        if (requests.Type === 'TOUR_GUIDE') {
+        if (requests.Type === 'TOUR_GUIDE' || 'Tour Guide') {
             newRecord = new tour_guidem({
                 Username: requests.Username,
                 Email: requests.Email,
@@ -404,7 +405,7 @@ const processRequestByEmail = async (req, res) => {
                 //Experience: requests.Experience,
                 //Previous_work: requests.Previous_work,
             });
-        } else if (requests.Type === 'SELLER') {
+        } else if (requests.Type === 'SELLER' || 'Seller') {
             newRecord = new Seller({
                 Username: requests.Username,
                 Email: requests.Email,
@@ -414,7 +415,7 @@ const processRequestByEmail = async (req, res) => {
                 //Shop_Location: requests.Shop_Location,
                 Type: requests.Type,
             });
-        } else if (requests.Type === 'ADVERTISER') {
+        } else if (requests.Type === 'ADVERTISER' || 'Advertiser') {
             newRecord = new AdvertisersModel({
                 Username: requests.Username,
                 Email: requests.Email,
