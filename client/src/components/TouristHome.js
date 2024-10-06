@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../images/logo.png';
 import { searchEventsPlaces } from '../services/api';
@@ -8,6 +8,15 @@ const TouristHome = () => {
     const [searchResults, setSearchResults] = useState({});
     const [isSearched, setIsSearched] = useState(false);
     const [error, setError] = useState(null); // State for holding error messages
+    const [email, setEmail] = useState(''); // Store email from localStorage
+
+    // Fetch email from localStorage on component mount
+    useEffect(() => {
+        const storedEmail = localStorage.getItem('email'); // Retrieve the stored email
+        if (storedEmail) {
+            setEmail(storedEmail);
+        }
+    }, []);
 
     const handleSearch = async (e) => {
         e.preventDefault();

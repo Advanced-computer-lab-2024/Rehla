@@ -15,6 +15,9 @@ const SignIn = () => {
     try {
       const data = await signIn(email, password); // Call API to sign in
 
+      // Store the user's email in localStorage after login
+      localStorage.setItem('email', email); // Save email to localStorage
+
       // Check user type and redirect to appropriate page
       const userType = data.Type.toUpperCase(); // Convert type to uppercase for easier comparison
 

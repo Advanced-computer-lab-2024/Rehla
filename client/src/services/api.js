@@ -382,3 +382,13 @@ export const getItineraryByName = async (itineraryName) => {
         throw error.response ? error.response.data : new Error('Error retrieving itinerary');
     }
 };
+
+export const getTouristProfile = async (data) => {
+    try {
+      const response = await axios.post(`${API_URL}/getTouristProfile`, data); // Ensure correct API method
+      return response.data; // Return the tourist profile data
+    } catch (error) {
+      console.error('Error in getTouristProfile API:', error);
+      throw error;
+    }
+  };
