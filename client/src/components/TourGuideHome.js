@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { createItinerary, getItineraryByName, updateItinerary } from '../services/api'; // Importing API functions
+import { createItinerary, getItineraryByName, updateItinerary ,deleteItinerary} from '../services/api'; // Importing API functions
 import logo from '../images/logo.png';
 
 const TourGuideHome = () => {
@@ -42,6 +42,27 @@ const TourGuideHome = () => {
     const [rating, setRating] = useState('');
     const [pTag, setPTag] = useState('');
     const [updateMessage, setUpdateMessage] = useState('');
+
+
+    const [itinerarydeleteName, setItinerarydeleteName] = useState('');
+    const [deletemessage, setdeleteMessage] = useState('');
+
+    const handledeleteInputChange = (e) => {
+        setItinerarydeleteName(e.target.value); // Update state with input value
+    };
+
+    const handledeleteSubmit = async (e) => {
+        e.preventDefault(); // Prevent the default form submission behavior
+        setdeleteMessage(''); // Reset message before deletion attempt
+
+        try {
+            const response = await deleteItinerary(itinerarydeleteName); // Call the delete function
+            setdeleteMessage(`Success: ${response.message}`); // Display success message
+            setItinerarydeleteName(''); // Clear input field
+        } catch (error) {
+            setdeleteMessage(`Error: ${error.message || 'Failed to delete itinerary.'}`); // Display error message
+        }
+    };
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -163,7 +184,7 @@ const TourGuideHome = () => {
                     backgroundColor: '#f9f9f9',
                     borderRadius: '8px',
                     boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                    width: '25%',
+                    width: '20%',
                 }}>
                     <h2 style={{ textAlign: 'center' }}>Create New Itinerary</h2>
                     <form onSubmit={handleSubmit}>
@@ -315,7 +336,7 @@ const TourGuideHome = () => {
                     backgroundColor: '#f9f9f9',
                     borderRadius: '8px',
                     boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                    width: '25%',
+                    width: '20%',
                    height :'10%',
                 }}>
                     <h2 style={{ textAlign: 'center' }}>Search Itinerary</h2>
@@ -348,6 +369,29 @@ const TourGuideHome = () => {
                         </div>
                     )}
                 </div>
+
+                <div style={{
+                    padding: '10px',
+                    backgroundColor: '#f9f9f9',
+                    borderRadius: '8px',
+                    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+                    width: '20%',
+                   height :'10%',
+                }}>
+            <h2>Delete Itinerary</h2>
+            <form onSubmit={handledeleteSubmit}>
+                <input 
+                    type="text" 
+                    value={itinerarydeleteName} 
+                    onChange={handledeleteInputChange} 
+                    placeholder="Enter Itinerary Name" 
+                    required 
+                    style={{ width: '90%', padding: '8px', marginBottom: '10px', border: '1px solid #ccc', borderRadius: '4px' }}
+                />
+                <button type="submit" style={{ backgroundColor: '#007bff', color: 'white', padding: '10px', border: 'none', borderRadius: '4px', cursor: 'pointer', width: '100%' }}>Delete Itinerary</button>
+            </form>
+            {deletemessage && <p>{deletemessage}</p>} {/* Display success/error message */}
+        </div>
 
                 {/* Update Itinerary Form */}
                 <div style={{

@@ -510,3 +510,15 @@ export const viewAllRequests = async () => {
         }
     }
 };
+
+
+
+export const deleteItinerary = async (itineraryName) => {
+    try {
+        const response = await axios.delete(`${API_URL}/deleteItinerary`, { data: { Itinerary_Name: itineraryName } });
+        return response.data; // Return the success message from the server
+    } catch (error) {
+        console.error('Error deleting itinerary:', error);
+        throw error.response ? error.response.data : { message: 'Network error' }; // Handle error
+    }
+};
