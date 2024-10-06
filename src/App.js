@@ -133,7 +133,7 @@ app.post("/createTourGuideProfile",createTourGuideProfile);//Tour Guide: createT
 app.put("/updateTourGuideProfile" , updateTourGuideProfile );//Tour Guide: updateTourGuideProfile 
 app.get("/getTourGuideProfile", getTourGuideProfile);//Tour Guide: getTourGuideProfile
 app.post("/createItinerary" , createItinerary);//tour Guide : Create itinerary 
-app.get("/getItineraryByName", getItineraryByName);//getItineraryByName
+app.get("/getItineraryByName/:itineraryName", getItineraryByName);//getItineraryByName
 app.put("/updateItinerary" , updateItinerary);//updateItinerary
 app.delete("/deleteItinerary", deleteItinerary);//deleteItinerary
 app.get("/getAllUpcomingEventsAndPlaces", getAllUpcomingEventsAndPlaces);

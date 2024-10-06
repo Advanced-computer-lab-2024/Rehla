@@ -1089,6 +1089,7 @@ const createItinerary = async (req, res) => {
     try {
         // Destructure the itinerary data from the request body
         const { 
+            Email,
             Itinerary_Name, 
             Timeline, 
             Duration, 
@@ -1106,7 +1107,7 @@ const createItinerary = async (req, res) => {
         } = req.body;
 
         // Validate required fields
-        if (!Itinerary_Name || !Timeline || !Duration || !Language || 
+        if (!Email||!Itinerary_Name || !Timeline || !Duration || !Language || 
             !Tour_Price || !Available_Date_Time || !Accessibility || 
             !Pick_Up_Point || !Drop_Of_Point || !Booked || 
             !Empty_Spots || !Country || !Rating || !P_Tag) {
@@ -1140,10 +1141,19 @@ const createItinerary = async (req, res) => {
         // Save the itinerary to the database
         const savedItinerary = await newItinerary.save();
 
+        const newTourGuideItinerary = new tour_guide_itinerariesm({
+            Email,
+            Itinerary_Name
+        });
+
+        // Save the tour guide itinerary mapping to the database
+        const savedTourGuideItinerary = await newTourGuideItinerary.save();
+
         // Return success response
         res.status(201).json({
             message: 'Itinerary created successfully',
-            itinerary: savedItinerary
+            itinerary: savedItinerary,
+            tourGuideItinerary: savedTourGuideItinerary
         });
     } catch (error) {
         console.error("Error creating itinerary:", error.message); // Log the error for debugging
@@ -1153,14 +1163,15 @@ const createItinerary = async (req, res) => {
 
 const getItineraryByName = async (req, res) => {
     try {
-        const { Itinerary_Name } = req.body;
+        // Extract Itinerary_Name from req.params
+        const { itineraryName } = req.params;
 
-        if (!Itinerary_Name) {
+        if (!itineraryName) {
             return res.status(400).json({ message: 'Itinerary name is required' });
         }
 
         // Find itinerary by name
-        const itinerary = await itinerarym.findOne({ Itinerary_Name: Itinerary_Name });
+        const itinerary = await itinerarym.findOne({ Itinerary_Name: itineraryName });
 
         if (!itinerary) {
             return res.status(404).json({ message: 'Itinerary not found' });
@@ -1176,6 +1187,7 @@ const getItineraryByName = async (req, res) => {
         res.status(500).json({ message: 'Error retrieving itinerary', error: error.message });
     }
 };
+
 
 //Update itinerary by name
 const updateItinerary = async (req, res) => {

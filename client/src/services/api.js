@@ -372,16 +372,13 @@ export const createItinerary = async (itineraryData) => {
 
 export const getItineraryByName = async (itineraryName) => {
     try {
-        const response = await axios.get(`${API_URL}/getItineraryByName`, {
-            params: { Itinerary_Name: itineraryName }
-        });
-        return response.data; // Ensure this returns the correct data structure
+        // Make a GET request to the API with the itinerary name
+        const response = await axios.get(`${API_URL}/itineraries/${itineraryName}`);
+        
+        // Return the data from the response
+        return response.data;
     } catch (error) {
-        if (error.response) {
-            console.error('Error retrieving itinerary:', error.response.data);
-        } else {
-            console.error('Error retrieving itinerary:', error.message);
-        }
-        throw error; // Allow the error to be caught in the calling function
+        // Handle errors (you can customize this further as needed)
+        throw error.response ? error.response.data : new Error('Error retrieving itinerary');
     }
 };

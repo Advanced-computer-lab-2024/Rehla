@@ -8,7 +8,7 @@ const tour_guide_itinerariesSchema = new Schema({
     },
 
     
-    Itenerary_Name : {
+    Itinerary_Name : {
         type: String,
         required: true,
     },
