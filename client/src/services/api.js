@@ -358,3 +358,30 @@ export const viewMyCreatedItineraries = async (email) => {
 };
 
 
+
+export const createItinerary = async (itineraryData) => {
+    try {
+        const response = await axios.post(`${API_URL}/createItinerary`, itineraryData); // POST request for creating itinerary
+        return response.data; // Return the data from the backend
+    } catch (error) {
+        console.error("Error creating itinerary:", error);
+        throw error.response ? error.response.data : { message: "Network error" };
+    }
+};
+
+
+export const getItineraryByName = async (itineraryName) => {
+    try {
+        const response = await axios.get(`${API_URL}/getItineraryByName`, {
+            params: { Itinerary_Name: itineraryName }
+        });
+        return response.data; // Ensure this returns the correct data structure
+    } catch (error) {
+        if (error.response) {
+            console.error('Error retrieving itinerary:', error.response.data);
+        } else {
+            console.error('Error retrieving itinerary:', error.message);
+        }
+        throw error; // Allow the error to be caught in the calling function
+    }
+};

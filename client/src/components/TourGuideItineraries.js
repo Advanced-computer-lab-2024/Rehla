@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { viewMyCreatedItineraries } from '../services/api';
 
@@ -28,7 +29,7 @@ const TourGuideItineraries = () => {
 
     return (
         <div>
-            <h1>View My Created Activities and Itineraries</h1>
+            <h1>View My Created Itineraries</h1>
 
             {/* Email input form */}
             <form onSubmit={(e) => { handleFetchCreatedItineraries(e); }}>
@@ -70,3 +71,4 @@ const TourGuideItineraries = () => {
 };
 
 export default TourGuideItineraries;
+
