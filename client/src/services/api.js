@@ -522,7 +522,7 @@ export const deleteItinerary = async (itineraryName) => {
         throw error.response ? error.response.data : { message: 'Network error' }; // Handle error
     }
 };
- 
+
 export const createMuseum = async (museumData) => {
     return await axios.post(`${API_URL}/creatingMuseum`, museumData);
 };
