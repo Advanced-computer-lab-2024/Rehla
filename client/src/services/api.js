@@ -522,3 +522,36 @@ export const deleteItinerary = async (itineraryName) => {
         throw error.response ? error.response.data : { message: 'Network error' }; // Handle error
     }
 };
+ 
+export const createMuseum = async (museumData) => {
+    return await axios.post(`${API_URL}/creatingMuseum`, museumData);
+};
+
+export const readMuseum = async (museumName) => {
+    return await axios.post(`${API_URL}/readMuseum`, { name: museumName });
+};
+
+export const createHistoricalPlace = async (placeData) => {
+    return await axios.post(`${API_URL}/createHistoricalPlace`, placeData);
+};
+
+export const readHistoricalPlace = async (placeName) => {
+    return await axios.post(`${API_URL}/readHistoricalPlace`, { name: placeName });
+};
+
+export const updateMuseum = async (museumData) => {
+    return await axios.put(`${API_URL}/updateMuseum`, museumData);
+};
+
+export const updateHistoricalPlace = async (placeData) => {
+    return await axios.put(`${API_URL}/updateHistoricalPlace`, placeData);
+};
+
+export const deleteMuseum = async (museumName) => {
+    return await axios.delete(`${API_URL}/deleteMuseum`, { data: { Name: museumName } });
+};
+
+export const deleteHistoricalPlace = async (placeName) => {
+    return await axios.delete(`${API_URL}/deleteHistoricalPlace`, { data: { Name: placeName } });
+};
+
