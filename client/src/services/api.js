@@ -465,3 +465,25 @@ export const updateAdvertiserProfile = async (advertiserData) => {
         throw error;
     }
 };
+
+// Function to get all requests
+export const viewAllRequests = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/requests`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching requests:', error);
+      throw error;
+    }
+  };
+  
+  // Function to process a request by email
+  export const processRequestByEmail = async (email) => {
+    try {
+      const response = await axios.post(`${API_URL}/processRequest/${email}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error processing request:', error);
+      throw error;
+    }
+  };

@@ -11,7 +11,9 @@ import {
     readPreferenceTags, 
     updatePreferenceTag, 
     deletePreferenceTag,
-    updateProduct
+    updateProduct,
+    viewAllRequests, 
+    processRequestByEmail
 } from '../services/api'; // Import all API functions
 import '../css/Home.css';
 import logo from '../images/logo.png';
@@ -44,6 +46,11 @@ const AdminHome = () => {
     const [quantity, setQuantity] = useState(''); // For product quantity
     const [updateMessage, setUpdateMessage] = useState(''); // For update success/error messages
 
+    const [requests, setRequests] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [showRequests, setShowRequests] = useState(false); // To toggle requests visibility
+
     // Fetch activity categories and preference tags on component mount
     useEffect(() => {
         const fetchCategories = async () => {
@@ -67,6 +74,31 @@ const AdminHome = () => {
         fetchCategories();
         fetchTags(); // Fetch preference tags on component mount
     }, []);
+
+    const fetchRequests = async () => {
+        setLoading(true);
+        try {
+          const data = await viewAllRequests();
+          setRequests(data);
+          setShowRequests(true); // Show requests when fetched
+        } catch (err) {
+          setError(err.message);
+        } finally {
+          setLoading(false);
+        }
+      };
+    
+      const handleProcessRequest = async (email) => {
+        try {
+          const processedRequest = await processRequestByEmail(email);
+          alert('Request processed successfully: ' + processedRequest.Username);
+          // Optionally, refresh the list of requests after processing
+          setRequests(requests.filter((req) => req.Email !== email));
+        } catch (error) {
+          console.error('Error processing request:', error);
+          alert('Failed to process the request.');
+        }
+      };  
 
     // Handle delete user request
     const handleDeleteUser = async (e) => {
@@ -216,6 +248,39 @@ const AdminHome = () => {
                </nav>
            </div>
            <br />
+           <br></br>
+           <br></br>
+            <br></br>
+           <div>
+                <h1>Admin Home</h1>
+
+                {/* Button to fetch and view requests */}
+                <button onClick={fetchRequests}>View All Requests</button>
+
+                {/* Loading indicator */}
+                {loading && <p>Loading requests...</p>}
+
+                {/* Error handling */}
+                {error && <p>Error: {error}</p>}
+
+                {/* Display the list of requests if they are loaded and the user clicked to view them */}
+                {showRequests && requests.length === 0 && !loading && <p>No requests available.</p>}
+
+                {showRequests && requests.length > 0 && (
+                    <ul>
+                    {requests.map((request) => (
+                        <li key={request._id}>
+                        <p>Username: {request.Username}</p>
+                        <p>Email: {request.Email}</p>
+                        <p>Type: {request.Type}</p>
+                        <button onClick={() => handleProcessRequest(request.Email)}>
+                            Process Request
+                        </button>
+                        </li>
+                    ))}
+                    </ul>
+                )}
+                </div>
 
            {/* Form for deleting a user */}
            <div className="admin-actions">
