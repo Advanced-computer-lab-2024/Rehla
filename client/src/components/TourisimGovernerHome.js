@@ -210,7 +210,6 @@ const TourisimGovernerHome = () => {
                 {Object.keys(museumUpdateData).map((key) => (
                     <input
                         key={key}
-                        type="text"
                         placeholder={key.replace(/_/g, ' ')}
                         value={museumUpdateData[key]}
                         onChange={(e) => setMuseumUpdateData({ ...museumUpdateData, [key]: e.target.value })}
@@ -238,7 +237,6 @@ const TourisimGovernerHome = () => {
                 {Object.keys(placeData).map((key) => (
                     <input
                         key={key}
-                        type="text"
                         placeholder={key.replace(/_/g, ' ')}
                         value={placeData[key]}
                         onChange={(e) => setPlaceData({ ...placeData, [key]: e.target.value })}
@@ -272,7 +270,6 @@ const TourisimGovernerHome = () => {
                 {Object.keys(placeUpdateData).map((key) => (
                     <input
                         key={key}
-                        type="text"
                         placeholder={key.replace(/_/g, ' ')}
                         value={placeUpdateData[key]}
                         onChange={(e) => setPlaceUpdateData({ ...placeUpdateData, [key]: e.target.value })}
@@ -351,15 +348,58 @@ const TourisimGovernerHome = () => {
 
             {/* Historical Place Response */}
             {placeResponse && placeResponse.data && (
-                <div>
-                    <h3>Historical Place Response:</h3>
-                    <table style={{ borderCollapse: 'collapse', width: '100%' }}>
-                        <tbody>
-                            {/* Add rows for each field in placeResponse.data */}
-                        </tbody>
-                    </table>
-                </div>
-            )}
+    <div>
+        <h3>Historical Place Response:</h3>
+        <table style={{ borderCollapse: 'collapse', width: '100%' }}>
+            <tbody>
+                <tr>
+                    <th style={{ border: '1px solid black', padding: '8px' }}>Name</th>
+                    <td style={{ border: '1px solid black', padding: '8px' }}>{placeResponse.data.Name}</td>
+                </tr>
+                <tr>
+                    <th style={{ border: '1px solid black', padding: '8px' }}>Description</th>
+                    <td style={{ border: '1px solid black', padding: '8px' }}>{placeResponse.data.Description}</td>
+                </tr>
+                <tr>
+                    <th style={{ border: '1px solid black', padding: '8px' }}>Pictures</th>
+                    <td style={{ border: '1px solid black', padding: '8px' }}>{placeResponse.data.Pictures}</td>
+                </tr>
+                <tr>
+                    <th style={{ border: '1px solid black', padding: '8px' }}>Location</th>
+                    <td style={{ border: '1px solid black', padding: '8px' }}>{placeResponse.data.Location}</td>
+                </tr>
+                <tr>
+                    <th style={{ border: '1px solid black', padding: '8px' }}>Country</th>
+                    <td style={{ border: '1px solid black', padding: '8px' }}>{placeResponse.data.Country}</td>
+                </tr>
+                <tr>
+                    <th style={{ border: '1px solid black', padding: '8px' }}>Opens At</th>
+                    <td style={{ border: '1px solid black', padding: '8px' }}>{placeResponse.data.Opens_At}</td>
+                </tr>
+                <tr>
+                    <th style={{ border: '1px solid black', padding: '8px' }}>Closes At</th>
+                    <td style={{ border: '1px solid black', padding: '8px' }}>{placeResponse.data.Closes_At}</td>
+                </tr>
+                <tr>
+                    <th style={{ border: '1px solid black', padding: '8px' }}>Standard Ticket Prices</th>
+                    <td style={{ border: '1px solid black', padding: '8px' }}>{placeResponse.data.S_Ticket_Prices}</td>
+                </tr>
+                <tr>
+                    <th style={{ border: '1px solid black', padding: '8px' }}>Foreign Ticket Prices</th>
+                    <td style={{ border: '1px solid black', padding: '8px' }}>{placeResponse.data.F_Ticket_Prices}</td>
+                </tr>
+                <tr>
+                    <th style={{ border: '1px solid black', padding: '8px' }}>National Ticket Prices</th>
+                    <td style={{ border: '1px solid black', padding: '8px' }}>{placeResponse.data.N_Ticket_Prices}</td>
+                </tr>
+                <tr>
+                    <th style={{ border: '1px solid black', padding: '8px' }}>Created By</th>
+                    <td style={{ border: '1px solid black', padding: '8px' }}>{placeResponse.data.Created_By}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+)}
         </div>
     );
 };
