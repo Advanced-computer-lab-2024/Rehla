@@ -506,7 +506,7 @@ export const viewAllRequests = async () => {
             throw error.response.data;
         } else {
             console.error('Error updating itinerary:', error.message);
-            throw { message: 'Error updating itinerary' };
+            throw error.response ? error.response.data : { message: 'Network error' }; // Handle error
         }
     }
 };

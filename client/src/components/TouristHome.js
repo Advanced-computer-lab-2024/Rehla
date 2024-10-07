@@ -21,7 +21,7 @@ const TouristHome = () => {
     const handleSearch = async (e) => {
         e.preventDefault();
         setError(null); // Reset error state before each search
-
+        console.log(email);
         try {
             const results = await searchEventsPlaces(searchTerm); // Call the API function
             console.log("API Response:", results); // Log the API response

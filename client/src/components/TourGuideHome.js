@@ -19,7 +19,7 @@ const TourGuideHome = () => {
         Country: '',
         Rating: '',
         P_Tag: '',
-        Email: ''
+        Created_By: ''
     });
 
     const [searchItineraryName, setSearchItineraryName] = useState('');
@@ -77,7 +77,7 @@ const TourGuideHome = () => {
         setError(null);
         setSuccess(null);
         try {
-            const response = await createItinerary(itineraryData);
+            await createItinerary(itineraryData);
             setSuccess('Itinerary created successfully!');
             setItineraryData({
                 Itinerary_Name: '',
@@ -94,7 +94,7 @@ const TourGuideHome = () => {
                 Country: '',
                 Rating: '',
                 P_Tag: '',
-                Email: ''
+                Created_By: ''
             });
         } catch (error) {
             setError('Error creating itinerary. Please try again.');
@@ -315,11 +315,11 @@ const TourGuideHome = () => {
                             required
                             style={{ width: '100%', padding: '8px', marginBottom: '10px', border: '1px solid #ccc', borderRadius: '4px' }}
                         />
-                        <label>Email:</label>
+                        <label>Created_By:</label>
                         <input
                             type="email"
-                            name="Email"
-                            value={itineraryData.Email}
+                            name="Created_By"
+                            value={itineraryData.Created_By}
                             onChange={handleInputChange}
                             required
                             style={{ width: '100%', padding: '8px', marginBottom: '10px', border: '1px solid #ccc', borderRadius: '4px' }}

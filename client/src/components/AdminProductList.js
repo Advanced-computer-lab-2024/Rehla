@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { getProducts, getProductsSortedByRating, addProduct , updateProduct } from '../services/api';
+//import { Link } from 'react-router-dom';
+import { getProducts, getProductsSortedByRating, addProduct  } from '../services/api';
 
 const AdminProductList = () => {
     const [products, setProducts] = useState([]);
