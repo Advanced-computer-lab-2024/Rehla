@@ -41,6 +41,7 @@ const TourGuideHome = () => {
     const [country, setCountry] = useState('');
     const [rating, setRating] = useState('');
     const [pTag, setPTag] = useState('');
+    const [createdBy, setCreatedBy] = useState('');
     const [updateMessage, setUpdateMessage] = useState('');
 
 
@@ -138,6 +139,7 @@ const TourGuideHome = () => {
             Country: country,
             Rating: rating, // This should be a number too
             P_Tag: pTag,
+            Created_By: createdBy
         };
     
         console.log('Updating itinerary with data:', itineraryData); // Log the data
@@ -510,6 +512,14 @@ const TourGuideHome = () => {
                             type="text"
                             value={pTag}
                             onChange={(e) => setPTag(e.target.value)}
+                         
+                            style={{ width: '100%', padding: '8px', marginBottom: '10px', border: '1px solid #ccc', borderRadius: '4px' }}
+                        />
+                        <label>Created_By:</label>
+                        <input
+                            type="text"
+                            value={createdBy}
+                            onChange={(e) => setCreatedBy(e.target.value)}
                          
                             style={{ width: '100%', padding: '8px', marginBottom: '10px', border: '1px solid #ccc', borderRadius: '4px' }}
                         />

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { getAllCreatedByEmail } from '../services/api'; // Adjust the path as necessary
 
 const TourisimGovernerPlaces = () => {
@@ -10,16 +10,19 @@ const TourisimGovernerPlaces = () => {
     });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [email, setEmail] = useState(""); // State for email input
 
-    const handleEmailChange = (event) => {
-        setEmail(event.target.value); // Update email state
-    };
+    useEffect(() => {
+        const email = localStorage.getItem('email'); // Get email from local storage
+        if (email) {
+            fetchPlaces(email);
+        } else {
+            setError(new Error('No email found in local storage'));
+            setLoading(false);
+        }
+    }, []);
 
-    const handleSubmit = async (event) => {
-        event.preventDefault(); // Prevent default form submission
+    const fetchPlaces = async (email) => {
         setLoading(true); // Set loading state
-
         try {
             const result = await getAllCreatedByEmail(email); // Fetch data based on email
             setData(result.data); // Update state with fetched data
@@ -33,17 +36,6 @@ const TourisimGovernerPlaces = () => {
     return (
         <div>
             <h1>My Created Activities</h1>
-
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="email"
-                    value={email}
-                    onChange={handleEmailChange}
-                    placeholder="Enter your email"
-                    required
-                />
-                <button type="submit">Fetch Activities</button>
-            </form>
 
             {loading && <div>Loading...</div>}
             {error && <div>Error: {error.message}</div>}

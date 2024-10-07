@@ -13,13 +13,6 @@ const Home = () => {
                 <ul class="nav-links">
                 <Link to="/">Home</Link>
                 <Link to="/eventsplaces">Events/Places</Link>
-                <Link to="/TouristHome">TouristHome</Link>
-                <Link to="/AdminHome">AdminHome</Link>
-                <Link to="/SellerHome">SellerHome</Link>
-                <Link to="/AdvertiserHome">AdvertiserHome</Link>
-                <Link to="/TourGuideHome">TourGuideHome</Link>
-                <Link to="/TourisimGovernerHome">TourisimGovernerHome</Link>
-
                 </ul>
             </nav>
 

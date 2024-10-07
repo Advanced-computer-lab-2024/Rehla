@@ -242,10 +242,6 @@ const AdminHome = () => {
                        <Link to="/Adminproducts">Products</Link>
                    </ul>
                </nav>
-
-               <nav className="signing">
-                   <Link to="/">MyProfile</Link>
-               </nav>
            </div>
            <br />
            <br></br>

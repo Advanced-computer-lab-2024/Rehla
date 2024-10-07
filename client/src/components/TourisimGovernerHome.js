@@ -168,10 +168,6 @@ const TourisimGovernerHome = () => {
                         <Link to="/MyPlaces" style={{ textDecoration: 'none', color: 'aliceblue' }}>My Places</Link>
                     </ul>
                 </nav>
-                <nav className="signing">
-                    <Link to="/signin">Sign in</Link>
-                    <Link to="/signup">Sign up</Link>
-                </nav >
             </div>
             <h1>Tourism Governor Home</h1>
 
