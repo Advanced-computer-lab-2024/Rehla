@@ -165,6 +165,7 @@ const TourisimGovernerHome = () => {
                     <ul className="nav-links">
                         <Link to="/">Home</Link>
                         <Link to="/CreateTag">Create Tag</Link>
+                        <Link to="/MyPlaces" style={{ textDecoration: 'none', color: 'aliceblue' }}>My Places</Link>
                     </ul>
                 </nav>
                 <nav className="signing">

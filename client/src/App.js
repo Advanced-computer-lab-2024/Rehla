@@ -20,7 +20,7 @@ import AdvertiserProfile from'./components/AdvertiserProfile.js'
 import TourGuideHome from'./components/TourGuideHome.js'
 import TourGuideProfile from'./components/TourGuideProfile.js'
 import TourisimGovernerHome from'./components/TourisimGovernerHome.js'
-
+import TourisimGovernerPlaces from'./components/TourisimGovernerPlaces.js'
 import ProductList from './components/ProductList';
 import AdminProductList from './components/AdminProductList';
 import SellerProductList from './components/SellerProductList';
@@ -60,6 +60,7 @@ function App() {
                 <Route path="/Adminproducts" element={<AdminProductList />} />
                 <Route path="/Sellerproducts" element={<SellerProductList />} />
                 <Route path="/AdvertiserActivities" element={<AdvertiserActivities />} />
+                <Route path="/MyPlaces" element={<TourisimGovernerPlaces />} />
                 <Route path="/CreateTag" element={<CreateTag />} />
                 <Route path="/TourGuideItineraries" element={<TourGuideItineraries />} />
                 <Route path="/" component={Home} />
