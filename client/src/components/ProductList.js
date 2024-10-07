@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getProducts, getProductsSortedByRating, searchProductByName } from '../services/api'; // Import the search API call
-import logo from '../images/mini pyramid.jpeg';
 
 const ProductList = () => {
     const [products, setProducts] = useState([]);
