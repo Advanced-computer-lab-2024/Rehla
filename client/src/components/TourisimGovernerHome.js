@@ -177,7 +177,6 @@ const TourisimGovernerHome = () => {
                 {Object.keys(museumData).map((key) => (
                     <input
                         key={key}
-                        type="text"
                         placeholder={key.replace(/_/g, ' ')}
                         value={museumData[key]}
                         onChange={(e) => setMuseumData({ ...museumData, [key]: e.target.value })}
@@ -295,21 +294,74 @@ const TourisimGovernerHome = () => {
                 <button type="submit">Delete Historical Place</button>
             </form>
 
-            {/* Display Responses */}
-            {museumResponse && (
+            {/* Museum Response */}
+            {museumResponse && museumResponse.data && (
                 <div>
                     <h3>Museum Response:</h3>
-                    <pre>{JSON.stringify(museumResponse, null, 2)}</pre>
+                    <table style={{ borderCollapse: 'collapse', width: '100%' }}>
+                        <tbody>
+                            <tr>
+                                <th style={{ border: '1px solid black', padding: '8px' }}>Name</th>
+                                <td style={{ border: '1px solid black', padding: '8px' }}>{museumResponse.data.Name}</td>
+                            </tr>
+                            <tr>
+                                <th style={{ border: '1px solid black', padding: '8px' }}>Description</th>
+                                <td style={{ border: '1px solid black', padding: '8px' }}>{museumResponse.data.description}</td>
+                            </tr>
+                            <tr>
+                                <th style={{ border: '1px solid black', padding: '8px' }}>Pictures</th>
+                                <td style={{ border: '1px solid black', padding: '8px' }}>{museumResponse.data.pictures}</td>
+                            </tr>
+                            <tr>
+                                <th style={{ border: '1px solid black', padding: '8px' }}>Location</th>
+                                <td style={{ border: '1px solid black', padding: '8px' }}>{museumResponse.data.location}</td>
+                            </tr>
+                            <tr>
+                                <th style={{ border: '1px solid black', padding: '8px' }}>Country</th>
+                                <td style={{ border: '1px solid black', padding: '8px' }}>{museumResponse.data.Country}</td>
+                            </tr>
+                            <tr>
+                                <th style={{ border: '1px solid black', padding: '8px' }}>Opening Hours</th>
+                                <td style={{ border: '1px solid black', padding: '8px' }}>{museumResponse.data.Opening_Hours}</td>
+                            </tr>
+                            <tr>
+                                <th style={{ border: '1px solid black', padding: '8px' }}>Standard Ticket Prices</th>
+                                <td style={{ border: '1px solid black', padding: '8px' }}>{museumResponse.data.S_Tickets_Prices}</td>
+                            </tr>
+                            <tr>
+                                <th style={{ border: '1px solid black', padding: '8px' }}>Foreign Ticket Prices</th>
+                                <td style={{ border: '1px solid black', padding: '8px' }}>{museumResponse.data.F_Tickets_Prices}</td>
+                            </tr>
+                            <tr>
+                                <th style={{ border: '1px solid black', padding: '8px' }}>National Ticket Prices</th>
+                                <td style={{ border: '1px solid black', padding: '8px' }}>{museumResponse.data.N_Tickets_Prices}</td>
+                            </tr>
+                            <tr>
+                                <th style={{ border: '1px solid black', padding: '8px' }}>Tag</th>
+                                <td style={{ border: '1px solid black', padding: '8px' }}>{museumResponse.data.Tag}</td>
+                            </tr>
+                            <tr>
+                                <th style={{ border: '1px solid black', padding: '8px' }}>Created By</th>
+                                <td style={{ border: '1px solid black', padding: '8px' }}>{museumResponse.data.Created_By}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             )}
-            {placeResponse && (
+
+            {/* Historical Place Response */}
+            {placeResponse && placeResponse.data && (
                 <div>
                     <h3>Historical Place Response:</h3>
-                    <pre>{JSON.stringify(placeResponse, null, 2)}</pre>
+                    <table style={{ borderCollapse: 'collapse', width: '100%' }}>
+                        <tbody>
+                            {/* Add rows for each field in placeResponse.data */}
+                        </tbody>
+                    </table>
                 </div>
             )}
         </div>
     );
 };
 
-export default TourisimGovernerHome;
+export default TourisimGovernerHome
