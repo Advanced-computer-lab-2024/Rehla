@@ -1691,7 +1691,8 @@ const readMuseum = async (req,res)=>{
 
 const createHistoricalPlace = async (req, res) => {
     try {
-        const {  Name, 
+        const {  
+            Name, 
             Description, 
             Pictures, 
             Location, 
@@ -1701,12 +1702,25 @@ const createHistoricalPlace = async (req, res) => {
             S_Ticket_Prices, 
             F_Ticket_Prices, 
             N_Ticket_Prices,
-            Created_By } = req.body;
+            Created_By 
+        } = req.body;
         
-            if (!Name || !Description || !Pictures || !Location ||!Country
-                ||!Opens_At ||!Closes_At ||!S_Ticket_Prices||!F_Ticket_Prices||!N_Ticket_Prices ||!Created_By) {
+        // Validate input
+        if (!Name || !Description || !Pictures || !Location || !Country
+            || !Opens_At || !Closes_At || !S_Ticket_Prices || !F_Ticket_Prices || !N_Ticket_Prices || !Created_By) {
             return res.status(400).json({ error: 'All fields are required.' });
         }
+
+        // Check if the historical place with the same name already exists
+        console.log("Checking for existing place with name:", Name);
+        const existingPlace = await historical_placesm.findOne({ Name });
+        console.log("Existing place found:", existingPlace);
+
+        if (existingPlace) {
+            return res.status(400).json({ error: 'A historical place with this name already exists.' });
+        }
+
+        // Create the new historical place
         const newHistoricalPlace = new historical_placesm({
             Name,
             Description,
@@ -1715,9 +1729,13 @@ const createHistoricalPlace = async (req, res) => {
             Country,
             Opens_At,
             Closes_At,
-            S_Ticket_Prices,F_Ticket_Prices,N_Ticket_Prices,Created_By
+            S_Ticket_Prices,
+            F_Ticket_Prices,
+            N_Ticket_Prices,
+            Created_By
         });
-        const savedHistorical= await newHistoricalPlace.save();
+        
+        const savedHistorical = await newHistoricalPlace.save();
         res.status(201).json({ message: 'Historical Place created successfully', HistoricalPlace: savedHistorical });
     } 
     catch (error) {
@@ -1725,6 +1743,7 @@ const createHistoricalPlace = async (req, res) => {
         res.status(500).json({ error: 'Error creating Historical Place', details: error.message });
     }
 };
+
 
 const readHistoricalPlace = async (req,res)=>{
     try{
