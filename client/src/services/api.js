@@ -555,3 +555,13 @@ export const deleteHistoricalPlace = async (placeName) => {
     return await axios.delete(`${API_URL}/deleteHistoricalPlace`, { data: { Name: placeName } });
 };
 
+export const getAllCreatedByEmail = async (email) => {
+    try {
+        const response = await axios.get(`${API_URL}/getAllCreatedByEmail/${email}`);
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching created items:", error);
+        throw error;
+    }
+};
+
