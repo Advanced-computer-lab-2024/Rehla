@@ -149,7 +149,7 @@ const TourGuideHome = () => {
             if (response.success) {
                 setUpdateMessage('Itinerary updated successfully!');
             } else {
-                setUpdateMessage('Error updating itinerary: ' + response.message);
+                setUpdateMessage(' ' + response.message);
             }
         } catch (error) {
             console.error('Error updating itinerary:', error);
