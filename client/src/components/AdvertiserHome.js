@@ -29,7 +29,7 @@ const AdvertiserHome = () => {
     const [searchActivityName, setSearchActivityName] = useState('');
     const [retrievedActivity, setRetrievedActivity] = useState(null);
     const [errorsearch, setErrorsearch] = useState(null);
-    const [successsearch, setSuccesssearch] = useState(null);
+    //const [successsearch, setSuccesssearch] = useState(null);
 
 
     const [activitydeleteName, setActivitydeleteName] = useState('');
@@ -47,7 +47,7 @@ const AdvertiserHome = () => {
     const [availableSpots, setAvailableSpots] = useState('');
     const [bookedSpots, setBookedSpots] = useState('');
     const [rating, setRating] = useState('');
-    const [createdby, setCreatedBy] = useState('');
+    //const [createdby, setCreatedBy] = useState('');
     const [tag, setTag] = useState('');
     const [category, setCategory] = useState('');
     const [updateMessage, setUpdateMessage] = useState('');
@@ -130,7 +130,7 @@ const AdvertiserHome = () => {
             Rating: rating, // This should be a number too
             Tag: tag,
             Category : category,
-            Created_By : createdby
+            Created_By : ''
         };
     
         console.log('Updating itinerary with data:', activityData); // Log the data
