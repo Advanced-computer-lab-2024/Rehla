@@ -1634,17 +1634,26 @@ const createUserTourism_Governer = async(req,res) => {
 
 const createMuseum = async (req, res) => {
     try {
-        const {  Name,description,pictures, location,Country,
-            Opening_Hours,S_Tickets_Prices,F_Tickets_Prices,N_Tickets_Prices , Tag ,Created_By } = req.body;
+        const { Name, description, pictures, location, Country,
+            Opening_Hours, S_Tickets_Prices, F_Tickets_Prices, N_Tickets_Prices, Tag, Created_By } = req.body;
         
-            if (!Name || !description || !pictures || !location ||!Country
-                ||!Opening_Hours||!S_Tickets_Prices||!F_Tickets_Prices||!N_Tickets_Prices ||!Tag ||!Created_By) {
+        // Check if all fields are provided
+        if (!Name || !description || !pictures || !location || !Country
+            || !Opening_Hours || !S_Tickets_Prices || !F_Tickets_Prices || !N_Tickets_Prices || !Tag || !Created_By) {
             return res.status(400).json({ error: 'All fields are required.' });
         }
+
+        // Check if a museum with the same name already exists
+        const existingMuseum = await museumsm.findOne({ Name });
+        if (existingMuseum) {
+            return res.status(400).json({ error: 'Museum with this name already exists.' });
+        }
+
+        // Create a new museum if it doesn't exist
         const newMuseum = new museumsm({
             Name,
             description,
-            pictures, 
+            pictures,
             location,
             Country,
             Opening_Hours,
@@ -1654,7 +1663,8 @@ const createMuseum = async (req, res) => {
             Tag,
             Created_By
         });
-        const savedMuseum= await newMuseum.save();
+
+        const savedMuseum = await newMuseum.save();
         res.status(201).json({ message: 'Museum created successfully', Museum: savedMuseum });
     } 
     catch (error) {
