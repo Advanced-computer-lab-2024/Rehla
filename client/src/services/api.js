@@ -565,3 +565,12 @@ export const getAllCreatedByEmail = async (email) => {
     }
 };
 
+export const createActivityByAdvertiser = async (activityData) => {
+    try {
+        const response = await axios.post(`${API_URL}/createActivityByAdvert`, activityData);
+        return response.data; // Return response data for further processing
+    } catch (error) {
+        console.error('API call failed:', error); // Log the error
+        throw error; // Rethrow the error for further handling
+    }
+};
