@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getProducts, getProductsSortedByRating, searchProductByName } from '../services/api'; // Import the search API call
-import logo from '../images/mini pyramid.jpeg';
 
 const ProductList = () => {
     const [products, setProducts] = useState([]);
@@ -110,7 +109,11 @@ const ProductList = () => {
                         {products.map(product => (
                             <div key={product._id} style={productCardStyle}>
                                 <h3>{product.Product_Name}</h3>
-                                <img src={logo} style={{ width: '100px', height: '100px', objectFit: 'cover' }} alt="" />
+                                <img 
+                                    src={product.Picture} 
+                                    alt={product.Product_Name} 
+                                    style={{ width: '200px', height: '200px', objectFit: 'cover' }} 
+                                />
                                 <p>Price: ${product.Price.toFixed(2)}</p>
                                 <p>{product.Description}</p>
                             </div>
@@ -128,7 +131,11 @@ const ProductList = () => {
                             {searchResults.map(product => (
                                 <div key={product._id} style={productCardStyle}>
                                     <h3>{product.Product_Name}</h3>
-                                    <img src={logo} style={{ width: '100px', height: '100px', objectFit: 'cover' }} alt="" />
+                                    <img 
+                                        src={product.Picture} 
+                                        alt={product.Product_Name} 
+                                        style={{ width: '200px', height: '200px', objectFit: 'cover' }} 
+                                    />
                                     <p>Price: ${product.Price.toFixed(2)}</p>
                                     <p>{product.Description}</p>
                                 </div>
