@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 //import { Link } from 'react-router-dom';
-import { getProducts, getProductsSortedByRating, addProduct } from '../services/api';
+import { getProducts, getProductsSortedByRating, addProduct  , updateProduct} from '../services/api';
 
 const AdminProductList = () => {
     const [products, setProducts] = useState([]);
@@ -19,6 +19,16 @@ const AdminProductList = () => {
         Product_Name: '', Picture: '', Price: '', Quantity: '',
         Seller_Name: '', Description: '', Rating: '', Reviews: ''
     });
+
+    const [productName, setProductName] = useState(''); // For the product name
+    const [picture, setPicture] = useState(''); // For product picture
+    const [price, setPrice] = useState(''); // For product price
+    const [description, setDescription] = useState(''); // For product description
+    const [sellerName, setSellerName] = useState(''); // For seller name
+    const [rating, setRating] = useState(''); // For product rating
+    const [reviews, setReviews] = useState(''); // For product reviews
+    const [quantity, setQuantity] = useState(''); // For product quantity
+    const [updateMessage, setUpdateMessage] = useState(''); // For update success/error messages
    
 
 
@@ -99,6 +109,29 @@ const AdminProductList = () => {
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setNewProduct((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const handleUpdateProduct = async (e) => {
+        e.preventDefault();
+        setUpdateMessage(''); // Reset message
+    
+        const productData = {
+            Product_Name: productName,
+            Picture: picture,
+            Price: price,
+            Description: description,
+            Seller_Name: sellerName,
+            Rating: rating,
+            Reviews: reviews,
+            Quantity: quantity,
+        };
+    
+        try {
+            const response = await updateProduct(productData); // Call your update product function
+            setUpdateMessage(`Product ${response.product.Product_Name} updated successfully!`);
+        } catch (error) {
+            setUpdateMessage(error.message);
+        }
     };
 
    
@@ -323,7 +356,63 @@ const AdminProductList = () => {
                 {successMessage && <div style={{ marginTop: '10px', color: 'green' }}>{successMessage}</div>}
             </div>
 
-
+             {/* Form for updating a product */}
+             <div className="admin-actions">
+                <h2>Update Product</h2>
+                <form onSubmit={handleUpdateProduct}>
+                    <label>Product Name:</label>
+                    <input
+                        type="text"
+                        value={productName}
+                        onChange={(e) => setProductName(e.target.value)}
+                        required
+                    />
+                    <label>Picture URL:</label>
+                    <input
+                        type="text"
+                        value={picture}
+                        onChange={(e) => setPicture(e.target.value)}
+                    />
+                    <label>Price:</label>
+                    <input
+                        type="number"
+                        value={price}
+                        onChange={(e) => setPrice(e.target.value)}
+                    />
+                    <label>Description:</label>
+                    <textarea
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                    />
+                    <label>Seller Name:</label>
+                    <input
+                        type="text"
+                        value={sellerName}
+                        onChange={(e) => setSellerName(e.target.value)}
+                    />
+                    <label>Rating:</label>
+                    <input
+                        type="number"
+                        step="0.1"
+                        value={rating}
+                        onChange={(e) => setRating(e.target.value)}
+                    />
+                    <label>Reviews:</label>
+                    <input
+                        type="number"
+                        value={reviews}
+                        onChange={(e) => setReviews(e.target.value)}
+                    />
+                    <label>Quantity:</label>
+                    <input
+                        type="number"
+                        value={quantity}
+                        onChange={(e) => setQuantity(e.target.value)}
+                    />
+                    <button type="submit">Update Product</button>
+                </form>
+                {updateMessage && <p>{updateMessage}</p>}
+            </div>
                
 
         </div>
