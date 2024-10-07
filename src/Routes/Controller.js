@@ -1478,7 +1478,7 @@ const createActivityByAdvertiser = async (req, res) => {
 //Advertiser Reading Activity
 const readActivity = async (req,res)=>{
     try{
-        const { name } = req.body; // Assuming email is passed as a URL parameter
+        const { name } = req.params; // Assuming email is passed as a URL parameter
         const activityDetails = await activity.findOne({ Name: name });
 
         if (!activityDetails) {
@@ -1497,7 +1497,7 @@ const readActivity = async (req,res)=>{
 const updateActivityByAdvertiser = async (req, res) => {
     try {
         const { 
-            Name, 
+            Name, // Required to identify the activity
             Location, 
             Time, 
             Duration, 
@@ -1513,21 +1513,29 @@ const updateActivityByAdvertiser = async (req, res) => {
             Created_By 
         } = req.body;
 
+        // Check if Name is provided (because it is necessary to identify the activity)
+        if (!Name) {
+            return res.status(400).json({ message: 'Activity name is required for updating.' });
+        }
+
+        // Create an update object only with fields that are provided (not undefined)
+        const updateData = {};
+        if (Location) updateData.Location = Location;
+        if (Time) updateData.Time = Time;
+        if (Duration) updateData.Duration = Duration;
+        if (Price) updateData.Price = Price;
+        if (Date) updateData.Date = Date;
+        if (Discount_Percent) updateData.Discount_Percent = Discount_Percent;
+        if (Booking_Available) updateData.Booking_Available = Booking_Available;
+        if (Available_Spots) updateData.Available_Spots = Available_Spots;
+        if (Booked_Spots) updateData.Booked_Spots = Booked_Spots;
+        if (Rating) updateData.Rating = Rating;
+        if (Created_By) updateData.Created_By = Created_By;
+
+        // Find and update the activity by Name
         const updatedActivity = await activity.findOneAndUpdate(
             { Name }, // Find activity by Name
-            { 
-                Location,
-                Time,
-                Duration,
-                Price,
-                Date,
-                Discount_Percent,
-                Booking_Available,
-                Available_Spots,
-                Booked_Spots,
-                Rating,
-                Created_By 
-            },  // Fields to update
+            updateData,  // Update only the fields that are provided
             { new: true, runValidators: true }  // Options: return the updated document and run schema validators
         );
 
@@ -1535,17 +1543,21 @@ const updateActivityByAdvertiser = async (req, res) => {
             return res.status(404).json({ message: 'Activity not found' });
         }
 
-        // Update the associated activity category
-        await activity_categoriesm.findOneAndUpdate(
-            { Activity: Name }, 
-            { Category }
-        );
+        // Update the associated category if provided
+        if (Category) {
+            await activity_categoriesm.findOneAndUpdate(
+                { Activity: Name }, 
+                { Category }
+            );
+        }
 
-        // Update the associated activity tag
-        await activity_tagsm.findOneAndUpdate(
-            { Activity: Name }, 
-            { Tag }
-        );
+        // Update the associated tag if provided
+        if (Tag) {
+            await activity_tagsm.findOneAndUpdate(
+                { Activity: Name }, 
+                { Tag }
+            );
+        }
 
         res.status(200).json({ message: 'Activity updated successfully', activity: updatedActivity });
     } catch (error) {
@@ -1553,6 +1565,7 @@ const updateActivityByAdvertiser = async (req, res) => {
         res.status(500).json({ message: 'Server error', details: error.message });
     }
 };
+
 
 
 //Advertiser deletes activity

@@ -574,3 +574,46 @@ export const createActivityByAdvertiser = async (activityData) => {
         throw error; // Rethrow the error for further handling
     }
 };
+
+export const readActivity = async (name) => {
+    try {
+        // Make a GET request to the API with the activity name
+        const response = await axios.get(`${API_URL}/readActivity/${name}`);
+        return response.data; // { message: ..., data: activityDetails }
+    } catch (error) {
+        throw error.response ? error.response.data : new Error('Error retrieving activity');
+    }
+};
+
+export const deleteActivityByAdvertiser = async (Name) => {
+    try {
+        const response = await axios.delete(`${API_URL}/deleteActivityByAdvert`, { data: { Name: Name } });
+        return response.data; // Return the success message from the server
+    } catch (error) {
+        console.error('Error deleting activity:', error);
+        throw error.response ? error.response.data : { message: 'Network error' }; // Handle error
+    }
+};
+
+export const updateActivityByAdvertiser = async (activityData) => {
+    try {
+        // Log the itinerary data being sent
+        console.log('Updating activity with data:', activityData);
+
+        // Send a PUT request to the API for updating the activity
+        const response = await axios.put(`${API_URL}/updateActivity`, activityData);
+        
+        // Return the updated activity data from the server
+        return response.data;
+    } catch (error) {
+        // Enhanced error logging
+        if (error.response) {
+            console.error('Error updating activity:', error.response.data);
+            throw error.response.data;
+        } else {
+            console.error('Error updating activity:', error.message);
+            throw error.response ? error.response.data : { message: 'Network error' }; // Handle error
+        }
+    }
+};
+
