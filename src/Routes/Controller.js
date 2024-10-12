@@ -519,6 +519,32 @@ const registerTourist = async (req, res) => {
     }
 };
 
+/*const redeemPoints = async (req, res) =>{
+    try{
+
+        const{Email} = req.body;
+        
+        if ( !Email) {
+            return res.status(400).json({ error: 'Email is required.' });
+        }
+        const email = await Tourist.findOne({ Email });
+
+        if(!email){
+            return res.status(400).json({ error: 'Email not found.' });
+        }
+
+        const pointsToWallet = new Tourist({ });
+
+
+
+
+
+    }catch (error) {
+        console.error('Error details:', error);
+        return res.status(500).json({ error: 'Error updating the wallet', details: error.message });
+    }
+};*/
+
 const registerRequest = async (req, res) => {
     try {
         const { Username, Email, Password, Type } = req.body;
@@ -2439,5 +2465,6 @@ module.exports = {
     signIn,
     getAllCreatedByEmail,
     updateAdmin,
-    updateTourism_Governer
+    updateTourism_Governer,
+    redeemPoints
 };
