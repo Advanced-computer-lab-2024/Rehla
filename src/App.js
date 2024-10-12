@@ -69,7 +69,8 @@ const {createUserAdmin,
   viewMyCreatedItenrary,
   viewMyCreatedMuseumsAndHistoricalPlaces, signIn,
   getAllCreatedByEmail,
-  updateAdmin
+  updateAdmin,
+  updateTourism_Governer
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -172,4 +173,5 @@ app.get("/viewMyCreatedMuseumsAndHistoricalPlaces", viewMyCreatedMuseumsAndHisto
 app.post("/signIn" , signIn)
 app.get('/getAllCreatedByEmail/:email', getAllCreatedByEmail);
 app.put("/updateAdmin", updateAdmin);
+app.put("/updateTourism_Governer", updateTourism_Governer);
 

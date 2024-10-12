@@ -1647,6 +1647,40 @@ const createUserTourism_Governer = async(req,res) => {
      }
 };
 
+const updateTourism_Governer= async (req, res) => {
+    try {
+        // Extract the email and fields to update from the request body
+        const { Email, Password} = req.body;
+  
+        if (!Email) {
+            return res.status(400).json({ message: 'Email is required' });
+        }
+  
+        // Find tourist by email
+        const tgoverner = await tourism_governers.findOne({ Email: Email });
+  
+        if (!tgoverner) {
+            return res.status(404).json({ message: 'Tourism Governer not found' });
+        }
+  
+        // Only update the fields that are allowed to be modified
+        if (Password) tgoverner.Password = Password;
+  
+        // Save the updated profile
+        const updatedtgoverner = await tgoverner.save();
+  
+        // Return the updated profile
+        res.status(200).json({
+            message: 'Tourism Governer profile updated successfully',
+            tgoverner: updatedtgoverner
+        });
+    } catch (error) {
+        // Handle errors
+        res.status(500).json({ message: 'Error updating Tourism Governer profile', error: error.message });
+    }
+  };
+
+
  const deleteUserTourism_Governer = async (req, res) => {
     try {
         const Email = req.body;
@@ -2404,5 +2438,6 @@ module.exports = {
     viewMyCreatedMuseumsAndHistoricalPlaces,
     signIn,
     getAllCreatedByEmail,
-    updateAdmin
+    updateAdmin,
+    updateTourism_Governer
 };
