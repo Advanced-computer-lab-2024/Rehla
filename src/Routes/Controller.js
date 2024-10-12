@@ -112,6 +112,39 @@ const deleteUserAdmin = async (req, res) => {
     }
 };
 
+const updateAdmin= async (req, res) => {
+    try {
+        // Extract the email and fields to update from the request body
+        const { Email, Password} = req.body;
+  
+        if (!Email) {
+            return res.status(400).json({ message: 'Email is required' });
+        }
+  
+        // Find tourist by email
+        const admin = await Admin.findOne({ Email: Email });
+  
+        if (!admin) {
+            return res.status(404).json({ message: 'Admin not found' });
+        }
+  
+        // Only update the fields that are allowed to be modified
+        if (Password) admin.Password = Password;
+  
+        // Save the updated profile
+        const updatedAdmin = await admin.save();
+  
+        // Return the updated profile
+        res.status(200).json({
+            message: 'Admin profile updated successfully',
+            admin: updatedAdmin
+        });
+    } catch (error) {
+        // Handle errors
+        res.status(500).json({ message: 'Error updating Admin profile', error: error.message });
+    }
+  };
+
 const getAllProducts = async (req, res) => {
     try {
       // Fetch all products from the database
@@ -2370,5 +2403,6 @@ module.exports = {
     viewMyCreatedItenrary,
     viewMyCreatedMuseumsAndHistoricalPlaces,
     signIn,
-    getAllCreatedByEmail
+    getAllCreatedByEmail,
+    updateAdmin
 };
