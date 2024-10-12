@@ -175,5 +175,5 @@ app.post("/signIn" , signIn)
 app.get('/getAllCreatedByEmail/:email', getAllCreatedByEmail);
 app.put("/updateAdmin", updateAdmin);
 app.put("/updateTourism_Governer", updateTourism_Governer);
-app.get("/redeemPoints", redeemPoints);
+app.put("/redeemPoints", redeemPoints);
 

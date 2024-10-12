@@ -42,6 +42,10 @@ const touristsSchema = new Schema({
         type: Number,
         default: 0, // Default wallet balance is 0
     },
+    Points: {
+        type: Number,
+        default: 0, // Default wallet balance is 0
+    },
 }, { versionKey: false });
 
 const Tourist = mongoose.model('Tourist', touristsSchema);

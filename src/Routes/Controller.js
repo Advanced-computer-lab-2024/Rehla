@@ -504,7 +504,8 @@ const registerTourist = async (req, res) => {
             DOB,
             Job_Student,  // The field will be either "Job" or "Student"
             Type: 'Tourist', // Default type is Tourist
-            Wallet: 0 // Initial wallet balance
+            Wallet: 0, // Initial wallet balance
+            Points: 0
         });
 
         // Save the tourist to the database
@@ -519,31 +520,32 @@ const registerTourist = async (req, res) => {
     }
 };
 
-/*const redeemPoints = async (req, res) =>{
-    try{
-
-        const{Email} = req.body;
-        
-        if ( !Email) {
-            return res.status(400).json({ error: 'Email is required.' });
-        }
-        const email = await Tourist.findOne({ Email });
-
-        if(!email){
-            return res.status(400).json({ error: 'Email not found.' });
-        }
-
-        const pointsToWallet = new Tourist({ });
-
-
-
-
-
-    }catch (error) {
-        console.error('Error details:', error);
-        return res.status(500).json({ error: 'Error updating the wallet', details: error.message });
+const redeemPoints = async (req, res) => {
+    try {
+      const { Email } = req.body;
+  
+      if (!Email) {
+        return res.status(400).json({ error: 'Email is required.' });
+      }
+  
+      const tourist = await Tourist.findOne({ Email });
+  
+      if (!tourist) {
+        return res.status(400).json({ error: 'Email not found.' });
+      }
+  
+      const pointsToRedeem = tourist.Points;
+      const pointsToWallet = pointsToRedeem / 100;
+  
+      await tourist.updateOne({ $set: { Points: 0 } }); // reset points to 0
+      await tourist.updateOne({ $inc: { Wallet: pointsToWallet } }); // add points to wallet
+  
+      return res.status(201).json({ message: 'Points redeemed successfully' });
+    } catch (error) {
+      console.error('Error details:', error);
+      return res.status(500).json({ error: 'Error redeeming points', details: error.message });
     }
-};*/
+  };
 
 const registerRequest = async (req, res) => {
     try {
