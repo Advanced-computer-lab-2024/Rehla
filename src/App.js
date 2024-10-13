@@ -81,7 +81,8 @@ const {createUserAdmin,
   commentOnEvent,
   reviewProduct,
   rateProduct,
-  getMyComplaints
+  getMyComplaints,
+  createComplaint
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -195,4 +196,5 @@ app.post("/requestDeleteProfile", requestDeleteProfile);
 app.put("/commentOnEvent/:itineraryName/:touristEmail", commentOnEvent);
 app.put("/reviewProduct" , reviewProduct);
 app.put("/rateProduct" , rateProduct);
-app.get("/getMyComplaints" ,getMyComplaints)
+app.get("/getMyComplaints" ,getMyComplaints);
+app.post("/createComplaint", createComplaint);

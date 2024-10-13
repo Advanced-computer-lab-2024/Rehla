@@ -30,6 +30,7 @@ const tourist_products = require('../Models/tourist_products.js');
 const tourist_complaints = require('../Models/tourist_complaints.js');
 
 
+
 // Creating a new Admin user or Tourism Governor
 const createUserAdmin = async (req, res) => {
     try {
@@ -2648,6 +2649,30 @@ const getMyComplaints = async (req, res) => {
     }
 };
 
+const createComplaint = async (req, res) => {
+    try {
+        const { Tourist_Email, Title, Body } = req.body;
+
+        // Create a new complaint object
+        const newComplaint = new tourist_complaints({
+            Tourist_Email,
+            Title,
+            Body,
+            Date_Of_Complaint: new Date(), // Automatically set the date of complaint
+        });
+
+        // Save the complaint to the database
+        await newComplaint.save();
+
+        // Respond with success message
+        res.status(201).json({ message: "Complaint created successfully!", complaint: newComplaint });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Error creating complaint", error });
+    }
+};
+
+
 
 
 // ----------------- Activity Category CRUD -------------------
@@ -2731,5 +2756,6 @@ module.exports = {
     commentOnEvent,
     reviewProduct,
     rateProduct,
-    getMyComplaints
+    getMyComplaints,
+    createComplaint
 };
