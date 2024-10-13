@@ -79,6 +79,7 @@ const {createUserAdmin,
   redeemPoints,
   requestDeleteProfile,
   rateItinerary,
+  commentOnItinerary,
   commentOnEvent,
   reviewProduct,
   rateProduct,
@@ -195,6 +196,7 @@ app.put("/updateTourism_Governer", updateTourism_Governer);
 app.put("/redeemPoints", redeemPoints);
 app.post("/requestDeleteProfile", requestDeleteProfile);
 app.post('/rateItinerary', rateItinerary);
+app.post("/commentOnItinerary", commentOnItinerary);
 app.put("/commentOnEvent/:itineraryName/:touristEmail", commentOnEvent);
 app.put("/reviewProduct" , reviewProduct);
 app.put("/rateProduct" , rateProduct);

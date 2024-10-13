@@ -2554,6 +2554,28 @@ const rateItinerary = async (req, res) => {
     }
 };
 
+const commentOnItinerary = async (req, res) => {
+    const { Tourist_Email, Itinerary_Name, Comment } = req.body;
+
+    try {
+        // Find the itinerary by Tourist_Email and Itinerary_Name
+        const itinerary = await touristIteneraries.findOneAndUpdate(
+            { Tourist_Email, Itinerary_Name },
+            { Comment },  // Update the comment field
+            { new: true, runValidators: true }  // Return the updated document and run schema validators
+        );
+
+        if (!itinerary) {
+            return res.status(404).json({ message: 'Itinerary not found' });
+        }
+
+        res.status(200).json({ message: 'Comment added successfully', itinerary });
+    } catch (error) {
+        console.error('Error commenting on itinerary:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
 
 // Function to add or update a comment on an attended event/activity
 const commentOnEvent = async (req, res) => {
@@ -2780,6 +2802,7 @@ module.exports = {
     redeemPoints,
     requestDeleteProfile,
     rateItinerary,
+    commentOnItinerary,
     commentOnEvent,
     reviewProduct,
     rateProduct,
