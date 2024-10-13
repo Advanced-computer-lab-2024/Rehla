@@ -46,6 +46,12 @@ const touristsSchema = new Schema({
         type: Number,
         default: 0, // Default wallet balance is 0
     },
+    Badge: {
+        
+        type: String,
+        enum: ['Level 1', 'Level 2', 'Level 3'],
+        default : 'Level 1', 
+    },
 }, { versionKey: false });
 
 const Tourist = mongoose.model('Tourist', touristsSchema);

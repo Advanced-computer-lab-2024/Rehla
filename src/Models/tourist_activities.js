@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const tourist_itenerariesSchema = new Schema({
+const tourist_activiesSchema = new Schema({
     Tourist_Email : {
         type: String,
         required: true,
@@ -26,5 +26,5 @@ const tourist_itenerariesSchema = new Schema({
 
 },{ versionKey: false });
 
-const tourist_iteneraries = mongoose.model('tourist_iteneraries', tourist_itenerariesSchema);
-module.exports = tourist_iteneraries;
+const tourist_activities = mongoose.model('tourist_activities', tourist_activiesSchema);
+module.exports = tourist_activities;
