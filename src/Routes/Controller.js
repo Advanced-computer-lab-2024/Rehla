@@ -25,6 +25,8 @@ const tour_guide_itinerariesm = require('../Models/tour_guide_itineraries.js');
 const tourismgoverner_museumsandhistoricalplacesm = require('../Models/tourismgoverner_museumsandhistoricalplaces.js');
 const DeleteRequestsm = require('../Models/delete_requests.js');
 const Preference = require('../Models/Preferences.js');
+const touristIteneraries = require('../Models/tourist_iteneraries');
+
 
 
 // Creating a new Admin user or Tourism Governor
@@ -2496,6 +2498,35 @@ const getAllCreatedByEmail = async (req, res) => {
 };
 
 
+// Function to add or update a comment on an attended event/activity
+const commentOnEvent = async (req, res) => {
+    const { itineraryName, touristEmail } = req.params;
+    const { comment } = req.body;
+
+    try {
+        // Find the itinerary where the tourist has attended the event
+        const itinerary = await touristIteneraries.findOne({
+            Itinerary_Name: itineraryName,
+            Tourist_Email: touristEmail,
+            Attended: true
+        });
+
+        if (!itinerary) {
+            return res.status(404).json({ message: "Itinerary not found or tourist has not attended this event." });
+        }
+
+        // Update the comment
+        itinerary.Comment = comment;
+        await itinerary.save();
+
+        return res.status(200).json({ message: "Comment added/updated successfully", itinerary });
+    } catch (error) {
+        return res.status(500).json({ message: "Error adding/updating comment", error });
+    }
+};
+
+
+
 
 // ----------------- Activity Category CRUD -------------------
 
@@ -2572,5 +2603,6 @@ module.exports = {
     updateAdmin,
     updateTourism_Governer,
     redeemPoints,
-    requestDeleteProfile
+    requestDeleteProfile,
+    commentOnEvent
 };
