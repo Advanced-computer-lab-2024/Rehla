@@ -8,13 +8,13 @@ const tourist_activiesSchema = new Schema({
     },
 
     
-    Itinerary_Name : {
+    Activity_Name : {
         type: String,
         required: true,
     },
     Attended : {
         type: Boolean,
-        default: no,
+        default: false,
     },
 
     Comment : {
