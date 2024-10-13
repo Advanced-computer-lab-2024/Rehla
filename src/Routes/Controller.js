@@ -875,6 +875,22 @@ const viewAllComplaints = async (req, res) => {
       res.status(500).json({ error: 'Server error' });
     }
 };
+
+// Function to view a specific complaint by Tourist_Email
+const viewComplaintByEmail = async (req, res) => {
+    try {
+      const { email } = req.params;
+      const complaint = await tourist_complaints.find({ Tourist_Email: email });
+      
+      if (!complaint || complaint.length === 0) {
+        return res.status(404).json({ message: 'No complaints found for this email' });
+      }
+      
+      res.status(200).json(complaint);
+    } catch (error) {
+      res.status(500).json({ error: 'Server error' });
+    }
+  };
   
 //Tourist - admin - seller : Sort Product by ratings
 const getProductsSortedByRating = async (req, res) => {
@@ -2663,6 +2679,7 @@ module.exports = {
     updatePreference,
     readPreferences,
     viewAllComplaints,
+    viewComplaintByEmail,
     getProductsSortedByRating, 
     addProduct,
     updateProduct,
