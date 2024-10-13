@@ -894,6 +894,41 @@ const viewComplaintByEmail = async (req, res) => {
       res.status(500).json({ error: 'Server error' });
     }
   };
+
+// Function to view all complaints sorted by date
+const viewAllComplaintsSortedByDate = async (req, res) => {
+    try {
+      // Find all complaints and sort them by date (most recent first)
+      const complaints = await tourist_complaints.find()
+        .sort({ Date_Of_Complaint: -1 }); // -1 for descending (most recent first), 1 for ascending
+  
+      if (!complaints || complaints.length === 0) {
+        return res.status(404).json({ message: 'No complaints found' });
+      }
+  
+      res.status(200).json(complaints);
+    } catch (error) {
+      res.status(500).json({ error: 'Server error' });
+    }
+  };
+
+// Function to filter complaints by status
+const filterComplaintsByStatus = async (req, res) => {
+    const { status } = req.params;
+  
+    try {
+      // Find complaints based on the provided status
+      const complaints = await tourist_complaints.find({ Status: status });
+  
+      if (!complaints || complaints.length === 0) {
+        return res.status(404).json({ message: `No complaints found with status: ${status}` });
+      }
+  
+      res.status(200).json(complaints);
+    } catch (error) {
+      res.status(500).json({ error: 'Server error' });
+    }
+  };
   
 //Tourist - admin - seller : Sort Product by ratings
 const getProductsSortedByRating = async (req, res) => {
@@ -2782,6 +2817,8 @@ module.exports = {
     readPreferences,
     viewAllComplaints,
     viewComplaintByEmail,
+    viewAllComplaintsSortedByDate,
+    filterComplaintsByStatus,
     getProductsSortedByRating, 
     addProduct,
     updateProduct,
