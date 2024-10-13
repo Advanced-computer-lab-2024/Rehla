@@ -24,6 +24,7 @@ const historical_places_tags = require('../Models/historical_places_tags.js');
 const tour_guide_itinerariesm = require('../Models/tour_guide_itineraries.js');
 const tourismgoverner_museumsandhistoricalplacesm = require('../Models/tourismgoverner_museumsandhistoricalplaces.js');
 const DeleteRequestsm = require('../Models/delete_requests.js');
+const Preference = require('../Models/Preferences.js');
 
 
 // Creating a new Admin user or Tourism Governor
@@ -804,6 +805,60 @@ const searchByNameCategoryTag = async (req, res) => {
         res.status(500).json({ error: 'Error searching for data', details: error.message });
     }
 };
+
+const createPreference = async (req, res) => {
+    const { email, historicAreas, beaches, familyFriendly, shopping, budgetFriendly } = req.body;
+  
+    try {
+      const newPreference = new Preference({
+        email,
+        historicAreas,
+        beaches,
+        familyFriendly,
+        shopping,
+        budgetFriendly // Include budgetFriendly in the new preference
+      });
+      
+      await newPreference.save();
+      return res.status(201).json(newPreference);
+    } catch (error) {
+      return res.status(500).json({ message: 'Error creating preference', error });
+    }
+  };
+
+// Update a preference
+const updatePreference = async (req, res) => {
+    const { email } = req.params; // Get email from route parameters
+    const updates = req.body; // Get the updates from the request body
+  
+    try {
+      const updatedPreference = await Preference.findOneAndUpdate(
+        { email },
+        updates,
+        { new: true }
+      );
+  
+      if (!updatedPreference) {
+        return res.status(404).json({ message: 'Preference not found' });
+      }
+  
+      return res.status(200).json(updatedPreference);
+    } catch (error) {
+      return res.status(500).json({ message: 'Error updating preference', error });
+    }
+  };
+
+// Get preferences by email
+const readPreferences = async (req, res) => {
+    const { email } = req.params;
+  
+    try {
+      const preferences = await Preference.find({ email });
+      return res.status(200).json(preferences);
+    } catch (error) {
+      return res.status(500).json({ message: 'Error retrieving preferences', error });
+    }
+  };
   
 //Tourist - admin - seller : Sort Product by ratings
 const getProductsSortedByRating = async (req, res) => {
@@ -2467,6 +2522,9 @@ module.exports = {
     updatePreferenceTag,
     deletePreferenceTag,
     searchByNameCategoryTag,
+    createPreference,
+    updatePreference,
+    readPreferences,
     getProductsSortedByRating, 
     addProduct,
     updateProduct,
