@@ -27,6 +27,9 @@ const {createUserAdmin,
   updatePreferenceTag,
   deletePreferenceTag,
   searchByNameCategoryTag,
+  createPreference,
+  updatePreference,
+  readPreferences,
   getProductsSortedByRating, 
   addProduct,
   updateProduct,
@@ -126,6 +129,9 @@ app.get("/getTag",readPreferenceTag);
 app.put("/updateTag/:currentName",updatePreferenceTag);
 app.delete("/deleteTag",deletePreferenceTag);
 app.get("/searchByNameCategoryTag",searchByNameCategoryTag);
+app.post("/createPreference", createPreference); // Create a new preference
+app.get("/readPreferences/:email", readPreferences); // Get preferences by email
+app.put("/updatePreference/:email", updatePreference); // Update a preference by email
 app.get("/getProductsSortedByRating" , getProductsSortedByRating); //Tourist-Admin-Seller :sort products by rating 
 app.post("/addProduct" ,addProduct); //Admin - Seller : add a new product
 app.put("/updateProduct" , updateProduct);//Admin - Seller : edit products 
