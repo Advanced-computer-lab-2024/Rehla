@@ -23,7 +23,7 @@ const advertiser_activities = require('../Models/advertiser_activities');
 const historical_places_tags = require('../Models/historical_places_tags.js');
 const tour_guide_itinerariesm = require('../Models/tour_guide_itineraries.js');
 const tourismgoverner_museumsandhistoricalplacesm = require('../Models/tourismgoverner_museumsandhistoricalplaces.js');
-const DeleteRequests = require('../Models/delete_requests.js');
+const DeleteRequestsm = require('../Models/delete_requests.js');
 
 
 // Creating a new Admin user or Tourism Governor
@@ -1182,13 +1182,13 @@ const requestDeleteProfile = async(req, res) => {
         }
 
         // Check if email already exists
-        const existingRequest = await DeleteRequests.findOne({ Email });
+        const existingRequest = await DeleteRequestsm.findOne({ Email });
         if (existingRequest) {
             return res.status(400).json({ error: 'Request already submitted.' });
         }
 
         // Create a new request object
-        const newRequest = new Request({
+        const newRequest = new DeleteRequestsm({
             Username,
             Email,
             Password,  // No password hashing here
