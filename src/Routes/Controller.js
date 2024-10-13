@@ -862,6 +862,19 @@ const readPreferences = async (req, res) => {
       return res.status(500).json({ message: 'Error retrieving preferences', error });
     }
   };
+
+// Function to view all complaints
+const viewAllComplaints = async (req, res) => {
+    try {
+      const complaints = await tourist_complaints.find();
+      if (complaints.length === 0) {
+        return res.status(404).json({ message: 'No complaints found' });
+      }
+      res.status(200).json(complaints);
+    } catch (error) {
+      res.status(500).json({ error: 'Server error' });
+    }
+};
   
 //Tourist - admin - seller : Sort Product by ratings
 const getProductsSortedByRating = async (req, res) => {
@@ -2649,6 +2662,7 @@ module.exports = {
     createPreference,
     updatePreference,
     readPreferences,
+    viewAllComplaints,
     getProductsSortedByRating, 
     addProduct,
     updateProduct,

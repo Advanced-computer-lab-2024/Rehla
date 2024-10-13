@@ -30,6 +30,7 @@ const {createUserAdmin,
   createPreference,
   updatePreference,
   readPreferences,
+  viewAllComplaints,
   getProductsSortedByRating, 
   addProduct,
   updateProduct,
@@ -136,6 +137,7 @@ app.get("/searchByNameCategoryTag",searchByNameCategoryTag);
 app.post("/createPreference", createPreference); // Create a new preference
 app.get("/readPreferences/:email", readPreferences); // Get preferences by email
 app.put("/updatePreference/:email", updatePreference); // Update a preference by email
+app.get("/viewComplaints", viewAllComplaints);
 app.get("/getProductsSortedByRating" , getProductsSortedByRating); //Tourist-Admin-Seller :sort products by rating 
 app.post("/addProduct" ,addProduct); //Admin - Seller : add a new product
 app.put("/updateProduct" , updateProduct);//Admin - Seller : edit products 
