@@ -1174,7 +1174,7 @@ const requestDeleteProfile = async(req, res) => {
         }
 
         // Allowed types for registration requests
-        const allowedTypes = ['Tourist', 'Tour Guide', 'Advertiser', 'Seller'];
+        const allowedTypes = ['TOURIST', 'Tour Guide', 'Advertiser', 'Seller'];
 
         // Check if the Type is valid
         if (!allowedTypes.includes(Type)) {
