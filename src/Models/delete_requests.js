@@ -18,7 +18,7 @@ Type: {
     type: String,
     required: true
 }
-}, { timestamps: true });
+}, { versionKey: false });
 
-const DeleteRequests = mongoose.model('Delete_requests', DeleteRequestSchema);
+const DeleteRequests = mongoose.model('delete_requests', DeleteRequestSchema);
 module.exports = DeleteRequests;

@@ -177,5 +177,5 @@ app.get('/getAllCreatedByEmail/:email', getAllCreatedByEmail);
 app.put("/updateAdmin", updateAdmin);
 app.put("/updateTourism_Governer", updateTourism_Governer);
 app.put("/redeemPoints", redeemPoints);
-app.put("/requestDeleteProfile", requestDeleteProfile);
+app.post("/requestDeleteProfile", requestDeleteProfile);
 
