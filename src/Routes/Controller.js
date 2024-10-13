@@ -2528,6 +2528,32 @@ const getAllCreatedByEmail = async (req, res) => {
     }
 };
 
+const rateItinerary = async (req, res) => {
+    try {
+        const { Tourist_Email, Itinerary_Name, Rating } = req.body;
+
+        if (!Tourist_Email || !Itinerary_Name || !Rating ) {
+            return res.status(400).json({ message: 'Tourist_Email, Itinerary_Name, and Rating are required.' });
+        }
+
+        // Find and update the rating in the tourist_iteneraries collection
+        const updatedItinerary = await touristIteneraries.findOneAndUpdate(
+            { Tourist_Email: Tourist_Email, Itinerary_Name: Itinerary_Name }, // Filter
+            { Rating : Rating  }, // Update the Rating field
+            { new: true } // Return the updated document
+        );
+
+        if (!updatedItinerary) {
+            return res.status(404).json({ message: 'Itinerary not found.' });
+        }
+
+        res.status(200).json({ message: 'Itinerary rating updated successfully', itinerary: updatedItinerary });
+    } catch (error) {
+        console.error("Error updating itinerary rating:", error);
+        res.status(500).json({ error: 'Error updating itinerary rating', details: error.message });
+    }
+};
+
 
 // Function to add or update a comment on an attended event/activity
 const commentOnEvent = async (req, res) => {
@@ -2753,6 +2779,7 @@ module.exports = {
     updateTourism_Governer,
     redeemPoints,
     requestDeleteProfile,
+    rateItinerary,
     commentOnEvent,
     reviewProduct,
     rateProduct,
