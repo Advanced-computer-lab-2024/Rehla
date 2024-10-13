@@ -15,11 +15,11 @@ const tourist_productsSchema = new Schema({
 
     Review : {
         type: String,
-        required : true,
+       
     },
     Rating : {
         type: Number ,
-        required : true,
+      
     },
 
 },{ versionKey: false });
