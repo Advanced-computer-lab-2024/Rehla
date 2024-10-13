@@ -22,6 +22,11 @@ const tourist_itenerariesSchema = new Schema({
     },
     Rating : {
         type: Number ,
+        
+    },
+    Paid: {
+        type: Boolean,
+        required : true,
     },
 
 },{ versionKey: false });

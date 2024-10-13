@@ -23,6 +23,10 @@ const tourist_activiesSchema = new Schema({
     Rating : {
         type: Number ,
     },
+    Paid: {
+        type: Boolean,
+        required : true,
+    },
 
 },{ versionKey: false });
 
