@@ -27,7 +27,7 @@ const DeleteRequestsm = require('../Models/delete_requests.js');
 const Preference = require('../Models/Preferences.js');
 const touristIteneraries = require('../Models/tourist_iteneraries');
 const tourist_products = require('../Models/tourist_products.js');
-
+const tourist_complaints = require('../Models/tourist_complaints.js');
 
 
 // Creating a new Admin user or Tourism Governor
@@ -2593,6 +2593,32 @@ const rateProduct = async (req, res) => {
 };
 
 
+const getMyComplaints = async (req, res) => {
+    const { Tourist_Email } = req.body; // Get the email from request body
+
+    try {
+        // Find all complaints for the tourist
+        const complaints = await tourist_complaints.find({ Tourist_Email: Tourist_Email });
+
+        if (complaints.length === 0) {
+            return res.status(404).json({
+                message: "No complaints found for this email."
+            });
+        }
+
+        return res.status(200).json({
+            message: "Complaints retrieved successfully.",
+            complaints: complaints
+        });
+    } catch (error) {
+        console.error(error); // Log the error to the console
+        return res.status(500).json({
+            message: "Error retrieving complaints.",
+            error: error.message // Include error message
+        });
+    }
+};
+
 
 
 // ----------------- Activity Category CRUD -------------------
@@ -2673,5 +2699,6 @@ module.exports = {
     requestDeleteProfile,
     commentOnEvent,
     reviewProduct,
-    rateProduct
+    rateProduct,
+    getMyComplaints
 };

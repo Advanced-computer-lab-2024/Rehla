@@ -11,7 +11,7 @@ const tourist_complaintsSchema = new Schema({
     Status : {
         type: String,
         enum :['pending', 'resolved'],
-        default: pending,
+        default: 'pending',
     },
     Title : {
         type: String,
@@ -24,7 +24,7 @@ const tourist_complaintsSchema = new Schema({
     },
     Date_Of_Complaint : {
         type: Date ,
-        default: currentDateTime,
+        default: Date.now,
     },
 
 },{ versionKey: false });
