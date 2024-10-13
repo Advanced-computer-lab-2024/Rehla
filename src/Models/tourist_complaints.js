@@ -26,6 +26,9 @@ const tourist_complaintsSchema = new Schema({
         type: Date ,
         default: Date.now,
     },
+    Reply :{
+        type : String,
+    },
 
 },{ versionKey: false });
 
