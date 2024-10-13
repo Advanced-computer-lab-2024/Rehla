@@ -15,6 +15,7 @@ const tourist_productsSchema = new Schema({
 
     Review : {
         type: String,
+        default : "No review"
        
     },
     Rating : {

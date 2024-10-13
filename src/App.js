@@ -76,7 +76,9 @@ const {createUserAdmin,
   updateTourism_Governer,
   redeemPoints,
   requestDeleteProfile,
-  commentOnEvent
+  commentOnEvent,
+  reviewProduct,
+  rateProduct
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -186,3 +188,5 @@ app.put("/updateTourism_Governer", updateTourism_Governer);
 app.put("/redeemPoints", redeemPoints);
 app.post("/requestDeleteProfile", requestDeleteProfile);
 app.put("/commentOnEvent/:itineraryName/:touristEmail", commentOnEvent);
+app.put("/reviewProduct" , reviewProduct);
+app.put("/rateProduct" , rateProduct)

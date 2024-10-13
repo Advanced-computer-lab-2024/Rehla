@@ -26,6 +26,7 @@ const tourismgoverner_museumsandhistoricalplacesm = require('../Models/tourismgo
 const DeleteRequestsm = require('../Models/delete_requests.js');
 const Preference = require('../Models/Preferences.js');
 const touristIteneraries = require('../Models/tourist_iteneraries');
+const tourist_products = require('../Models/tourist_products.js');
 
 
 
@@ -2525,6 +2526,72 @@ const commentOnEvent = async (req, res) => {
     }
 };
 
+const reviewProduct = async (req, res) => {
+    const { Tourist_Email, Product_Name, Review } = req.body;
+
+    try {
+        // Find the existing product review based on Tourist_Email and Product_Name
+        const existingReview = await tourist_products.findOne({
+            Tourist_Email: Tourist_Email,
+            Product_Name: Product_Name
+        });
+
+        if (!existingReview) {
+            // If review does not exist, return an error
+            return res.status(404).json({
+                message: "Review not found. Please ensure the product and email are correct."
+            });
+        } else {
+            // If review exists, update the Review field
+            existingReview.Review = Review;
+            await existingReview.save();
+
+            return res.status(200).json({
+                message: "Review updated successfully",
+                review: existingReview
+            });
+        }
+    } catch (error) {
+        return res.status(500).json({
+            message: "Error updating review",
+            error
+        });
+    }
+};
+
+const rateProduct = async (req, res) => {
+    const { Tourist_Email, Product_Name, Rating } = req.body;
+
+    try {
+        // Find the existing product review based on Tourist_Email and Product_Name
+        const existingReview = await tourist_products.findOne({
+            Tourist_Email: Tourist_Email,
+            Product_Name: Product_Name
+        });
+
+        if (!existingReview) {
+            // If review does not exist, return an error
+            return res.status(404).json({
+                message: "Review not found. Please ensure the product and email are correct."
+            });
+        } else {
+            // If review exists, update the Rating field
+            existingReview.Rating = Rating;
+            await existingReview.save();
+
+            return res.status(200).json({
+                message: "Rating updated successfully",
+                review: existingReview
+            });
+        }
+    } catch (error) {
+        return res.status(500).json({
+            message: "Error updating rating",
+            error
+        });
+    }
+};
+
 
 
 
@@ -2604,5 +2671,7 @@ module.exports = {
     updateTourism_Governer,
     redeemPoints,
     requestDeleteProfile,
-    commentOnEvent
+    commentOnEvent,
+    reviewProduct,
+    rateProduct
 };
