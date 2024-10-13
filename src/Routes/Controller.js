@@ -28,6 +28,8 @@ const Preference = require('../Models/Preferences.js');
 const touristIteneraries = require('../Models/tourist_iteneraries');
 const tourist_products = require('../Models/tourist_products.js');
 const tourist_complaints = require('../Models/tourist_complaints.js');
+const tourist_activities = require('../Models/tourist_complaints.js');
+
 
 
 
@@ -2576,6 +2578,33 @@ const commentOnItinerary = async (req, res) => {
     }
 };
 
+const rateActivity = async (req, res) => {
+    const { Tourist_Email, Activity_Name, Rating } = req.body;
+
+    try {
+        // Validate input
+        if (!Tourist_Email || !Activity_Name || !Rating  ) {
+            return res.status(400).json({ error: 'Tourist_Email, Activity_Name, and Rating are required.' });
+        }
+
+        // Find the activity and update the rating
+        const updatedActivity = await tourist_activities.findOneAndUpdate(
+            { Tourist_Email, Activity_Name },
+            { Rating }, // Overwrite existing Rating
+            { new: true, runValidators: true } // Return the updated document and run validators
+        );
+
+        // Check if the activity was found
+        if (!updatedActivity) {
+            return res.status(404).json({ message: 'Activity not found for the given tourist.' });
+        }
+
+        res.status(200).json({ message: 'Activity rating updated successfully', activity: updatedActivity });
+    } catch (error) {
+        console.error('Error updating activity rating:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
 
 // Function to add or update a comment on an attended event/activity
 const commentOnEvent = async (req, res) => {
@@ -2803,6 +2832,7 @@ module.exports = {
     requestDeleteProfile,
     rateItinerary,
     commentOnItinerary,
+    rateActivity,
     commentOnEvent,
     reviewProduct,
     rateProduct,
