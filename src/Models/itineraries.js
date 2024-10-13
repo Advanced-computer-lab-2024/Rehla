@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const itinerarysSchema = new Schema({
-    Itinerary_Name : {
+    Itinerary_Name: {
         type : String , 
         required : true,
     },
@@ -11,12 +11,12 @@ const itinerarysSchema = new Schema({
     //     required : true,
     // },
 
-    Timeline : {
+    Timeline: {
         type : String , 
         required : true ,
     },
 
-    Duration : {
+    Duration: {
         type : String , 
         required : true ,
     },
@@ -31,22 +31,22 @@ const itinerarysSchema = new Schema({
         required : true ,
     },
 
-    Available_Date_Time : {
+    Available_Date_Time: {
         type : Date , 
         required : true ,
     },
 
-    Accessibility : {
+    Accessibility: {
         type : Boolean , 
         required : true ,
     },
 
-    Pick_Up_Point : {
+    Pick_Up_Point: {
         type : String , 
         required : true ,
     },
     
-    Drop_Of_Point : {
+    Drop_Of_Point: {
         type : String , 
         required : true ,
     },
@@ -72,11 +72,11 @@ const itinerarysSchema = new Schema({
         type:Number,
         required: true,
     },
-    P_Tag : {
+    P_Tag: {
         type:String,
         required: true,
     },
-    Created_By : {
+    Created_By: {
         type : String ,
         required : true,
     },

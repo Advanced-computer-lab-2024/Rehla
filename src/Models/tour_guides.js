@@ -2,38 +2,38 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const tour_guidesSchema = new Schema({
-    Username : {
+    Username: {
         type: String,
         required : true,
     },
 
-    Email : {
+    Email: {
         type : String ,
         required : true,
     },
 
-    Password : {
+    Password: {
         type : String ,
         required : true,
     },
 
-    Type : {
+    Type: {
         type : String ,
         required : true,
         default : "TOUR_GUIDE"
     },
 
-    Mobile_Number : {
+    Mobile_Number: {
         type : String ,
         //required : true,
     },
 
-    Experience : {
+    Experience: {
         type : Number,
         //required : true,
     },
 
-    Previous_work : {
+    Previous_work: {
         type : String ,
     },
 

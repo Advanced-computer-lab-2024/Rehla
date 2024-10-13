@@ -2,11 +2,11 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const activity_categoriesSchema = new Schema({
-    Activity : {
+    Activity: {
         type: String,
         required: true,
     },
-    Category : {
+    Category: {
         type: String,
         required: true,
     }

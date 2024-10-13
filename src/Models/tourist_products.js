@@ -2,23 +2,23 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const tourist_productsSchema = new Schema({
-    Tourist_Email : {
+    Tourist_Email: {
         type: String,
         required: true,
     },
 
     
-    Product_Name : {
+    Product_Name: {
         type: String,
         required: true,
     },
 
-    Review : {
+    Review: {
         type: String,
         default : "No review"
        
     },
-    Rating : {
+    Rating: {
         type: Number ,
       
     },

@@ -2,27 +2,27 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const activitysSchema = new Schema({
-    Name : {
+    Name: {
         type : String ,
         required : true,
     },
 
-    Location : {
+    Location: {
         type : String ,
         required : true,
     },
 
-    Time : {
+    Time: {
         type : String ,
         required : true,
     },
 
-    Duration : {
+    Duration: {
         type : String ,
         required : true,
     },
 
-    Price : {
+    Price: {
         type : Number ,
         required : true,
     },
@@ -32,7 +32,7 @@ const activitysSchema = new Schema({
         required : true,
     },
 
-    Discount_Percent : {
+    Discount_Percent: {
         type : Number ,
         required : true,
     },
@@ -42,20 +42,20 @@ const activitysSchema = new Schema({
         required : true,
     },
 
-    Available_Spots : {
+    Available_Spots: {
         type : Number ,
         required : true,
     },
 
-    Booked_Spots : {
+    Booked_Spots: {
         type : Number ,
         required : true,
     },
-    Rating : {
+    Rating: {
         type : Number ,
         required : true,
     },
-    Created_By : {
+    Created_By: {
         type : String ,
         required : true,
     },

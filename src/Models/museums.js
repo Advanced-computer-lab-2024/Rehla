@@ -7,20 +7,20 @@ const museumsSchema = new Schema({
         required: true, 
         unique: true },
 
-    description : {
+    description: {
         type: String,
         required : true,
     },
 
-    pictures : {
+    pictures: {
         type: String,
         required : true,
     },
-    location : {
+    location: {
         type: String,
         required : true,
     },
-    Country : {
+    Country: {
         type: String,
         required : true,
     },
@@ -30,23 +30,23 @@ const museumsSchema = new Schema({
         required : true,
     },
 
-    S_Tickets_Prices : {
+    S_Tickets_Prices: {
         type: Number,
         required : true,
     },
-    F_Tickets_Prices : {
+    F_Tickets_Prices: {
         type: Number,
         required : true,
     },
-    N_Tickets_Prices : {
+    N_Tickets_Prices: {
         type: Number,
         required : true,
     },
-    Tag : {
+    Tag: {
         type: String,
         required : true,
     },
-    Created_By : {
+    Created_By: {
         type : String ,
         required : true,
     },

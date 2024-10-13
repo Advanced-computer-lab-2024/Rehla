@@ -2,38 +2,38 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const sellersSchema = new Schema({ 
-    Username : {
+    Username: {
         type: String,
         required : true,
     },
 
-    Email : {
+    Email: {
         type : String ,
         required : true,
     },
 
-    Password :{
+    Password:{
         type : String ,
         required : true,
     },
 
-    Shop_Name :{
+    Shop_Name:{
         type : String ,
         //required : true,
     },
 
-    Description :{
+    Description:{
         type : String ,
         //required : true,
     },
 
-    Shop_Location :{
+    Shop_Location:{
         type : String ,
         //required : true,
     },
 
     
-    Type :{
+    Type:{
         type : String ,
         required : true,
         default : "SELLER",

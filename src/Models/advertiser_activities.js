@@ -2,32 +2,32 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const advertiser_activitiesSchema = new Schema({
-    Email : {
+    Email: {
         type : String ,
         required : true,
     },
 
-    Activity_Name : {
+    Activity_Name: {
         type : String ,
         required : true,
     },
 
-    Location : {
+    Location: {
         type : String ,
         required : true,
     },
 
-    Date : {
+    Date: {
         type : String ,
         required : true,
     },
 
-    Available_Spots : {
+    Available_Spots: {
         type : Number ,
         required : true,
     },
 
-    Booked_Spots : {
+    Booked_Spots: {
         type : Number ,
         required : true,
     },

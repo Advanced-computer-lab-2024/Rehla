@@ -2,13 +2,13 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const tour_guide_itinerariesSchema = new Schema({
-    Email : {
+    Email: {
         type: String,
         required: true,
     },
 
     
-    Itinerary_Name : {
+    Itinerary_Name: {
         type: String,
         required: true,
     },

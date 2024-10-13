@@ -2,15 +2,15 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const historical_places_tagsSchema = new Schema({
-    Name : {
+    Name: {
         type: String,
         required: true,
     },
-    Historical_Period : {
+    Historical_Period: {
         type: String,
         required: true,
     },
-    Type : {
+    Type: {
         type: String,
         required: true,
     },

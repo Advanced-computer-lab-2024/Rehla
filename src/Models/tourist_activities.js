@@ -2,25 +2,25 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const tourist_activiesSchema = new Schema({
-    Tourist_Email : {
+    Tourist_Email: {
         type: String,
         required: true,
     },
 
     
-    Activity_Name : {
+    Activity_Name: {
         type: String,
         required: true,
     },
-    Attended : {
+    Attended: {
         type: Boolean,
         default: false,
     },
 
-    Comment : {
+    Comment: {
         type: String,
     },
-    Rating : {
+    Rating: {
         type: Number ,
     },
     Paid: {

@@ -2,11 +2,11 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const itenerary_activitiesSchema = new Schema({
-    Itinerary_Name : {
+    Itinerary_Name: {
         type: String,
         required: true,
     },
-    Activities : {
+    Activities: {
         type: String,
         required: true,
     },

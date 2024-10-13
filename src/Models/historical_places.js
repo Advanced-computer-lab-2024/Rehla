@@ -8,44 +8,44 @@ const historical_placesSchema = new Schema({
         unique: true
      },
 
-    Description : {
+    Description: {
         type: String,
         required : true,
     },
-    Pictures : {
+    Pictures: {
         type: String,
        // required : true,
     },
-    Location : {
+    Location: {
         type: String,
         required : true,
     },
-    Country : {
+    Country: {
         type: String,
         required : true,
     },
-    Opens_At : {
+    Opens_At: {
         type: String,
         required : true,
     },
-    Closes_At : {
+    Closes_At: {
         type: String,
         required : true,
     },
     
-    S_Ticket_Prices : {
+    S_Ticket_Prices: {
         type: Number,
         required : true,
     },
-    F_Ticket_Prices : {
+    F_Ticket_Prices: {
         type: Number,
         required : true,
     },
-    N_Ticket_Prices : {
+    N_Ticket_Prices: {
         type: Number,
         required : true,
     },
-    Created_By : {
+    Created_By: {
         type : String ,
         required : true,
     },

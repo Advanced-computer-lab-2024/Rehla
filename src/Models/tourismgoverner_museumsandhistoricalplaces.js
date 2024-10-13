@@ -2,17 +2,17 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const tourismgoverner_museumsandhistoricalplacesSchema = new Schema({
-    Email : {
+    Email: {
         type: String,
         required : true,
     },
 
-    Historical_Places : {
+    Historical_Places: {
         type: String,
         required : true,
     },
 
-    Museums : {
+    Museums: {
         type: String,
         required : true,
     },

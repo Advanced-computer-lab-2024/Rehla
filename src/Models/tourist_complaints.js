@@ -2,32 +2,33 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const tourist_complaintsSchema = new Schema({
-    Tourist_Email : {
+    Tourist_Email: {
         type: String,
         required: true,
     },
 
     
-    Status : {
+    Status: {
         type: String,
         enum :['pending', 'resolved'],
         default: 'pending',
     },
-    Title : {
+    Title: {
         type: String,
         required: true,
     },
 
-    Body : {
+    Body: {
         type: String,
         required : true,
     },
-    Date_Of_Complaint : {
+    Date_Of_Complaint: {
         type: Date ,
         default: Date.now,
     },
-    Reply :{
+    Reply:{
         type : String,
+        default: null,
     },
 
 },{ versionKey: false });

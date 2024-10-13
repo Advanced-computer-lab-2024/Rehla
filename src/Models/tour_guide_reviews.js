@@ -2,19 +2,19 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const tourist_guide_reviewsSchema = new Schema({
-    Tourist_Email : {
+    Tourist_Email: {
         type: String,
         required: true,
     },
-    TourGuide_Email : {
+    TourGuide_Email: {
         type: String,
         required: true,
     },
    
-    Comment : {
+    Comment: {
         type: String,
     },
-    Rating : {
+    Rating: {
         type: Number ,
         
     },
