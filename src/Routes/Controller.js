@@ -23,6 +23,7 @@ const advertiser_activities = require('../Models/advertiser_activities');
 const historical_places_tags = require('../Models/historical_places_tags.js');
 const tour_guide_itinerariesm = require('../Models/tour_guide_itineraries.js');
 const tourismgoverner_museumsandhistoricalplacesm = require('../Models/tourismgoverner_museumsandhistoricalplaces.js');
+const DeleteRequests = require('../Models/delete_requests.js');
 
 
 // Creating a new Admin user or Tourism Governor
@@ -1159,6 +1160,50 @@ const getTourGuideProfile = async (req, res) => {
     } catch (error) {
         // Handle errors
         res.status(500).json({ message: 'Error retrieving tour guide profile', error: error.message });
+    }
+};
+
+const requestDeleteProfile = async(req, res) => {
+    try{
+
+        const { Username, Email, Password, Type } = req.body;
+
+        // Ensure all required fields are provided
+        if (!Username || !Email || !Password || !Type) {
+            return res.status(400).json({ error: 'All fields are required.' });
+        }
+
+        // Allowed types for registration requests
+        const allowedTypes = ['Tourist', 'Tour Guide', 'Advertiser', 'Seller'];
+
+        // Check if the Type is valid
+        if (!allowedTypes.includes(Type)) {
+            return res.status(400).json({ error: 'Invalid registration type. Must be Tourist, Tour Guide, Advertiser, or Seller.' });
+        }
+
+        // Check if email already exists
+        const existingRequest = await DeleteRequests.findOne({ Email });
+        if (existingRequest) {
+            return res.status(400).json({ error: 'Request already submitted.' });
+        }
+
+        // Create a new request object
+        const newRequest = new Request({
+            Username,
+            Email,
+            Password,  // No password hashing here
+            Type
+        });
+
+        // Save the request to the database
+        await newRequest.save();
+
+        // Return the created request
+        return res.status(201).json({ message: "Request successfully submitted", request: newRequest });
+
+    }catch{
+        console.error('Error details:', error);
+        return res.status(500).json({ error: 'Error submitting request', details: error.message });
     }
 };
 
@@ -2468,5 +2513,6 @@ module.exports = {
     getAllCreatedByEmail,
     updateAdmin,
     updateTourism_Governer,
-    redeemPoints
+    redeemPoints,
+    requestDeleteProfile
 };

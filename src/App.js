@@ -71,7 +71,8 @@ const {createUserAdmin,
   getAllCreatedByEmail,
   updateAdmin,
   updateTourism_Governer,
-  redeemPoints
+  redeemPoints,
+  requestDeleteProfile
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -176,4 +177,5 @@ app.get('/getAllCreatedByEmail/:email', getAllCreatedByEmail);
 app.put("/updateAdmin", updateAdmin);
 app.put("/updateTourism_Governer", updateTourism_Governer);
 app.put("/redeemPoints", redeemPoints);
+app.put("/requestDeleteProfile", requestDeleteProfile);
 
