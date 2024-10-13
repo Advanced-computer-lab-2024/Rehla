@@ -14,7 +14,7 @@ const tourist_itenerariesSchema = new Schema({
     },
     Attended : {
         type: Boolean,
-        default: no,
+        default: false,
     },
 
     Comment : {
