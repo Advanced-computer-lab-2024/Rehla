@@ -41,6 +41,11 @@ const productsSchema = new Schema({
         type : Number ,
         required: true,
     } , 
+    Archived: {
+        type : Boolean,
+        default : false,
+    },
+
 
 },{ versionKey: false });
 
