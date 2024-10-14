@@ -19,7 +19,7 @@ const tourist_itenerariesSchema = new Schema({
 
     Comment: {
         type: String,
-        default: null,
+        default: "No Comment",
     },
     Rating: {
         type: Number ,

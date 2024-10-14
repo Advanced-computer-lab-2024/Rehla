@@ -19,14 +19,15 @@ const tourist_activiesSchema = new Schema({
 
     Comment: {
         type: String,
+        default: "No Comment",
     },
     Rating: {
         type: Number ,
+        default: null,
     },
     Paid: {
         type: Boolean,
         default: false,
-        required : true,
     },
 
 },{ versionKey: false });
