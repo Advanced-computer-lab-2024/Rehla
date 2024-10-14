@@ -2657,7 +2657,6 @@ const createComplaint = async (req, res) => {
     }
 };
 
-
 const creatTouristItenrary= async(req,res)=>{
     try {
         const {Tourist_Email,Itinerary_Name}=req.body;
@@ -2697,6 +2696,90 @@ const creatTouristItenrary= async(req,res)=>{
     } catch (error) {
         console.error("Error details:", error.message, error.stack); // Log full error details
         res.status(500).json({ error: 'Error creating tourist itinerary', details: error.message });
+    }
+};
+
+const payForItinerary = async (req, res) => {
+    try {
+        const { Tourist_Email, Itinerary_Name } = req.body;
+
+        // Validate input
+        if (!Tourist_Email || !Itinerary_Name) {
+            return res.status(400).json({ error: 'Tourist email and itinerary name are required.' });
+        }
+
+        // Check if the tourist exists
+        const tourist = await Tourist.findOne({ Email: Tourist_Email });
+        if (!tourist) {
+            return res.status(404).json({ error: 'Tourist not found.' });
+        }
+
+        // Check if the itinerary exists
+        const itinerary = await itinerarym.findOne({ Itinerary_Name });
+        if (!itinerary) {
+            return res.status(404).json({ error: 'Itinerary not found.' });
+        }
+
+        // Check if the tourist has already booked the itinerary
+        const booking = await tourist_itinerariesm.findOne({ Tourist_Email, Itinerary_Name });
+        if (!booking) {
+            return res.status(404).json({ error: 'Tourist itinerary not found.' });
+        }
+
+        // Check if the itinerary has already been paid for
+        if (booking.Paid) { 
+            return res.status(400).json({ error: 'Itinerary has already been paid for.' });
+        }
+
+        // Check if the tourist has enough balance in the wallet
+        if (tourist.Wallet < itinerary.Tour_Price) {
+            return res.status(400).json({ error: 'Insufficient wallet balance.' });
+        }
+
+        // Deduct the itinerary price from the tourist's wallet balance
+        tourist.Wallet -= itinerary.Tour_Price;
+
+        // Calculate points based on the level
+        let points = 0;
+        switch (tourist.Badge) {
+            case 'Level 1':
+                points = itinerary.Tour_Price * 0.5;
+                break;
+            case 'Level 2':
+                points = itinerary.Tour_Price * 1;
+                break;
+            case 'Level 3':
+                points = itinerary.Tour_Price * 1.5;
+                break;
+            default:
+                points = 0;
+        }
+
+        // Add points to the tourist's account
+        tourist.Points += points;
+        await tourist.save();
+
+        // Update the tourist's badge based on the new points
+        if (tourist.Points <= 100000) {
+            tourist.Badge = 'Level 1';
+        } else if (tourist.Points <= 500000) {
+            tourist.Badge = 'Level 2';
+        } else {
+            tourist.Badge = 'Level 3';
+        }
+
+        await tourist.save();
+
+        // Mark the itinerary as paid
+        booking.Paid = true;
+        await booking.save();
+
+        // Send a response
+        res.status(200).json({ message: 'Payment successful. Itinerary booked and paid.', booking });
+
+    } catch (error) {
+        console.error("Error details:", error.message, error.stack); // Log full error details
+        res.status(500).json({ error: 'Error processing payment', details: error.message });
     }
 };
 
@@ -2942,5 +3025,6 @@ module.exports = {
     reviewProduct,
     rateProduct,
     getMyComplaints,
-    createComplaint
+    createComplaint,
+    payForItinerary,
 };
