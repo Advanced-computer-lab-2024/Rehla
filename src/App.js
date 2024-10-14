@@ -92,6 +92,7 @@ const {createUserAdmin,
   createComplaint,
   payForItinerary,
   createTouristActivity,
+  payForTouristActivity,
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -216,3 +217,4 @@ app.get("/getMyComplaints" ,getMyComplaints);
 app.post("/createComplaint", createComplaint);
 app.put("/payForItinerary",payForItinerary);
 app.post("/createTouristActivity",createTouristActivity);
+app.put("/payForTouristActivity",payForTouristActivity);
