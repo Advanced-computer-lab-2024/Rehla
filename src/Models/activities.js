@@ -59,6 +59,11 @@ const activitysSchema = new Schema({
         type : String ,
         required : true,
     },
+    Flagged: {
+        type : Boolean,
+        default : false,
+    },
+
 },{ versionKey: false });
 
 

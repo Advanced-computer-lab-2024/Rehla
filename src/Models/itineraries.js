@@ -80,6 +80,10 @@ const itinerarysSchema = new Schema({
         type : String ,
         required : true,
     },
+    Flagged: {
+        type : Boolean,
+        default : false,
+    },
     
 },{ versionKey: false });
 
