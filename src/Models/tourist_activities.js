@@ -25,6 +25,7 @@ const tourist_activiesSchema = new Schema({
     },
     Paid: {
         type: Boolean,
+        default: false,
         required : true,
     },
 

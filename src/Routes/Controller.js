@@ -2124,48 +2124,6 @@ const deleteHistoricalPlace= async (req, res) => {
     }
 };
 
-const creatTouristItenrary= async(req,res)=>{
-    try {
-        const {Tourist_Email,Itinerary_Name}=req.body;
-
-        if (!Tourist_Email || !Itinerary_Name){
-            return res.status(400).json({ error: 'All fields are required.' });
-        }
-
-        const touristExists = await Tourist.findOne({ Email: Tourist_Email }); // Change 'email' to 'Email'
-        if (!touristExists) {
-            return res.status(404).json({ error: 'Tourist not found.' });
-        }
-
-        const itineraryExists = await itinerarym.findOne({ Itinerary_Name });
-        if (!itineraryExists) {
-            return res.status(409).json({ error: 'Itinerary name not found.' });
-        }
-
-        if (itineraryExists.Empty_Spots <= 0) {
-            return res.status(400).json({ error: 'No available spots for this itinerary.' });
-        }
-
-        const duplicateItinerary = await tourist_itinerariesm.findOne({ Tourist_Email, Itinerary_Name });
-        if (duplicateItinerary) {
-            return res.status(409).json({ error: 'This itinerary has already been booked by the tourist.' });
-        }
-
-        const newTouristItenrary = new tourist_itinerariesm({Tourist_Email,Itinerary_Name});
-        const savedTouristItenrary = await newTouristItenrary.save();
-        res.status(201).json({ message: 'Tourist itinerary created successfully', Tourist_Itinerary: savedTouristItenrary });
-
-        await itinerarym.findOneAndUpdate(
-            { Itinerary_Name },
-            { $inc: { Booked: 1, Empty_Spots: -1 } } // Increment Booked and decrement Empty_Spots
-        );
-
-    } catch (error) {
-        console.error("Error details:", error.message, error.stack); // Log full error details
-        res.status(500).json({ error: 'Error creating tourist itinerary', details: error.message });
-    }
-}
-
 const filterActivities = async (req, res) => {
     try {
         const { minPrice, maxPrice, startDate, endDate, rating, category } = req.query;
@@ -2223,159 +2181,6 @@ const filterActivities = async (req, res) => {
         res.status(500).json({ message: 'Error filtering activities', error: error.message });
     }
 };
-
-
-const deleteTouristItenrary = async (req, res) => {
-    try {
-        const { Tourist_Email, Itinerary_Name } = req.body;
-
-        // Validate input
-        if (!Tourist_Email || !Itinerary_Name) {
-            return res.status(400).json({ error: 'All fields are required.' });
-        }
-
-        // Check if the tourist exists
-        const touristExists = await Tourist.findOne({ Email: Tourist_Email });
-        if (!touristExists) {
-            return res.status(404).json({ error: 'Tourist not found.' });
-        }
-
-        // Check if the itinerary exists
-        const itineraryExists = await itinerarym.findOne({ Itinerary_Name });
-        if (!itineraryExists) {
-            return res.status(409).json({ error: 'Itinerary name not found.' });
-        }
-
-        // Check if the tourist itinerary exists
-        const touristItineraryExists = await tourist_itinerariesm.findOne({ Tourist_Email, Itinerary_Name });
-        if (!touristItineraryExists) {
-            return res.status(404).json({ error: 'Tourist itinerary not found.' });
-        }
-
-        // Delete the tourist itinerary
-        await tourist_itinerariesm.deleteOne({ Tourist_Email, Itinerary_Name });
-
-        // Update the itinerary: decrement Booked and increment Empty_Spots
-        await itinerarym.findOneAndUpdate(
-            { Itinerary_Name },
-            { $inc: { Booked: -1, Empty_Spots: 1 } }
-        );
-
-        // Send a response
-        res.status(200).json({ message: 'Tourist itinerary deleted successfully.' });
-
-    } catch (error) {
-        console.error("Error details:", error.message, error.stack); // Log full error details
-        res.status(500).json({ error: 'Error deleting tourist itinerary', details: error.message });
-    }
-};
-
-const updateTouristItenrary = async (req, res) => {
-    try {
-        const { Tourist_Email, Itinerary_Name, newItineraryData } = req.body;
-
-        // Validate input
-        if (!Tourist_Email || !Itinerary_Name || !newItineraryData || !newItineraryData.Itinerary_Name) {
-            return res.status(400).json({ error: 'Tourist email, current itinerary name, and new itinerary name are required.' });
-        }
-
-        const newItineraryName = newItineraryData.Itinerary_Name;
-
-        // Check if the tourist exists
-        const touristExists = await Tourist.findOne({ Email: Tourist_Email });
-        if (!touristExists) {
-            return res.status(404).json({ error: 'Tourist not found.' });
-        }
-
-        // Check if the old itinerary exists
-        const oldItineraryExists = await itinerarym.findOne({ Itinerary_Name });
-        if (!oldItineraryExists) {
-            return res.status(409).json({ error: 'Current itinerary not found.' });
-        }
-
-        // Check if the new itinerary exists
-        const newItineraryExists = await itinerarym.findOne({ Itinerary_Name: newItineraryName });
-        if (!newItineraryExists) {
-            return res.status(409).json({ error: 'New itinerary not found.' });
-        }
-
-        if (newItineraryExists.Empty_Spots <= 0) {
-            return res.status(400).json({ error: 'No available spots for the new itinerary.' });
-        }
-
-        // Check if the tourist itinerary exists
-        const touristItineraryExists = await tourist_itinerariesm.findOne({ Tourist_Email, Itinerary_Name });
-        if (!touristItineraryExists) {
-            return res.status(404).json({ error: 'Tourist itinerary not found.' });
-        }
-
-        // Update the tourist itinerary with the new itinerary name
-        const updatedTouristItinerary = await tourist_itinerariesm.findOneAndUpdate(
-            { Tourist_Email, Itinerary_Name },
-            { $set: { Itinerary_Name: newItineraryName } },
-            { new: true } // Return the updated document
-        );
-
-        // Decrement Booked and increment Empty_Spots for the old itinerary
-        await itinerarym.findOneAndUpdate(
-            { Itinerary_Name },
-            { $inc: { Booked: -1, Empty_Spots: 1 } }
-        );
-
-        // Increment Booked and decrement Empty_Spots for the new itinerary
-        await itinerarym.findOneAndUpdate(
-            { Itinerary_Name: newItineraryName },
-            { $inc: { Booked: 1, Empty_Spots: -1 } }
-        );
-
-        // Send response
-        res.status(200).json({ message: 'Tourist itinerary updated successfully', updatedTouristItinerary });
-
-    } catch (error) {
-        console.error("Error details:", error.message, error.stack); // Log full error details
-        res.status(500).json({ error: 'Error updating tourist itinerary', details: error.message });
-    }
-};
-
-const getBookedItineraries = async (req, res) => {
-    try {
-        const { Tourist_Email } = req.body;
-
-        // Validate input
-        if (!Tourist_Email) {
-            return res.status(400).json({ error: 'Tourist email is required.' });
-        }
-
-        // Check if the tourist exists
-        const touristExists = await Tourist.findOne({ Email: Tourist_Email });
-        if (!touristExists) {
-            return res.status(404).json({ error: 'Tourist not found.' });
-        }
-
-        // Find all booked itineraries for the tourist
-        const bookedItineraries = await tourist_itinerariesm.find({ Tourist_Email });
-
-        if (bookedItineraries.length === 0) {
-            return res.status(404).json({ error: 'No itineraries found for this tourist.' });
-        }
-
-        // Retrieve full details for each booked itinerary
-        const itineraryDetails = await Promise.all(
-            bookedItineraries.map(async (booking) => {
-                const itinerary = await itinerarym.findOne({ Itinerary_Name: booking.Itinerary_Name });
-                return itinerary;
-            })
-        );
-
-        // Send response
-        res.status(200).json({ message: 'Booked itineraries retrieved successfully', itineraries: itineraryDetails });
-
-    } catch (error) {
-        console.error("Error details:", error.message, error.stack); // Log full error details
-        res.status(500).json({ error: 'Error retrieving booked itineraries', details: error.message });
-    }
-};
-
 
 const viewMyCreatedActivities = async (req, res) => {
     try {
@@ -2852,6 +2657,199 @@ const createComplaint = async (req, res) => {
     }
 };
 
+
+const creatTouristItenrary= async(req,res)=>{
+    try {
+        const {Tourist_Email,Itinerary_Name}=req.body;
+
+        if (!Tourist_Email || !Itinerary_Name){
+            return res.status(400).json({ error: 'All fields are required.' });
+        }
+
+        const touristExists = await Tourist.findOne({ Email: Tourist_Email }); // Change 'email' to 'Email'
+        if (!touristExists) {
+            return res.status(404).json({ error: 'Tourist not found.' });
+        }
+
+        const itineraryExists = await itinerarym.findOne({ Itinerary_Name });
+        if (!itineraryExists) {
+            return res.status(409).json({ error: 'Itinerary name not found.' });
+        }
+
+        if (itineraryExists.Empty_Spots <= 0) {
+            return res.status(400).json({ error: 'No available spots for this itinerary.' });
+        }
+
+        const duplicateItinerary = await tourist_itinerariesm.findOne({ Tourist_Email, Itinerary_Name });
+        if (duplicateItinerary) {
+            return res.status(409).json({ error: 'This itinerary has already been booked by the tourist.' });
+        }
+
+        const newTouristItenrary = new tourist_itinerariesm({Tourist_Email,Itinerary_Name});
+        const savedTouristItenrary = await newTouristItenrary.save();
+        res.status(201).json({ message: 'Tourist itinerary created successfully', Tourist_Itinerary: savedTouristItenrary });
+
+        await itinerarym.findOneAndUpdate(
+            { Itinerary_Name },
+            { $inc: { Booked: 1, Empty_Spots: -1 } } // Increment Booked and decrement Empty_Spots
+        );
+
+    } catch (error) {
+        console.error("Error details:", error.message, error.stack); // Log full error details
+        res.status(500).json({ error: 'Error creating tourist itinerary', details: error.message });
+    }
+};
+
+const deleteTouristItenrary = async (req, res) => {
+    try {
+        const { Tourist_Email, Itinerary_Name } = req.body;
+
+        // Validate input
+        if (!Tourist_Email || !Itinerary_Name) {
+            return res.status(400).json({ error: 'All fields are required.' });
+        }
+
+        // Check if the tourist exists
+        const touristExists = await Tourist.findOne({ Email: Tourist_Email });
+        if (!touristExists) {
+            return res.status(404).json({ error: 'Tourist not found.' });
+        }
+
+        // Check if the itinerary exists
+        const itineraryExists = await itinerarym.findOne({ Itinerary_Name });
+        if (!itineraryExists) {
+            return res.status(409).json({ error: 'Itinerary name not found.' });
+        }
+
+        // Check if the tourist itinerary exists
+        const touristItineraryExists = await tourist_itinerariesm.findOne({ Tourist_Email, Itinerary_Name });
+        if (!touristItineraryExists) {
+            return res.status(404).json({ error: 'Tourist itinerary not found.' });
+        }
+
+        // Delete the tourist itinerary
+        await tourist_itinerariesm.deleteOne({ Tourist_Email, Itinerary_Name });
+
+        // Update the itinerary: decrement Booked and increment Empty_Spots
+        await itinerarym.findOneAndUpdate(
+            { Itinerary_Name },
+            { $inc: { Booked: -1, Empty_Spots: 1 } }
+        );
+
+        // Send a response
+        res.status(200).json({ message: 'Tourist itinerary deleted successfully.' });
+
+    } catch (error) {
+        console.error("Error details:", error.message, error.stack); // Log full error details
+        res.status(500).json({ error: 'Error deleting tourist itinerary', details: error.message });
+    }
+};
+
+const updateTouristItenrary = async (req, res) => {
+    try {
+        const { Tourist_Email, Itinerary_Name, newItineraryData } = req.body;
+
+        // Validate input
+        if (!Tourist_Email || !Itinerary_Name || !newItineraryData || !newItineraryData.Itinerary_Name) {
+            return res.status(400).json({ error: 'Tourist email, current itinerary name, and new itinerary name are required.' });
+        }
+
+        const newItineraryName = newItineraryData.Itinerary_Name;
+
+        // Check if the tourist exists
+        const touristExists = await Tourist.findOne({ Email: Tourist_Email });
+        if (!touristExists) {
+            return res.status(404).json({ error: 'Tourist not found.' });
+        }
+
+        // Check if the old itinerary exists
+        const oldItineraryExists = await itinerarym.findOne({ Itinerary_Name });
+        if (!oldItineraryExists) {
+            return res.status(409).json({ error: 'Current itinerary not found.' });
+        }
+
+        // Check if the new itinerary exists
+        const newItineraryExists = await itinerarym.findOne({ Itinerary_Name: newItineraryName });
+        if (!newItineraryExists) {
+            return res.status(409).json({ error: 'New itinerary not found.' });
+        }
+
+        if (newItineraryExists.Empty_Spots <= 0) {
+            return res.status(400).json({ error: 'No available spots for the new itinerary.' });
+        }
+
+        // Check if the tourist itinerary exists
+        const touristItineraryExists = await tourist_itinerariesm.findOne({ Tourist_Email, Itinerary_Name });
+        if (!touristItineraryExists) {
+            return res.status(404).json({ error: 'Tourist itinerary not found.' });
+        }
+
+        // Update the tourist itinerary with the new itinerary name
+        const updatedTouristItinerary = await tourist_itinerariesm.findOneAndUpdate(
+            { Tourist_Email, Itinerary_Name },
+            { $set: { Itinerary_Name: newItineraryName } },
+            { new: true } // Return the updated document
+        );
+
+        // Decrement Booked and increment Empty_Spots for the old itinerary
+        await itinerarym.findOneAndUpdate(
+            { Itinerary_Name },
+            { $inc: { Booked: -1, Empty_Spots: 1 } }
+        );
+
+        // Increment Booked and decrement Empty_Spots for the new itinerary
+        await itinerarym.findOneAndUpdate(
+            { Itinerary_Name: newItineraryName },
+            { $inc: { Booked: 1, Empty_Spots: -1 } }
+        );
+
+        // Send response
+        res.status(200).json({ message: 'Tourist itinerary updated successfully', updatedTouristItinerary });
+
+    } catch (error) {
+        console.error("Error details:", error.message, error.stack); // Log full error details
+        res.status(500).json({ error: 'Error updating tourist itinerary', details: error.message });
+    }
+};
+
+const getBookedItineraries = async (req, res) => {
+    try {
+        const { Tourist_Email } = req.body;
+
+        // Validate input
+        if (!Tourist_Email) {
+            return res.status(400).json({ error: 'Tourist email is required.' });
+        }
+
+        // Check if the tourist exists
+        const touristExists = await Tourist.findOne({ Email: Tourist_Email });
+        if (!touristExists) {
+            return res.status(404).json({ error: 'Tourist not found.' });
+        }
+
+        // Find all booked itineraries for the tourist
+        const bookedItineraries = await tourist_itinerariesm.find({ Tourist_Email });
+
+        if (bookedItineraries.length === 0) {
+            return res.status(404).json({ error: 'No itineraries found for this tourist.' });
+        }
+
+        // Retrieve full details for each booked itinerary
+        const itineraryDetails = await Promise.all(
+            bookedItineraries.map(async (booking) => {
+                const itinerary = await itinerarym.findOne({ Itinerary_Name: booking.Itinerary_Name });
+                return itinerary;
+            })
+        );
+
+        // Send response
+        res.status(200).json({ message: 'Booked itineraries retrieved successfully', itineraries: itineraryDetails });
+
+    } catch (error) {
+        console.error("Error details:", error.message, error.stack); // Log full error details
+        res.status(500).json({ error: 'Error retrieving booked itineraries', details: error.message });
+    }
+};
 
 
 
