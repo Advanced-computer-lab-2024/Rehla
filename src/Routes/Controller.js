@@ -3104,6 +3104,83 @@ const payForTouristActivity = async (req, res) => {
     }
 };
 
+//delete tourist activity
+const deleteTouristActivity = async (req, res) => {
+    try {
+        const { Tourist_Email, Activity_Name } = req.body;
+
+        // Validate input
+        if (!Tourist_Email || !Activity_Name) {
+            return res.status(400).json({ error: 'Tourist email and activity name are required.' });
+        }
+
+        // Check if the tourist exists
+        const touristExists = await Tourist.findOne({ Email: Tourist_Email });
+        if (!touristExists) {
+            return res.status(404).json({ error: 'Tourist not found.' });
+        }
+
+        // Check if the activity exists
+        const activityExists = await activity.findOne({ Name: Activity_Name });
+        if (!activityExists) {
+            return res.status(409).json({ error: 'Activity not found.' });
+        }
+
+        // Check if the tourist activity exists
+        const touristActivityExists = await tourist_activities.findOne({ Tourist_Email, Activity_Name });
+        if (!touristActivityExists) {
+            return res.status(404).json({ error: 'Tourist activity not found.' });
+        }
+
+        // Check if the activity has already been paid for and if yes, refund the tourist
+        if (touristActivityExists.Paid) {
+            // Refund the tourist
+            touristExists.Wallet += activityExists.Price;
+            // Calculate points based on the level
+            let points = 0;
+            switch (touristExists.Badge) {
+                case 'Level 1':
+                    points = activityExists.Price * 0.5;
+                    break;
+                case 'Level 2':
+                    points = activityExists.Price * 1;
+                    break;
+                case 'Level 3':
+                    points = activityExists.Price * 1.5;
+                    break;
+                default:
+                    points = 0;
+            }
+            // Deduct points from the tourist's account
+            touristExists.Points -= points;
+
+            // Update the tourist's badge based on the new points
+            if (touristExists.Points <= 100000) {
+                touristExists.Badge = 'Level 1';
+            } else if (touristExists.Points <= 500000) {
+                touristExists.Badge = 'Level 2';
+            } else {
+                touristExists.Badge = 'Level 3';
+            }
+            await touristExists.save();
+        }
+
+        //increment the number of available spots for the activity and decrement the number of bookings
+        await activity.findOneAndUpdate(
+            { Name: Activity_Name },
+            { $inc: { Booked_Spots: -1, Available_Spots: 1 } }
+        );
+
+        // Delete the tourist activity
+        await tourist_activities.deleteOne({ Tourist_Email, Activity_Name });
+
+        // Send a response
+        res.status(200).json({ message: 'Tourist activity deleted successfully.' });
+    } catch (error) {
+        console.error("Error details:", error.message, error.stack); // Log full error details
+        res.status(500).json({ error: 'Error deleting tourist activity', details: error.message });
+    }
+};
 
 // ----------------- Activity Category CRUD -------------------
 
@@ -3198,4 +3275,5 @@ module.exports = {
     payForItinerary,
     createTouristActivity,
     payForTouristActivity,
+    deleteTouristActivity,
 };
