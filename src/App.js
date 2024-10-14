@@ -80,6 +80,8 @@ const {createUserAdmin,
   updateTourism_Governer,
   redeemPoints,
   requestDeleteProfile,
+  rateTourGuide,
+  commentTourGuide,
   rateItinerary,
   commentOnItinerary,
   rateActivity,
@@ -200,6 +202,8 @@ app.put("/updateAdmin", updateAdmin);
 app.put("/updateTourism_Governer", updateTourism_Governer);
 app.put("/redeemPoints", redeemPoints);
 app.post("/requestDeleteProfile", requestDeleteProfile);
+app.post("/rateTourGuide", rateTourGuide);
+app.post("/commentTourGuide", commentTourGuide);
 app.post('/rateItinerary', rateItinerary);
 app.post("/commentOnItinerary", commentOnItinerary);
 app.post("/rateActivity", rateActivity);

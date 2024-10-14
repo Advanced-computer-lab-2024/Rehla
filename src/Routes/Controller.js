@@ -29,6 +29,7 @@ const touristIteneraries = require('../Models/tourist_iteneraries');
 const tourist_products = require('../Models/tourist_products.js');
 const tourist_complaints = require('../Models/tourist_complaints.js');
 const tourist_activities = require('../Models/tourist_complaints.js');
+const TouristGuideReview = require('../Models/tour_guide_reviews.js');
 
 
 
@@ -2565,6 +2566,73 @@ const getAllCreatedByEmail = async (req, res) => {
     }
 };
 
+
+const rateTourGuide = async (req, res) => {
+    try {
+        const { Tourist_Email, TourGuide_Email, Rating } = req.body;
+
+        // Check if rating is provided and is between 1 and 5
+        if (!Rating || Rating < 1 || Rating > 5) {
+            return res.status(400).json({ message: "Rating must be between 1 and 5." });
+        }
+
+        // Ensure the tourist and tour guide emails are provided
+        if (!Tourist_Email || !TourGuide_Email) {
+            return res.status(400).json({ message: "Tourist email and tour guide email are required." });
+        }
+
+        // Create a new review using the provided data
+        const newReview = new TouristGuideReview({
+            Tourist_Email,
+            TourGuide_Email,
+            Rating
+        });
+
+        // Save the review to the database
+        await newReview.save();
+
+        // Respond with success
+        res.status(201).json({ message: "Review submitted successfully." });
+    } catch (err) {
+        // Handle errors and respond with error message
+        res.status(500).json({ message: "Error submitting review", error: err.message });
+    }
+};
+
+
+const commentTourGuide = async (req, res) => {
+    try {
+        const { Tourist_Email, TourGuide_Email, Comment } = req.body;
+
+        // Check if rating is provided and is between 1 and 5
+        if (!Comment) {
+            return res.status(400).json({ message: "You must enter a comment" });
+        }
+
+        // Ensure the tourist and tour guide emails are provided
+        if (!Tourist_Email || !TourGuide_Email) {
+            return res.status(400).json({ message: "Tourist email and tour guide email are required." });
+        }
+
+        // Create a new review using the provided data
+        const newReview = new TouristGuideReview({
+            Tourist_Email,
+            TourGuide_Email,
+            Comment
+        });
+
+        // Save the review to the database
+        await newReview.save();
+
+        // Respond with success
+        res.status(201).json({ message: "Review submitted successfully." });
+    } catch (err) {
+        // Handle errors and respond with error message
+        res.status(500).json({ message: "Error submitting review", error: err.message });
+    }
+};
+
+
 const rateItinerary = async (req, res) => {
     try {
         const { Tourist_Email, Itinerary_Name, Rating } = req.body;
@@ -2867,6 +2935,8 @@ module.exports = {
     updateTourism_Governer,
     redeemPoints,
     requestDeleteProfile,
+    rateTourGuide,
+    commentTourGuide,
     rateItinerary,
     commentOnItinerary,
     rateActivity,
