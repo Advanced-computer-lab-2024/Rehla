@@ -28,7 +28,7 @@ const Preference = require('../Models/Preferences.js');
 const touristIteneraries = require('../Models/tourist_iteneraries');
 const tourist_products = require('../Models/tourist_products.js');
 const tourist_complaints = require('../Models/tourist_complaints.js');
-const tourist_activities = require('../Models/tourist_complaints.js');
+const tourist_activities = require('../Models/tourist_activities.js');
 const TouristGuideReview = require('../Models/tour_guide_reviews.js');
 
 
