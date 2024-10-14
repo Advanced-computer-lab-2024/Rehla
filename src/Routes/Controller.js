@@ -2976,7 +2976,52 @@ const getBookedItineraries = async (req, res) => {
     }
 };
 
+//create tourist_activity
+const createTouristActivity = async (req, res) => {
+    try {
+        const { Tourist_Email, Activity_Name } = req.body;
 
+        // Validate input
+        if (!Tourist_Email || !Activity_Name) {
+            return res.status(400).json({ error: 'Tourist email and activity name are required.' });
+        }
+
+        // Check if the tourist exists
+        const touristExists = await Tourist.findOne({ Email: Tourist_Email });
+        if (!touristExists) {
+            return res.status(404).json({ error: 'Tourist not found.' });
+        }
+
+        // Check if the activity exists
+        const activityExists = await activity.findOne({ Name: Activity_Name });
+        if (!activityExists) {
+            return res.status(409).json({ error: 'Activity not found.' });
+        }
+
+        // Check if the tourist activity already exists
+        const touristActivityExists = await tourist_activities.findOne({ Tourist_Email, Activity_Name });
+        if (touristActivityExists) {
+            return res.status(409).json({ error: 'Tourist activity already exists.' });
+        }
+
+        // Create a new tourist activity
+        const newTouristActivity = new tourist_activities({ Tourist_Email, Activity_Name });
+        const savedTouristActivity = await newTouristActivity.save();
+
+        //increment the number of bookings for the activity and decrement the number of available spots
+        await activity.findOneAndUpdate(
+            { Name: Activity_Name },
+            { $inc: { Booked_Spots: 1, Available_Spots: -1 } }
+        );
+
+        // Send a response
+        res.status(201).json({ message: 'Tourist activity created successfully', tourist_activity: savedTouristActivity });
+
+    } catch (error) {
+        console.error("Error details:", error.message, error.stack); // Log full error details
+        res.status(500).json({ error: 'Error creating tourist activity', details: error.message });
+    }
+};
 
 // ----------------- Activity Category CRUD -------------------
 
@@ -3069,4 +3114,5 @@ module.exports = {
     getMyComplaints,
     createComplaint,
     payForItinerary,
+    createTouristActivity,
 };
