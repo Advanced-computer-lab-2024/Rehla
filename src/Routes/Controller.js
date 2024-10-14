@@ -3132,6 +3132,15 @@ const deleteTouristActivity = async (req, res) => {
             return res.status(404).json({ error: 'Tourist activity not found.' });
         }
 
+        // check if it 48 hours before the activity date
+        const activityDate = new Date(activityExists.Date);
+        const currentDate = new Date();
+        const timeDifference = activityDate.getTime() - currentDate.getTime();
+        const hoursDifference = timeDifference / (1000 * 3600);
+        if (hoursDifference < 48) {
+            return res.status(400).json({ error: 'Cannot cancel booking. Activity date is less than 48 hours away.' });
+        }
+
         // Check if the activity has already been paid for and if yes, refund the tourist
         if (touristActivityExists.Paid) {
             // Refund the tourist
