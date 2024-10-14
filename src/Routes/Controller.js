@@ -2810,6 +2810,48 @@ const deleteTouristItenrary = async (req, res) => {
             return res.status(404).json({ error: 'Tourist itinerary not found.' });
         }
 
+        //48 hours before the itinerary date
+        const itineraryDate = new Date(itineraryExists.Available_Date_Time);
+        const currentDate = new Date();
+        const timeDifference = itineraryDate.getTime() - currentDate.getTime();
+        const hoursDifference = timeDifference / (1000 * 3600);
+        if (hoursDifference < 48) {
+            return res.status(400).json({ error: 'Cannot cancel booking. Itinerary date is less than 48 hours away.' });
+        }
+
+        // Check if the itinerary has already been paid for and if yes, refund the tourist
+        if (touristItineraryExists.Paid) {
+            // Refund the tourist
+            const tourist = await Tourist.findOne({ Email: Tourist_Email });
+            tourist.Wallet += itineraryExists.Tour_Price;
+            // Calculate points based on the level
+            let points = 0;
+            switch (tourist.Badge) {
+                case 'Level 1':
+                    points = itineraryExists.Tour_Price * 0.5;
+                    break;
+                case 'Level 2':
+                    points = itineraryExists.Tour_Price * 1;
+                    break;
+                case 'Level 3':
+                    points = itineraryExists.Tour_Price * 1.5;
+                    break;
+                default:
+                    points = 0;
+            }
+            // Deduct points from the tourist's account
+            tourist.Points -= points;
+
+            // Update the tourist's badge based on the new points
+            if (tourist.Points <= 100000) {
+                tourist.Badge = 'Level 1';
+            } else if (tourist.Points <= 500000) {
+                tourist.Badge = 'Level 2';
+            } else {
+                tourist.Badge = 'Level 3';
+            }
+            await tourist.save();
+        }
         // Delete the tourist itinerary
         await tourist_itinerariesm.deleteOne({ Tourist_Email, Itinerary_Name });
 
