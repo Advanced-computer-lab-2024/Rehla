@@ -3014,6 +3014,12 @@ const createTouristActivity = async (req, res) => {
             { $inc: { Booked_Spots: 1, Available_Spots: -1 } }
         );
 
+        //update Booking_Available field in the activity collection to false if Available_Spots == 0
+        await activity.findOneAndUpdate(
+            { Name: Activity_Name, Available_Spots: 0 },
+            { Booking_Available: false }
+        );
+
         // Send a response
         res.status(201).json({ message: 'Tourist activity created successfully', tourist_activity: savedTouristActivity });
 
@@ -3178,6 +3184,12 @@ const deleteTouristActivity = async (req, res) => {
         await activity.findOneAndUpdate(
             { Name: Activity_Name },
             { $inc: { Booked_Spots: -1, Available_Spots: 1 } }
+        );
+
+        //update Booking_Available field in activity to true if the number of available spots is greater than 0
+        await activity.findOneAndUpdate(
+            { Name: Activity_Name, Available_Spots: { $gt: 0 } },
+            { Booking_Available: true }
         );
 
         // Delete the tourist activity
