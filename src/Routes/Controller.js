@@ -930,7 +930,92 @@ const filterComplaintsByStatus = async (req, res) => {
       res.status(500).json({ error: 'Server error' });
     }
   };
-  
+  const flagActivity = async (req, res) => {
+    try {
+        const { name } = req.params; 
+
+        const flaggedActivity = await activity.findOneAndUpdate(
+            {Name:name}, 
+            { Flagged: true }, 
+            { new: true }     
+        );
+        if (!flaggedActivity) {
+            return res.status(404).json({ message: 'Activity not found' });
+        }
+     
+        res.status(200).json({ message: 'Activity flagged as inappropriate successfully', data: flaggedActivity });
+    } catch (error) {
+        console.error('Error flagging activity:', error.message);
+        res.status(500).json({ error: 'Error flagging activity', details: error.message });
+    }
+};
+
+const flagItinerary = async (req, res) => {
+    try {
+        const { name } = req.params; 
+
+        const flaggedItinerary = await itinerarym.findOneAndUpdate(
+            {Itinerary_Name:name}, 
+            { Flagged: true },   
+            { new: true }        
+        );
+
+        if (!flaggedItinerary) {
+            return res.status(404).json({ message: 'Itinerary not found' });
+        }
+
+        res.status(200).json({ message: 'Itinerary flagged as inappropriate successfully', data: flaggedItinerary });
+    } catch (error) {
+        console.error('Error flagging itinerary:', error.message);
+        res.status(500).json({ error: 'Error flagging itinerary', details: error.message });
+    }
+};
+const replyToComplaint = async (req, res) => {
+    try {
+        const { email } = req.params; 
+        const { reply } = req.body; 
+
+        if (!reply) {
+            return res.status(400).json({ error: 'Reply is required.' });
+        }
+
+        const complaint = await tourist_complaints.findOne({ Tourist_Email: email, Status: 'pending' });
+
+        if (!complaint) {
+            return res.status(404).json({ message: 'No pending complaint found for this email.' });
+        }
+
+        complaint.Reply = reply;
+        await complaint.save();
+
+        res.status(200).json({ message: 'Complaint resolved successfully', data: complaint });
+    } catch (error) {
+        console.error('Error replying to complaint:', error.message);
+        res.status(500).json({ error: 'Error replying to complaint', details: error.message });
+    }
+};
+const ComplaintStatus = async (req, res) => {
+    try {
+        const { email } = req.params; 
+
+        const complaint = await tourist_complaints.findOne({ Tourist_Email: email });
+
+        if (!complaint) {
+            return res.status(404).json({ message: 'Complaint not found for this email.' });
+        }
+        if (complaint.Status !== 'pending') {
+            return res.status(400).json({ message: 'Complaint is already resolved or cannot be updated.' });
+        }
+
+        complaint.Status = 'resolved';
+        await complaint.save();
+        res.status(200).json({ message: 'Complaint status updated to resolved.', data: complaint });
+    } catch (error) {
+        console.error('Error updating complaint status:', error.message);
+        res.status(500).json({ error: 'Error updating complaint status', details: error.message });
+    }
+};
+
 //Tourist - admin - seller : Sort Product by ratings
 const getProductsSortedByRating = async (req, res) => {
     try {
@@ -3235,6 +3320,10 @@ module.exports = {
     viewComplaintByEmail,
     viewAllComplaintsSortedByDate,
     filterComplaintsByStatus,
+    flagActivity,
+    flagItinerary,
+    replyToComplaint,
+    ComplaintStatus,
     getProductsSortedByRating, 
     addProduct,
     updateProduct,

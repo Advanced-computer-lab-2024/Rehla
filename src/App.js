@@ -34,6 +34,10 @@ const {createUserAdmin,
   viewComplaintByEmail,
   viewAllComplaintsSortedByDate,
   filterComplaintsByStatus,
+  flagActivity,
+  flagItinerary,
+  replyToComplaint,
+  ComplaintStatus,
   getProductsSortedByRating, 
   addProduct,
   updateProduct,
@@ -154,6 +158,10 @@ app.get("/viewComplaints", viewAllComplaints);
 app.get("/viewComplaint/:email", viewComplaintByEmail);
 app.get("/viewAllComplaintsSortedByDate", viewAllComplaintsSortedByDate);
 app.get("/filterComplaintsByStatus/:status", filterComplaintsByStatus);
+app.put("/flagActivity/:name", flagActivity);      
+app.put("/flagItinerary/:name", flagItinerary); 
+app.put("/replyComplaint/:email", replyToComplaint);
+app.put("/ComplaintStatus/:email",ComplaintStatus);
 app.get("/getProductsSortedByRating" , getProductsSortedByRating); //Tourist-Admin-Seller :sort products by rating 
 app.post("/addProduct" ,addProduct); //Admin - Seller : add a new product
 app.put("/updateProduct" , updateProduct);//Admin - Seller : edit products 
