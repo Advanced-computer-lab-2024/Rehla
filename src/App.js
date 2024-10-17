@@ -98,6 +98,7 @@ const {createUserAdmin,
   createTouristActivity,
   payForTouristActivity,
   deleteTouristActivity,
+  uploadGuestDocuments
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -229,3 +230,4 @@ app.put("/payForItinerary",payForItinerary);
 app.post("/createTouristActivity",createTouristActivity);
 app.put("/payForTouristActivity",payForTouristActivity);
 app.delete("/deleteTouristActivity",deleteTouristActivity);
+app.get("/uploadGuestDocuments", uploadGuestDocuments);

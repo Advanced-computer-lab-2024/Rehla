@@ -4,6 +4,8 @@ const activity = require('../Models/activities');
 const itinerarym = require('../Models/itineraries') ;
 const Tourist = require('../Models/tourists');
 const sellerm = require('../Models/sellers');
+const Guest = require('../Models/Requests');
+
 const tour_guidem=require('../Models/tour_guides');
 const AdvertisersModel = require('../Models/Advertisers.js');
 const Request= require('../Models/Requests.js');
@@ -30,6 +32,11 @@ const tourist_products = require('../Models/tourist_products.js');
 const tourist_complaints = require('../Models/tourist_complaints.js');
 const tourist_activities = require('../Models/tourist_activities.js');
 const TouristGuideReview = require('../Models/tour_guide_reviews.js');
+
+const multer = require('multer');
+const path = require('path');
+
+
 
 
 
@@ -3282,6 +3289,80 @@ const deleteTouristActivity = async (req, res) => {
     }
 };
 
+//no 6
+// Setup Multer for file uploads
+
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, './uploads');  // Define the directory where files should be stored
+    },
+    filename: (req, file, cb) => {
+        cb(null, `${Date.now()}_${file.originalname}`); // Unique name for the file to avoid conflicts
+    }
+});
+
+// File upload filter (only allow certain file types)
+const fileFilter = (req, file, cb) => {
+    const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png'];
+    if (allowedTypes.includes(file.mimetype)) {
+        cb(null, true); // Accept the file
+    } else {
+        cb(new Error('Invalid file type. Only PDFs, JPG, and PNG files are allowed.'), false); // Reject the file
+    }
+};
+
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 1024 * 1024 * 5 }, // Limit file size to 5MB
+    fileFilter: fileFilter
+});
+
+const uploadGuestDocuments = async (req, res) => {
+    try {
+        // Use multer middleware to handle the file upload
+        upload.single('document')(req, res, async (err) => {
+            if (err instanceof multer.MulterError) {
+                return res.status(400).json({ error: err.message }); // Handle Multer errors
+            } else if (err) {
+                return res.status(400).json({ error: err.message }); // Handle other errors
+            }
+
+            // Check if a file is uploaded
+            if (!req.file) {
+                return res.status(400).json({ error: 'Please upload a document.' });
+            }
+
+            // Save the document details to the database or associate it with a guest's record
+            // For example:
+            const guestId = req.params.guestId; // Assuming you're sending guest ID in params
+            const filePath = req.file.path; // File location
+
+            // Example of saving file info in the DB (you can adjust as per your schema)
+            const guest = await Guest.findById(guestId);
+          
+
+            // Add the uploaded document info to the guest's profile
+            guest.documents.push({
+                fileName: req.file.filename,
+                filePath: filePath,
+                uploadedAt: new Date()
+            });
+
+            await guest.save();
+
+            res.status(200).json({ message: 'Document uploaded successfully.', document: req.file });
+        });
+    } catch (error) {
+        console.error('Error uploading document:', error);
+        res.status(500).json({ error: 'Error uploading document', details: error.message });
+    }
+};
+
+
+
+
+
 // ----------------- Activity Category CRUD -------------------
 
 module.exports = { 
@@ -3380,4 +3461,5 @@ module.exports = {
     createTouristActivity,
     payForTouristActivity,
     deleteTouristActivity,
+    uploadGuestDocuments
 };
