@@ -90,8 +90,7 @@ const {createUserAdmin,
   commentOnItinerary,
   rateActivity,
   commentOnEvent,
-  reviewProduct,
-  rateProduct,
+  productRateReview,
   getMyComplaints,
   createComplaint,
   payForItinerary,
@@ -220,8 +219,8 @@ app.post('/rateItinerary', rateItinerary);
 app.post("/commentOnItinerary", commentOnItinerary);
 app.post("/rateActivity", rateActivity);
 app.put("/commentOnEvent/:itineraryName/:touristEmail", commentOnEvent);
-app.put("/reviewProduct" , reviewProduct);
-app.put("/rateProduct" , rateProduct);
+app.put("/productRateReview" , productRateReview);
+
 app.get("/getMyComplaints" ,getMyComplaints);
 app.post("/createComplaint", createComplaint);
 app.put("/payForItinerary",payForItinerary);

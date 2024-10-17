@@ -2626,8 +2626,8 @@ const commentOnEvent = async (req, res) => {
     }
 };
 
-const reviewProduct = async (req, res) => {
-    const { Tourist_Email, Product_Name, Review } = req.body;
+const productRateReview = async (req, res) => {
+    const { Tourist_Email, Product_Name, Review, Rating } = req.body;
 
     try {
         // Find the existing product review based on Tourist_Email and Product_Name
@@ -2642,8 +2642,14 @@ const reviewProduct = async (req, res) => {
                 message: "Review not found. Please ensure the product and email are correct."
             });
         } else {
-            // If review exists, update the Review field
-            existingReview.Review = Review;
+            // Check if Review or Rating is provided and update them accordingly
+            if (Review !== undefined) {
+                existingReview.Review = Review;
+            }
+            if (Rating !== undefined) {
+                existingReview.Rating = Rating;
+            }
+
             await existingReview.save();
 
             return res.status(200).json({
@@ -2654,39 +2660,6 @@ const reviewProduct = async (req, res) => {
     } catch (error) {
         return res.status(500).json({
             message: "Error updating review",
-            error
-        });
-    }
-};
-
-const rateProduct = async (req, res) => {
-    const { Tourist_Email, Product_Name, Rating } = req.body;
-
-    try {
-        // Find the existing product review based on Tourist_Email and Product_Name
-        const existingReview = await tourist_products.findOne({
-            Tourist_Email: Tourist_Email,
-            Product_Name: Product_Name
-        });
-
-        if (!existingReview) {
-            // If review does not exist, return an error
-            return res.status(404).json({
-                message: "Review not found. Please ensure the product and email are correct."
-            });
-        } else {
-            // If review exists, update the Rating field
-            existingReview.Rating = Rating;
-            await existingReview.save();
-
-            return res.status(200).json({
-                message: "Rating updated successfully",
-                review: existingReview
-            });
-        }
-    } catch (error) {
-        return res.status(500).json({
-            message: "Error updating rating",
             error
         });
     }
@@ -3378,8 +3351,7 @@ module.exports = {
     commentOnItinerary,
     rateActivity,
     commentOnEvent,
-    reviewProduct,
-    rateProduct,
+    productRateReview,
     getMyComplaints,
     createComplaint,
     payForItinerary,
