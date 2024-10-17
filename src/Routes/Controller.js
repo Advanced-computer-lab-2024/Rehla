@@ -1015,6 +1015,27 @@ const ComplaintStatus = async (req, res) => {
         res.status(500).json({ error: 'Error updating complaint status', details: error.message });
     }
 };
+const ProductArchiveStatus = async (req, res) => {
+    try {
+        const { productName } = req.params; 
+
+        const product = await Product.findOne({ Product_Name: productName });
+
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found.' });
+        }
+        product.Archived = !product.Archived;
+        await product.save();
+
+        res.status(200).json({ 
+            message: `Product ${product.Archived ? 'archived' : 'unarchived'} successfully.`, 
+            data: product 
+        });
+    } catch (error) {
+        console.error('Error toggling product archive status:', error.message);
+        res.status(500).json({ error: 'Error toggling product archive status', details: error.message });
+    }
+};
 
 //Tourist - admin - seller : Sort Product by ratings
 const getProductsSortedByRating = async (req, res) => {
@@ -3297,6 +3318,7 @@ module.exports = {
     flagItinerary,
     replyToComplaint,
     ComplaintStatus,
+    ProductArchiveStatus,
     getProductsSortedByRating, 
     addProduct,
     updateProduct,

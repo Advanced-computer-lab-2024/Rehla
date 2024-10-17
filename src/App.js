@@ -38,6 +38,7 @@ const {createUserAdmin,
   flagItinerary,
   replyToComplaint,
   ComplaintStatus,
+  ProductArchiveStatus,
   getProductsSortedByRating, 
   addProduct,
   updateProduct,
@@ -161,6 +162,7 @@ app.put("/flagActivity/:name", flagActivity);
 app.put("/flagItinerary/:name", flagItinerary); 
 app.put("/replyComplaint/:email", replyToComplaint);
 app.put("/ComplaintStatus/:email",ComplaintStatus);
+app.put("/ArchiveProduct/:productName", ProductArchiveStatus);
 app.get("/getProductsSortedByRating" , getProductsSortedByRating); //Tourist-Admin-Seller :sort products by rating 
 app.post("/addProduct" ,addProduct); //Admin - Seller : add a new product
 app.put("/updateProduct" , updateProduct);//Admin - Seller : edit products 
