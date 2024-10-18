@@ -1,6 +1,8 @@
 // src/App.js
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
+import './index.css';
+
 import Home from './components/Home';
 import CreateUser from './components/CreateUser';
 import GetTourist from '../src/components/signup';
