@@ -1,21 +1,19 @@
-// src/components/CreateUser.js
 import React, { useState } from 'react';
 import { registerRequest } from '../services/api'; // Import the API call function
-import '../css/signup.css';
 
 const RegisterRequest = () => {
-    const [employee, setemployee] = useState({
+    const [employee, setEmployee] = useState({
         Username: '',
         Email: '',
         Password: '',
-        Type:''
+        Type: ''
     });
 
     const [message, setMessage] = useState('');
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setemployee({ ...employee, [name]: value });
+        setEmployee({ ...employee, [name]: value });
     };
 
     const handleSubmit = async (e) => {
@@ -30,62 +28,84 @@ const RegisterRequest = () => {
     };
 
     return (
-        <div>
-            <h1>Tourist</h1>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>
-                        Username:
-                        <input
-                            type="text"
-                            name="Username"
-                            value={employee.Username}
-                            onChange={handleChange}
-                            required
-                        />
-                    </label>
-                </div>
-                <div>
-                    <label>
-                        Email:
-                        <input
-                            type="email"
-                            name="Email"
-                            value={employee.Email}
-                            onChange={handleChange}
-                            required
-                        />
-                    </label>
-                </div>
-                <div>
-                    <label>
-                        Password:
-                        <input
-                            type="password"
-                            name="Password"
-                            value={employee.Password}
-                            onChange={handleChange}
-                            required
-                        />
-                    </label>
-                </div>
+        <div className="min-h-screen flex items-center justify-center bg-gray-100">
+            <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-2xl">
+                <h1 className="text-3xl font-bold text-brandBlue text-center mb-6">Create Signup Request</h1>
+                <form onSubmit={handleSubmit} className="p-6 space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* Username and Email side by side */}
+                        <div>
+                            <label className="block text-gray-700 text-sm font-bold mb-2">
+                                Username:
+                                <input
+                                    type="text"
+                                    name="Username"
+                                    value={employee.Username}
+                                    onChange={handleChange}
+                                    required
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                                />
+                            </label>
+                        </div>
+                        <div>
+                            <label className="block text-gray-700 text-sm font-bold mb-2">
+                                Email:
+                                <input
+                                    type="email"
+                                    name="Email"
+                                    value={employee.Email}
+                                    onChange={handleChange}
+                                    required
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                                />
+                            </label>
+                        </div>
+                    </div>
 
-               
-                <div>
-                    <label>
-                        Type:
-                        <select name="Type" value={employee.Type} onChange={handleChange} required>
-                            <option value="">Select Type</option>
-                            <option value="Tour Guide">Tour Guide</option>
-                            <option value="Seller">Seller</option>
-                            <option value="Advertiser">Advertiser</option>
-                        </select>
-                    </label>
-                </div>
-                <br></br>
-                <button type="submit">Sign up</button>
-            </form>
-            {message && <p>{message}</p>} {/* Show success/error message */}
+                    {/* Password below Username and Email */}
+                    <div>
+                        <label className="block text-gray-700 text-sm font-bold mb-2">
+                            Password:
+                            <input
+                                type="password"
+                                name="Password"
+                                value={employee.Password}
+                                onChange={handleChange}
+                                required
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                            />
+                        </label>
+                    </div>
+
+                    {/* Type selection dropdown */}
+                    <div>
+                        <label className="block text-gray-700 text-sm font-bold mb-2">
+                            Type:
+                            <select
+                                name="Type"
+                                value={employee.Type}
+                                onChange={handleChange}
+                                required
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                            >
+                                <option value="">Select Type</option>
+                                <option value="Tour Guide">Tour Guide</option>
+                                <option value="Seller">Seller</option>
+                                <option value="Advertiser">Advertiser</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <button
+                        type="submit"
+                        className="w-full bg-brandBlue text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300"
+                    >
+                        Sign up
+                    </button>
+                </form>
+
+                {message && <p className="text-center text-red-500 mt-4">{message}</p>} {/* Show success/error message */}
+            </div>
         </div>
     );
 };
