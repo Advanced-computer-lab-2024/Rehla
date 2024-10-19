@@ -1,6 +1,6 @@
 // src/components/UpcomingEvents.js
 import React, { useEffect, useState } from 'react';
-import { getAllUpcomingEventsAndPlaces, sortActivities, sortItineraries, filterActivities, filterItineraries ,filterPlacesAndMuseums } from '../services/api';
+import { getAllUpcomingEventsAndPlaces, sortActivities, sortItineraries, filterActivities, filterItineraries, filterPlacesAndMuseums } from '../services/api';
 
 const UpcomingEvents = () => {
     const [data, setData] = useState(null);
@@ -33,8 +33,6 @@ const UpcomingEvents = () => {
         value: ''
     });
 
-
-
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -50,7 +48,7 @@ const UpcomingEvents = () => {
     const handleSortActivities = async (sortBy) => {
         try {
             const sorted = await sortActivities(sortBy);
-            setSortedActivities(sorted); // Update sorted activities
+            setSortedActivities(sorted);
         } catch (error) {
             setError(error);
         }
@@ -59,7 +57,7 @@ const UpcomingEvents = () => {
     const handleSortItineraries = async (sortBy) => {
         try {
             const sorted = await sortItineraries(sortBy);
-            setSortedItineraries(sorted); // Update sorted itineraries
+            setSortedItineraries(sorted);
         } catch (error) {
             setError(error);
         }
@@ -85,9 +83,6 @@ const UpcomingEvents = () => {
         }
     };
 
-
-
-
     const handleFilterPlacesAndMuseums = async (e) => {
         e.preventDefault();
         try {
@@ -97,279 +92,215 @@ const UpcomingEvents = () => {
             setError(error);
         }
     };
+
     const handleFilterChange = (e, setFilters) => {
         const { name, value } = e.target;
-        setFilters(prevFilters => ({
+        setFilters((prevFilters) => ({
             ...prevFilters,
             [name]: value
         }));
     };
 
     if (error) {
-        return <div>Error: {error.message}</div>;
+        return <div className="text-red-500 text-center">Error: {error.message}</div>;
     }
 
     if (!data) {
-        return <div>Loading...</div>;
+        return <div className="text-center py-10">Loading...</div>;
     }
 
     return (
-        <div>
-            <h1>Upcoming Events and Places</h1>
+        <div className="container mx-auto p-6">
+            <h1 className="text-3xl font-bold text-center mb-8">Upcoming Events and Places</h1>
 
             {/* Itinerary Sorting */}
-            <h2>Upcoming Itineraries</h2>
-            <div>
-                <button onClick={() => handleSortItineraries('price')}>Sort by Price</button>
-                <button onClick={() => handleSortItineraries('rating')}>Sort by Rating</button>
-            </div>
-            {sortedItineraries ? (
-                <ul>
-                    {sortedItineraries.map((itinerary) => (
-                        <li key={itinerary._id}>{itinerary.Itinerary_Name} - ${itinerary.Tour_Price} - Rating: {itinerary.Rating}</li>
+            <section className="mb-10">
+                <h2 className="text-2xl font-semibold mb-4">Upcoming Itineraries</h2>
+                <div className="mb-4 space-x-2">
+                    <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600" onClick={() => handleSortItineraries('price')}>Sort by Price</button>
+                    <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600" onClick={() => handleSortItineraries('rating')}>Sort by Rating</button>
+                </div>
+                <ul className="space-y-2">
+                    {(sortedItineraries || data.upcomingItineraries).map((itinerary) => (
+                        <li key={itinerary._id} className="bg-gray-100 p-4 rounded shadow">
+                            {itinerary.Itinerary_Name} - <span className="font-semibold">${itinerary.Tour_Price}</span> - Rating: {itinerary.Rating}
+                        </li>
                     ))}
                 </ul>
-            ) : data.upcomingItineraries !== 'No upcoming itineraries found' ? (
-                <ul>
-                    {data.upcomingItineraries.map((itinerary) => (
-                        <li key={itinerary._id}>{itinerary.Itinerary_Name}</li>
-                    ))}
-                </ul>
-            ) : (
-                <p>No upcoming itineraries</p>
-            )}
+            </section>
 
             {/* Activity Sorting */}
-            <h2>Upcoming Activities</h2>
-            <div>
-                <button onClick={() => handleSortActivities('price')}>Sort by Price</button>
-                <button onClick={() => handleSortActivities('rating')}>Sort by Rating</button>
-            </div>
-            {sortedActivities ? (
-                <ul>
-                    {sortedActivities.map((activity) => (
-                        <li key={activity._id}>{activity.Name} - ${activity.Price} - Rating: {activity.Rating}</li>
+            <section className="mb-10">
+                <h2 className="text-2xl font-semibold mb-4">Upcoming Activities</h2>
+                <div className="mb-4 space-x-2">
+                    <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600" onClick={() => handleSortActivities('price')}>Sort by Price</button>
+                    <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600" onClick={() => handleSortActivities('rating')}>Sort by Rating</button>
+                </div>
+                <ul className="space-y-2">
+                    {(sortedActivities || data.upcomingActivities).map((activity) => (
+                        <li key={activity._id} className="bg-gray-100 p-4 rounded shadow">
+                            {activity.Name} - <span className="font-semibold">${activity.Price}</span> - Rating: {activity.Rating}-<img 
+                                        src={activity.Picture} 
+                                        alt={activity.Name} 
+                                        style={{ width: '200px', height: '200px', objectFit: 'cover' }} 
+                                    />
+                        </li>
                     ))}
                 </ul>
-            ) : data.upcomingActivities !== 'No upcoming activities found' ? (
-                <ul>
-                    {data.upcomingActivities.map((activity) => (
-                        <li key={activity._id}>{activity.Name}</li>
-                    ))}
-                </ul>
-            ) : (
-                <p>No upcoming activities</p>
-            )}
+            </section>
 
             {/* Filter Form for Activities */}
-            <h2>Filter Activities</h2>
-            <form onSubmit={handleFilterActivities}>
-                <label>
-                    Min Price:
-                    <input
-                        type="number"
-                        name="minPrice"
-                        value={activityFilters.minPrice}
-                        onChange={(e) => handleFilterChange(e, setActivityFilters)}
-                    />
-                </label>
-                <label>
-                    Max Price:
-                    <input
-                        type="number"
-                        name="maxPrice"
-                        value={activityFilters.maxPrice}
-                        onChange={(e) => handleFilterChange(e, setActivityFilters)}
-                    />
-                </label>
-                <label>
-                    Start Date:
-                    <input
-                        type="date"
-                        name="startDate"
-                        value={activityFilters.startDate}
-                        onChange={(e) => handleFilterChange(e, setActivityFilters)}
-                    />
-                </label>
-                <label>
-                    End Date:
-                    <input
-                        type="date"
-                        name="endDate"
-                        value={activityFilters.endDate}
-                        onChange={(e) => handleFilterChange(e, setActivityFilters)}
-                    />
-                </label>
-                <label>
-                    Rating:
-                    <input
-                        type="number"
-                        name="rating"
-                        value={activityFilters.rating}
-                        onChange={(e) => handleFilterChange(e, setActivityFilters)}
-                    />
-                </label>
-                <label>
-                    Category:
-                    <input
-                        type="text"
-                        name="category"
-                        value={activityFilters.category}
-                        onChange={(e) => handleFilterChange(e, setActivityFilters)}
-                    />
-                </label>
-                <button type="submit">Apply Activity Filters</button>
-            </form>
+            <section className="mb-10">
+                <h2 className="text-2xl font-semibold mb-4">Filter Activities</h2>
+                <form className="space-y-4" onSubmit={handleFilterActivities}>
+                    {/* Activity Filter Form */}
+                    <div className="flex flex-wrap -mx-2">
+                        {/* Price Filter */}
+                        <div className="w-1/2 px-2">
+                            <label className="block text-sm font-medium">Min Price</label>
+                            <input type="number" name="minPrice" value={activityFilters.minPrice} onChange={(e) => handleFilterChange(e, setActivityFilters)} className="mt-1 block w-full border-gray-300 rounded-md shadow-sm" />
+                        </div>
+                        <div className="w-1/2 px-2">
+                            <label className="block text-sm font-medium">Max Price</label>
+                            <input type="number" name="maxPrice" value={activityFilters.maxPrice} onChange={(e) => handleFilterChange(e, setActivityFilters)} className="mt-1 block w-full border-gray-300 rounded-md shadow-sm" />
+                        </div>
+                    </div>
 
-            {/* Display Filtered Activities */}
-            <h2>Filtered Activities</h2>
-            {filteredActivities ? (
-                <ul>
-                    {filteredActivities.map((activity) => (
-                        <li key={activity._id}>
-                            {activity.Name} - ${activity.Price} - Rating: {activity.Rating}
-                        </li>
-                    ))}
-                </ul>
-            ) : (
-                <p>No filtered activities available</p>
-            )}
+                    {/* Date Filter */}
+                    <div className="flex flex-wrap -mx-2">
+                        <div className="w-1/2 px-2">
+                            <label className="block text-sm font-medium">Start Date</label>
+                            <input type="date" name="startDate" value={activityFilters.startDate} onChange={(e) => handleFilterChange(e, setActivityFilters)} className="mt-1 block w-full border-gray-300 rounded-md shadow-sm" />
+                        </div>
+                        <div className="w-1/2 px-2">
+                            <label className="block text-sm font-medium">End Date</label>
+                            <input type="date" name="endDate" value={activityFilters.endDate} onChange={(e) => handleFilterChange(e, setActivityFilters)} className="mt-1 block w-full border-gray-300 rounded-md shadow-sm" />
+                        </div>
+                    </div>
+
+                    {/* Rating and Category Filter */}
+                    <div>
+                        <label className="block text-sm font-medium">Rating</label>
+                        <input type="number" name="rating" value={activityFilters.rating} onChange={(e) => handleFilterChange(e, setActivityFilters)} className="mt-1 block w-full border-gray-300 rounded-md shadow-sm" />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium">Category</label>
+                        <input type="text" name="category" value={activityFilters.category} onChange={(e) => handleFilterChange(e, setActivityFilters)} className="mt-1 block w-full border-gray-300 rounded-md shadow-sm" />
+                    </div>
+
+                    <button type="submit" className="mt-4 px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600">Apply Activity Filters</button>
+                </form>
+            </section>
+
+            {/* Filtered Activities */}
+            <section className="mb-10">
+                <h2 className="text-2xl font-semibold mb-4">Filtered Activities</h2>
+                {filteredActivities ? (
+                    <ul className="space-y-2">
+                        {filteredActivities.map((activity) => (
+                            <li key={activity._id} className="bg-gray-100 p-4 rounded shadow">
+                                {activity.Name} - <span className="font-semibold">${activity.Price}</span> - Rating: {activity.Rating}
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p>No activities match the filters.</p>
+                )}
+            </section>
 
             {/* Filter Form for Itineraries */}
-            <h2>Filter Itineraries</h2>
-            <form onSubmit={handleFilterItineraries}>
-                <label>
-                    Min Price:
-                    <input
-                        type="number"
-                        name="minPrice"
-                        value={itineraryFilters.minPrice}
-                        onChange={(e) => handleFilterChange(e, setItineraryFilters)}
-                    />
-                </label>
-                <label>
-                    Max Price:
-                    <input
-                        type="number"
-                        name="maxPrice"
-                        value={itineraryFilters.maxPrice}
-                        onChange={(e) => handleFilterChange(e, setItineraryFilters)}
-                    />
-                </label>
-                <label>
-                    Start Date:
-                    <input
-                        type="date"
-                        name="startDate"
-                        value={itineraryFilters.startDate}
-                        onChange={(e) => handleFilterChange(e, setItineraryFilters)}
-                    />
-                </label>
-                <label>
-                    End Date:
-                    <input
-                        type="date"
-                        name="endDate"
-                        value={itineraryFilters.endDate}
-                        onChange={(e) => handleFilterChange(e, setItineraryFilters)}
-                    />
-                </label>
-                <label>
-                    Preferences (comma-separated):
-                    <input
-                        type="text"
-                        name="preferences"
-                        value={itineraryFilters.preferences}
-                        onChange={(e) => handleFilterChange(e, setItineraryFilters)}
-                    />
-                </label>
-                <label>
-                    Language:
-                    <input
-                        type="text"
-                        name="language"
-                        value={itineraryFilters.language}
-                        onChange={(e) => handleFilterChange(e, setItineraryFilters)}
-                    />
-                </label>
-                <button type="submit">Apply Itinerary Filters</button>
-            </form>
+            <section className="mb-10">
+                <h2 className="text-2xl font-semibold mb-4">Filter Itineraries</h2>
+                <form className="space-y-4" onSubmit={handleFilterItineraries}>
+                    {/* Itinerary Filter Form */}
+                    <div className="flex flex-wrap -mx-2">
+                        {/* Price Filter */}
+                        <div className="w-1/2 px-2">
+                            <label className="block text-sm font-medium">Min Price</label>
+                            <input type="number" name="minPrice" value={itineraryFilters.minPrice} onChange={(e) => handleFilterChange(e, setItineraryFilters)} className="mt-1 block w-full border-gray-300 rounded-md shadow-sm" />
+                        </div>
+                        <div className="w-1/2 px-2">
+                            <label className="block text-sm font-medium">Max Price</label>
+                            <input type="number" name="maxPrice" value={itineraryFilters.maxPrice} onChange={(e) => handleFilterChange(e, setItineraryFilters)} className="mt-1 block w-full border-gray-300 rounded-md shadow-sm" />
+                        </div>
+                    </div>
 
-            {/* Display Filtered Itineraries */}
-            <h2>Filtered Itineraries</h2>
-            {filteredItineraries ? (
-                <ul>
-                    {filteredItineraries.map((itinerary) => (
-                        <li key={itinerary._id}>
-                            {itinerary.Itinerary_Name} - ${itinerary.Tour_Price} - Language: {itinerary.Language}
-                        </li>
-                    ))}
-                </ul>
-            ) : (
-                <p>No filtered itineraries available</p>
-            )}
+                    {/* Date Filter */}
+                    <div className="flex flex-wrap -mx-2">
+                        <div className="w-1/2 px-2">
+                            <label className="block text-sm font-medium">Start Date</label>
+                            <input type="date" name="startDate" value={itineraryFilters.startDate} onChange={(e) => handleFilterChange(e, setItineraryFilters)} className="mt-1 block w-full border-gray-300 rounded-md shadow-sm" />
+                        </div>
+                        <div className="w-1/2 px-2">
+                            <label className="block text-sm font-medium">End Date</label>
+                            <input type="date" name="endDate" value={itineraryFilters.endDate} onChange={(e) => handleFilterChange(e, setItineraryFilters)} className="mt-1 block w-full border-gray-300 rounded-md shadow-sm" />
+                        </div>
+                    </div>
 
-            {/* Museums */}
+                    {/* Preferences and Language Filter */}
+                    <div>
+                        <label className="block text-sm font-medium">Preferences</label>
+                        <input type="text" name="preferences" value={itineraryFilters.preferences} onChange={(e) => handleFilterChange(e, setItineraryFilters)} className="mt-1 block w-full border-gray-300 rounded-md shadow-sm" />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium">Language</label>
+                        <input type="text" name="language" value={itineraryFilters.language} onChange={(e) => handleFilterChange(e, setItineraryFilters)} className="mt-1 block w-full border-gray-300 rounded-md shadow-sm" />
+                    </div>
 
-            <h2>Filter Places and Museums</h2>
-            <form onSubmit={handleFilterPlacesAndMuseums}>
-                <label>
-                    Category:
-                    <input
-                        type="text"
-                        name="category"
-                        value={placesAndMuseumsFilters.category}
-                        onChange={(e) => handleFilterChange(e, setPlacesAndMuseumsFilters)}
-                    />
-                </label>
-                <label>
-                    Value:
-                    <input
-                        type="text"
-                        name="value"
-                        value={placesAndMuseumsFilters.value}
-                        onChange={(e) => handleFilterChange(e, setPlacesAndMuseumsFilters)}
-                    />
-                </label>
-                <button type="submit">Apply Places and Museums Filters</button>
-            </form>
+                    <button type="submit" className="mt-4 px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600">Apply Itinerary Filters</button>
+                </form>
+            </section>
 
-            {/* Display Filtered Places and Museums */}
-            <h2>Filtered Places and Museums</h2>
-            {filteredPlacesAndMuseums ? (
-                <ul>
-                    {filteredPlacesAndMuseums.map((place) => (
-                        <li key={place._id}>
-                            {place.Name} 
-                        </li>
-                    ))}
-                </ul>
-            ) : (
-                <p>No filtered places or museums available</p>
-            )}
-      
-            <h2>Museums</h2>
-            {data.museums !== 'No museums found' ? (
-                <ul>
-                    {data.museums.map((museum) => (
-                        <li key={museum._id}>{museum.Name}</li>
-                    ))}
-                </ul>
-            ) : (
-                <p>No museums</p>
-            )}
+            {/* Filtered Itineraries */}
+            <section className="mb-10">
+                <h2 className="text-2xl font-semibold mb-4">Filtered Itineraries</h2>
+                {filteredItineraries ? (
+                    <ul className="space-y-2">
+                        {filteredItineraries.map((itinerary) => (
+                            <li key={itinerary._id} className="bg-gray-100 p-4 rounded shadow">
+                                {itinerary.Itinerary_Name} - <span className="font-semibold">${itinerary.Tour_Price}</span> - Rating: {itinerary.Rating}
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p>No itineraries match the filters.</p>
+                )}
+            </section>
 
-            {/* Historical Places */}
-            <h2>Historical Places</h2>
-            {data.historicalPlaces !== 'No historical places found' ? (
-                <ul>
-                    {data.historicalPlaces.map((place) => (
-                        <li key={place._id}>{place.Name}</li>
-                    ))}
-                </ul>
-            ) : (
-                <p>No historical places</p>
-            )}
+            {/* Filter Form for Places and Museums */}
+            <section className="mb-10">
+                <h2 className="text-2xl font-semibold mb-4">Filter Places and Museums</h2>
+                <form className="space-y-4" onSubmit={handleFilterPlacesAndMuseums}>
+                    {/* Places and Museums Filter Form */}
+                    <div className="flex flex-wrap -mx-2">
+                        <div className="w-1/2 px-2">
+                            <label className="block text-sm font-medium">Category</label>
+                            <input type="text" name="category" value={placesAndMuseumsFilters.category} onChange={(e) => handleFilterChange(e, setPlacesAndMuseumsFilters)} className="mt-1 block w-full border-gray-300 rounded-md shadow-sm" />
+                        </div>
+                        <div className="w-1/2 px-2">
+                            <label className="block text-sm font-medium">Value</label>
+                            <input type="text" name="value" value={placesAndMuseumsFilters.value} onChange={(e) => handleFilterChange(e, setPlacesAndMuseumsFilters)} className="mt-1 block w-full border-gray-300 rounded-md shadow-sm" />
+                        </div>
+                    </div>
+                    <button type="submit" className="mt-4 px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600">Apply Places and Museums Filters</button>
+                </form>
+            </section>
+
+            {/* Filtered Places and Museums */}
+            <section className="mb-10">
+                <h2 className="text-2xl font-semibold mb-4">Filtered Places and Museums</h2>
+                {filteredPlacesAndMuseums ? (
+                    <ul className="space-y-2">
+                        {filteredPlacesAndMuseums.map((place) => (
+                            <li key={place._id} className="bg-gray-100 p-4 rounded shadow">
+                                {place.Name} - {place.Description} - {place.Location}
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p>No places or museums match the filters.</p>
+                )}
+            </section>
         </div>
     );
 };

@@ -63,6 +63,12 @@ const activitysSchema = new Schema({
         type : Boolean,
         default : false,
     },
+    Picture :{
+        type : String ,
+        required : false,
+        default : "No Picture"
+    }
+
 
 },{ versionKey: false });
 
