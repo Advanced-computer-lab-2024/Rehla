@@ -2770,6 +2770,11 @@ const creatTouristItenrary= async(req,res)=>{
             return res.status(409).json({ error: 'This itinerary has already been booked by the tourist.' });
         }
 
+        //check if the Accessibility is true
+        if (itineraryExists.Accessibility === false) {
+            return res.status(400).json({ error: 'This itinerary is deactivated.' });
+        }
+
         const newTouristItenrary = new tourist_itinerariesm({Tourist_Email,Itinerary_Name});
         const savedTouristItenrary = await newTouristItenrary.save();
         res.status(201).json({ message: 'Tourist itinerary created successfully', Tourist_Itinerary: savedTouristItenrary });
@@ -3048,8 +3053,12 @@ const getBookedItineraries = async (req, res) => {
         // Retrieve full details for each booked itinerary
         const itineraryDetails = await Promise.all(
             bookedItineraries.map(async (booking) => {
+                if (!itinerary) {
+                    return { ...booking.toObject(), Itinerary: null };
+                }
+                // Find the itinerary details and return the full itinerary object
                 const itinerary = await itinerarym.findOne({ Itinerary_Name: booking.Itinerary_Name });
-                return itinerary;
+                return { ...booking.toObject(), Itinerary: itinerary };
             })
         );
 
@@ -3359,9 +3368,33 @@ const uploadGuestDocuments = async (req, res) => {
     }
 };
 
+//activate/deactivate Accessibility of an itinerary
+const Itineraryactivation = async (req, res) => {
+    try {
+        const { Itinerary_Name, Accessibility } = req.body;
 
+        // Validate input
+        if (!Itinerary_Name || Accessibility === undefined) {
+            return res.status(400).json({ error: 'Itinerary name and accessibility are required.' });
+        }
 
+        // Check if the itinerary exists
+        const itinerary = await itinerarym.findOne({ Itinerary_Name });
+        if (!itinerary) {
+            return res.status(404).json({ error: 'Itinerary not found.' });
+        }
 
+        // Update the itinerary's accessibility
+        itinerary.Accessibility = Accessibility;
+        await itinerary.save();
+
+        res.status(200).json({ message: 'Itinerary updated successfully', itinerary });
+
+    } catch (error) {
+        console.error("Error details:", error.message, error.stack); // Log full error details
+        res.status(500).json({ error: 'Error updating itinerary', details: error.message });
+    }
+};
 
 // ----------------- Activity Category CRUD -------------------
 
@@ -3461,5 +3494,6 @@ module.exports = {
     createTouristActivity,
     payForTouristActivity,
     deleteTouristActivity,
-    uploadGuestDocuments
+    uploadGuestDocuments,
+    Itineraryactivation
 };
