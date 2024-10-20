@@ -84,6 +84,10 @@ const itinerarysSchema = new Schema({
         type : Boolean,
         default : false,
     },
+    Picture : {
+        type : String ,
+        default : "No Picture",
+    }
     
 },{ versionKey: false });
 
