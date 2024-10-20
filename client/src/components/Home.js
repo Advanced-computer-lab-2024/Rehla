@@ -327,18 +327,21 @@ const Home = () => {
                     <button type="submit" className="bg-brandBlue text-white px-3 py-1 rounded">Filter Itineraries</button>
                     <button onClick={() => handleSortItineraries('price')} className="bg-green-500 text-white px-3 py-1 rounded ml-2">Sort by Price</button>
                 </form>
-                <div className="flex overflow-x-auto scrollbar-hide gap-6 px-6 py-4">
+                <div className="flex overflow-x-auto scrollbar-hide px-6 py-4">
                     {itinerariesToDisplay.map((itinerary) => (
                         <div
-                            key={itinerary._id}
-                            className="bg-gray-100 p-4 rounded shadow w-80 flex-none flex flex-col items-center"
+                        key={itinerary._id}
+                        className="gallery-item flex-none flex flex-col items-center w-80"
                         >
-                            <div className="text-md font-medium text-center">{itinerary.Itinerary_Name}</div>
-                            <div className="text-sm text-gray-700 mt-2">
-                                <span className="font-semibold">Price: ${itinerary.Tour_Price}</span>
-                                <br />
-                                <span>Duration: {itinerary.Duration}</span>
-                            </div>
+                        <img
+                            src={itinerary.Picture}
+                            alt={itinerary.Itinerary_Name}
+                            className="w-72 h-72 object-cover rounded duration-300 ease-in-out hover:scale-105"
+                        />
+                        <div className="text-md font-medium text-center mt-2">{itinerary.Itinerary_Name}</div>
+                        <div className="text-sm text-gray-700">
+                            <span className="font-semibold">${itinerary.Tour_Price}</span> - Rating: {itinerary.Rating}
+                        </div>
                         </div>
                     ))}
                 </div>
