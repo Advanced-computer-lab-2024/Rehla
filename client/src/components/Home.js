@@ -218,21 +218,21 @@ const Home = () => {
                     <button type="submit" className="bg-brandBlue text-white px-3 py-1 rounded">Filter Activities</button>
                     <button onClick={() => handleSortActivities('price')} className="bg-green-500 text-white px-3 py-1 rounded ml-2">Sort by Price</button>
                 </form>
-                <div className="flex overflow-x-auto gap-6 px-6 py-4">
+                <div className="flex overflow-x-auto scrollbar-hide gap-6 px-6 py-4">
                     {activitiesToDisplay.map((activity) => (
                         <div
-                            key={activity._id}
-                            className="gallery-item flex flex-col items-center"
+                        key={activity._id}
+                        className="gallery-item flex-none flex flex-col items-center w-80"
                         >
-                            <img
-                                src={activity.Picture}
-                                alt={activity.Name}
-                                className="w-80 h-80 object-cover rounded transition-transform duration-300 ease-in-out hover:scale-105"
-                            />
-                            <div className="text-md font-medium text-center mt-2">{activity.Name}</div>
-                            <div className="text-sm text-gray-700">
-                                <span className="font-semibold">${activity.Price}</span> - Rating: {activity.Rating}
-                            </div>
+                        <img
+                            src={activity.Picture}
+                            alt={activity.Name}
+                            className="w-80 h-80 object-cover rounded duration-300 ease-in-out hover:scale-105"
+                        />
+                        <div className="text-md font-medium text-center mt-2">{activity.Name}</div>
+                        <div className="text-sm text-gray-700">
+                            <span className="font-semibold">${activity.Price}</span> - Rating: {activity.Rating}
+                        </div>
                         </div>
                     ))}
                 </div>
