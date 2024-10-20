@@ -3304,16 +3304,17 @@ const deleteTouristActivity = async (req, res) => {
 // Setup Multer for file uploads
 
 
+const fs = require('fs'); // Include the file system module
+
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, './uploads');  // Define the directory where files should be stored
+        cb(null, './uploads'); // Define the directory where files should be stored
     },
     filename: (req, file, cb) => {
-        cb(null, `${Date.now()}_${file.originalname}`); // Unique name for the file to avoid conflicts
+        cb(null, `${Date.now()}_${file.originalname}`); // Use a temporary name
     }
 });
 
-// File upload filter (only allow certain file types)
 const fileFilter = (req, file, cb) => {
     const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png'];
     if (allowedTypes.includes(file.mimetype)) {
@@ -3323,16 +3324,29 @@ const fileFilter = (req, file, cb) => {
     }
 };
 
+const picFilter = (req, file, cb) => {
+    const allowedTypes = [ 'image/jpeg', 'image/png'];
+    if (allowedTypes.includes(file.mimetype)) {
+        cb(null, true); // Accept the file
+    } else {
+        cb(new Error('Invalid file type. Only JPG and PNG files are allowed.'), false); // Reject the file
+    }
+};
 const upload = multer({
     storage: storage,
     limits: { fileSize: 1024 * 1024 * 5 }, // Limit file size to 5MB
     fileFilter: fileFilter
 });
 
+const picture = multer({
+    storage: storage,
+    limits: { fileSize: 1024 * 1024 * 5 }, // Limit file size to 5MB
+    fileFilter: picFilter
+});
+
 const uploadGuestDocuments = async (req, res) => {
-    try {
-        // Use multer middleware to handle the file upload
-        upload.single('document')(req, res, async (err) => {
+    upload.single('document')(req, res, async (err) => {
+        try {
             if (err instanceof multer.MulterError) {
                 return res.status(400).json({ error: err.message }); // Handle Multer errors
             } else if (err) {
@@ -3344,31 +3358,80 @@ const uploadGuestDocuments = async (req, res) => {
                 return res.status(400).json({ error: 'Please upload a document.' });
             }
 
-            // Save the document details to the database or associate it with a guest's record
-            // For example:
-            const guestId = req.params.guestId; // Assuming you're sending guest ID in params
-            const filePath = req.file.path; // File location
+            const email = req.body.email;
+            const index = req.body.index;
 
-            // Example of saving file info in the DB (you can adjust as per your schema)
-            const guest = await Guest.findById(guestId);
-          
+            // Validate email and index
+            if (!email || !index) {
+                return res.status(400).json({ error: 'Missing email or index in request' });
+            }
 
-            // Add the uploaded document info to the guest's profile
-            guest.documents.push({
-                fileName: req.file.filename,
-                filePath: filePath,
-                uploadedAt: new Date()
+            // Define the new file name using email and index
+            const newFileName = `${email}_${index}`;
+            const newFilePath = path.join('./uploads', newFileName);
+
+            // Rename the file to include email and index
+            fs.rename(req.file.path, newFilePath, async (err) => {
+                if (err) {
+                    return res.status(500).json({ error: 'Error renaming file', details: err.message });
+                }
+
+                // Here, you can perform additional logic if needed (like saving to a database)
+                
+                res.status(200).json({ message: 'Document uploaded and renamed successfully.', document: newFileName });
             });
 
-            await guest.save();
-
-            res.status(200).json({ message: 'Document uploaded successfully.', document: req.file });
-        });
-    } catch (error) {
-        console.error('Error uploading document:', error);
-        res.status(500).json({ error: 'Error uploading document', details: error.message });
-    }
+        } catch (error) {
+            console.error('Error uploading document:', error);
+            res.status(500).json({ error: 'Error uploading document', details: error.message });
+        }
+    });
 };
+
+const uploadProfilePicture = async (req, res) => {
+    picture.single('document')(req, res, async (err) => {
+        try {
+            if (err instanceof multer.MulterError) {
+                return res.status(400).json({ error: err.message }); // Handle Multer errors
+            } else if (err) {
+                return res.status(400).json({ error: err.message }); // Handle other errors
+            }
+
+            // Check if a file is uploaded
+            if (!req.file) {
+                return res.status(400).json({ error: 'Please upload a picture.' });
+            }
+
+            const email = req.body.email;
+            
+
+            // Validate email a
+            if (!email ) {
+                return res.status(400).json({ error: 'Missing email or index in reques' });
+            }
+
+            // Define the new picture name using email and index
+            const newFileName = `${email}_4`;
+            const newFilePath = path.join('./uploads', newFileName);
+
+            // Rename the file to include email and index
+            fs.rename(req.file.path, newFilePath, async (err) => {
+                if (err) {
+                    return res.status(500).json({ error: 'Error renaming picture', details: err.message });
+                }
+
+                // Here, you can perform additional logic if needed (like saving to a database)
+                
+                res.status(200).json({ message: 'picture uploaded and renamed successfully.', document: newFileName });
+            });
+
+        } catch (error) {
+            console.error('Error uploading picture:', error);
+            res.status(500).json({ error: 'Error uploading picture', details: error.message });
+        }
+    });
+};
+
 
 //activate/deactivate Accessibility of an itinerary
 const Itineraryactivation = async (req, res) => {
@@ -3497,5 +3560,6 @@ module.exports = {
     payForTouristActivity,
     deleteTouristActivity,
     uploadGuestDocuments,
+    uploadProfilePicture,
     Itineraryactivation
 };

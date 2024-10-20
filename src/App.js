@@ -99,6 +99,7 @@ const {createUserAdmin,
   payForTouristActivity,
   deleteTouristActivity,
   uploadGuestDocuments,
+  uploadProfilePicture,
   Itineraryactivation
 } = require("./Routes/Controller");
 
@@ -231,5 +232,8 @@ app.put("/payForItinerary",payForItinerary);
 app.post("/createTouristActivity",createTouristActivity);
 app.put("/payForTouristActivity",payForTouristActivity);
 app.delete("/deleteTouristActivity",deleteTouristActivity);
-app.get("/uploadGuestDocuments", uploadGuestDocuments);
+app.post("/uploadGuestDocuments", uploadGuestDocuments);
+app.post("/uploadProfilePicture", uploadProfilePicture);
+
+
 app.put("/Itineraryactivation", Itineraryactivation);
