@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../images/logo.png';
-import { searchEventsPlaces, commentOnItinerary } from '../services/api'; // Import the function
+import { searchEventsPlaces, commentOnItinerary, rateItinerary } from '../services/api'; // Import the rateItinerary function
 
 const TouristHome = () => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -11,6 +11,7 @@ const TouristHome = () => {
     const [email, setEmail] = useState(''); // Store email from localStorage
     const [itineraryName, setItineraryName] = useState(''); // Separate itinerary name for comment form
     const [comment, setComment] = useState(''); // Separate comment for comment form
+    const [rating, setRating] = useState(''); // State for rating input
 
     // Fetch email from localStorage on component mount
     useEffect(() => {
@@ -54,6 +55,23 @@ const TouristHome = () => {
         } catch (error) {
             console.error('Error adding comment:', error);
             setError('Failed to submit the comment. Please try again later.');
+        }
+    };
+
+    const handleRatingSubmit = async (e) => {
+        e.preventDefault(); // Prevent form from refreshing
+        setError(null); // Reset error state
+
+        try {
+            const result = await rateItinerary(email, itineraryName, rating); // Submit the rating
+            console.log('Rating submitted:', result);
+
+            setItineraryName(''); // Reset the itinerary input
+            setRating(''); // Reset the rating input
+            alert('Rating added successfully!'); // Display a success message
+        } catch (error) {
+            console.error('Error adding rating:', error);
+            setError('Failed to submit the rating. Please try again later.');
         }
     };
 
@@ -174,6 +192,38 @@ const TouristHome = () => {
                     </div>
 
                     <button type="submit">Submit Comment</button>
+                </form>
+            </div>
+
+            {/* Separate Rating Submission Form */}
+            <div className="rating-form">
+                <h2>Rate an Itinerary</h2>
+                <form onSubmit={handleRatingSubmit}>
+                    <div>
+                        <label htmlFor="itinerary-name">Itinerary Name:</label>
+                        <input 
+                            id="itinerary-name"
+                            type="text"
+                            value={itineraryName}
+                            onChange={(e) => setItineraryName(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    <div>
+                        <label htmlFor="rating">Rating (1-5):</label>
+                        <input 
+                            id="rating"
+                            type="number"
+                            value={rating}
+                            onChange={(e) => setRating(e.target.value)}
+                            min="1"
+                            max="5"
+                            required
+                        />
+                    </div>
+
+                    <button type="submit">Submit Rating</button>
                 </form>
             </div>
         </div>

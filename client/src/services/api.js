@@ -630,4 +630,18 @@ export const commentOnItinerary = async (touristEmail, itineraryName, comment) =
     }
 };
 
+// Function to rate an itinerary
+export const rateItinerary = async (touristEmail, itineraryName, rating) => {
+    try {
+        const response = await axios.post(`${API_URL}/rateItinerary`, {
+            Tourist_Email: touristEmail,
+            Itinerary_Name: itineraryName,
+            Rating: rating
+        });
+        return response.data; // Return the response data from the server
+    } catch (error) {
+        console.error('Error rating itinerary:', error);
+        throw error; // Rethrow the error for handling in the calling component
+    }
+};
 
