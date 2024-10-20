@@ -194,130 +194,161 @@ const TouristHome = () => {
             )}
 
             {/* Separate Comment Submission Form for Itineraries */}
-            <div className="comment-form">
-                <h2>Submit a Comment on an Itinerary</h2>
-                <form onSubmit={handleCommentSubmit}>
-                    <div>
-                        <label htmlFor="itinerary-name">Itinerary Name:</label>
-                        <input 
-                            id="itinerary-name"
-                            type="text"
-                            value={itineraryName}
-                            onChange={(e) => setItineraryName(e.target.value)}
-                            required
-                        />
-                    </div>
+            <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-md mt-8">
+    <div className="flex flex-col md:flex-row justify-between space-y-6 md:space-y-0 md:space-x-6">
+        
+        {/* Submit a Comment on an Itinerary */}
+        <div className="comment-form w-full md:w-1/2 bg-gray-50 p-4 rounded-lg shadow">
+            <h2 className="text-xl font-semibold mb-4 text-gray-800">Submit a Comment on an Itinerary</h2>
+            <form onSubmit={handleCommentSubmit}>
+                <div className="mb-4">
+                    <label htmlFor="itinerary-name" className="block text-gray-700 font-medium mb-2">Itinerary Name:</label>
+                    <input 
+                        id="itinerary-name"
+                        type="text"
+                        value={itineraryName}
+                        onChange={(e) => setItineraryName(e.target.value)}
+                        required
+                        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    />
+                </div>
 
-                    <div>
-                        <label htmlFor="comment">Comment:</label>
-                        <textarea
-                            id="comment"
-                            value={comment}
-                            onChange={(e) => setComment(e.target.value)}
-                            placeholder="Write your comment here..."
-                            rows="4"
-                            required
-                        ></textarea>
-                    </div>
+                <div className="mb-4">
+                    <label htmlFor="comment" className="block text-gray-700 font-medium mb-2">Comment:</label>
+                    <textarea
+                        id="comment"
+                        value={comment}
+                        onChange={(e) => setComment(e.target.value)}
+                        placeholder="Write your comment here..."
+                        rows="4"
+                        required
+                        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    ></textarea>
+                </div>
 
-                    <button type="submit">Submit Comment</button>
-                </form>
-            </div>
+                <button type="submit" className="w-full bg-indigo-500 text-white py-2 px-4 rounded-md hover:bg-indigo-600">
+                    Submit Comment
+                </button>
+            </form>
+        </div>
 
-            {/* Separate Rating Submission Form for Itineraries */}
-            <div className="rating-form">
-                <h2>Rate an Itinerary</h2>
-                <form onSubmit={handleItineraryRatingSubmit}>
-                    <div>
-                        <label htmlFor="itinerary-name">Itinerary Name:</label>
-                        <input 
-                            id="itinerary-name"
-                            type="text"
-                            value={itineraryName}
-                            onChange={(e) => setItineraryName(e.target.value)}
-                            required
-                        />
-                    </div>
+        {/* Rate an Itinerary */}
+        <div className="rating-form w-full md:w-1/2 bg-gray-50 p-4 rounded-lg shadow">
+            <h2 className="text-xl font-semibold mb-4 text-gray-800">Rate an Itinerary</h2>
+            <form onSubmit={handleItineraryRatingSubmit}>
+                <div className="mb-4">
+                    <label htmlFor="itinerary-name" className="block text-gray-700 font-medium mb-2">Itinerary Name:</label>
+                    <input 
+                        id="itinerary-name"
+                        type="text"
+                        value={itineraryName}
+                        onChange={(e) => setItineraryName(e.target.value)}
+                        required
+                        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    />
+                </div>
 
-                    <div>
-                        <label htmlFor="itinerary-rating">Rating (1-5):</label>
-                        <input 
-                            id="itinerary-rating"
-                            type="number"
-                            value={itineraryRating}
-                            onChange={(e) => setItineraryRating(e.target.value)}
-                            min="1"
-                            max="5"
-                            required
-                        />
-                    </div>
+                <div className="mb-4">
+                    <label htmlFor="itinerary-rating" className="block text-gray-700 font-medium mb-2">Rating (1-5):</label>
+                    <input 
+                        id="itinerary-rating"
+                        type="number"
+                        value={itineraryRating}
+                        onChange={(e) => setItineraryRating(e.target.value)}
+                        min="1"
+                        max="5"
+                        required
+                        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    />
+                </div>
 
-                    <button type="submit">Submit Rating</button>
-                </form>
-            </div>
+                <button type="submit" className="w-full bg-indigo-500 text-white py-2 px-4 rounded-md hover:bg-indigo-600">
+                    Submit Rating
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
 
             {/* Separate Rating Submission Form for Activities */}
-            <div className="rating-form">
-                <h2>Rate an Activity</h2>
-                <form onSubmit={handleActivityRatingSubmit}>
-                    <div>
-                        <label htmlFor="activity-name">Activity Name:</label>
-                        <input 
-                            id="activity-name"
-                            type="text"
-                            value={activityName}
-                            onChange={(e) => setActivityName(e.target.value)}
-                            required
-                        />
-                    </div>
+            <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-md mt-8">
+    <div className="flex flex-col md:flex-row justify-between space-y-6 md:space-y-0 md:space-x-6">
 
-                    <div>
-                        <label htmlFor="activity-rating">Rating (1-5):</label>
-                        <input 
-                            id="activity-rating"
-                            type="number"
-                            value={activityRating}
-                            onChange={(e) => setActivityRating(e.target.value)}
-                            min="1"
-                            max="5"
-                            required
-                        />
-                    </div>
+        {/* Submit a Comment on an Event */}
+        <div className="event-comment-form w-full md:w-1/2 bg-gray-50 p-4 rounded-lg shadow">
+            <h2 className="text-xl font-semibold mb-4 text-gray-800">Submit a Comment on an Event</h2>
+            <form onSubmit={handleEventCommentSubmit}>
+                <div className="mb-4">
+                    <label htmlFor="event-name" className="block text-gray-700 font-medium mb-2">Event Name:</label>
+                    <input 
+                        id="event-name"
+                        type="text"
+                        value={eventName}
+                        onChange={(e) => setEventName(e.target.value)}
+                        required
+                        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    />
+                </div>
 
-                    <button type="submit">Submit Activity Rating</button>
-                </form>
-            </div>
+                <div className="mb-4">
+                    <label htmlFor="event-comment" className="block text-gray-700 font-medium mb-2">Comment:</label>
+                    <textarea
+                        id="event-comment"
+                        value={eventComment}
+                        onChange={(e) => setEventComment(e.target.value)}
+                        placeholder="Write your comment on the event here..."
+                        rows="4"
+                        required
+                        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    ></textarea>
+                </div>
 
-            {/* New Form for Event Comment Submission */}
-            <div className="event-comment-form">
-                <h2>Submit a Comment on an Event</h2>
-                <form onSubmit={handleEventCommentSubmit}>
-                    <div>
-                        <label htmlFor="event-name">Event Name:</label>
-                        <input 
-                            id="event-name"
-                            type="text"
-                            value={eventName}
-                            onChange={(e) => setEventName(e.target.value)}
-                            required
-                        />
-                    </div>
+                <button type="submit" className="w-full bg-indigo-500 text-white py-2 px-4 rounded-md hover:bg-indigo-600">
+                    Submit Comment
+                </button>
+            </form>
+        </div>
 
-                    <div>
-                        <label htmlFor="event-comment">Comment:</label>
-                        <textarea
-                            id="event-comment"
-                            value={eventComment}
-                            onChange={(e) => setEventComment(e.target.value)}
-                            placeholder="Write your comment on the event here..."
-                            rows="4"
-                            required
-                        ></textarea>
-                    </div>
+        {/* Rate an Activity */}
+        <div className="rating-form w-full md:w-1/2 bg-gray-50 p-4 rounded-lg shadow">
+            <h2 className="text-xl font-semibold mb-4 text-gray-800">Rate an Activity</h2>
+            <form onSubmit={handleActivityRatingSubmit}>
+                <div className="mb-4">
+                    <label htmlFor="activity-name" className="block text-gray-700 font-medium mb-2">Activity Name:</label>
+                    <input 
+                        id="activity-name"
+                        type="text"
+                        value={activityName}
+                        onChange={(e) => setActivityName(e.target.value)}
+                        required
+                        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    />
+                </div>
 
-                    <button type="submit">Submit Comment</button>
-                </form>
-            </div>
+                <div className="mb-4">
+                    <label htmlFor="activity-rating" className="block text-gray-700 font-medium mb-2">Rating (1-5):</label>
+                    <input 
+                        id="activity-rating"
+                        type="number"
+                        value={activityRating}
+                        onChange={(e) => setActivityRating(e.target.value)}
+                        min="1"
+                        max="5"
+                        required
+                        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    />
+                </div>
+
+                <button type="submit" className="w-full bg-indigo-500 text-white py-2 px-4 rounded-md hover:bg-indigo-600">
+                    Submit Rating
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
         </div>
     );
 };
