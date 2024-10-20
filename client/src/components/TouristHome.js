@@ -11,8 +11,11 @@ const TouristHome = () => {
     const [email, setEmail] = useState('');
     const [itineraryName, setItineraryName] = useState('');
     const [comment, setComment] = useState('');
-    const [rating, setRating] = useState('');
     const [activityName, setActivityName] = useState('');
+
+    // Separate rating states for itinerary and activity
+    const [itineraryRating, setItineraryRating] = useState(''); // State for itinerary rating
+    const [activityRating, setActivityRating] = useState(''); // State for activity rating
 
     // New state variables for event comments
     const [eventName, setEventName] = useState(''); // State for the event name
@@ -72,17 +75,17 @@ const TouristHome = () => {
     };
 
     // Handle rating submission for itineraries
-    const handleRatingSubmit = async (e) => {
+    const handleItineraryRatingSubmit = async (e) => {
         e.preventDefault();
         try {
-            const result = await rateItinerary(email, itineraryName, rating);
-            console.log('Rating submitted:', result);
+            const result = await rateItinerary(email, itineraryName, itineraryRating);
+            console.log('Itinerary rating submitted:', result);
             setItineraryName('');
-            setRating('');
-            alert('Rating submitted successfully!');
+            setItineraryRating(''); // Reset the itinerary rating input
+            alert('Itinerary rating submitted successfully!');
         } catch (error) {
-            console.error('Error submitting rating:', error);
-            setError('Failed to submit the rating. Please try again later.');
+            console.error('Error submitting itinerary rating:', error);
+            setError('Failed to submit the itinerary rating. Please try again later.');
         }
     };
 
@@ -90,14 +93,14 @@ const TouristHome = () => {
     const handleActivityRatingSubmit = async (e) => {
         e.preventDefault();
         try {
-            const result = await rateActivity(email, activityName, rating);
+            const result = await rateActivity(email, activityName, activityRating);
             console.log('Activity rating submitted:', result);
             setActivityName('');
-            setRating('');
+            setActivityRating(''); // Reset the activity rating input
             alert('Activity rating submitted successfully!');
         } catch (error) {
             console.error('Error submitting activity rating:', error);
-            setError('Failed to submit the rating. Please try again later.');
+            setError('Failed to submit the activity rating. Please try again later.');
         }
     };
 
@@ -224,7 +227,7 @@ const TouristHome = () => {
             {/* Separate Rating Submission Form for Itineraries */}
             <div className="rating-form">
                 <h2>Rate an Itinerary</h2>
-                <form onSubmit={handleRatingSubmit}>
+                <form onSubmit={handleItineraryRatingSubmit}>
                     <div>
                         <label htmlFor="itinerary-name">Itinerary Name:</label>
                         <input 
@@ -237,12 +240,12 @@ const TouristHome = () => {
                     </div>
 
                     <div>
-                        <label htmlFor="rating">Rating (1-5):</label>
+                        <label htmlFor="itinerary-rating">Rating (1-5):</label>
                         <input 
-                            id="rating"
+                            id="itinerary-rating"
                             type="number"
-                            value={rating}
-                            onChange={(e) => setRating(e.target.value)}
+                            value={itineraryRating}
+                            onChange={(e) => setItineraryRating(e.target.value)}
                             min="1"
                             max="5"
                             required
@@ -269,19 +272,19 @@ const TouristHome = () => {
                     </div>
 
                     <div>
-                        <label htmlFor="rating">Rating (1-5):</label>
+                        <label htmlFor="activity-rating">Rating (1-5):</label>
                         <input 
-                            id="rating"
+                            id="activity-rating"
                             type="number"
-                            value={rating}
-                            onChange={(e) => setRating(e.target.value)}
+                            value={activityRating}
+                            onChange={(e) => setActivityRating(e.target.value)}
                             min="1"
                             max="5"
                             required
                         />
                     </div>
 
-                    <button type="submit">Submit Rating</button>
+                    <button type="submit">Submit Activity Rating</button>
                 </form>
             </div>
 

@@ -2629,18 +2629,18 @@ const rateActivity = async (req, res) => {
 
 // Function to add or update a comment on an attended event/activity
 const commentOnEvent = async (req, res) => {
-    const { Tourist_Email, Activity_Name, comment } = req.body;
+    const { Tourist_Email, Activity_Name, Comment } = req.body;
 
     try {
         // Validate input
-        if (!Tourist_Email || !Activity_Name || !comment  ) {
+        if (!Tourist_Email || !Activity_Name || !Comment  ) {
             return res.status(400).json({ error: 'Tourist_Email, Activity_Name, and comment are required.' });
         }
 
         // Find the activity and update the comment
         const updatedActivity = await tourist_activities.findOneAndUpdate(
             { Tourist_Email, Activity_Name },
-            { comment }, // Overwrite existing comment
+            { Comment }, // Overwrite existing comment
             { new: true, runValidators: true } // Return the updated document and run validators
         );
 
@@ -2655,6 +2655,7 @@ const commentOnEvent = async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 };
+
 
 const productRateReview = async (req, res) => {
     const { Tourist_Email, Product_Name, Review, Rating } = req.body;

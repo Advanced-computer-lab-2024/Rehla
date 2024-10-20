@@ -659,12 +659,12 @@ export const rateActivity = async (touristEmail, activityName, rating) => {
     }
 };
 
-export const commentOnEvent = async (touristEmail, activityName, comment) => {
+export const commentOnEvent = async (touristEmail, activityName, Comment) => {
     try {
         const response = await axios.post(`${API_URL}/commentOnEvent`, {
             Tourist_Email: touristEmail,
             Activity_Name: activityName,
-            comment
+            Comment
         });
         return response.data; // Return the response data from the server
     } catch (error) {
