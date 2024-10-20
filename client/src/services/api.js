@@ -616,4 +616,18 @@ export const updateActivityByAdvertiser = async (activityData) => {
         }
     }
 };
+export const commentOnItinerary = async (touristEmail, itineraryName, comment) => {
+    try {
+        const response = await axios.post(`${API_URL}/commentOnItinerary`, {
+            Tourist_Email: touristEmail,
+            Itinerary_Name: itineraryName,
+            Comment: comment,
+        });
+        return response.data; // Return the updated itinerary with the comment
+    } catch (error) {
+        console.error('Error commenting on itinerary:', error);
+        throw error; // Rethrow the error for handling in the calling component
+    }
+};
+
 

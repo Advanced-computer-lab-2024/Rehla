@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../images/logo.png';
-import { searchEventsPlaces } from '../services/api';
+import { searchEventsPlaces, commentOnItinerary } from '../services/api'; // Import the function
 
 const TouristHome = () => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -9,6 +9,8 @@ const TouristHome = () => {
     const [isSearched, setIsSearched] = useState(false);
     const [error, setError] = useState(null); // State for holding error messages
     const [email, setEmail] = useState(''); // Store email from localStorage
+    const [itineraryName, setItineraryName] = useState(''); // Separate itinerary name for comment form
+    const [comment, setComment] = useState(''); // Separate comment for comment form
 
     // Fetch email from localStorage on component mount
     useEffect(() => {
@@ -38,6 +40,23 @@ const TouristHome = () => {
         }
     };
 
+    const handleCommentSubmit = async (e) => {
+        e.preventDefault(); // Prevent form from refreshing
+        setError(null); // Reset the error message
+
+        try {
+            const result = await commentOnItinerary(email, itineraryName, comment); // Submit the comment
+            console.log('Comment submitted:', result);
+
+            setItineraryName(''); // Reset the itinerary input
+            setComment(''); // Reset the comment input
+            alert('Comment added successfully!'); // Display a success message
+        } catch (error) {
+            console.error('Error adding comment:', error);
+            setError('Failed to submit the comment. Please try again later.');
+        }
+    };
+
     return (
         <div>
             <div className="NavBar">
@@ -55,6 +74,7 @@ const TouristHome = () => {
                 </nav>
             </div>
 
+            {/* Search Section */}
             <div className="search">
                 <label htmlFor="search-bar" style={{ marginRight: '10px' }}>Search Events/Places:</label>
                 <form onSubmit={handleSearch} className="search-bar">
@@ -125,6 +145,37 @@ const TouristHome = () => {
                     )}
                 </div>
             )}
+
+            {/* Separate Comment Submission Form */}
+            <div className="comment-form">
+                <h2>Submit a Comment on an Itinerary</h2>
+                <form onSubmit={handleCommentSubmit}>
+                    <div>
+                        <label htmlFor="itinerary-name">Itinerary Name:</label>
+                        <input 
+                            id="itinerary-name"
+                            type="text"
+                            value={itineraryName}
+                            onChange={(e) => setItineraryName(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    <div>
+                        <label htmlFor="comment">Comment:</label>
+                        <textarea
+                            id="comment"
+                            value={comment}
+                            onChange={(e) => setComment(e.target.value)}
+                            placeholder="Write your comment here..."
+                            rows="4"
+                            required
+                        ></textarea>
+                    </div>
+
+                    <button type="submit">Submit Comment</button>
+                </form>
+            </div>
         </div>
     );
 };
