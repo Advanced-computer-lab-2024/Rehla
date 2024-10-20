@@ -1,95 +1,103 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../images/logo.png';
-import { searchEventsPlaces, commentOnItinerary, rateItinerary, rateActivity } from '../services/api'; // Import the rateActivity function
+import { searchEventsPlaces, commentOnItinerary, rateItinerary, rateActivity, commentOnEvent } from '../services/api'; // Import the commentOnEvent function
 
 const TouristHome = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [searchResults, setSearchResults] = useState({});
     const [isSearched, setIsSearched] = useState(false);
-    const [error, setError] = useState(null); // State for holding error messages
-    const [email, setEmail] = useState(''); // Store email from localStorage
-    const [itineraryName, setItineraryName] = useState(''); // Separate itinerary name for comment form
-    const [comment, setComment] = useState(''); // Separate comment for comment form
-    const [rating, setRating] = useState(''); // State for rating input
-    const [activityName, setActivityName] = useState(''); // State for activity name to rate
+    const [error, setError] = useState(null);
+    const [email, setEmail] = useState('');
+    const [itineraryName, setItineraryName] = useState('');
+    const [comment, setComment] = useState('');
+    const [rating, setRating] = useState('');
+    const [activityName, setActivityName] = useState('');
+
+    // New state variables for event comments
+    const [eventName, setEventName] = useState(''); // State for the event name
+    const [eventComment, setEventComment] = useState(''); // State for the event comment
 
     // Fetch email from localStorage on component mount
     useEffect(() => {
-        const storedEmail = localStorage.getItem('email'); // Retrieve the stored email
+        const storedEmail = localStorage.getItem('email');
         if (storedEmail) {
             setEmail(storedEmail);
         }
     }, []);
 
-    const handleSearch = async (e) => {
-        e.preventDefault();
-        setError(null); // Reset error state before each search
-        console.log(email);
-        try {
-            const results = await searchEventsPlaces(searchTerm); // Call the API function
-            console.log("API Response:", results); // Log the API response
-
-            if (results) {
-                setSearchResults(results); // Set the state with the results
-                setIsSearched(true); // Indicate that a search has been performed
-            } else {
-                console.log("No results found");
-            }
-        } catch (error) {
-            console.error("Error fetching search results:", error);
-            setError('Error fetching search results. Please try again later.'); // Set error message
-        }
-    };
-
-    const handleCommentSubmit = async (e) => {
+    // Handle event comment submission
+    const handleEventCommentSubmit = async (e) => {
         e.preventDefault(); // Prevent form from refreshing
         setError(null); // Reset the error message
 
         try {
-            const result = await commentOnItinerary(email, itineraryName, comment); // Submit the comment
-            console.log('Comment submitted:', result);
+            const result = await commentOnEvent(email, eventName, eventComment); // Submit the comment on the event
+            console.log('Event comment submitted:', result);
 
-            setItineraryName(''); // Reset the itinerary input
-            setComment(''); // Reset the comment input
+            setEventName(''); // Reset the event name input
+            setEventComment(''); // Reset the event comment input
             alert('Comment added successfully!'); // Display a success message
         } catch (error) {
-            console.error('Error adding comment:', error);
+            console.error('Error adding event comment:', error);
             setError('Failed to submit the comment. Please try again later.');
         }
     };
 
-    const handleRatingSubmit = async (e) => {
-        e.preventDefault(); // Prevent form from refreshing
-        setError(null); // Reset error state
-
+    // Handle search submission
+    const handleSearch = async (e) => {
+        e.preventDefault();
         try {
-            const result = await rateItinerary(email, itineraryName, rating); // Submit the rating
-            console.log('Rating submitted:', result);
+            const result = await searchEventsPlaces(searchTerm);
+            setSearchResults(result);
+            setIsSearched(true);
+        } catch (err) {
+            setError('Search failed. Please try again later.');
+        }
+    };
 
-            setItineraryName(''); // Reset the itinerary input
-            setRating(''); // Reset the rating input
-            alert('Rating added successfully!'); // Display a success message
+    // Handle comment submission for itineraries
+    const handleCommentSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const result = await commentOnItinerary(email, itineraryName, comment);
+            console.log('Comment submitted:', result);
+            setItineraryName('');
+            setComment('');
+            alert('Comment submitted successfully!');
         } catch (error) {
-            console.error('Error adding rating:', error);
+            console.error('Error submitting comment:', error);
+            setError('Failed to submit the comment. Please try again later.');
+        }
+    };
+
+    // Handle rating submission for itineraries
+    const handleRatingSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const result = await rateItinerary(email, itineraryName, rating);
+            console.log('Rating submitted:', result);
+            setItineraryName('');
+            setRating('');
+            alert('Rating submitted successfully!');
+        } catch (error) {
+            console.error('Error submitting rating:', error);
             setError('Failed to submit the rating. Please try again later.');
         }
     };
 
+    // Handle rating submission for activities
     const handleActivityRatingSubmit = async (e) => {
-        e.preventDefault(); // Prevent form from refreshing
-        setError(null); // Reset error state
-
+        e.preventDefault();
         try {
-            const result = await rateActivity(email, activityName, rating); // Submit the activity rating
+            const result = await rateActivity(email, activityName, rating);
             console.log('Activity rating submitted:', result);
-
-            setActivityName(''); // Reset the activity input
-            setRating(''); // Reset the rating input
-            alert('Activity rated successfully!'); // Display a success message
+            setActivityName('');
+            setRating('');
+            alert('Activity rating submitted successfully!');
         } catch (error) {
-            console.error('Error adding activity rating:', error);
-            setError('Failed to submit the activity rating. Please try again later.');
+            console.error('Error submitting activity rating:', error);
+            setError('Failed to submit the rating. Please try again later.');
         }
     };
 
@@ -126,7 +134,7 @@ const TouristHome = () => {
                 </form>
             </div>
 
-            {error && <div className="error-message" style={{ color: 'red' }}>{error}</div>} {/* Display error message */}
+            {error && <div className="error-message" style={{ color: 'red' }}>{error}</div>}
 
             {isSearched && searchResults && (
                 <div className="search-results">
@@ -182,7 +190,7 @@ const TouristHome = () => {
                 </div>
             )}
 
-            {/* Separate Comment Submission Form */}
+            {/* Separate Comment Submission Form for Itineraries */}
             <div className="comment-form">
                 <h2>Submit a Comment on an Itinerary</h2>
                 <form onSubmit={handleCommentSubmit}>
@@ -273,7 +281,38 @@ const TouristHome = () => {
                         />
                     </div>
 
-                    <button type="submit">Submit Activity Rating</button>
+                    <button type="submit">Submit Rating</button>
+                </form>
+            </div>
+
+            {/* New Form for Event Comment Submission */}
+            <div className="event-comment-form">
+                <h2>Submit a Comment on an Event</h2>
+                <form onSubmit={handleEventCommentSubmit}>
+                    <div>
+                        <label htmlFor="event-name">Event Name:</label>
+                        <input 
+                            id="event-name"
+                            type="text"
+                            value={eventName}
+                            onChange={(e) => setEventName(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    <div>
+                        <label htmlFor="event-comment">Comment:</label>
+                        <textarea
+                            id="event-comment"
+                            value={eventComment}
+                            onChange={(e) => setEventComment(e.target.value)}
+                            placeholder="Write your comment on the event here..."
+                            rows="4"
+                            required
+                        ></textarea>
+                    </div>
+
+                    <button type="submit">Submit Comment</button>
                 </form>
             </div>
         </div>

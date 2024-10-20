@@ -222,7 +222,7 @@ app.post("/commentTourGuide", commentTourGuide);
 app.post('/rateItinerary', rateItinerary);
 app.post("/commentOnItinerary", commentOnItinerary);
 app.post("/rateActivity", rateActivity);
-app.put("/commentOnEvent/:itineraryName/:touristEmail", commentOnEvent);
+app.post("/commentOnEvent", commentOnEvent);
 app.put("/productRateReview" , productRateReview);
 
 app.get("/getMyComplaints" ,getMyComplaints);

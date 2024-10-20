@@ -658,3 +658,17 @@ export const rateActivity = async (touristEmail, activityName, rating) => {
         throw error; // Rethrow the error for handling in the calling component
     }
 };
+
+export const commentOnEvent = async (touristEmail, activityName, comment) => {
+    try {
+        const response = await axios.post(`${API_URL}/commentOnEvent`, {
+            Tourist_Email: touristEmail,
+            Activity_Name: activityName,
+            comment
+        });
+        return response.data; // Return the response data from the server
+    } catch (error) {
+        console.error('Error commenting on event:', error);
+        throw error; // Rethrow the error for handling in the calling component
+    }
+};
