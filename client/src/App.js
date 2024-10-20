@@ -26,8 +26,6 @@ import TourisimGovernerPlaces from'./components/TourisimGovernerPlaces.js'
 import ProductList from './components/ProductList';
 import AdminProductList from './components/AdminProductList';
 import SellerProductList from './components/SellerProductList';
-
-import AdvertiserActivities from './components/AdvertiserActivities.js';
 import CreateTag from './components/CreateTag.js';
 import TourGuideItineraries from './components/TourGuideItineraries.js'
 
@@ -61,7 +59,6 @@ function App() {
 
                 <Route path="/Adminproducts" element={<AdminProductList />} />
                 <Route path="/Sellerproducts" element={<SellerProductList />} />
-                <Route path="/AdvertiserActivities" element={<AdvertiserActivities />} />
                 <Route path="/MyPlaces" element={<TourisimGovernerPlaces />} />
                 <Route path="/CreateTag" element={<CreateTag />} />
                 <Route path="/TourGuideItineraries" element={<TourGuideItineraries />} />
