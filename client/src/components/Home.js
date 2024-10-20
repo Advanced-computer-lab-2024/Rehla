@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getAllUpcomingEventsAndPlaces, sortActivities, sortItineraries, filterActivities, filterItineraries } from '../services/api';
 import logo from '../images/logo.png';
-import img1 from '../images/img2.jpg';
+import img1 from '../images/img10.jpg';
+import img2 from '../images/img4.jpg';
 
 const Home = () => {
     const [data, setData] = useState(null);
@@ -103,44 +104,46 @@ const Home = () => {
 
     return (
         <div className="bg-white shadow-md">
-            <div className="w-full mx-auto px-6 py-4 bg-brandBlue flex justify-between items-center">
+            <div className="w-full mx-auto px-6 py-4 h-20 bg-white shadow flex justify-between items-center">
                 {/* Logo */}
                 <img src={logo} alt="Logo" className="w-20" />
 
                 {/* Main Navigation */}
                 <nav className="flex space-x-6">
-                    <Link to="/" className="text-lg font-medium text-white-700 hover:text-blue-500">
+                    <Link to="/" className="text-lg font-medium text-black hover:text-blue-500">
                         Home
                     </Link>
-                    <Link to="/eventsplaces" className="text-lg font-medium text-white-700 hover:text-blue-500">
+                    <Link to="/eventsplaces" className="text-lg font-medium text-black hover:text-blue-500">
                         Events/Places
                     </Link>
                 </nav>
 
                 {/* Sign In/Sign Up Navigation */}
                 <nav className="flex space-x-6">
-                    <Link to="/signin" className="text-lg font-medium text-white-700 hover:text-blue-500">
+                    <Link to="/signin" className="text-lg font-medium text-black hover:text-blue-500">
                         Sign in
                     </Link>
-                    <Link to="/signup" className="text-lg font-medium text-white-700 hover:text-blue-500">
+                    <Link to="/signup" className="text-lg font-medium text-black hover:text-blue-500">
                         Sign up
                     </Link>
                 </nav>
             </div>
 
-            <div
-                className="flex justify-center items-center py-6 h-96 bg-cover bg-center"
-                style={{ backgroundImage: `url(${img1})` }}
-            >
-                <div className="bg-black bg-opacity-30 w-full h-full flex items-center justify-center">
-                    <h1 className="text-white text-2xl">See The World One REHLA At A Time!</h1>
+            <div className="p-8 rounded"> {/* Add padding here */}
+                <div
+                    className="flex justify-center items-center rounded h-96 bg-cover bg-center"
+                    style={{ backgroundImage: `url(${img1})` }}
+                >
+                    <div className="bg-black bg-opacity-30 w-full h-full rounded flex items-center justify-center">
+                        <h1 className="text-white text-2xl">See The World One REHLA At A Time!</h1>
+                    </div>
                 </div>
             </div>
 
             {/* Activity Filters and Sort */}
             <section className="mb-10">
-                <h2 className="text-2xl font-semibold mb-4">Upcoming Activities</h2>
-                <form onSubmit={handleFilterActivities} className="mb-4">
+                <h2 className="text-2xl font-semibold mb-4 text-center">Upcoming Activities</h2>
+                <form onSubmit={handleFilterActivities} className="mb-4 ml-10">
                     <select
                         value={activityFilterType}
                         onChange={handleActivityFilterChange}
@@ -218,7 +221,7 @@ const Home = () => {
                     <button type="submit" className="bg-brandBlue text-white px-3 py-1 rounded">Filter Activities</button>
                     <button onClick={() => handleSortActivities('price')} className="bg-green-500 text-white px-3 py-1 rounded ml-2">Sort by Price</button>
                 </form>
-                <div className="flex overflow-x-auto scrollbar-hide gap-6 px-6 py-4">
+                <div className="flex overflow-x-auto scrollbar-hide px-6 py-4">
                     {activitiesToDisplay.map((activity) => (
                         <div
                         key={activity._id}
@@ -227,7 +230,7 @@ const Home = () => {
                         <img
                             src={activity.Picture}
                             alt={activity.Name}
-                            className="w-80 h-80 object-cover rounded duration-300 ease-in-out hover:scale-105"
+                            className="w-72 h-72 object-cover rounded duration-300 ease-in-out hover:scale-105"
                         />
                         <div className="text-md font-medium text-center mt-2">{activity.Name}</div>
                         <div className="text-sm text-gray-700">
@@ -238,10 +241,22 @@ const Home = () => {
                 </div>
             </section>
 
+            <section className="flex justify-between items-center mb-10 p-8 ml-10">
+                <div className="flex-1 pr-4">
+                    <h2 className="text-2xl font-semibold mb-2">Discover Amazing Experiences</h2>
+                    <p className="text-gray-700">
+                        Experience the best attractions and activities in your area. From exciting adventures to serene cultural experiences, we have something for everyone. Join us to explore, learn, and create unforgettable memories!
+                    </p>
+                </div>
+                <div className="flex-none -mr-10"> {/* Added margin-left to the image container */}
+                    <img src={img2} alt="Experience" className="w-4/5 h-auto rounded shadow-lg" />
+                </div>
+            </section>
+
             {/* Itinerary Filters and Sort */}
             <section className="mb-10">
-                <h2 className="text-2xl font-semibold mb-4">Upcoming Itineraries</h2>
-                <form onSubmit={handleFilterItineraries} className="mb-4">
+                <h2 className="text-2xl font-semibold mb-4 text-center">Upcoming Itineraries</h2>
+                <form onSubmit={handleFilterItineraries} className="mb-4 ml-10">
                     <select
                         value={itineraryFilterType}
                         onChange={handleItineraryFilterChange}
@@ -282,21 +297,14 @@ const Home = () => {
                         />
                     )}
 
-                    {itineraryFilterType === 'Preference Tag' && (
-                        <select
+                    {itineraryFilterType === 'preferences' && (
+                        <input
+                            type="text"
+                            placeholder="Preferences"
                             value={itineraryFilters.preferences}
                             onChange={(e) => setItineraryFilters({ ...itineraryFilters, preferences: e.target.value })}
                             className="border rounded p-1 mx-1"
-                        >
-                            <option value="">Select Preference</option>
-                            <option value="Historic Areas">Historic Areas</option>
-                            <option value="Beaches">Beaches</option>
-                            <option value="Family-Friendly">Family-Friendly</option>
-                            <option value="Shopping">Shopping</option>
-                            <option value="Budget-Friendly">Budget-Friendly</option>
-                           
-                        
-                        </select>
+                        />
                     )}
 
                     {itineraryFilterType === 'date' && (
@@ -319,22 +327,62 @@ const Home = () => {
                     <button type="submit" className="bg-brandBlue text-white px-3 py-1 rounded">Filter Itineraries</button>
                     <button onClick={() => handleSortItineraries('price')} className="bg-green-500 text-white px-3 py-1 rounded ml-2">Sort by Price</button>
                 </form>
-                <div className="flex overflow-x-auto gap-6 px-6 py-4">
+                <div className="flex overflow-x-auto scrollbar-hide gap-6 px-6 py-4">
                     {itinerariesToDisplay.map((itinerary) => (
                         <div
                             key={itinerary._id}
-                            className="gallery-item flex flex-col items-center bg-gray-100 p-4 rounded shadow w-80"
+                            className="bg-gray-100 p-4 rounded shadow w-80 flex-none flex flex-col items-center"
                         >
                             <div className="text-md font-medium text-center">{itinerary.Itinerary_Name}</div>
                             <div className="text-sm text-gray-700 mt-2">
-                                <span className="font-semibold">${itinerary.Tour_Price}</span> - Rating: {itinerary.Rating}
+                                <span className="font-semibold">Price: ${itinerary.Tour_Price}</span>
+                                <br />
+                                <span>Duration: {itinerary.Duration}</span>
                             </div>
                         </div>
                     ))}
                 </div>
             </section>
+
+            {/* Museums and Historical Places Section */}
+            <section className="mb-10">
+                <h2 className="text-2xl font-semibold mb-4 text-center">Museums and Historical Places</h2>
+                <div className="flex overflow-x-auto scrollbar-hide gap-6 px-6 py-4">
+                    {data.museums.map((museum) => (
+                        <div key={museum._id} className="bg-gray-100 p-4 rounded shadow w-80 flex-none flex flex-col items-center">
+                            <div className="text-md font-medium text-center">{museum.Name}</div>
+                            <div className="text-sm text-gray-700">
+                                <span className="font-semibold">Location: {museum.Location}</span>
+                                <br />
+                                <span>Opening Hours: {museum.Opening_Hours}</span>
+                                <br />
+                                <span>Ticket Prices: ${museum.Ticket_Prices}</span>
+                            </div>
+                        </div>
+                    ))}
+                    {data.historicalPlaces.map((place) => (
+                        <div key={place._id} className="bg-gray-100 p-4 rounded shadow w-80 flex-none flex flex-col items-center">
+                            <div className="text-md font-medium text-center">{place.Name}</div>
+                            <div className="text-sm text-gray-700">
+                                <span className="font-semibold">Location: {place.Location}</span>
+                                <br />
+                                <span>Opening Hours: {place.Opening_Time} - {place.Closing_Time}</span>
+                                <br />
+                                <span>Ticket Prices: ${place.Ticket_Prices}</span>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </section>
+
+
+            <footer className="bg-brandBlue text-white py-6 text-center">
+                <p>&copy; {new Date().getFullYear()} Rehla. All rights reserved.</p>
+            </footer>
         </div>
     );
 };
 
 export default Home;
+
+                
