@@ -3462,28 +3462,6 @@ const Itineraryactivation = async (req, res) => {
         res.status(500).json({ error: 'Error updating itinerary', details: error.message });
     }
 };
-const commentOnActivity = async (req, res) => {
-    try {
-        const { activityName } = req.params; // Get the activity name from the route parameters
-        const { Tourist_Email, Comment } = req.body; // Destructure the request body
-
-        // Find the activity and update the comment
-        const activity = await tourist_activities.findOneAndUpdate(
-            { Activity_Name: activityName, Tourist_Email }, // Find the activity by name and tourist email
-            { Comment }, // Update the comment
-            { new: true } // Return the updated document
-        );
-
-        if (!activity) {
-            return res.status(404).json({ message: "Activity not found or not attended by the tourist." });
-        }
-
-        return res.status(200).json({ message: "Comment added successfully!", activity });
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: "Error adding comment.", error });
-    }
-};
 
 
 // ----------------- Activity Category CRUD -------------------
@@ -3587,5 +3565,5 @@ module.exports = {
     uploadGuestDocuments,
     uploadProfilePicture,
     Itineraryactivation,
-    commentOnActivity
+    
 };

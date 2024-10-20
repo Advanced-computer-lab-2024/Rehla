@@ -101,7 +101,6 @@ const {createUserAdmin,
   uploadGuestDocuments,
   uploadProfilePicture,
   Itineraryactivation,
-  commentOnActivity
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -235,5 +234,4 @@ app.put("/payForTouristActivity",payForTouristActivity);
 app.delete("/deleteTouristActivity",deleteTouristActivity);
 app.post("/uploadGuestDocuments", uploadGuestDocuments);
 app.post("/uploadProfilePicture", uploadProfilePicture);
-app.put("/commentOnActivity/:activityName", commentOnActivity); // Route for commenting on an activity
 app.put("/Itineraryactivation", Itineraryactivation);
