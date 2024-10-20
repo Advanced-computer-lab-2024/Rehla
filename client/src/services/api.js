@@ -645,3 +645,16 @@ export const rateItinerary = async (touristEmail, itineraryName, rating) => {
     }
 };
 
+export const rateActivity = async (touristEmail, activityName, rating) => {
+    try {
+        const response = await axios.post(`${API_URL}/rateActivity`, {
+            Tourist_Email: touristEmail,
+            Activity_Name: activityName,
+            Rating: rating
+        });
+        return response.data; // Return the response data from the server
+    } catch (error) {
+        console.error('Error rating activity:', error.response ? error.response.data : error);
+        throw error; // Rethrow the error for handling in the calling component
+    }
+};

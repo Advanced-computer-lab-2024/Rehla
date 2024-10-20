@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../images/logo.png';
-import { searchEventsPlaces, commentOnItinerary, rateItinerary } from '../services/api'; // Import the rateItinerary function
+import { searchEventsPlaces, commentOnItinerary, rateItinerary, rateActivity } from '../services/api'; // Import the rateActivity function
 
 const TouristHome = () => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -12,6 +12,7 @@ const TouristHome = () => {
     const [itineraryName, setItineraryName] = useState(''); // Separate itinerary name for comment form
     const [comment, setComment] = useState(''); // Separate comment for comment form
     const [rating, setRating] = useState(''); // State for rating input
+    const [activityName, setActivityName] = useState(''); // State for activity name to rate
 
     // Fetch email from localStorage on component mount
     useEffect(() => {
@@ -75,6 +76,23 @@ const TouristHome = () => {
         }
     };
 
+    const handleActivityRatingSubmit = async (e) => {
+        e.preventDefault(); // Prevent form from refreshing
+        setError(null); // Reset error state
+
+        try {
+            const result = await rateActivity(email, activityName, rating); // Submit the activity rating
+            console.log('Activity rating submitted:', result);
+
+            setActivityName(''); // Reset the activity input
+            setRating(''); // Reset the rating input
+            alert('Activity rated successfully!'); // Display a success message
+        } catch (error) {
+            console.error('Error adding activity rating:', error);
+            setError('Failed to submit the activity rating. Please try again later.');
+        }
+    };
+
     return (
         <div>
             <div className="NavBar">
@@ -126,10 +144,10 @@ const TouristHome = () => {
                         </div>
                     )}
 
-                    {searchResults.historicalPlaces && searchResults.historicalPlaces.name.length > 0 && (
+                    {searchResults.historicalPlaces && searchResults.historicalPlaces.length > 0 && (
                         <div>
                             <h3>Historical Places:</h3>
-                            {searchResults.historicalPlaces.name.map(place => (
+                            {searchResults.historicalPlaces.map(place => (
                                 <div key={place._id}>
                                     <h4>{place.Name}</h4>
                                     <p>{place.Description}</p>
@@ -138,10 +156,10 @@ const TouristHome = () => {
                         </div>
                     )}
 
-                    {searchResults.activities && searchResults.activities.name.length > 0 && (
+                    {searchResults.activities && searchResults.activities.length > 0 && (
                         <div>
                             <h3>Activities:</h3>
-                            {searchResults.activities.name.map(activity => (
+                            {searchResults.activities.map(activity => (
                                 <div key={activity._id}>
                                     <h4>{activity.Name}</h4>
                                     <p>{activity.Description}</p>
@@ -195,7 +213,7 @@ const TouristHome = () => {
                 </form>
             </div>
 
-            {/* Separate Rating Submission Form */}
+            {/* Separate Rating Submission Form for Itineraries */}
             <div className="rating-form">
                 <h2>Rate an Itinerary</h2>
                 <form onSubmit={handleRatingSubmit}>
@@ -224,6 +242,38 @@ const TouristHome = () => {
                     </div>
 
                     <button type="submit">Submit Rating</button>
+                </form>
+            </div>
+
+            {/* Separate Rating Submission Form for Activities */}
+            <div className="rating-form">
+                <h2>Rate an Activity</h2>
+                <form onSubmit={handleActivityRatingSubmit}>
+                    <div>
+                        <label htmlFor="activity-name">Activity Name:</label>
+                        <input 
+                            id="activity-name"
+                            type="text"
+                            value={activityName}
+                            onChange={(e) => setActivityName(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    <div>
+                        <label htmlFor="rating">Rating (1-5):</label>
+                        <input 
+                            id="rating"
+                            type="number"
+                            value={rating}
+                            onChange={(e) => setRating(e.target.value)}
+                            min="1"
+                            max="5"
+                            required
+                        />
+                    </div>
+
+                    <button type="submit">Submit Activity Rating</button>
                 </form>
             </div>
         </div>
