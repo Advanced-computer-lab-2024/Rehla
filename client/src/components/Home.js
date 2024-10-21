@@ -4,6 +4,7 @@ import { getAllUpcomingEventsAndPlaces, sortActivities, sortItineraries, filterA
 import logo from '../images/logo.png';
 import img1 from '../images/img10.jpg';
 import img2 from '../images/img4.jpg';
+import img3 from '../images/img3.jpg';
 
 const Home = () => {
     const [data, setData] = useState(null);
@@ -104,26 +105,26 @@ const Home = () => {
 
     return (
         <div className="bg-white shadow-md">
-            <div className="w-full mx-auto px-6 py-4 h-20 bg-white shadow flex justify-between items-center">
+            <div className="w-full mx-auto px-6 py-4 h-20 bg-brandBlue shadow flex justify-between items-center">
                 {/* Logo */}
                 <img src={logo} alt="Logo" className="w-20" />
 
                 {/* Main Navigation */}
                 <nav className="flex space-x-6">
-                    <Link to="/" className="text-lg font-medium text-black hover:text-blue-500">
+                    <Link to="/" className="text-lg font-medium text-white-700 hover:text-blue-500">
                         Home
                     </Link>
-                    <Link to="/eventsplaces" className="text-lg font-medium text-black hover:text-blue-500">
+                    <Link to="/eventsplaces" className="text-lg font-medium text-white-700 hover:text-blue-500">
                         Events/Places
                     </Link>
                 </nav>
 
                 {/* Sign In/Sign Up Navigation */}
                 <nav className="flex space-x-6">
-                    <Link to="/signin" className="text-lg font-medium text-black hover:text-blue-500">
+                    <Link to="/signin" className="text-lg font-medium text-white-700 hover:text-blue-500">
                         Sign in
                     </Link>
-                    <Link to="/signup" className="text-lg font-medium text-black hover:text-blue-500">
+                    <Link to="/signup" className="text-lg font-medium text-white-700 hover:text-blue-500">
                         Sign up
                     </Link>
                 </nav>
@@ -346,16 +347,35 @@ const Home = () => {
                     ))}
                 </div>
             </section>
+            <section className="flex justify-between items-center mb-10 p-8 ml-10">
+                
+                <div className="flex-none -mr-10"> {/* Added margin-left to the image container */}
+                    <img src={img3} alt="Experience" className="w-4/5 h-auto rounded shadow-lg" />
+                </div>
+                <div className="flex-1 pr-4">
+                    <h2 className="text-2xl font-semibold mb-2">Explore Fascinating Museums and Historical Places</h2>
+                    <p className="text-gray-700">
+                    Discover the rich history and culture around you by visiting captivating museums and iconic historical landmarks. From ancient 
+                    artifacts to timeless architecture, these destinations offer a journey through time, filled with stories of the past and heritage. 
+                    Whether you're a history enthusiast or just curious, immerse yourself in unique experiences that will inspire, educate, and leave you with lasting memories!
+                    </p>
+                </div>
+            </section>
 
             {/* Museums and Historical Places Section */}
             <section className="mb-10">
                 <h2 className="text-2xl font-semibold mb-4 text-center">Museums and Historical Places</h2>
                 <div className="flex overflow-x-auto scrollbar-hide gap-6 px-6 py-4">
                     {data.museums.map((museum) => (
-                        <div key={museum._id} className="bg-gray-100 p-4 rounded shadow w-80 flex-none flex flex-col items-center">
+                        <div key={museum._id} className="gallery-item flex-none flex flex-col items-center w-80">
+                            <img
+                                src={museum.pictures}
+                                alt={museum.Name}
+                                className="w-72 h-72 object-cover rounded duration-300 ease-in-out hover:scale-105"
+                            />
                             <div className="text-md font-medium text-center">{museum.Name}</div>
                             <div className="text-sm text-gray-700">
-                                <span className="font-semibold">Location: {museum.Location}</span>
+                                <span className="font-semibold">Location: {museum.location}</span>
                                 <br />
                                 <span>Opening Hours: {museum.Opening_Hours}</span>
                                 <br />
@@ -364,7 +384,12 @@ const Home = () => {
                         </div>
                     ))}
                     {data.historicalPlaces.map((place) => (
-                        <div key={place._id} className="bg-gray-100 p-4 rounded shadow w-80 flex-none flex flex-col items-center">
+                        <div key={place._id} className="gallery-item flex-none flex flex-col items-center w-80">
+                            <img
+                                src={place.Pictures}
+                                alt={place.Name}
+                                className="w-72 h-72 object-cover rounded duration-300 ease-in-out hover:scale-105"
+                            />
                             <div className="text-md font-medium text-center">{place.Name}</div>
                             <div className="text-sm text-gray-700">
                                 <span className="font-semibold">Location: {place.Location}</span>
