@@ -576,7 +576,7 @@ const AdvertiserHome = () => {
                                     value={newActivityData.Picture}
                                     onChange={handleNewActivityChange}
                                     className="border rounded w-full px-2 py-1"
-                                    required
+                                    
                                 />
                             </label>
                             <button

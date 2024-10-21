@@ -1858,7 +1858,8 @@ const updateActivityByAdvertiser = async (req, res) => {
             Available_Spots,
             Booked_Spots,
             Rating,
-            Created_By 
+            Created_By,
+            Picture 
         } = req.body;
 
         // Check if Name is provided (because it is necessary to identify the activity)
@@ -1879,6 +1880,7 @@ const updateActivityByAdvertiser = async (req, res) => {
         if (Booked_Spots) updateData.Booked_Spots = Booked_Spots;
         if (Rating) updateData.Rating = Rating;
         if (Created_By) updateData.Created_By = Created_By;
+        if (Picture) updateData.Picture = Picture;
 
         // Find and update the activity by Name
         const updatedActivity = await activity.findOneAndUpdate(
