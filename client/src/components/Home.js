@@ -379,7 +379,7 @@ const Home = () => {
                                 <br />
                                 <span>Opening Hours: {museum.Opening_Hours}</span>
                                 <br />
-                                <span>Ticket Prices: ${museum.Ticket_Prices}</span>
+                                <span>Starting Prices: ${museum.S_Tickets_Prices}</span>
                             </div>
                         </div>
                     ))}
