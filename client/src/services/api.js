@@ -672,3 +672,31 @@ export const commentOnEvent = async (touristEmail, activityName, Comment) => {
         throw error; // Rethrow the error for handling in the calling component
     }
 };
+
+export const rateTourGuide = async (touristEmail, tourGuideEmail, rating) => {
+    try {
+        const response = await axios.post(`${API_URL}/rateTourGuide`, {
+            Tourist_Email: touristEmail,
+            TourGuide_Email: tourGuideEmail,
+            Rating: rating
+        });
+        return response.data; // Return the response data from the server
+    } catch (error) {
+        console.error('Error rating tour guide:', error.response ? error.response.data : error);
+        throw error; // Rethrow the error for handling in the calling component
+    }
+};
+
+export const commentTourGuide = async (touristEmail, tourGuideEmail, comment) => {
+    try {
+        const response = await axios.post(`${API_URL}/commentTourGuide`, {
+            Tourist_Email: touristEmail,
+            TourGuide_Email: tourGuideEmail,
+            Comment: comment
+        });
+        return response.data; // Return the response data from the server
+    } catch (error) {
+        console.error('Error commenting on tour guide:', error.response ? error.response.data : error);
+        throw error; // Rethrow the error for handling in the calling component
+    }
+};

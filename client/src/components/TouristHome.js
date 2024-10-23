@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../images/logo.png';
-import { searchEventsPlaces, commentOnItinerary, rateItinerary, rateActivity, commentOnEvent } from '../services/api'; // Import the commentOnEvent function
+import { searchEventsPlaces, commentOnItinerary, rateItinerary, rateActivity, commentOnEvent , rateTourGuide,commentTourGuide} from '../services/api'; // Import the commentOnEvent function
 
 const TouristHome = () => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -20,6 +20,15 @@ const TouristHome = () => {
     // New state variables for event comments
     const [eventName, setEventName] = useState(''); // State for the event name
     const [eventComment, setEventComment] = useState(''); // State for the event comment
+
+    // State variables for rating a tour guide
+    const [tourGuideEmail, setTourGuideEmail] = useState(''); // State for the tour guide email
+    const [tourGuideRating, setTourGuideRating] = useState(''); // State for the tour guide rating
+
+    const [tourGuideEmaill, setTourGuideEmaill] = useState('');
+    const [commentt, setCommentt] = useState('');
+    const [errort, setErrort] = useState('');
+
 
     // Fetch email from localStorage on component mount
     useEffect(() => {
@@ -101,6 +110,37 @@ const TouristHome = () => {
         } catch (error) {
             console.error('Error submitting activity rating:', error);
             setError('Failed to submit the activity rating. Please try again later.');
+        }
+    };
+
+    // Handle rating submission for tour guides
+    const handleTourGuideRatingSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const result = await rateTourGuide(email, tourGuideEmail, tourGuideRating);
+            console.log('Tour guide rating submitted:', result);
+            setTourGuideEmail('');
+            setTourGuideRating(''); // Reset the tour guide rating input
+            alert('Tour guide rating submitted successfully!');
+        } catch (error) {
+            console.error('Error submitting tour guide rating:', error);
+            setError('Failed to submit the tour guide rating. Please try again later.');
+        }
+    };
+    
+    const handleCommentSubmitt = async (e) => {
+        e.preventDefault();
+        setErrort('');
+
+        try {
+            const result = await commentTourGuide('tourist@example.com', tourGuideEmaill, commentt); // Replace with actual tourist email
+            console.log('Comment submitted:', result);
+            setTourGuideEmaill('');
+            alert('Comment submitted successfully!');
+            setCommentt(''); // Clear comment input after submission
+        } catch (error) {
+            console.errort('Error submitting comment:', errort);
+            setErrort('Failed to submit the comment. Please try again later.');
         }
     };
 
@@ -273,7 +313,7 @@ const TouristHome = () => {
 
 
             {/* Separate Rating Submission Form for Activities */}
-            <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-md mt-8">
+          <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-md mt-8">
     <div className="flex flex-col md:flex-row justify-between space-y-6 md:space-y-0 md:space-x-6">
 
         {/* Submit a Comment on an Event */}
@@ -346,6 +386,84 @@ const TouristHome = () => {
                 </button>
             </form>
         </div>
+        {/* Rate a Tour Guide */}
+<div className="tour-guide-rating-form w-full md:w-1/2 bg-gray-50 p-4 rounded-lg shadow">
+    <h2 className="text-xl font-semibold mb-4 text-gray-800">Rate a Tour Guide</h2>
+    <form onSubmit={handleTourGuideRatingSubmit}>
+        <div className="mb-4">
+            <label htmlFor="tour-guide-email" className="block text-gray-700 font-medium mb-2">Tour Guide Email:</label>
+            <input 
+                id="tour-guide-email"
+                type="email"
+                value={tourGuideEmail}
+                onChange={(e) => setTourGuideEmail(e.target.value)}
+                required
+                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+        </div>
+
+        <div className="mb-4">
+            <label htmlFor="tour-guide-rating" className="block text-gray-700 font-medium mb-2">Rating:</label>
+            <input 
+                id="tour-guide-rating"
+                type="number"
+                value={tourGuideRating}
+                onChange={(e) => setTourGuideRating(e.target.value)}
+                placeholder="Rate from 1 to 5"
+                required
+                min="1"
+                max="5"
+                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+        </div>
+
+        <button 
+            type="submit"
+            className="w-full bg-indigo-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-indigo-500 transition-all duration-300"
+        >
+            Submit Rating
+        </button>
+    </form>
+</div>
+{/* Comment on a Tour Guide */}
+<div className="tour-guide-comment-form w-full md:w-1/2 bg-gray-50 p-4 rounded-lg shadow">
+    <h2 className="text-xl font-semibold mb-4 text-gray-800">Comment on a Tour Guide</h2>
+    <form onSubmit={handleCommentSubmitt}>
+        <div className="mb-4">
+            <label htmlFor="tour-guide-email" className="block text-gray-700 font-medium mb-2">Tour Guide Email:</label>
+            <input 
+                id="tour-guide-email"
+                type="email"
+                value={tourGuideEmaill}
+                onChange={(e) => setTourGuideEmaill(e.target.value)}
+                required
+                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+        </div>
+
+        <div className="mb-4">
+            <label htmlFor="tour-guide-comment" className="block text-gray-700 font-medium mb-2">Comment:</label>
+            <textarea 
+                id="tour-guide-comment"
+                value={commentt}
+                onChange={(e) => setCommentt(e.target.value)}
+                required
+                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                rows="4"
+                placeholder="Write your comment here..."
+            />
+        </div>
+
+        <button 
+            type="submit"
+            className="w-full bg-indigo-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-indigo-500 transition-all duration-300"
+        >
+            Submit Comment
+        </button>
+    </form>
+</div>
+
+
     </div>
 </div>
 
