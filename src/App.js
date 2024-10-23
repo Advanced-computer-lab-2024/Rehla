@@ -101,6 +101,9 @@ const {createUserAdmin,
   uploadGuestDocuments,
   uploadProfilePicture,
   Itineraryactivation,
+  getAttendedItineraries,
+    getAttendedActivities,
+    getPurchasedProducts
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -235,3 +238,6 @@ app.delete("/deleteTouristActivity",deleteTouristActivity);
 app.post("/uploadGuestDocuments", uploadGuestDocuments);
 app.post("/uploadProfilePicture", uploadProfilePicture);
 app.put("/Itineraryactivation", Itineraryactivation);
+app.post("/getAttendedItineraries",getAttendedItineraries);
+app.post("/getAttendedActivities" ,getAttendedActivities);
+app.get("/getPurchasedProducts" , getPurchasedProducts);

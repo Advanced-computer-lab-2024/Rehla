@@ -28,6 +28,7 @@ import AdminProductList from './components/AdminProductList';
 import SellerProductList from './components/SellerProductList';
 import CreateTag from './components/CreateTag.js';
 import TourGuideItineraries from './components/TourGuideItineraries.js'
+import MyEvents from './components/MyEvents.js';
 
 
 //import ProductList from './components/Seller.js'
@@ -55,7 +56,8 @@ function App() {
                 <Route path="/AdvertiserHome/AdvertiserProfile" element={<AdvertiserProfile />} />
                 <Route path="/TourGuideHome" element={<TourGuideHome />} />
                 <Route path="/TourGuideHome/TourGuideProfile" element={<TourGuideProfile />} />
-                <Route path="/TourisimGovernerHome" element={<TourisimGovernerHome />} />
+                
+                <Route path="/MyEvents" element={<MyEvents />} />
 
                 <Route path="/Adminproducts" element={<AdminProductList />} />
                 <Route path="/Sellerproducts" element={<SellerProductList />} />

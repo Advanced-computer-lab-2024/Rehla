@@ -700,3 +700,38 @@ export const commentTourGuide = async (touristEmail, tourGuideEmail, comment) =>
         throw error; // Rethrow the error for handling in the calling component
     }
 };
+
+
+// Function to get attended itineraries by tourist email
+export const getAttendedItineraries = async (touristEmail) => {
+    try {
+        const response = await axios.post(`${API_URL}/getAttendedItineraries`, { Tourist_Email: touristEmail });
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching attended itineraries:', error);
+        throw error;
+    }
+};
+
+// Function to get attended activities by tourist email
+export const getAttendedActivities = async (touristEmail) => {
+    try {
+        const response = await axios.post(`${API_URL}/getAttendedActivities`, { Tourist_Email: touristEmail });
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching attended activities:', error);
+        throw error;
+    }
+};
+
+export const getPurchasedProducts = async (touristEmail) => {
+    try {
+        const response = await axios.get(`${API_URL}/getPurchasedProducts`, {
+            params: { Tourist_Email: touristEmail } // Send email as a query parameter
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching purchased products:', error);
+        throw error;
+    }
+};

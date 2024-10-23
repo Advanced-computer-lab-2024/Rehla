@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../images/logo.png';
 import { searchEventsPlaces, commentOnItinerary, rateItinerary, rateActivity, commentOnEvent , rateTourGuide,commentTourGuide} from '../services/api'; // Import the commentOnEvent function
+import Homet2 from '../components/Homet2.js';
 
 const TouristHome = () => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -55,7 +56,6 @@ const TouristHome = () => {
             setError('Failed to submit the comment. Please try again later.');
         }
     };
-
     // Handle search submission
     const handleSearch = async (e) => {
         e.preventDefault();
@@ -152,7 +152,7 @@ const TouristHome = () => {
                     <ul className="nav-links">
                         <Link to="/">Home</Link>
                         <Link to="/products">Products</Link>
-                        <Link to="/eventsplaces">Events/Places</Link>
+                        <Link to="/MyEvents">Events/Places</Link>
                     </ul>
                 </nav>
 
@@ -162,20 +162,37 @@ const TouristHome = () => {
             </div>
 
             {/* Search Section */}
-            <div className="search">
-                <label htmlFor="search-bar" style={{ marginRight: '10px' }}>Search Events/Places:</label>
-                <form onSubmit={handleSearch} className="search-bar">
-                    <input 
+            <div className="search flex items-center mb-4">
+                <label 
+                    htmlFor="search-bar" 
+                    className="text-lg font-medium text-gray-700 mr-4"
+                >
+                    Search Events/Places:
+                </label>
+                <form 
+                    onSubmit={handleSearch} 
+                    className="flex items-center bg-white border border-gray-300 rounded-lg overflow-hidden shadow-sm"
+                >
+                    <input
                         id="search-bar"
-                        type="text" 
-                        placeholder="Search..." 
-                        value={searchTerm} 
-                        onChange={(e) => setSearchTerm(e.target.value)} 
-                        required 
+                        type="text"
+                        placeholder="Search..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        required
+                        className="p-2 w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
-                    <button type="submit">Search</button>
+                    <button 
+                        type="submit" 
+                        className="bg-brandBlue text-white py-2 px-4 hover:bg-blue-600 transition duration-300"
+                    >
+                        Search
+                    </button>
                 </form>
             </div>
+
+            <Homet2 />
+
 
             {error && <div className="error-message" style={{ color: 'red' }}>{error}</div>}
 
@@ -312,80 +329,7 @@ const TouristHome = () => {
 
 
 
-            {/* Separate Rating Submission Form for Activities */}
-          <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-md mt-8">
-    <div className="flex flex-col md:flex-row justify-between space-y-6 md:space-y-0 md:space-x-6">
-
-        {/* Submit a Comment on an Event */}
-        <div className="event-comment-form w-full md:w-1/2 bg-gray-50 p-4 rounded-lg shadow">
-            <h2 className="text-xl font-semibold mb-4 text-gray-800">Submit a Comment on an Event</h2>
-            <form onSubmit={handleEventCommentSubmit}>
-                <div className="mb-4">
-                    <label htmlFor="event-name" className="block text-gray-700 font-medium mb-2">Event Name:</label>
-                    <input 
-                        id="event-name"
-                        type="text"
-                        value={eventName}
-                        onChange={(e) => setEventName(e.target.value)}
-                        required
-                        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    />
-                </div>
-
-                <div className="mb-4">
-                    <label htmlFor="event-comment" className="block text-gray-700 font-medium mb-2">Comment:</label>
-                    <textarea
-                        id="event-comment"
-                        value={eventComment}
-                        onChange={(e) => setEventComment(e.target.value)}
-                        placeholder="Write your comment on the event here..."
-                        rows="4"
-                        required
-                        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    ></textarea>
-                </div>
-
-                <button type="submit" className="w-full bg-indigo-500 text-white py-2 px-4 rounded-md hover:bg-indigo-600">
-                    Submit Comment
-                </button>
-            </form>
-        </div>
-
-        {/* Rate an Activity */}
-        <div className="rating-form w-full md:w-1/2 bg-gray-50 p-4 rounded-lg shadow">
-            <h2 className="text-xl font-semibold mb-4 text-gray-800">Rate an Activity</h2>
-            <form onSubmit={handleActivityRatingSubmit}>
-                <div className="mb-4">
-                    <label htmlFor="activity-name" className="block text-gray-700 font-medium mb-2">Activity Name:</label>
-                    <input 
-                        id="activity-name"
-                        type="text"
-                        value={activityName}
-                        onChange={(e) => setActivityName(e.target.value)}
-                        required
-                        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    />
-                </div>
-
-                <div className="mb-4">
-                    <label htmlFor="activity-rating" className="block text-gray-700 font-medium mb-2">Rating (1-5):</label>
-                    <input 
-                        id="activity-rating"
-                        type="number"
-                        value={activityRating}
-                        onChange={(e) => setActivityRating(e.target.value)}
-                        min="1"
-                        max="5"
-                        required
-                        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    />
-                </div>
-
-                <button type="submit" className="w-full bg-indigo-500 text-white py-2 px-4 rounded-md hover:bg-indigo-600">
-                    Submit Rating
-                </button>
-            </form>
-        </div>
+          
         {/* Rate a Tour Guide */}
 <div className="tour-guide-rating-form w-full md:w-1/2 bg-gray-50 p-4 rounded-lg shadow">
     <h2 className="text-xl font-semibold mb-4 text-gray-800">Rate a Tour Guide</h2>
@@ -462,12 +406,39 @@ const TouristHome = () => {
         </button>
     </form>
 </div>
+<footer className="bg-brandBlue shadow dark:bg-brandBlue m-0">
+                <div className="w-full mx-auto md:py-8">
+                    <div className="sm:flex sm:items-center sm:justify-between">
+                        <a href="/" className="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
+                            <img src={logo} className="w-12" alt="Flowbite Logo" />
+                        </a>
+                        <div className="flex justify-center w-full">
+                            <ul className="flex flex-wrap items-center mb-6 text-sm font-medium text-gray-500 sm:mb-0 dark:text-gray-400 -ml-14">
+                                <li>
+                                    <a href="/" className="hover:underline me-4 md:me-6">About</a>
+                                </li>
+                                <li>
+                                    <a href="/" className="hover:underline me-4 md:me-6">Privacy Policy</a>
+                                </li>
+                                <li>
+                                    <a href="/" className="hover:underline me-4 md:me-6">Licensing</a>
+                                </li>
+                                <li>
+                                    <a href="/" className="hover:underline">Contact</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <hr className="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
+                    <span className="block text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2023 <a href="/" className="hover:underline">Rehla™</a>. All Rights Reserved.</span>
+                </div>
+            </footer>
 
 
     </div>
-</div>
 
-        </div>
+
+        
     );
 };
 

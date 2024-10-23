@@ -7,7 +7,7 @@ module.exports = {
     extend: {
       colors: {
         brandBlue: '#162d56',  // Custom blue color
-        // You can add more custom colors here
+        logoOrange: '#f2773e'
       },
     },
   },

@@ -3465,10 +3465,121 @@ const Itineraryactivation = async (req, res) => {
     }
 };
 
+// Function to get attended itineraries by a tourist from req.body
+const getAttendedItineraries = async (req, res) => {
+    const { Tourist_Email } = req.body; // Extract the email from the request body
+    try {
+        // Step 1: Find itineraries for the given Tourist_Email
+        const attendedItineraries = await touristIteneraries.find({
+            Tourist_Email, // Using the email from req.body
+        });
+
+        // Check if attended itineraries were found
+        if (attendedItineraries.length === 0) {
+            return res.status(404).json({ message: 'No itineraries found for this email.' });
+        }
+
+        // Step 2: Extract the itinerary names and their attended status
+        const itinerariesData = attendedItineraries.map(itinerary => ({
+            Itinerary_Name: itinerary.Itinerary_Name,
+            Attended: itinerary.Attended, // Get the Attended status
+            //Picture: itinerary.Picture
+        }));
+
+        // Step 3: Fetch the corresponding data from the itinerary model
+        const itineraryDetails = await itinerarym.find({
+            Itinerary_Name: { $in: itinerariesData.map(item => item.Itinerary_Name) } // Use $in to find matching itinerary names
+        });
+
+        // Step 4: Combine itinerary details with attended status
+        const response = itinerariesData.map(itinerary => {
+            const details = itineraryDetails.find(detail => detail.Itinerary_Name === itinerary.Itinerary_Name);
+            return {
+                Itinerary_Name: itinerary.Itinerary_Name,
+                Attended: itinerary.Attended,
+                //Picture : details.Picture
+                //...details // Spread the details of the itinerary
+            };
+        });
+
+        // Step 5: Return the combined details
+        return res.status(200).json({ attendedItineraries: response });
+    } catch (error) {
+        return res.status(500).json({ error: 'Error fetching attended itineraries: ' + error.message });
+    }
+};
+
+// Function to get attended activities by a tourist from req.body
+const getAttendedActivities = async (req, res) => {
+    const { Tourist_Email } = req.body; // Extract the email from the request body
+    try {
+        // Step 1: Find activities for the given Tourist_Email
+        const attendedActivities = await tourist_activities.find({
+            Tourist_Email, // Using the email from req.body
+        });
+
+        // Check if attended activities were found
+        if (attendedActivities.length === 0) {
+            return res.status(404).json({ message: 'No activities found for this email.' });
+        }
+
+        // Step 2: Extract the activity names and their attended status
+        const activitiesData = attendedActivities.map(activity => ({
+            Activity_Name: activity.Activity_Name,
+            Attended: activity.Attended ,// Get the Attended status
+            
+        }));
+
+        // Step 3: Fetch the corresponding data from the activity model
+        const activityDetails = await activity.find({
+            Name: { $in: activitiesData.map(item => item.Activity_Name) } // Use $in to find matching activity names
+        });
+
+        // Step 4: Combine activity details with attended status
+        const response = activitiesData.map(activity => {
+            const details = activityDetails.find(detail => detail.Name === activity.Activity_Name);
+            return {
+                Activity_Name: activity.Activity_Name,
+                Attended: activity.Attended,
+                Picture : details.Picture
+                //...details // Spread the details of the activity
+            };
+        });
+
+        // Step 5: Return the combined details
+        return res.status(200).json({ attendedActivities: response });
+    } catch (error) {
+        return res.status(500).json({ error: 'Error fetching attended activities: ' + error.message });
+    }
+};
+
+const getPurchasedProducts = async (req, res) => {
+    const { Tourist_Email } = req.body; // Extract email from request body
+
+    try {
+        // Find products based on the tourist's email
+        const purchasedProducts = await tourist_products.find({ Tourist_Email });
+
+        // If no products are found
+        if (purchasedProducts.length === 0) {
+            return res.status(404).json({ message: 'No purchased products found for this tourist.' });
+        }
+
+        // Return the list of purchased products
+        res.status(200).json({ purchasedProducts });
+    } catch (error) {
+        // Handle errors
+        console.error('Error fetching purchased products:', error);
+        res.status(500).json({ message: 'Server error, unable to fetch purchased products.' });
+    }
+};
+
+
+
 
 // ----------------- Activity Category CRUD -------------------
 
-module.exports = { 
+module.exports = { getPurchasedProducts,
     createUserAdmin, 
     deleteUserAdmin,
     getAllProducts ,
@@ -3567,5 +3678,7 @@ module.exports = {
     uploadGuestDocuments,
     uploadProfilePicture,
     Itineraryactivation,
+    getAttendedItineraries,
+    getAttendedActivities
     
 };
