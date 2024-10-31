@@ -521,7 +521,8 @@ const registerTourist = async (req, res) => {
             Job_Student,  // The field will be either "Job" or "Student"
             Type: 'Tourist', // Default type is Tourist
             Wallet: 0, // Initial wallet balance
-            Points: 0
+            Points: 0,
+            Badge: 'Level 1'
         });
 
         // Save the tourist to the database
@@ -1174,7 +1175,7 @@ const getTouristProfile = async (req, res) => {
 const updateTouristProfile= async (req, res) => {
   try {
       // Extract the email and fields to update from the request body
-      const { Email, Password, Mobile_Number, Nationality, Job_Student, Type } = req.body;
+      const { Email, Password, Mobile_Number, Nationality, Job_Student, Type, Wallet } = req.body;
 
       if (!Email) {
           return res.status(400).json({ message: 'Email is required' });
@@ -1193,6 +1194,8 @@ const updateTouristProfile= async (req, res) => {
       if (Nationality) tourist.Nationality = Nationality;
       if (Job_Student) tourist.Job_Student = Job_Student;
       if (Type) tourist.Type = Type;
+      if (Wallet) tourist.Wallet = Wallet;
+
 
       // Save the updated profile
       const updatedTourist = await tourist.save();
@@ -1317,6 +1320,7 @@ const createTourGuideProfile = async (req, res) => {
             Username,
             Email,
             Password,
+            Type,
             Mobile_Number,
             Experience,
             Previous_work
@@ -1340,7 +1344,7 @@ const createTourGuideProfile = async (req, res) => {
 const updateTourGuideProfile = async (req, res) => {
     try {
         // Extract the email and fields to update from the request body
-        const { Username, Email, Password, Type, Mobile_Number, Experience, Previous_work } = req.body;
+        const { Username, Email, Password, Mobile_Number, Experience, Previous_work } = req.body;
 
         if (!Email) {
             return res.status(400).json({ message: 'Email is required' });
@@ -1356,7 +1360,6 @@ const updateTourGuideProfile = async (req, res) => {
         // Only update the fields that are allowed to be modified
         if (Username) tour_guide.Username = Username;
         if (Password) tour_guide.Password = Password;
-        if (Type) tour_guide.Type = Type;
         if (Mobile_Number) tour_guide.Mobile_Number = Mobile_Number;
         if (Experience) tour_guide.Experience = Experience;
         if (Previous_work) tour_guide.Previous_work = Previous_work;
@@ -1465,14 +1468,15 @@ const createItinerary = async (req, res) => {
             Country, 
             Rating, 
             P_Tag,
-            Created_By 
+            Created_By,
+            Picture
         } = req.body;
 
         // Validate required fields
         if (!Itinerary_Name || !Timeline || !Duration || !Language || 
             !Tour_Price || !Available_Date_Time || !Accessibility || 
             !Pick_Up_Point || !Drop_Of_Point || !Booked || 
-            !Empty_Spots || !Country || !Rating || !P_Tag  || !Created_By) {
+            !Empty_Spots || !Country || !Rating || !P_Tag  || !Created_By || !Picture) {
             return res.status(400).json({ error: 'All fields are required.' });
         }
 
@@ -1498,7 +1502,8 @@ const createItinerary = async (req, res) => {
             Country,
             Rating,
             P_Tag,
-            Created_By
+            Created_By,
+            Picture
         });
 
         // Save the itinerary to the database
@@ -3494,11 +3499,11 @@ const getAttendedItineraries = async (req, res) => {
         // Step 4: Combine itinerary details with attended status
         const response = itinerariesData.map(itinerary => {
             const details = itineraryDetails.find(detail => detail.Itinerary_Name === itinerary.Itinerary_Name);
-            console.log(details); // Check if 'details' contains a 'Picture' property
             return {
                 Itinerary_Name: itinerary.Itinerary_Name,
                 Attended: itinerary.Attended,
-                Picture: details ? details.Picture : "No Picture"
+                //Picture : details.Picture
+                //...details // Spread the details of the itinerary
             };
         });
 
