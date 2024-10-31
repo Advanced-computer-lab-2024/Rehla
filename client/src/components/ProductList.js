@@ -163,6 +163,7 @@ const ProductList = () => {
                                     />
                                     <p className="mt-2 text-lg font-semibold">${product.Price.toFixed(2)}</p>
                                     <p className="text-gray-600 mt-2">{product.Description}</p>
+        
                                 </div>
                             ))}
                         </div>

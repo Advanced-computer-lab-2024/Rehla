@@ -3494,11 +3494,11 @@ const getAttendedItineraries = async (req, res) => {
         // Step 4: Combine itinerary details with attended status
         const response = itinerariesData.map(itinerary => {
             const details = itineraryDetails.find(detail => detail.Itinerary_Name === itinerary.Itinerary_Name);
+            console.log(details); // Check if 'details' contains a 'Picture' property
             return {
                 Itinerary_Name: itinerary.Itinerary_Name,
                 Attended: itinerary.Attended,
-                //Picture : details.Picture
-                //...details // Spread the details of the itinerary
+                Picture: details ? details.Picture : "No Picture"
             };
         });
 

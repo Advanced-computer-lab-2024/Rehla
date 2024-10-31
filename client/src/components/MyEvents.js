@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getAttendedItineraries, getAttendedActivities, rateActivity, commentOnEvent } from '../services/api'; // Adjust the import based on your file structure
+import { getAttendedItineraries, getAttendedActivities, rateActivity, commentOnEvent, commentOnItinerary, rateItinerary } from '../services/api'; // Adjust the import based on your file structure
 import logo from '../images/logo.png';
 
 const MyEvents = () => {
     const [attendedItineraries, setAttendedItineraries] = useState([]);
     const [attendedActivities, setAttendedActivities] = useState([]);
     const [email, setEmail] = useState(''); 
-    const [ratings, setRatings] = useState({}); // Store ratings for each activity
-    const [comments, setComments] = useState({}); // Store comments for each activity
+    const [activityRatings, setActivityRatings] = useState({});
+    const [activityComments, setActivityComments] = useState({});
+    const [itineraryRatings, setItineraryRatings] = useState({});
+    const [itineraryComments, setItineraryComments] = useState({});
 
     useEffect(() => {
         const storedEmail = localStorage.getItem('email');
@@ -33,42 +35,42 @@ const MyEvents = () => {
         fetchData();
     }, [email]);
 
-    const handleRatingChange = (activityName, rating) => {
-        setRatings((prevRatings) => ({
+    const handleRatingChange = (setRatingState, name, rating) => {
+        setRatingState((prevRatings) => ({
             ...prevRatings,
-            [activityName]: rating
+            [name]: rating
         }));
     };
 
-    const handleCommentChange = (activityName, comment) => {
-        setComments((prevComments) => ({
+    const handleCommentChange = (setCommentState, name, comment) => {
+        setCommentState((prevComments) => ({
             ...prevComments,
-            [activityName]: comment
+            [name]: comment
         }));
     };
 
-    const handleRateActivity = async (activityName) => {
-        const rating = ratings[activityName];
+    const handleRate = async (rateFunction, name, ratingState) => {
+        const rating = ratingState[name];
         if (rating) {
             try {
-                await rateActivity(email, activityName, rating);
+                await rateFunction(email, name, rating);
                 alert('Rating submitted successfully!');
             } catch (error) {
-                console.error('Error rating activity:', error);
+                console.error('Error rating:', error);
             }
         } else {
             alert('Please enter a rating.');
         }
     };
 
-    const handleCommentOnActivity = async (activityName) => {
-        const comment = comments[activityName];
+    const handleComment = async (commentFunction, name, commentState) => {
+        const comment = commentState[name];
         if (comment) {
             try {
-                await commentOnEvent(email, activityName, comment);
+                await commentFunction(email, name, comment);
                 alert('Comment submitted successfully!');
             } catch (error) {
-                console.error('Error commenting on event:', error);
+                console.error('Error commenting:', error);
             }
         } else {
             alert('Please enter a comment.');
@@ -92,10 +94,52 @@ const MyEvents = () => {
             {/* Display Attended Itineraries */}
             <div className="px-6 py-4">
                 <h2 className="text-xl font-semibold mb-4">Itineraries</h2>
-                <ul className="list-disc ml-5">
+                <ul className="flex flex-wrap list-none">
                     {attendedItineraries.map(itinerary => (
-                        <li key={itinerary.Itinerary_Name}>
-                            {itinerary.Itinerary_Name} - Attended: {itinerary.Attended ? 'Yes' : 'No'}
+                        <li key={itinerary.Itinerary_Name} className="flex items-start mb-4 w-1/2 p-2">
+                            <div className="flex items-start bg-gray-100 p-4 rounded-lg shadow-md w-full">
+                                <img
+                                    src={itinerary.Picture}
+                                    alt={itinerary.Itinerary_Name}
+                                    className="w-32 h-32 object-cover mr-4 rounded"
+                                />
+                                <div className="flex-1">
+                                    <span className="font-medium text-lg">{itinerary.Itinerary_Name}</span> - 
+                                    <span className={`font-medium ${itinerary.Attended ? 'text-green-500' : 'text-red-500'}`}>
+                                        {itinerary.Attended ? ' Attended' : ' Not Attended'}
+                                    </span>
+                                </div>
+                                {itinerary.Attended && (
+                                    <div className="flex flex-col ml-4">
+                                        <input
+                                            type="number"
+                                            min="1"
+                                            max="5"
+                                            placeholder="Rate (1-5)"
+                                            className="border border-gray-300 rounded-md p-2 mb-2"
+                                            onChange={(e) => handleRatingChange(setItineraryRatings, itinerary.Itinerary_Name, e.target.value)}
+                                        />
+                                        <input
+                                            type="text"
+                                            placeholder="Comment"
+                                            className="border border-gray-300 rounded-md p-2 mb-2"
+                                            onChange={(e) => handleCommentChange(setItineraryComments, itinerary.Itinerary_Name, e.target.value)}
+                                        />
+                                        <button
+                                            onClick={() => handleRate(rateItinerary, itinerary.Itinerary_Name, itineraryRatings)}
+                                            className="bg-brandBlue text-white font-semibold py-1 px-3 rounded-md hover:bg-blue-600 transition"
+                                        >
+                                            Submit Rating
+                                        </button>
+                                        <button
+                                            onClick={() => handleComment(commentOnItinerary, itinerary.Itinerary_Name, itineraryComments)}
+                                            className="bg-logoOrange text-white font-semibold py-1 px-3 rounded-md hover:bg-green-600 transition mt-2"
+                                        >
+                                            Submit Comment
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
                         </li>
                     ))}
                 </ul>
@@ -103,59 +147,57 @@ const MyEvents = () => {
 
             {/* Display Attended Activities */}
             <div className="px-6 py-4">
-    <h2 className="text-xl font-semibold mb-4">Activities</h2>
-    <ul className="flex flex-wrap list-none">
-        {attendedActivities.map(activity => (
-            <li key={activity.Activity_Name} className="flex items-start mb-4 w-1/2 p-2"> {/* Each item takes half the width */}
-                <div className="flex items-start bg-gray-100 p-4 rounded-lg shadow-md w-full"> {/* Full width for inner container */}
-                    <img
-                        src={activity.Picture}
-                        alt={activity.Activity_Name}
-                        className="w-32 h-32 object-cover mr-4 rounded" // Adjust size as needed
-                    />
-                    <div className="flex-1">
-                        <span className="font-medium text-lg">{activity.Activity_Name}</span> - 
-                        <span className={`font-medium ${activity.Attended ? 'text-green-500' : 'text-red-500'}`}>
-                            {activity.Attended ? ' Attended' : ' Not Attended'}
-                        </span>
-                    </div>
-                    {activity.Attended && ( // Only show inputs if attended
-                        <div className="flex flex-col ml-4">
-                            <input
-                                type="number"
-                                min="1"
-                                max="5"
-                                placeholder="Rate (1-5)"
-                                className="border border-gray-300 rounded-md p-2 mb-2"
-                                onChange={(e) => handleRatingChange(activity.Activity_Name, e.target.value)}
-                            />
-                            <input
-                                type="text"
-                                placeholder="Comment"
-                                className="border border-gray-300 rounded-md p-2 mb-2"
-                                onChange={(e) => handleCommentChange(activity.Activity_Name, e.target.value)}
-                            />
-                            <button
-                                onClick={() => handleRateActivity(activity.Activity_Name)}
-                                className="bg-brandBlue text-white font-semibold py-1 px-3 rounded-md hover:bg-blue-600 transition"
-                            >
-                                Submit Rating
-                            </button>
-                            <button
-                                onClick={() => handleCommentOnActivity(activity.Activity_Name)}
-                                className="bg-logoOrange text-white font-semibold py-1 px-3 rounded-md hover:bg-green-600 transition mt-2"
-                            >
-                                Submit Comment
-                            </button>
-                        </div>
-                    )}
-                </div>
-            </li>
-        ))}
-    </ul>
-</div>
-
-
+                <h2 className="text-xl font-semibold mb-4">Activities</h2>
+                <ul className="flex flex-wrap list-none">
+                    {attendedActivities.map(activity => (
+                        <li key={activity.Activity_Name} className="flex items-start mb-4 w-1/2 p-2">
+                            <div className="flex items-start bg-gray-100 p-4 rounded-lg shadow-md w-full">
+                                <img
+                                    src={activity.Picture}
+                                    alt={activity.Activity_Name}
+                                    className="w-32 h-32 object-cover mr-4 rounded"
+                                />
+                                <div className="flex-1">
+                                    <span className="font-medium text-lg">{activity.Activity_Name}</span> - 
+                                    <span className={`font-medium ${activity.Attended ? 'text-green-500' : 'text-red-500'}`}>
+                                        {activity.Attended ? ' Attended' : ' Not Attended'}
+                                    </span>
+                                </div>
+                                {activity.Attended && (
+                                    <div className="flex flex-col ml-4">
+                                        <input
+                                            type="number"
+                                            min="1"
+                                            max="5"
+                                            placeholder="Rate (1-5)"
+                                            className="border border-gray-300 rounded-md p-2 mb-2"
+                                            onChange={(e) => handleRatingChange(setActivityRatings, activity.Activity_Name, e.target.value)}
+                                        />
+                                        <input
+                                            type="text"
+                                            placeholder="Comment"
+                                            className="border border-gray-300 rounded-md p-2 mb-2"
+                                            onChange={(e) => handleCommentChange(setActivityComments, activity.Activity_Name, e.target.value)}
+                                        />
+                                        <button
+                                            onClick={() => handleRate(rateActivity, activity.Activity_Name, activityRatings)}
+                                            className="bg-brandBlue text-white font-semibold py-1 px-3 rounded-md hover:bg-blue-600 transition"
+                                        >
+                                            Submit Rating
+                                        </button>
+                                        <button
+                                            onClick={() => handleComment(commentOnEvent, activity.Activity_Name, activityComments)}
+                                            className="bg-logoOrange text-white font-semibold py-1 px-3 rounded-md hover:bg-green-600 transition mt-2"
+                                        >
+                                            Submit Comment
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        </li>
+                    ))}
+                </ul>
+            </div>
         </div>
     );
 };
