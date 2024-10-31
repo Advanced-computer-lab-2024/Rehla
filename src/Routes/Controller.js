@@ -2581,6 +2581,9 @@ const rateItinerary = async (req, res) => {
             return res.status(404).json({ message: 'Itinerary not found.' });
         }
 
+        //call the function to update the rating of the itinerary
+            await calculateItineraryRating(Itinerary_Name);
+
         res.status(200).json({ message: 'Itinerary rating updated successfully', itinerary: updatedItinerary });
     } catch (error) {
         console.error("Error updating itinerary rating:", error);
@@ -3583,7 +3586,47 @@ const getPurchasedProducts = async (req, res) => {
     }
 };
 
+//calculate itinrary rating
+const calculateItineraryRating = async (req, res) => {
+    try {
+        const { Itinerary_Name } = req.body;
 
+        // Validate input
+        if (!Itinerary_Name) {
+            return res.status(400).json({ error: 'Itinerary name is required.' });
+        }
+
+        // Check if the itinerary exists
+        const itinerary = await itinerarym.findOne({ Itinerary_Name });
+        if (!itinerary) {
+            return res.status(404).json({ error: 'Itinerary not found.' });
+        }
+
+        //clculate the no. of ratings and the total of the itinerary from table tourist_itineraries
+        const ratings = await tourist_itinerariesm.find({ Itinerary_Name });
+        let total = 0;
+        let count = 0;
+        ratings.forEach(rating => {
+            if (rating.Rating) {
+                total += rating.Rating;
+                count++;
+            }
+        });
+
+        // Calculate the average rating
+        const averageRating = count > 0 ? total / count : 0;
+
+        // Update the itinerary with the new rating
+        itinerary.Rating = averageRating;
+        await itinerary.save();
+
+        res.status(200).json({ message: 'Itinerary rating calculated successfully', itinerary });
+
+    } catch (error) {
+        console.error("Error details:", error.message, error.stack); // Log full error details
+        res.status(500).json({ error: 'Error calculating itinerary rating', details: error.message });
+    }
+};
 
 
 // ----------------- Activity Category CRUD -------------------
