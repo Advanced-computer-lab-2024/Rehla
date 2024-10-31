@@ -27,7 +27,7 @@ const activitysSchema = new Schema({
         required : true,
     },
 
-    Date : {
+    Date: {
         type :  Date ,
         required : true,
     },
@@ -63,7 +63,7 @@ const activitysSchema = new Schema({
         type : Boolean,
         default : false,
     },
-    Picture :{
+    Picture:{
         type : String ,
         required : false,
         default : "No Picture"

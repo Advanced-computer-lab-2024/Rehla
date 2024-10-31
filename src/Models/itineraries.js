@@ -21,7 +21,7 @@ const itinerarysSchema = new Schema({
         required : true ,
     },
 
-    Language : {
+    Language: {
         type : String , 
         required : true ,
     },
@@ -84,7 +84,7 @@ const itinerarysSchema = new Schema({
         type : Boolean,
         default : false,
     },
-    Picture : {
+    Picture: {
         type : String ,
         default : "No Picture",
     }

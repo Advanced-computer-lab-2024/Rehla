@@ -32,7 +32,7 @@ const AdvertisersSchema = new Schema({
        // required: true
     }
     
-}, { timestamps: true });
+},{ versionKey: false });
 
 const Advertiser = mongoose.model('Advertisers', AdvertisersSchema);
 module.exports = Advertiser;
