@@ -80,7 +80,7 @@ const MyEvents = () => {
             <div className="w-full mx-auto px-6 py-4 h-20 bg-brandBlue shadow flex justify-between items-center">
                 <img src={logo} alt="Logo" className="w-20" />
                 <nav className="flex space-x-6">
-                    <Link to="/" className="text-lg font-medium text-white-700 hover:text-blue-500">
+                    <Link to="/TouristHome" className="text-lg font-medium text-white-700 hover:text-blue-500">
                         Home
                     </Link>
                 </nav>
