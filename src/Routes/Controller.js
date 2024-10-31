@@ -938,6 +938,7 @@ const filterComplaintsByStatus = async (req, res) => {
       res.status(500).json({ error: 'Server error' });
     }
   };
+
   const flagActivity = async (req, res) => {
     try {
         const { name } = req.params; 
@@ -978,6 +979,7 @@ const flagItinerary = async (req, res) => {
         res.status(500).json({ error: 'Error flagging itinerary', details: error.message });
     }
 };
+
 const replyToComplaint = async (req, res) => {
     try {
         const { email } = req.params; 
@@ -1002,6 +1004,7 @@ const replyToComplaint = async (req, res) => {
         res.status(500).json({ error: 'Error replying to complaint', details: error.message });
     }
 };
+
 const ComplaintStatus = async (req, res) => {
     try {
         const { email } = req.params; 
@@ -1023,6 +1026,7 @@ const ComplaintStatus = async (req, res) => {
         res.status(500).json({ error: 'Error updating complaint status', details: error.message });
     }
 };
+
 const ProductArchiveStatus = async (req, res) => {
     try {
         const { productName } = req.params; 
@@ -1144,7 +1148,7 @@ const updateProduct = async (req, res) => {
     }
 };
 
-  //Tourist - Guest :Activities Filter 
+//Tourist - Guest :Activities Filter 
 
 // Tourist : view Tourist profile
 const getTouristProfile = async (req, res) => {
