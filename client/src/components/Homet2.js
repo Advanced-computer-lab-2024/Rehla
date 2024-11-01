@@ -100,6 +100,9 @@ const Home = () => {
         try {
             const filtered = await filterPlacesAndMuseums(placesAndMuseumsFilters);
             setFilteredPlacesAndMuseums(filtered);
+    
+            console.log("Filtered Museums and Historical Places:", filtered);
+    
         } catch (error) {
             setError(error);
         }
@@ -360,32 +363,55 @@ const Home = () => {
                 </div>
             </section>
 
-            {/* Museums and Historical Places Filter Form */}
-            <form onSubmit={handleFilterPlacesAndMuseums} className="mb-4">
-                <div className="flex flex-col gap-4">
-                    <div>
-                        <label className="block text-sm font-medium">Category</label>
-                        <input
-                            type="text"
-                            name="category"
-                            value={placesAndMuseumsFilters.category}
-                            onChange={(e) => handleFilterChange(e, setPlacesAndMuseumsFilters)}
-                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium">Value</label>
-                        <input
-                            type="text"
-                            name="value"
-                            value={placesAndMuseumsFilters.value}
-                            onChange={(e) => handleFilterChange(e, setPlacesAndMuseumsFilters)}
-                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
-                        />
-                    </div>
+           {/* Museums and Historical Places Filter Form */}
+           <form onSubmit={handleFilterPlacesAndMuseums} className="mb-4">
+            <div className="flex flex-col gap-4">
+                <div>
+                    <label className="block text-sm font-medium">Category</label>
+                    <select
+                        name="category"
+                        value={placesAndMuseumsFilters.category}
+                        onChange={(e) => handleFilterChange(e, setPlacesAndMuseumsFilters)}
+                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
+                    >
+                        <option value="">Select Category</option>
+                        <option value="museums">Museums</option>
+                        <option value="historical_places">Historical Places</option>
+                    </select>
                 </div>
-                <button type="submit" className="mt-4 bg-brandBlue text-white px-3 py-1 rounded">Filter Museums & Historical Places</button>
-            </form>
+            <div>
+                    <label className="block text-sm font-medium">Value</label>
+                    <select
+                        name="value"
+                        value={placesAndMuseumsFilters.value}
+                        onChange={(e) => handleFilterChange(e, setPlacesAndMuseumsFilters)}
+                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
+                        >
+                        <option value="">Select Value</option>
+                        {placesAndMuseumsFilters.category === 'museums' && (
+                            <>
+                                <option value="Historical">Historical</option>
+                                <option value="Art Museum">Art Museum</option>
+                                <option value="Art">Art</option>
+                                <option value="Mix">Mix</option>
+                            </>
+                        )}
+                        {placesAndMuseumsFilters.category === 'historical_places' && (
+                            <>
+                                <option value="Monuments">Monuments</option>
+                                <option value="Ancient Greece">Ancient Greece</option>
+                                <option value="Religious">Religious</option>
+                                <option value="Sites">Sites</option>
+                                <option value="Castle">Castle</option>
+                            </>
+                        )}
+                    </select>
+
+        </div>
+     </div>
+            <button type="submit" className="mt-4 bg-brandBlue text-white px-3 py-1 rounded">Filter Museums & Historical Places</button>
+        </form>
+
 
             {/* Museums and Historical Places Section */}
             <section className="mb-10">
