@@ -94,21 +94,28 @@ const Home = () => {
     const handleItineraryFilterChange = (e) => {
         setItineraryFilterType(e.target.value);
     };
-
     const handleFilterPlacesAndMuseums = async (e) => {
         e.preventDefault();
         try {
             const filtered = await filterPlacesAndMuseums(placesAndMuseumsFilters);
+    
+            // Ensure that filtered data contains the expected structure
+            console.log("Filtered Data:", filtered);
+    
+            // Setting the filtered results in state
             setFilteredPlacesAndMuseums(filtered);
     
-            console.log("Filtered Museums and Historical Places:", filtered);
-    
+            // Log the filtered state to confirm it's set
+            console.log("State set for filtered places and museums:", filteredPlacesAndMuseums);
+            
         } catch (error) {
+            console.error("Error fetching filtered data:", error);
             setError(error);
         }
     };
     
 
+    
     const handleFilterChange = (e, setFilters) => {
         const { name, value } = e.target;
         setFilters((prevFilters) => ({
@@ -116,6 +123,10 @@ const Home = () => {
             [name]: value
         }));
     };
+
+    useEffect(() => {
+        console.log("Updated filteredPlacesAndMuseums:", filteredPlacesAndMuseums);
+    }, [filteredPlacesAndMuseums]);
 
     if (error) {
         return <div className="text-red-500 text-center">Error: {error.message}</div>;
@@ -424,7 +435,6 @@ const Home = () => {
                         {placesAndMuseumsFilters.category === 'historical_places' && (
                             <>
                                 <option value="Monuments">Monuments</option>
-                                <option value="Ancient Greece">Ancient Greece</option>
                                 <option value="Religious">Religious</option>
                                 <option value="Sites">Sites</option>
                                 <option value="Castle">Castle</option>
@@ -442,7 +452,7 @@ const Home = () => {
             <section className="mb-10">
                 <h2 className="text-2xl font-semibold mb-4 text-center">Museums and Historical Places</h2>
                 <div className="flex overflow-x-auto scrollbar-hide gap-6 px-6 py-4">
-                    {(filteredPlacesAndMuseums?.museums || data.museums).map((museum) => (
+                    {(filteredPlacesAndMuseums?.museums|| data.museums).map((museum) => (
                         <div key={museum._id} className="gallery-item flex-none flex flex-col items-center w-80">
                             <img
                                 src={museum.pictures}
@@ -475,7 +485,7 @@ const Home = () => {
                                 <span>Ticket Prices: ${place.S_Ticket_Prices}</span>
                             </div>
                         </div>
-                    ))}
+                    ))} 
                 </div>
             </section>
 
