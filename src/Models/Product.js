@@ -34,12 +34,10 @@ const productsSchema = new Schema({
 
     Rating:{
         type : Number ,
-        required: true,
     } , 
 
     Reviews:{
         type : Number ,
-        required: true,
     } , 
     Archived: {
         type : Boolean,

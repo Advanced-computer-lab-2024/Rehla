@@ -1067,7 +1067,7 @@ const getProductsSortedByRating = async (req, res) => {
 const addProduct = async (req, res) => {
     try {
         // Destructure product attributes from the request body
-        const { Product_Name, Picture, Price, Quantity, Seller_Name, Description, Rating, Reviews } = req.body;
+        const { Product_Name, Picture, Price, Quantity, Seller_Name, Description} = req.body;
   
         // Check if the Picture is provided in the request body
         if (!Picture) {
@@ -1088,8 +1088,6 @@ const addProduct = async (req, res) => {
             Quantity,       // e.g. 100
             Seller_Name,    // e.g. "Egyptian Treasures"
             Description,    // e.g. "Description of Product 1"
-            Rating,         // e.g. 4.5
-            Reviews         // e.g. 150
         });
   
         // Save the new product to the database
