@@ -787,3 +787,14 @@ export const replyToComplaint = async (email, reply) => {
         throw error; // Rethrow to handle it in the component
     }
 };
+
+// Function to view all complaints sorted by date
+export const viewAllComplaintsSortedByDate = async () => {
+    try {
+        const response = await axios.get(`${API_URL}/viewAllComplaintsSortedByDate`);
+        return response.data; // Returns the sorted complaints from the server
+    } catch (error) {
+        console.error('Error fetching sorted complaints by date:', error);
+        throw error; // Rethrow to handle it in the component
+    }
+};

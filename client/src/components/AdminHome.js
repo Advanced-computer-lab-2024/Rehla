@@ -17,7 +17,8 @@ import {
     fetchComplaints, processComplaintByEmail,
     viewAllComplaints ,
     viewComplaintByEmail,
-    replyToComplaint 
+    replyToComplaint ,
+    viewAllComplaintsSortedByDate 
     
 } from '../services/api'; // Import all API functions
 import '../css/Home.css';
@@ -74,6 +75,11 @@ const AdminHome = () => {
     const [isSendingReply, setIsSendingReply] = useState(false); // Loading state
     const [replyErrorMessage, setReplyErrorMessage] = useState('');
     const [replySuccessMessage, setReplySuccessMessage] = useState('');
+
+
+    const [sortedComplaints, setSortedComplaints] = useState([]);
+    const [loadingSortedComplaints, setLoadingSortedComplaints] = useState(false);
+    const [sortedComplaintsError, setSortedComplaintsError] = useState('');
 
 
     // Fetch activity categories and preference tags on component mount
@@ -334,6 +340,22 @@ const AdminHome = () => {
             console.error('Error in replying to complaint:', error);
         } finally {
             setIsSendingReply(false);
+        }
+    };
+
+
+
+    const fetchSortedComplaints = async () => {
+        setLoadingSortedComplaints(true);
+        setSortedComplaintsError('');
+        try {
+            const complaints = await viewAllComplaintsSortedByDate();
+            setSortedComplaints(complaints); // Store the sorted complaints
+        } catch (error) {
+            setSortedComplaintsError('Failed to fetch complaints sorted by date.');
+            console.error('Error fetching sorted complaints:', error);
+        } finally {
+            setLoadingSortedComplaints(false);
         }
     };
 
@@ -715,7 +737,28 @@ const AdminHome = () => {
             </div>
         </div>
     
-
+        <div>
+            
+            <button onClick={fetchSortedComplaints} disabled={loadingSortedComplaints}>
+                Sort Complaints by Date
+            </button>
+            {loadingSortedComplaints ? (
+                <p>Loading complaints...</p>
+            ) : sortedComplaintsError ? (
+                <p>{sortedComplaintsError}</p>
+            ) : (
+                <ul>
+                    {sortedComplaints.map((complaint) => (
+                        <li key={complaint._id}>
+                            <p><strong>Email:</strong> {complaint.Tourist_Email}</p>
+                            <p><strong>Date:</strong> {complaint.Date_Of_Complaint}</p>
+                            <p><strong>Complaint:</strong> {complaint.Complaint_Text}</p>
+                            <p><strong>Reply:</strong> {complaint.Reply || 'No reply yet'}</p>
+                        </li>
+                    ))}
+                </ul>
+            )}
+        </div>
 
         </div>
     );
