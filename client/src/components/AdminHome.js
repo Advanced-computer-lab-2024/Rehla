@@ -16,7 +16,8 @@ import {
     processRequestByEmail,
     fetchComplaints, processComplaintByEmail,
     viewAllComplaints ,
-    viewComplaintByEmail
+    viewComplaintByEmail,
+    replyToComplaint 
     
 } from '../services/api'; // Import all API functions
 import '../css/Home.css';
@@ -67,6 +68,12 @@ const AdminHome = () => {
     const [errorMessage, setErrorMessage] = useState(null);
     const [showComplaintss, setShowComplaintss] = useState(false);
     const [emailInput, setEmailInput] = useState('');
+
+    const [complaintEmail, setComplaintEmail] = useState(''); // State to store email
+    const [complaintReply, setComplaintReply] = useState(''); // State to store reply
+    const [isSendingReply, setIsSendingReply] = useState(false); // Loading state
+    const [replyErrorMessage, setReplyErrorMessage] = useState('');
+    const [replySuccessMessage, setReplySuccessMessage] = useState('');
 
 
     // Fetch activity categories and preference tags on component mount
@@ -311,7 +318,24 @@ const AdminHome = () => {
     };
 
  
+    const handleReplyToComplaint = async () => {
+        setIsSendingReply(true);
+        setReplyErrorMessage('');
+        setReplySuccessMessage('');
 
+        try {
+            const response = await replyToComplaint(complaintEmail, complaintReply);
+            setReplySuccessMessage('Reply sent successfully: ' + response.message);
+            // Optionally, clear input fields after a successful reply
+            setComplaintEmail('');
+            setComplaintReply('');
+        } catch (error) {
+            setReplyErrorMessage('Failed to send reply. Please try again.');
+            console.error('Error in replying to complaint:', error);
+        } finally {
+            setIsSendingReply(false);
+        }
+    };
 
     return (
         <div>
@@ -668,7 +692,28 @@ const AdminHome = () => {
             )}
         </div>
     
-
+        <div>
+            
+            <div>
+                <h2>Reply to Complaint</h2>
+                <input
+                    type="email"
+                    placeholder="Enter user email"
+                    value={complaintEmail}
+                    onChange={(e) => setComplaintEmail(e.target.value)}
+                />
+                <textarea
+                    placeholder="Enter your reply"
+                    value={complaintReply}
+                    onChange={(e) => setComplaintReply(e.target.value)}
+                />
+                <button onClick={handleReplyToComplaint} disabled={isSendingReply}>
+                    {isSendingReply ? 'Sending...' : 'Send Reply'}
+                </button>
+                {replyErrorMessage && <p style={{ color: 'red' }}>{replyErrorMessage}</p>}
+                {replySuccessMessage && <p style={{ color: 'green' }}>{replySuccessMessage}</p>}
+            </div>
+        </div>
     
 
 

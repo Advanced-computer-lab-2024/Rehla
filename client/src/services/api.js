@@ -777,3 +777,13 @@ export const viewComplaintByEmail = async (email) => {
         throw error;
     }
 };
+// Function to reply to a complaint by email
+export const replyToComplaint = async (email, reply) => {
+    try {
+        const response = await axios.put(`${API_URL}/replyComplaint/${email}`, { reply });
+        return response.data; // Returns the updated complaint with the reply
+    } catch (error) {
+        console.error('Error replying to complaint:', error);
+        throw error; // Rethrow to handle it in the component
+    }
+};
