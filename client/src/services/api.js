@@ -798,3 +798,14 @@ export const viewAllComplaintsSortedByDate = async () => {
         throw error; // Rethrow to handle it in the component
     }
 };
+
+// Function to filter complaints by status
+export const filterComplaintsByStatus = async (status) => {
+    try {
+        const response = await axios.get(`${API_URL}/filterComplaintsByStatus/${status}`);
+        return response.data; // Returns the list of complaints with the specified status
+    } catch (error) {
+        console.error('Error filtering complaints by status:', error);
+        throw error; // Rethrow to handle it in the component
+    }
+};

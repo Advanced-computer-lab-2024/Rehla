@@ -18,7 +18,8 @@ import {
     viewAllComplaints ,
     viewComplaintByEmail,
     replyToComplaint ,
-    viewAllComplaintsSortedByDate 
+    viewAllComplaintsSortedByDate ,
+    filterComplaintsByStatus 
     
 } from '../services/api'; // Import all API functions
 import '../css/Home.css';
@@ -80,6 +81,12 @@ const AdminHome = () => {
     const [sortedComplaints, setSortedComplaints] = useState([]);
     const [loadingSortedComplaints, setLoadingSortedComplaints] = useState(false);
     const [sortedComplaintsError, setSortedComplaintsError] = useState('');
+
+    const [allComplaints, setAllComplaints] = useState([]); // Updated state for all complaints
+    const [filterStatus, setFilterStatus] = useState(''); // Updated state for the status filter
+    const [isLoadingFiltered, setIsLoadingFiltered] = useState(false); // Updated loading state for filtered complaints
+    const [filterErrorMsg, setFilterErrorMsg] = useState(''); // Updated error message for filtering
+
 
 
     // Fetch activity categories and preference tags on component mount
@@ -358,6 +365,25 @@ const AdminHome = () => {
             setLoadingSortedComplaints(false);
         }
     };
+
+    const handleFilterComplaintsByStatus = async () => {
+        setIsLoadingFiltered(true);
+        setFilterErrorMsg(''); // Clear previous error message
+        try {
+            const filteredComplaints = await filterComplaintsByStatus(filterStatus);
+            setAllComplaints(filteredComplaints);
+            if (filteredComplaints.length === 0) {
+                // Handle no complaints found scenario
+                throw new Error('No complaints found for the selected status.'); // Trigger catch block
+            }
+        } catch (error) {
+            setFilterErrorMsg(error.message || 'Failed to fetch filtered complaints.');
+        } finally {
+            setIsLoadingFiltered(false);
+        }
+    };
+
+
 
     return (
         <div>
@@ -754,6 +780,38 @@ const AdminHome = () => {
                             <p><strong>Date:</strong> {complaint.Date_Of_Complaint}</p>
                             <p><strong>Complaint:</strong> {complaint.Complaint_Text}</p>
                             <p><strong>Reply:</strong> {complaint.Reply || 'No reply yet'}</p>
+                        </li>
+                    ))}
+                </ul>
+            )}
+        </div>
+        <div>
+            <h2>Filter Complaints by Status</h2>
+            <input
+                type="text"
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value)}
+                placeholder="Enter complaint status"
+            />
+            <button onClick={handleFilterComplaintsByStatus} disabled={isLoadingFiltered}>
+                {isLoadingFiltered ? 'Loading...' : 'Filter Complaints'}
+            </button>
+            {filterErrorMsg && <p style={{ color: 'red' }}>{filterErrorMsg}</p>}
+
+            <h2>Filtered Complaints</h2>
+            {isLoadingFiltered ? (
+                <p>Loading complaints...</p>
+            ) : (
+                <ul>
+                    {allComplaints.map((complaint) => (
+                        <li key={complaint._id}>
+                            <strong>Title:</strong> {complaint.Title}<br />
+                            <strong>Email:</strong> {complaint.Tourist_Email}<br />
+                            <strong>Body:</strong> {complaint.Body}<br />
+                            <strong>Status:</strong> {complaint.Status}<br />
+                            <strong>Date:</strong> {new Date(complaint.Date_Of_Complaint).toLocaleDateString()}<br />
+                            <strong>Reply:</strong> {complaint.Reply ? complaint.Reply : 'No reply yet'}<br />
+                            <hr />
                         </li>
                     ))}
                 </ul>
