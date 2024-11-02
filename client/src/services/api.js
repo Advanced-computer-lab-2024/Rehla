@@ -766,3 +766,14 @@ export const processComplaintByEmail = async (email) => {
         throw error; // Rethrow to handle it in the component
     }
 };
+
+// Function to view a specific complaint by Tourist_Email
+export const viewComplaintByEmail = async (email) => {
+    try {
+        const response = await axios.get(`${API_URL}/viewComplaint/${email}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching complaint by email:', error);
+        throw error;
+    }
+};

@@ -15,7 +15,8 @@ import {
     viewAllRequests, 
     processRequestByEmail,
     fetchComplaints, processComplaintByEmail,
-    viewAllComplaints 
+    viewAllComplaints ,
+    viewComplaintByEmail
     
 } from '../services/api'; // Import all API functions
 import '../css/Home.css';
@@ -59,6 +60,13 @@ const AdminHome = () => {
     const [errorr, setErrorr] = useState(null); // Renamed error state
     const [complaints, setComplaints] = useState([]);
     const [showComplaints, setShowComplaints] = useState(false); // State to control showing complaints
+
+
+    const [complaintsList, setComplaintsList] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(null);
+    const [showComplaintss, setShowComplaintss] = useState(false);
+    const [emailInput, setEmailInput] = useState('');
 
 
     // Fetch activity categories and preference tags on component mount
@@ -257,20 +265,51 @@ const AdminHome = () => {
     };
     
     
+    // const handleProcessComplaint = async (email) => {
+    //     try {
+    //         const processedComplaint = await processComplaintByEmail(email);
+    //         alert('Complaint processed successfully: ' + processedComplaint.Title); // Assuming it has a Title
+    //         // Optionally refresh the list
+    //         setComplaints(complaints.filter((complaint) => complaint.Tourist_Email !== email));
+    //     } catch (error) {
+    //         console.error('Error processing complaint:', error);
+    //         alert('Failed to process the complaint.');
+    //     }
+    // };
+
+    
+    // Function to fetch a specific complaint by email
+    const handleFetchComplaintByEmail = async () => {
+        setIsLoading(true);
+        setErrorMessage(null);
+        try {
+            const complaintData = await viewComplaintByEmail(emailInput);
+            if (complaintData.length === 0) {
+                alert('No complaints found for this email.');
+            } else {
+                alert('Complaint fetched successfully: ' + JSON.stringify(complaintData));
+                // Optionally update state to display the fetched complaint
+            }
+        } catch (err) {
+            setErrorMessage('Error fetching complaint by email.');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // Function to process a complaint by email
     const handleProcessComplaint = async (email) => {
         try {
             const processedComplaint = await processComplaintByEmail(email);
-            alert('Complaint processed successfully: ' + processedComplaint.Title); // Assuming it has a Title
-            // Optionally refresh the list
-            setComplaints(complaints.filter((complaint) => complaint.Tourist_Email !== email));
+            alert('Complaint processed successfully: ' + processedComplaint.Title);
+            // Optionally, refresh the list of complaints after processing
+            setComplaintsList(complaintsList.filter((complaint) => complaint.Tourist_Email !== email));
         } catch (error) {
             console.error('Error processing complaint:', error);
             alert('Failed to process the complaint.');
         }
     };
 
-    
-    
  
 
 
@@ -592,7 +631,43 @@ const AdminHome = () => {
             )}
         </div>
     
+        <div>
+            
+            {/* Input for fetching a specific complaint by email */}
+            <input
+                type="text"
+                value={emailInput}
+                onChange={(e) => setEmailInput(e.target.value)}
+                placeholder="Enter email to fetch complaint"
+            />
+            <button onClick={handleFetchComplaintByEmail}>Fetch Complaint</button>
 
+            {/* Loading indicator */}
+            {isLoading && <p>Loading complaints...</p>}
+
+            {/* Error handling */}
+            {errorMessage && <p>Error: {errorMessage}</p>}
+
+            {/* Display the list of complaints if they are loaded and the user clicked to view them */}
+            {showComplaints && complaintsList.length === 0 && !isLoading && <p>No complaints found.</p>}
+
+            {showComplaintss && complaintsList.length > 0 && (
+                <ul>
+                    {complaintsList.map((complaint) => (
+                        <li key={complaint._id}>
+                            <p>Username: {complaint.Tourist_Email}</p>
+                            <p>Title: {complaint.Title}</p>
+                            <p>Body: {complaint.Body}</p>
+                            <p>Status: {complaint.Status}</p>
+                            <button onClick={() => handleProcessComplaint(complaint.Tourist_Email)}>
+                                Process Complaint
+                            </button>
+                        </li>
+                    ))}
+                </ul>
+            )}
+        </div>
+    
 
     
 
