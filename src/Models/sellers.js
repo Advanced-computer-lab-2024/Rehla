@@ -38,6 +38,11 @@ const sellersSchema = new Schema({
         required : true,
         default : "SELLER",
     },
+    TermsAccepted: {
+        type: Boolean,
+        default: false,
+        required: true
+    }
 
 }, { versionKey: false });
 

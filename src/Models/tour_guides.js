@@ -36,6 +36,11 @@ const tour_guidesSchema = new Schema({
     Previous_work: {
         type : String ,
     },
+    TermsAccepted: {
+        type: Boolean,
+        default: false,
+        required: true
+    }
 
 },{ versionKey: false });
 

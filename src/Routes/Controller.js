@@ -3627,6 +3627,156 @@ const calculateItineraryRating = async (req, res) => {
         res.status(500).json({ error: 'Error calculating itinerary rating', details: error.message });
     }
 };
+const acceptTermsTourGuide = async (req,res) => {
+    try {
+        // First, check if the tour guide exists
+        const {email} = req.body;
+        const tourGuide = await tour_guidem.findOne({ Email: email });
+        if (!tourGuide) {
+            return res.status(404).json({message:'Tour guide not found'});
+        }
+        // If found, update the TermsAccepted field
+        tourGuide.TermsAccepted = true;
+        await tourGuide.save(); // Save the updated tour guide
+        return res.status(200).json({ message: 'Terms accepted successfully', data: tourGuide });
+    } catch (error) {
+        console.error("Error accepting",error.message);
+        res.status(500).json({error:'Error accepting',details: error.message});
+    }
+};
+
+const checkTermsAcceptedTourGuide = async (req,res) => {
+    try {
+        const {email} = req.body;
+        const tourGuide = await tour_guidem.findOne({ Email: email });
+        if (!tourGuide) {
+            return res.status(404).json({message:'Tour guide not found'});
+        }
+        
+        return res.status(200).json({ termsAccepted: tourGuide.TermsAccepted });
+    } catch (error) {
+        console.error("Error checking",error.message);
+        res.status(500).json({error:'Error checking',details: error.message});
+    }
+};
+
+const acceptTermsAdvertiser = async (req,res) => {
+    try {
+        
+        const {email} = req.body;
+        const advertiser = await AdvertisersModel.findOne({ Email: email });
+        if (!advertiser) {
+            return res.status(404).json({message:'Advertiser not found'});
+        }
+        
+        advertiser.TermsAccepted = true;
+        await advertiser.save(); // Save the updated tour guide
+        return res.status(200).json({ message: 'Terms accepted successfully', data: advertiser });;
+    } catch (error) {
+        console.error("Error accepting",error.message);
+        res.status(500).json({error:'Error accepting',details: error.message});
+    }
+};
+
+const acceptTermsSeller = async (req,res) => {
+    try {
+        const {email} = req.body;
+        const seller = await Seller.findOne({ Email: email });
+
+        if (!seller) {
+            return res.status(404).json({message:'Seller not found'});
+        }
+
+        // If found, update the TermsAccepted field
+        seller.TermsAccepted = true;
+        await seller.save(); // Save the updated 
+        return res.status(200).json({ message: 'Terms accepted successfully', data: seller });;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+};
+
+const checkTermsAcceptedAdvertiser = async (req,res) => {
+    try {
+        const {email} = req.body;
+        const advertiser = await AdvertisersModel.findOne({ Email: email });
+        
+        if (!advertiser) {
+            return res.status(404).json({message:'Advertiser not found'});
+        }
+        return res.status(200).json({ termsAccepted: advertiser.TermsAccepted });
+    } catch (error) {
+        console.error("Error accepting",error.message);
+        res.status(500).json({error:'Error accepting',details: error.message});
+    }
+};
+
+const checkTermsAcceptedSeller = async (req,res) => {
+    try {
+        const {email} = req.body;
+        const seller = await Seller.findOne({ Email: email });
+        
+        if (!seller) {
+            return res.status(404).json({message:'Seller not found'});
+        }
+        return res.status(200).json({ termsAccepted: seller.TermsAccepted });
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+};
+
+const deactivateItinerary = async (req, res) => {
+    try {
+        const { itineraryName } = req.body; // Get the itinerary name from the request body
+
+        // Find the itinerary by name
+        const itinerary = await itinerarym.findOne({ Itinerary_Name: itineraryName });
+
+        if (!itinerary) {
+            return res.status(404).json({ message: 'Itinerary not found' });
+        }
+
+        if (itinerary.Booked > 0) {
+            // If there are bookings, only deactivate the itinerary
+            itinerary.isActive = false; // Set status to inactive
+            await itinerary.save();
+            return res.status(200).json({ message: 'Itinerary deactivated. Existing bookings will proceed as scheduled.' });
+        } else {
+            return res.status(400).json({ message: 'This itinerary cannot be deactivated because it has no bookings.' });
+        }
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Error deactivating itinerary', error: error.message });
+    }
+};
+const activateItinerary = async (req, res) => {
+    try {
+        const { itineraryName } = req.body; // Get the itinerary name from the request body
+
+        // Find the itinerary by name
+        const itinerary = await itinerarym.findOne({ Itinerary_Name: itineraryName });
+
+        if (!itinerary) {
+            return res.status(404).json({ message: 'Itinerary not found' });
+        }
+
+        if (itinerary.Booked > 0) {
+            // If there are bookings, only deactivate the itinerary
+            itinerary.isActive = true; // Set status to inactive
+            await itinerary.save();
+            return res.status(200).json({ message: 'Itinerary activated.' });
+        } else {
+            return res.status(400).json({ message: 'This itinerary cannot be activated because it has no bookings.' });
+        }
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Error deactivating itinerary', error: error.message });
+    }
+};
 
 
 // ----------------- Activity Category CRUD -------------------
@@ -3731,6 +3881,14 @@ module.exports = { getPurchasedProducts,
     uploadProfilePicture,
     Itineraryactivation,
     getAttendedItineraries,
-    getAttendedActivities
+    getAttendedActivities,
+    acceptTermsTourGuide,
+    checkTermsAcceptedTourGuide,
+    acceptTermsAdvertiser,
+    checkTermsAcceptedAdvertiser,
+    acceptTermsSeller,
+    checkTermsAcceptedSeller,
+    deactivateItinerary,
+    activateItinerary
     
 };

@@ -30,6 +30,11 @@ const AdvertisersSchema = new Schema({
     Company_Name:{
         type: String,
        // required: true
+    },
+    TermsAccepted: {
+        type: Boolean,
+        default: false,
+        required: true
     }
     
 },{ versionKey: false });

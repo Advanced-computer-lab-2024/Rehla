@@ -87,7 +87,12 @@ const itinerarysSchema = new Schema({
     Picture: {
         type : String ,
         default : "No Picture",
+    },
+    isActive: {
+        type: Boolean,
+        default: true,
     }
+
     
 },{ versionKey: false });
 
