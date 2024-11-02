@@ -168,16 +168,6 @@ const SellerHome = () => {
                 <Header />
                 <h1 className="text-4xl font-bold text-center mb-8">Products List</h1>
 
-
-
-                 {/* Alert Message */}
-                 {alertMessage && (
-                    <div className="bg-green-500 text-white text-center py-2 mb-4">
-                        {alertMessage}
-                    </div>
-                )}
-
-
                 {/* Search, Filter, and Sort Section */}
                 <div className="mb-8">
                     <form onSubmit={handleSearchProducts} className="flex flex-col items-center">
@@ -234,7 +224,6 @@ const SellerHome = () => {
                     </div>
                 </div>
 
-                {/* Conditionally Render Products */}
                {/* Conditionally Render Products */}
                     {isSearched ? (
                         <div className="mt-8">
@@ -398,61 +387,98 @@ const SellerHome = () => {
 
 
                          {/* Add Product Form */}
-                {isAdding && (
-                    <div className="mb-4">
-                        <h2 className="text-2xl font-bold mb-2">Add New Product</h2>
-                        <input
-                            type="text"
-                            placeholder="Product Name"
-                            value={newProduct.Product_Name}
-                            onChange={(e) => setNewProduct({ ...newProduct, Product_Name: e.target.value })}
-                            className="border border-gray-300 rounded-lg px-4 py-2 w-full mb-2"
-                        />
+                         {isAdding && (
+                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                        <div className="bg-white rounded-lg p-6 max-w-lg w-full pt-32 pb-4"> {/* Adjusted padding */}
+                            <h2 className="text-xl font-bold mb-4">Add New Product</h2>
+                            
+                            {/* Product Name Input */}
+                            <div className="mb-2">
+                                <label className="block font-medium">Product Name:</label>
+                                <input
+                                    type="text"
+                                    placeholder="Enter product name"
+                                    value={newProduct.Product_Name}
+                                    onChange={(e) => setNewProduct({ ...newProduct, Product_Name: e.target.value })}
+                                    className="border border-gray-300 rounded-lg px-4 py-2 w-full"
+                                />
+                            </div>
 
-                        <input
-                            type="text"
-                            placeholder="Product Picture"
-                            value={newProduct.Picture}
-                            onChange={(e) => setNewProduct({ ...newProduct, Picture: e.target.value })}
-                            className="border border-gray-300 rounded-lg px-4 py-2 w-full mb-2"
-                        />
-                        <input
-                            type="number"
-                            placeholder="Price"
-                            value={newProduct.Price}
-                            onChange={(e) => setNewProduct({ ...newProduct, Price: parseFloat(e.target.value) })}
-                            className="border border-gray-300 rounded-lg px-4 py-2 w-full mb-2"
-                        />
+                            {/* Product Picture Input */}
+                            <div className="mb-2">
+                                <label className="block font-medium">Product Picture:</label>
+                                <input
+                                    type="text"
+                                    placeholder="Enter product picture URL"
+                                    value={newProduct.Picture}
+                                    onChange={(e) => setNewProduct({ ...newProduct, Picture: e.target.value })}
+                                    className="border border-gray-300 rounded-lg px-4 py-2 w-full"
+                                />
+                            </div>
 
-                        <input
-                            type="number"
-                            placeholder="Quantity"
-                            value={newProduct.Quantity}
-                            onChange={(e) => setNewProduct({ ...newProduct, Quantity: parseFloat(e.target.value) })}
-                            className="border border-gray-300 rounded-lg px-4 py-2 w-full mb-2"
-                        />
-                        <textarea
-                            placeholder="Seller Name"
-                            value={newProduct.Seller_Name}
-                            onChange={(e) => setNewProduct({ ...newProduct, Seller_Name: e.target.value })}
-                            className="border border-gray-300 rounded-lg px-4 py-2 w-full mb-2"
-                        />
+                            {/* Price Input */}
+                            <div className="mb-2">
+                                <label className="block font-medium">Price:</label>
+                                <input
+                                    type="number"
+                                    placeholder="Enter price"
+                                    value={newProduct.Price}
+                                    onChange={(e) => setNewProduct({ ...newProduct, Price: parseFloat(e.target.value) })}
+                                    className="border border-gray-300 rounded-lg px-4 py-2 w-full"
+                                />
+                            </div>
 
-                        <textarea
-                            placeholder="Description"
-                            value={newProduct.Description}
-                            onChange={(e) => setNewProduct({ ...newProduct, Description: e.target.value })}
-                            className="border border-gray-300 rounded-lg px-4 py-2 w-full mb-2"
-                        />
+                            {/* Quantity Input */}
+                            <div className="mb-2">
+                                <label className="block font-medium">Quantity:</label>
+                                <input
+                                    type="number"
+                                    placeholder="Enter quantity"
+                                    value={newProduct.Quantity}
+                                    onChange={(e) => setNewProduct({ ...newProduct, Quantity: parseFloat(e.target.value) })}
+                                    className="border border-gray-300 rounded-lg px-4 py-2 w-full"
+                                />
+                            </div>
 
-                        <button 
-                            onClick={handleAddProduct} 
-                            className="bg-brandBlue text-white px-6 py-2 rounded-lg"
-                        >
-                            Add Product
-                        </button>
+                            {/* Seller Name Textarea */}
+                            <div className="mb-2">
+                                <label className="block font-medium">Seller Name:</label>
+                                <textarea
+                                    placeholder="Enter seller name"
+                                    value={newProduct.Seller_Name}
+                                    onChange={(e) => setNewProduct({ ...newProduct, Seller_Name: e.target.value })}
+                                    className="border border-gray-300 rounded-lg px-4 py-2 w-full"
+                                />
+                            </div>
+
+                            {/* Description Textarea */}
+                            <div className="mb-2">
+                                <label className="block font-medium">Description:</label>
+                                <textarea
+                                    placeholder="Enter description"
+                                    value={newProduct.Description}
+                                    onChange={(e) => setNewProduct({ ...newProduct, Description: e.target.value })}
+                                    className="border border-gray-300 rounded-lg px-4 py-2 w-full"
+                                />
+                            </div>
+
+                            {/* Add and Cancel Buttons */}
+                            <button 
+                                onClick={handleAddProduct} 
+                                className="bg-brandBlue text-white px-6 py-2 rounded-lg"
+                            >
+                                Add Product
+                            </button>
+                            <button 
+                                onClick={() => setIsAdding(false)} 
+                                className="bg-red-500 text-white px-6 py-2 rounded-lg ml-2"
+                            >
+                                Cancel
+                            </button>
+                        </div>
                     </div>
-                  )}
+                )}
+
 
             </div>
             <Footer />
