@@ -735,3 +735,34 @@ export const getPurchasedProducts = async (touristEmail) => {
         throw error;
     }
 };
+
+// export const viewAllComplaints = async () => {
+//     try {
+//         const response = await axios.get(`${API_URL}/viewComplaints`);
+//         return response.data;
+//     } catch (error) {
+//         console.error("Error fetching complaints:", error.response || error);
+//         throw error.response?.data || 'Error fetching complaints';
+//     }
+// };
+// Function to fetch all complaints
+export const viewAllComplaints = async () => {
+    try {
+        const response = await axios.get(`${API_URL}/viewComplaints`);
+        return response.data; // Returns an array of complaints
+    } catch (error) {
+        console.error('Error fetching complaints:', error);
+        throw error; // Rethrow to handle it in the component
+    }
+};
+
+// Function to process a complaint by email
+export const processComplaintByEmail = async (email) => {
+    try {
+        const response = await axios.post(`${API_URL}/processComplaint/${email}`); // Adjust the route if necessary
+        return response.data; // Returns the processed complaint
+    } catch (error) {
+        console.error('Error processing complaint:', error);
+        throw error; // Rethrow to handle it in the component
+    }
+};

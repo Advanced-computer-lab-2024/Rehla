@@ -13,7 +13,10 @@ import {
     deletePreferenceTag,
     updateProduct,
     viewAllRequests, 
-    processRequestByEmail
+    processRequestByEmail,
+    fetchComplaints, processComplaintByEmail,
+    viewAllComplaints 
+    
 } from '../services/api'; // Import all API functions
 import '../css/Home.css';
 import logo from '../images/logo.png';
@@ -50,6 +53,13 @@ const AdminHome = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showRequests, setShowRequests] = useState(false); // To toggle requests visibility
+
+
+    const [loadingg, setLoadingg] = useState(false); // Renamed loading state
+    const [errorr, setErrorr] = useState(null); // Renamed error state
+    const [complaints, setComplaints] = useState([]);
+    const [showComplaints, setShowComplaints] = useState(false); // State to control showing complaints
+
 
     // Fetch activity categories and preference tags on component mount
     useEffect(() => {
@@ -231,6 +241,38 @@ const AdminHome = () => {
             setUpdateMessage(error.message);
         }
     };
+
+    const fetchComplaints = async () => {
+        setLoading(true); // Set loading state to true
+        try {
+            const complaintsData = await viewAllComplaints(); // Use viewAllComplaints
+            setComplaints(complaintsData); // Set the fetched complaints to state
+            setShowComplaints(true); // Show the complaints list
+        } catch (error) {
+            setError('Error fetching complaints.'); // Set error state
+            console.error('Error fetching complaints:', error);
+        } finally {
+            setLoading(false); // Set loading state to false after fetch
+        }
+    };
+    
+    
+    const handleProcessComplaint = async (email) => {
+        try {
+            const processedComplaint = await processComplaintByEmail(email);
+            alert('Complaint processed successfully: ' + processedComplaint.Title); // Assuming it has a Title
+            // Optionally refresh the list
+            setComplaints(complaints.filter((complaint) => complaint.Tourist_Email !== email));
+        } catch (error) {
+            console.error('Error processing complaint:', error);
+            alert('Failed to process the complaint.');
+        }
+    };
+
+    
+    
+ 
+
 
     return (
         <div>
@@ -527,6 +569,34 @@ const AdminHome = () => {
                 </form>
                 {updateMessage && <p>{updateMessage}</p>}
             </div>
+
+            <div>
+            <h1>Admin Home</h1>
+            <button onClick={fetchComplaints}>View All Complaints</button>
+            {loadingg && <p>Loading complaints...</p>}
+            {errorr && <p>Error: {errorr}</p>}
+            {showComplaints && complaints.length === 0 && !loadingg && <p>No complaints found.</p>}
+            {showComplaints && complaints.length > 0 && (
+                <ul>
+                    {complaints.map((complaint) => (
+                        <li key={complaint._id}>
+                            <p>Username: {complaint.Tourist_Email}</p>
+                            <p>Title: {complaint.Title}</p>
+                            <p>Complaint: {complaint.Body}</p>
+                            <button onClick={() => handleProcessComplaint(complaint.Tourist_Email)}>
+                                Process Complaint
+                            </button>
+                        </li>
+                    ))}
+                </ul>
+            )}
+        </div>
+    
+
+
+    
+
+
         </div>
     );
 };
