@@ -115,6 +115,41 @@ const deleteUserAdmin = async (req, res) => {
             const user = await Model.findOneAndDelete({ Email: email });
             if (user) deletedUser = user;  // If a user is found, store the deleted user
         }));
+        
+
+       //check the type of the user
+       if (deletedUser.Type === 'TOURIST') {
+        // Delete all tourist itineraries by calling deleteTouristItenrary
+        await deleteTouristItinerary(email);
+        // Delete all tourist itineraries by calling deleteTouristActivity 
+        await deleteTouristActivity(email);
+        }
+    
+        //check the type of the user 
+        if (deletedUser.Type === 'TOUR_GUIDE') {
+            // Delete all tour guide itineraries by calling deleteTourGuideItinerary 
+            await deleteItinerary(email);
+        }
+
+        //check the type of the user
+        if (deletedUser.Type === 'ADVERTISER') {
+            // Delete all advertiser activities by calling deleteActivityByAdvertiser
+            await deleteActivityByAdvertiser(email);
+        }
+
+
+            // Check the type of the user
+        if (deletedUser.Type === 'SELLER') {
+            const shopName = deletedUser.Shop_Name;
+
+            // Find and delete products associated with the seller's shop name
+            const productsToDelete = await Product.find({ Seller_Name: shopName });
+            if (productsToDelete.length > 0) {
+                await Product.deleteMany({ Seller_Name: shopName });
+                console.log('Deleted products:', productsToDelete);
+            }
+        }    
+            
   
         // If no user was found in any collection, return a 404 error
         if (!deletedUser) {
