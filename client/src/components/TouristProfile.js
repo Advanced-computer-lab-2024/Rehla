@@ -1,28 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { getTouristProfile, updateTouristProfile } from '../services/api'; // Import API functions
+import { getTouristProfile, updateTouristProfile, uploadProfilePicture } from '../services/api';
 import { Link } from 'react-router-dom';
-import logo from '../images/logo.png'; // Replace with your logo path
+import logo from '../images/logo.png';
 
 const TouristProfile = () => {
-  const [tourist, setTourist] = useState(null); // State for storing tourist profile
-  const [isEditing, setIsEditing] = useState(false); // State for toggling edit mode
+  const [tourist, setTourist] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     Email: '',
     Username: '',
     Password: '',
     Mobile_Number: '',
     Nationality: '',
-    Job_Student: ''
+    Job_Student: '',
   });
+  const [file, setFile] = useState(null);
 
-  // Fetch tourist profile on component load
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const email = localStorage.getItem('email'); // Assuming email is stored after login
+        const email = localStorage.getItem('email');
         const profileData = await getTouristProfile({ Email: email });
-        setTourist(profileData); // Set profile data
-        setFormData(profileData); // Pre-fill form with fetched data
+        setTourist(profileData);
+        setFormData(profileData);
       } catch (error) {
         console.error("Error fetching profile:", error);
       }
@@ -30,35 +30,60 @@ const TouristProfile = () => {
     fetchProfile();
   }, []);
 
-  // Function to handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value }); // Update form data as user types
+    setFormData({ ...formData, [name]: value });
   };
 
-  // Function to save the updated profile
   const handleSave = async () => {
     try {
-      await updateTouristProfile(formData); // Send the updated form data to the API
-      setIsEditing(false); // Exit edit mode after saving
+      await updateTouristProfile(formData);
+      setIsEditing(false);
     } catch (error) {
       console.error("Error updating profile:", error);
     }
-    window.location.reload(); 
+    window.location.reload();
   };
 
-  // Function to enable edit mode
   const handleEdit = () => {
-    setIsEditing(true); // Enable edit mode
+    setIsEditing(true);
   };
+
+  const handleFileChange = (event) => {
+    setFile(event.target.files[0]);
+  };
+
+  const handleUpload = async () => {
+    if (!file) {
+        alert('Please select a file to upload.');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('document', file);
+    formData.append('email', tourist.Email); // Include the user's email
+
+    try {
+        const response = await uploadProfilePicture(formData);
+        alert('Profile picture uploaded successfully!');
+
+        // Fetch updated profile data
+        const updatedProfile = await getTouristProfile({ Email: tourist.Email });
+        setTourist(updatedProfile); // Update tourist state with the new profile data
+
+    } catch (error) {
+        console.error('Error uploading profile picture:', error);
+        alert('Failed to upload profile picture.');
+    }
+};
+
 
   if (!tourist) {
-    return <div>Loading...</div>; // Render loading state if profile is not loaded yet
+    return <div>Loading...</div>;
   }
 
   return (
     <div className="min-h-screen flex flex-col justify-between bg-gray-100">
-      {/* Navigation Bar */}
       <div className="w-full bg-brandBlue shadow-md p-4 flex justify-between items-center">
         <img src={logo} alt="Logo" className="w-16" />
         <Link to="/TouristHome" className="text-lg font-medium text-white hover:text-blue-500">
@@ -66,15 +91,21 @@ const TouristProfile = () => {
         </Link>
       </div>
 
-      {/* Main Profile Section */}
       <div className="flex items-center justify-center flex-grow pt-6">
         <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-3xl">
-          {/* Profile Header */}
           <div className="flex flex-col items-center mb-8">
-            <div className="w-32 h-32 rounded-full bg-brandBlue text-white text-center flex items-center justify-center mb-4">
-              <span className="text-2xl font-bold">{tourist.Username.charAt(0)}</span> {/* Initial */}
-            </div>
-            <h2 className="text-3xl font-bold text-brandBlue mb-2">{tourist.Username}</h2> {/* Replaced Email with Username */}
+            {tourist.profilePicture ? (
+              <img
+                src={tourist.profilePicture}
+                alt={`${tourist.Username}'s Profile`}
+                className="w-32 h-32 rounded-full object-cover mb-4"
+              />
+            ) : (
+              <div className="w-32 h-32 rounded-full bg-brandBlue text-white text-center flex items-center justify-center mb-4">
+                <span className="text-2xl font-bold">{tourist.Username.charAt(0)}</span>
+              </div>
+            )}
+            <h2 className="text-3xl font-bold text-brandBlue mb-2">{tourist.Username}</h2>
             <button
               className="bg-brandBlue text-white py-2 px-4 rounded-lg hover:bg-opacity-90 transition duration-300"
               onClick={handleEdit}
@@ -83,7 +114,6 @@ const TouristProfile = () => {
             </button>
           </div>
 
-          {/* Profile Content or Form */}
           {isEditing ? (
             <div>
               <form className="space-y-4">
@@ -156,26 +186,35 @@ const TouristProfile = () => {
                   </div>
                 </div>
 
+                <div>
+                  <label className="block text-gray-700 text-sm font-bold mb-2">Upload Profile Picture:</label>
+                  <input
+                    type="file"
+                    onChange={handleFileChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                  />
+                </div>
+
                 <button
                   type="button"
-                  onClick={handleSave}
-                  
-                  className="w-full bg-brandBlue text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300"
+                  onClick={handleUpload}
+                  className="w-full bg-brandBlue text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300 mt-4"
                 >
-                  update profile picture
+                  Update Profile Picture
                 </button>
+
                 <button
                   type="button"
                   onClick={() => window.location.reload()}
-                  className="w-full bg-brandBlue text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300"
+                  className="w-full bg-brandBlue text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300 mt-2"
                 >
-                 Cancel
+                  Cancel
                 </button>
 
                 <button
                   type="button"
                   onClick={handleSave}
-                  className="w-full bg-brandBlue text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300"
+                  className="w-full bg-brandBlue text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300 mt-2"
                 >
                   Save Profile
                 </button>
@@ -193,7 +232,6 @@ const TouristProfile = () => {
         </div>
       </div>
 
-      {/* Footer */}
       <footer className="w-full bg-brandBlue py-4 text-center text-white mt-6">
         <p>&copy; 2024 Tourist Profile. All rights reserved.</p>
       </footer>
