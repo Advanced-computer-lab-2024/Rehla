@@ -237,7 +237,7 @@ app.post("/rateActivity", rateActivity);
 app.post("/commentOnEvent", commentOnEvent);
 app.put("/productRateReview" , productRateReview);
 
-app.get("/getMyComplaints" ,getMyComplaints);
+app.post("/getMyComplaints" ,getMyComplaints);
 app.post("/createComplaint", createComplaint);
 app.put("/payForItinerary",payForItinerary);
 app.post("/createTouristActivity",createTouristActivity);

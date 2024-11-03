@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../images/logo.png';
-import { searchEventsPlaces, commentOnItinerary, rateItinerary, rateActivity, commentOnEvent , rateTourGuide,commentTourGuide} from '../services/api'; // Import the commentOnEvent function
+import { searchEventsPlaces, commentOnItinerary, rateItinerary, rateActivity, commentOnEvent , rateTourGuide,commentTourGuide,viewComplaintByEmail,processComplaintByEmail} from '../services/api'; // Import the commentOnEvent function
 import Homet2 from '../components/Homet2.js';
 
 const TouristHome = () => {
@@ -29,6 +29,14 @@ const TouristHome = () => {
     const [tourGuideEmaill, setTourGuideEmaill] = useState('');
     const [commentt, setCommentt] = useState('');
     const [errort, setErrort] = useState('');
+    
+    const [complaintsList, setComplaintsList] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(null);
+    const [showComplaintss, setShowComplaintss] = useState(false);
+    const [showComplaints, setShowComplaints] = useState(false); // State to control showing complaints
+
+
 
 
     // Fetch email from localStorage on component mount
@@ -56,6 +64,20 @@ const TouristHome = () => {
             setError('Failed to submit the comment. Please try again later.');
         }
     };
+
+     // Function to process a complaint by email
+     const handleProcessComplaint = async (email) => {
+        try {
+            const processedComplaint = await processComplaintByEmail(email);
+            alert('Complaint processed successfully: ' + processedComplaint.Title);
+            // Optionally, refresh the list of complaints after processing
+            setComplaintsList(complaintsList.filter((complaint) => complaint.Tourist_Email !== email));
+        } catch (error) {
+            console.error('Error processing complaint:', error);
+            alert('Failed to process the complaint.');
+        }
+    };
+
     // Handle search submission
     const handleSearch = async (e) => {
         e.preventDefault();
@@ -144,6 +166,27 @@ const TouristHome = () => {
         }
     };
 
+    const handleFetchComplaintByEmail = async () => {
+        setIsLoading(true);
+        setErrorMessage(null);
+        setShowComplaints(false); // Hide previous complaints list before fetching new data
+
+        try {
+            const storedEmail = localStorage.getItem('email');
+            const complaintData = await viewComplaintByEmail(storedEmail);
+
+            if (complaintData.length === 0) {
+                alert('No complaints found for this email.');
+            } else {
+                setComplaintsList(complaintData); // Set complaints list state
+                setShowComplaints(true); // Show complaints table
+            }
+        } catch (err) {
+            setErrorMessage('Error fetching complaint by email.');
+        } finally {
+            setIsLoading(false);
+        }
+    };
     return (
         <div>
             <div className="NavBar">
@@ -405,7 +448,50 @@ const TouristHome = () => {
             Submit Comment
         </button>
     </form>
-</div>
+
+    <div className="container mx-auto p-4">
+            <button
+                type="submit"
+                className="w-full bg-indigo-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-indigo-500 transition-all duration-300"
+                onClick={handleFetchComplaintByEmail}
+            >
+                My Complaint
+            </button>
+
+            {/* Loading indicator */}
+            {isLoading && <p>Loading complaints...</p>}
+
+            {/* Error handling */}
+            {errorMessage && <p>Error: {errorMessage}</p>}
+
+            {/* No complaints found message */}
+            {showComplaints && complaintsList.length === 0 && !isLoading && <p>No complaints found.</p>}
+
+            {/* Display complaints in a table */}
+            {showComplaints && complaintsList.length > 0 && (
+                <table className="min-w-full border border-gray-200 mt-4">
+                    <thead>
+                        <tr>
+                            <th className="border px-4 py-2">Title</th>
+                            <th className="border px-4 py-2">Body</th>
+                            <th className="border px-4 py-2">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {complaintsList.map((complaint) => (
+                            <tr key={complaint._id}>
+                                <td className="border px-4 py-2">{complaint.Title}</td>
+                                <td className="border px-4 py-2">{complaint.Body}</td>
+                                <td className="border px-4 py-2">{complaint.Status}</td>
+                               
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            )}
+        </div>
+
+        </div>
 <footer className="bg-brandBlue shadow dark:bg-brandBlue m-0">
                 <div className="w-full mx-auto md:py-8">
                     <div className="sm:flex sm:items-center sm:justify-between">
