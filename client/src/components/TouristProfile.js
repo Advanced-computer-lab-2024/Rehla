@@ -44,6 +44,7 @@ const TouristProfile = () => {
     } catch (error) {
       console.error("Error updating profile:", error);
     }
+    window.location.reload(); 
   };
 
   // Function to enable edit mode
@@ -154,6 +155,22 @@ const TouristProfile = () => {
                     />
                   </div>
                 </div>
+
+                <button
+                  type="button"
+                  onClick={handleSave}
+                  
+                  className="w-full bg-brandBlue text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300"
+                >
+                  update profile picture
+                </button>
+                <button
+                  type="button"
+                  onClick={() => window.location.reload()}
+                  className="w-full bg-brandBlue text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300"
+                >
+                 Cancel
+                </button>
 
                 <button
                   type="button"
