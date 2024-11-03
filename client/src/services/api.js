@@ -823,3 +823,14 @@ export const uploadProfilePicture = async (formData) => {
         throw error; // Rethrow the error for handling in the calling component
     }
 };
+
+
+export const updateComplaintStatus = async (email) => {
+    try {
+        const response = await axios.put(`${API_URL}/ComplaintStatus/${email}`);
+        return response.data; // Returns the updated complaint with the resolved status
+    } catch (error) {
+        console.error('Error updating complaint status:', error);
+        throw error; // Rethrow to handle it in the component
+    }
+};

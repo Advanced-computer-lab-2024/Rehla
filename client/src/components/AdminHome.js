@@ -19,7 +19,8 @@ import {
     viewComplaintByEmail,
     replyToComplaint ,
     viewAllComplaintsSortedByDate ,
-    filterComplaintsByStatus 
+    filterComplaintsByStatus ,
+    updateComplaintStatus
     
 } from '../services/api'; // Import all API functions
 import '../css/Home.css';
@@ -88,6 +89,9 @@ const AdminHome = () => {
     const [filterErrorMsg, setFilterErrorMsg] = useState(''); // Updated error message for filtering
 
 
+    const [complaintEmaill, setComplaintEmaill] = useState('');  // Renamed from emailToUpdate
+    const [statusUpdateMessage, setStatusUpdateMessage] = useState('');  // Renamed from statusMessage
+    const [statusError, setStatusError] = useState('');  // Renamed from errorMessage
 
     // Fetch activity categories and preference tags on component mount
     useEffect(() => {
@@ -383,6 +387,17 @@ const AdminHome = () => {
         }
     };
 
+    const handleComplaintStatusUpdate = async () => {  // Renamed from handleUpdateComplaintStatus
+        setStatusUpdateMessage('');
+        setStatusError('');
+
+        try {
+            const response = await updateComplaintStatus(complaintEmaill);
+            setStatusUpdateMessage(response.message);  // Display success message
+        } catch (error) {
+            setStatusError(error.response?.data?.message || 'Error updating complaint status.');
+        }
+    };
 
 
     return (
@@ -817,7 +832,19 @@ const AdminHome = () => {
                 </ul>
             )}
         </div>
+        <div>
+            <h2>Update Complaint Status</h2>
+            <input
+                type="text"
+                placeholder="Enter email"
+                value={complaintEmaill}
+                onChange={(e) => setComplaintEmaill(e.target.value)}
+            />
+            <button onClick={handleComplaintStatusUpdate}>Update Status to Resolved</button>
 
+            {statusUpdateMessage && <p>{statusUpdateMessage}</p>}
+            {statusError && <p style={{ color: 'red' }}>{statusError}</p>}
+        </div>
         </div>
     );
 };
