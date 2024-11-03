@@ -210,7 +210,7 @@ const ProductList = () => {
                                         alt={product.Product_Name} 
                                         className="w-full h-48 object-cover rounded-lg mt-4"
                                     />
-                                    <p className="mt-2 text-lg font-semibold">${product.Price.toFixed(2)}</p>
+                                    <p className="mt-2 text-lg font-semibold">${product.Price}</p>
                                     <p className="text-gray-600 mt-2">{product.Description}</p>
         
                                 </div>
@@ -233,7 +233,7 @@ const ProductList = () => {
                                         alt={product.Product_Name} 
                                         className="w-full h-48 object-cover rounded-lg mt-4"
                                     />
-                                    <p className="mt-2 text-lg font-semibold">${product.Price.toFixed(2)}</p>
+                                    <p className="mt-2 text-lg font-semibold">${product.Price}</p>
                                     <p className="text-gray-600 mt-2">{product.Description}</p>
                                 </div>
                             ))}
@@ -255,9 +255,9 @@ const ProductList = () => {
                                         alt={product.Product_Name} 
                                         className="w-full h-48 object-cover rounded-lg mt-4"
                                     />
-                                    <p className="mt-2 text-lg font-semibold">${product.Price.toFixed(2)}</p>
+                                    <p className="mt-2 text-lg font-semibold">${product.Price}</p>
                                     <p className="text-gray-600 mt-2">{product.Description}</p>
-                                    <p className="text-yellow-500 font-bold mt-2">Rating: {product.Rating.toFixed(1)}</p>
+                                    <p className="text-yellow-500 font-bold mt-2">Rating: {product.Rating}</p>
                                 </div>
                             ))}
                         </div>
@@ -275,9 +275,9 @@ const ProductList = () => {
                                 alt={product.Product_Name} 
                                 className="w-full h-48 object-cover rounded-lg mt-4"
                             />
-                            <p className="mt-2 text-lg font-semibold">${product.Price.toFixed(2)}</p>
+                            <p className="mt-2 text-lg font-semibold">${product.Price}</p>
                             <p className="text-gray-600 mt-2">{product.Description}</p>
-                            <p className="text-yellow-500 font-bold mt-2">Rating: {product.Rating.toFixed(1)}</p>
+                            <p className="text-yellow-500 font-bold mt-2">Rating: {product.Rating}</p>
                         </div>
                     ))}
                 </div>
