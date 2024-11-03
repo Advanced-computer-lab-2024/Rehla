@@ -39,7 +39,7 @@ const activitysSchema = new Schema({
 
     Booking_Available: {
         type : Boolean,
-        required : true,
+        //required : true,
     },
 
     Available_Spots: {
@@ -49,11 +49,10 @@ const activitysSchema = new Schema({
 
     Booked_Spots: {
         type : Number ,
-        required : true,
+        //required : true,
     },
     Rating: {
         type : Number ,
-        required : true,
     },
     Created_By: {
         type : String ,

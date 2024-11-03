@@ -1814,43 +1814,24 @@ const updateUserAdvertiser = async (req, res) => {
 const createActivityByAdvertiser = async (req, res) => {
     try {
         const { 
-            Name, Location, Time, Duration, Price, Date, Discount_Percent, 
-            Booking_Available, Available_Spots, Booked_Spots, Rating, 
-            Category, Tag ,Created_By
+            Name, Location, Time, Duration, Price, Date, Discount_Percent, Available_Spots ,Created_By,Picture
         } = req.body;
 
         // Check if all required fields are provided
         if (!Name || !Location || !Time || !Duration || !Price || !Date || 
-            !Discount_Percent || !Booking_Available || !Available_Spots || 
-            !Booked_Spots || !Rating || !Category || !Tag || !Created_By) {
+            !Discount_Percent || !Available_Spots || !Created_By) {
             return res.status(400).json({ error: 'All fields are required.' });
         }
 
         // Create a new activity
         const newActivity = new activity({
             Name, Location, Time, Duration, Price, Date, 
-            Discount_Percent, Booking_Available, Available_Spots, 
-            Booked_Spots, Rating , Created_By
+            Discount_Percent, Available_Spots, Created_By,Picture
         });
 
         // Save the new activity
         const savedActivity = await newActivity.save();
 
-        // Create the category entry
-        const newCategory = new activity_categoriesm({
-            Activity: savedActivity.Name,  // Link category to the created activity
-            Category
-        });
-
-        await newCategory.save(); // Save the category
-
-        // Create the tag entry
-        const newTag = new activity_tagsm({
-            Activity: savedActivity.Name,  // Link tag to the created activity
-            Tag
-        });
-
-        await newTag.save(); // Save the tag
 
         // Return success response
         res.status(201).json({ 
