@@ -19,7 +19,8 @@ import {
     viewComplaintByEmail,
     replyToComplaint ,
     viewAllComplaintsSortedByDate ,
-    filterComplaintsByStatus 
+    filterComplaintsByStatus ,
+    flagActivity , flagItinerary 
     
 } from '../services/api'; // Import all API functions
 import '../css/Home.css';
@@ -82,6 +83,15 @@ const AdminHome = () => {
     const [filterErrorMsg, setFilterErrorMsg] = useState(''); // Updated error message for filtering
 
     const [isAddModalOpen, setAddModalOpen] = useState(false);
+
+    const [activityName, setActivityName] = useState(''); // State for activity name input
+    const [flagMessage, setFlagMessage] = useState(''); // State to display success/error message
+
+    const [itineraryName, setItineraryName] = useState('');
+    const [itineraryFlagMessage, setItineraryFlagMessage] = useState('');
+    const [flagError, setFlagError] = useState('');
+
+
 
     // Fetch activity categories and preference tags on component mount
     useEffect(() => {
@@ -381,6 +391,27 @@ const AdminHome = () => {
             setIsLoadingFiltered(false);
         }
     };
+
+// Handler function to flag the activity
+const handleFlagActivity = async () => {
+    try {
+        const response = await flagActivity(activityName);
+        setFlagMessage(response.message); // Set success message
+    } catch (error) {
+        setFlagMessage('Error flagging activity: ' + error.message); // Set error message
+    }
+};
+
+const handleFlagItinerary = async () => {
+    try {
+        const response = await flagItinerary(itineraryName);
+        setItineraryFlagMessage(response.message); // Display success message
+        setFlagError(''); // Clear any previous errors
+    } catch (error) {
+        setItineraryFlagMessage('');
+        setFlagError('Error flagging itinerary: ' + (error.response?.data?.message || error.message));
+    }
+};
 
 
 
@@ -858,7 +889,34 @@ const AdminHome = () => {
                     <span className="block text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2023 <a href="/" className="hover:underline">Rehla™</a>. All Rights Reserved.</span>
                 </div>
             </footer>
+            <div>
+            <h3>Flag Activity as Inappropriate</h3>
+            <div>
+                <input 
+                    type="text" 
+                    placeholder="Enter Activity Name" 
+                    value={activityName} 
+                    onChange={(e) => setActivityName(e.target.value)} 
+                />
+                <button onClick={handleFlagActivity}>Flag Activity</button>
+            </div>
+            {flagMessage && <p>{flagMessage}</p>} {/* Display success/error message */}
+        </div>
+        <div>
+            <h3>Flag an Itinerary as Inappropriate</h3>
+            <input
+                type="text"
+                value={itineraryName}
+                onChange={(e) => setItineraryName(e.target.value)}
+                placeholder="Enter itinerary name"
+            />
+            <button onClick={handleFlagItinerary}>Flag Itinerary</button>
+            
+            {itineraryFlagMessage && <p style={{ color: 'green' }}>{itineraryFlagMessage}</p>}
+            {flagError && <p style={{ color: 'red' }}>{flagError}</p>}
+        </div>
 
+        
         </div>
     );
 };

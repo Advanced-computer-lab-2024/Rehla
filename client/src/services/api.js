@@ -834,3 +834,24 @@ export const updateComplaintStatus = async (email) => {
         throw error; // Rethrow to handle it in the component
     }
 };
+
+export const flagActivity = async (name) => {
+    try {
+        const response = await axios.put(`${API_URL}/flagActivity/${name}`);
+        return response.data; // Returns the flagged activity details
+    } catch (error) {
+        console.error('Error flagging activity:', error);
+        throw error; // Rethrow to handle it in the component
+    }
+};
+
+
+export const flagItinerary = async (name) => {
+    try {
+        const response = await axios.put(`${API_URL}/flagItinerary/${name}`);
+        return response.data; // Returns the flagged itinerary data
+    } catch (error) {
+        console.error('Error flagging itinerary:', error);
+        throw error; // Rethrow to handle it in the component
+    }
+};
