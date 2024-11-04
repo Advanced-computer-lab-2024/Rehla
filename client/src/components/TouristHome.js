@@ -507,6 +507,7 @@ const TouristHome = () => {
             Submit Comment
         </button>
     </form>
+    </div>
 
     <div className="container mx-auto p-4">
             <button
@@ -637,7 +638,7 @@ const TouristHome = () => {
 
 
 
-        </div>
+        
 <footer className="bg-brandBlue shadow dark:bg-brandBlue m-0">
                 <div className="w-full mx-auto md:py-8">
                     <div className="sm:flex sm:items-center sm:justify-between">
