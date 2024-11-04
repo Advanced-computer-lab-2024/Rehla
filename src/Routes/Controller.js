@@ -743,7 +743,7 @@ const updatePreferenceTag = async (req, res) => {
         const { currentName } = req.params;
         const { newName } = req.body;
         if (!newName) {
-            return res.status(400).json({ error: 'New category name is required.' });
+            return res.status(400).json({ error: 'Tag name is required.' });
         }
   
         const updatedTag = await p_tagsm.findOneAndUpdate(
@@ -754,13 +754,15 @@ const updatePreferenceTag = async (req, res) => {
         if (!updatedTag) {
             return res.status(404).json({ message: 'Tag not found' });
         }
-  
-        res.status(200).json({ message: 'Tag updated successfully', data: updatedCategory });
+        // Return the updated tag
+        res.status(200).json({ message: 'Tag updated successfully', data: updatedTag });
+        
     } catch (error) {
         console.error('Error updating Tag:', error.message);
         res.status(500).json({ error: 'Error updating Tag', details: error.message });
     }
 };
+  
   
 const deletePreferenceTag = async (req,res) =>{
     try {
