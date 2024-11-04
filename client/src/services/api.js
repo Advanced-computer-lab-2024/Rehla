@@ -855,3 +855,16 @@ export const flagItinerary = async (name) => {
         throw error; // Rethrow to handle it in the component
     }
 };
+
+export const createTouristItinerary = async (touristEmail, itineraryName) => {
+    try {
+        const response = await axios.post(`${API_URL}/creatTouristItenrary`, {
+            Tourist_Email: touristEmail,
+            Itinerary_Name: itineraryName
+        });
+        return response.data; // Return the response from the API
+    } catch (error) {
+        console.error('Error creating tourist itinerary:', error.response || error.message);
+        throw error; // Rethrow the error for handling in the calling component
+    }
+};

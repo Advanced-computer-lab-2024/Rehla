@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../images/logo.png';
-import { searchEventsPlaces, commentOnItinerary, rateItinerary, rateActivity, commentOnEvent , rateTourGuide,commentTourGuide,viewComplaintByEmail,processComplaintByEmail} from '../services/api'; // Import the commentOnEvent function
+import { searchEventsPlaces, commentOnItinerary, rateItinerary, rateActivity, commentOnEvent , rateTourGuide,commentTourGuide,viewComplaintByEmail,processComplaintByEmail,createTouristItinerary} from '../services/api'; // Import the commentOnEvent function
 import Homet2 from '../components/Homet2.js';
 
 const TouristHome = () => {
@@ -33,8 +33,9 @@ const TouristHome = () => {
     const [complaintsList, setComplaintsList] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState(null);
-    const [showComplaintss, setShowComplaintss] = useState(false);
     const [showComplaints, setShowComplaints] = useState(false); // State to control showing complaints
+    const [bookingItineraryName, setBookingItineraryName] = useState(''); // State for itinerary name to book
+
 
 
 
@@ -187,6 +188,21 @@ const TouristHome = () => {
             setIsLoading(false);
         }
     };
+
+
+    const handleItineraryBooking = async (e) => {
+        e.preventDefault();
+        try {
+            const result = await createTouristItinerary(email, bookingItineraryName);
+            console.log('Itinerary booked:', result);
+            alert('Itinerary booked successfully!');
+            setBookingItineraryName(''); // Reset input
+        } catch (error) {
+            console.error('Error booking itinerary:', error);
+            alert('Failed to book itinerary. Please try again later.');
+        }
+    };
+    
     return (
         <div>
             <div className="NavBar">
@@ -489,6 +505,27 @@ const TouristHome = () => {
                     </tbody>
                 </table>
             )}
+        </div>
+         {/* Booking Section for Itineraries */}
+         <div className="booking-form max-w-md mx-auto p-6 bg-gray-50 rounded-lg shadow-md mt-8">
+            <h2 className="text-xl font-semibold mb-4 text-gray-800">Book an Itinerary</h2>
+            <form onSubmit={handleItineraryBooking}>
+                
+                <div className="mb-4">
+                    <label htmlFor="booking-itinerary-name" className="block text-gray-700 font-medium mb-2">Itinerary Name:</label>
+                    <input
+                        id="booking-itinerary-name"
+                        type="text"
+                        value={bookingItineraryName}
+                        onChange={(e) => setBookingItineraryName(e.target.value)}
+                        required
+                        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    />
+                </div>
+                <button type="submit" className="w-full bg-indigo-500 text-white py-2 px-4 rounded-md hover:bg-indigo-600">
+                    Book Itinerary
+                </button>
+            </form>
         </div>
 
         </div>
