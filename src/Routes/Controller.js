@@ -2420,12 +2420,24 @@ const createHistoricalTag = async(req,res) => {
    
        // Create a new user instance with the data
        const newTag = new historical_places_tags({ Name, Historical_Period, Type});
+
+       //make sure that the historical place exists
+         const existingHistoricalPlace = await historical_placesm.findOne({Name});
+            if (!existingHistoricalPlace) {
+                return res.status(404).json({ message: 'Historical Place not found' });
+            }
+        // make sure that the tag does not exist
+        const existingTag = await historical_places_tags.findOne({Name});
+        if (existingTag) {
+            return res.status(400).json({ message: 'Tag already exists' });
+        }
    
        // Save the user to the database
        await newTag.save();
    
        // Return success response
        res.status(201).json({ message: 'Tag created successfully', tag: newTag });
+       
      } catch (error) {
        // Handle errors
        res.status(500).json({ message: 'Error creating tag', error: error.message });
