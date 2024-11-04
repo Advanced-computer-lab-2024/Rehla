@@ -873,3 +873,22 @@ export const createTouristItinerary = async (touristEmail, itineraryName) => {
         }
     }
 };
+
+
+export const createTouristActivity = async (touristEmail, activityName) => {
+    try {
+        const response = await axios.post(`${API_URL}/createTouristActivity`, {
+            Tourist_Email: touristEmail,
+            Activity_Name: activityName
+        });
+        return response.data; // Return the response from the API
+    } catch (error) {
+        if (error.response && error.response.data) {
+            // Return the error message from backend if available
+            throw new Error(error.response.data.error);
+        } else {
+            console.error('Error creating tourist itinerary:', error);
+            throw error;
+        }
+    }
+};
