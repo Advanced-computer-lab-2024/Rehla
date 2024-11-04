@@ -26,6 +26,8 @@ import {
 import '../css/Home.css';
 import logo from '../images/logo.png';
 
+
+
 const AdminHome = () => {
     const [email, setEmail] = useState(''); // For deleting user
     const [showModal, setShowModal] = useState(false);
@@ -91,7 +93,8 @@ const AdminHome = () => {
     const [itineraryFlagMessage, setItineraryFlagMessage] = useState('');
     const [flagError, setFlagError] = useState('');
 
-
+    //Activity management modal
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     // Fetch activity categories and preference tags on component mount
     useEffect(() => {
@@ -379,9 +382,9 @@ const AdminHome = () => {
         setIsLoadingFiltered(true);
         setFilterErrorMsg(''); // Clear previous error message
         try {
-            const filteredComplaints = await filterComplaintsByStatus(filterStatus);
-            setAllComplaints(filteredComplaints);
-            if (filteredComplaints.length === 0) {
+            const filteredComplaintsData = await filterComplaintsByStatus(filterStatus);
+            setFilteredComplaints(filteredComplaintsData); // Update the filtered complaints state
+            if (filteredComplaintsData.length === 0) {
                 // Handle no complaints found scenario
                 throw new Error('No complaints found for the selected status.'); // Trigger catch block
             }
@@ -423,9 +426,169 @@ const handleFlagItinerary = async () => {
                    <ul className="nav-links">
                        <Link to="/">Home</Link>
                        <Link to="/Adminproducts">Products</Link>
+                       <li>
+                        <a 
+                            href="#" 
+                            onClick={() => setIsModalOpen(true)} 
+                            className="text-blue-500 hover:underline"
+                        >
+                            Activities Management
+                        </a>
+                    </li>
                    </ul>
-               </nav>
-           </div>
+               </nav>   
+            </div>
+            <div className= "w-36"> 
+              {/* Modal */}
+              {isModalOpen && (
+                <div className="fixed inset-0 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-lg shadow-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6">
+                        <h2 className="text-xl font-bold mb-4">Manage Activity Categories</h2>
+
+                        {/* Form for adding new category */}
+                        <form onSubmit={handleCreateCategory} className="mb-4">
+                            <label className="block text-sm font-medium mb-1">Category Name:</label>
+                            <input
+                                type="text"
+                                value={categoryName}
+                                onChange={(e) => setCategoryName(e.target.value)}
+                                required
+                                className="border border-gray-300 p-2 rounded w-full"
+                            />
+                            <button type="submit" className="mt-2 bg-blue-500 text-white rounded-md px-4 py-2">
+                                Add Category
+                            </button>
+                        </form>
+
+                        {/* Form for updating category */}
+                        <form onSubmit={handleUpdateCategory} className="mb-4">
+                            <label className="block text-sm font-medium mb-1">Current Category Name:</label>
+                            <select
+                                value={currentCategory}
+                                onChange={(e) => setCurrentCategory(e.target.value)}
+                                required
+                                className="border border-gray-300 p-2 rounded w-full"
+                            >
+                                <option value="">Select Category</option>
+                                {categories.map((cat) => (
+                                    <option key={cat._id} value={cat.Name}>
+                                        {cat.Name}
+                                    </option>
+                                ))}
+                            </select>
+                            <label className="block text-sm font-medium mb-1 mt-2">New Category Name:</label>
+                            <input
+                                type="text"
+                                value={newCategoryName}
+                                onChange={(e) => setNewCategoryName(e.target.value)}
+                                required
+                                className="border border-gray-300 p-2 rounded w-full"
+                            />
+                            <button type="submit" className="mt-2 bg-blue-500 text-white rounded-md px-4 py-2">
+                                Update Category
+                            </button>
+                        </form>
+
+                        {/* Form for deleting category */}
+                        <form onSubmit={handleDeleteCategory} className="mb-4">
+                            <label className="block text-sm font-medium mb-1">Delete Category:</label>
+                            <select
+                                value={currentCategory}
+                                onChange={(e) => setCurrentCategory(e.target.value)}
+                                required
+                                className="border border-gray-300 p-2 rounded w-full"
+                            >
+                                <option value="">Select Category</option>
+                                {categories.map((cat) => (
+                                    <option key={cat._id} value={cat.Name}>
+                                        {cat.Name}
+                                    </option>
+                                ))}
+                            </select>
+                            <button type="submit" className="mt-2 bg-red-500 text-white rounded-md px-4 py-2">
+                                Delete Category
+                            </button>
+                        </form>
+
+                        <h2 className="text-xl font-bold mb-4">Manage Preference Tags</h2>
+
+                        {/* Form for adding new tag */}
+                        <form onSubmit={handleCreateTag} className="mb-4">
+                            <label className="block text-sm font-medium mb-1">Tag Name:</label>
+                            <input
+                                type="text"
+                                value={tagName}
+                                onChange={(e) => setTagName(e.target.value)}
+                                required
+                                className="border border-gray-300 p-2 rounded w-full"
+                            />
+                            <button type="submit" className="mt-2 bg-blue-500 text-white rounded-md px-4 py-2">
+                                Add Tag
+                            </button>
+                        </form>
+
+                        {/* Form for updating tag */}
+                        <form onSubmit={handleUpdateTag} className="mb-4">
+                            <label className="block text-sm font-medium mb-1">Current Tag Name:</label>
+                            <select
+                                value={currentTagName}
+                                onChange={(e) => setCurrentTagName(e.target.value)}
+                                required
+                                className="border border-gray-300 p-2 rounded w-full"
+                            >
+                                <option value="">Select Tag</option>
+                                {tags.map((tag) => (
+                                    <option key={tag._id} value={tag.Name}>
+                                        {tag.Name}
+                                    </option>
+                                ))}
+                            </select>
+                            <label className="block text-sm font-medium mb-1 mt-2">New Tag Name:</label>
+                            <input
+                                type="text"
+                                value={newTagName}
+                                onChange={(e) => setNewTagName(e.target.value)}
+                                required
+                                className="border border-gray-300 p-2 rounded w-full"
+                            />
+                            <button type="submit" className="mt-2 bg-blue-500 text-white rounded-md px-4 py-2">
+                                Update Tag
+                            </button>
+                        </form>
+
+                        {/* Form for deleting tag */}
+                        <form onSubmit={handleDeleteTag} className="mb-4">
+                            <label className="block text-sm font-medium mb-1">Delete Tag:</label>
+                            <select
+                                value={currentTagName}
+                                onChange={(e) => setCurrentTagName(e.target.value)}
+                                required
+                                className="border border-gray-300 p-2 rounded w-full"
+                            >
+                                <option value="">Select Tag</option>
+                                {tags.map((tag) => (
+                                    <option key={tag._id} value={tag.Name}>
+                                        {tag.Name}
+                                    </option>
+                                ))}
+                            </select>
+                            <button type="submit" className="mt-2 bg-red-500 text-white rounded-md px-4 py-2">
+                                Delete Tag
+                            </button>
+                        </form>
+
+                        {/* Close Button */}
+                        <button
+                            onClick={() => setIsModalOpen(false)}
+                            className="mt-4 bg-gray-300 text-black rounded-md px-4 py-2"
+                        >
+                            Close
+                        </button>
+                    </div>
+                    <div className="fixed inset-0 bg-black opacity-50" onClick={() => setIsModalOpen(false)}></div>
+                </div>
+            )}
+            </div>
             <br />
             <br></br>
             <br></br>
@@ -510,23 +673,58 @@ const handleFlagItinerary = async () => {
             {showComplaints && complaints.length === 0 && !loadingg && <p>No complaints found.</p>}
 
             {/* Search Input for Email */}
-            <div className="mb-4 p-4">
-                <input
-                    type="text"
-                    value={emailInput}
-                    onChange={(e) => setEmailInput(e.target.value)}
-                    placeholder="Enter email to search complaints"
-                    className="border border-gray-300 p-2 mr-2 rounded"
-                />
+            <div className="flex space-x-4 mb-4 p-4">
+                {/* Search by Email */}
+                <div className="flex items-center space-x-2">
+                    <input
+                        type="text"
+                        value={emailInput}
+                        onChange={(e) => setEmailInput(e.target.value)}
+                        placeholder="Enter email to search complaints"
+                        className="border border-gray-300 p-2 rounded"
+                    />
+                    <button
+                        onClick={handleSearchComplaints}
+                        className="bg-blue-500 text-white rounded-md px-4 py-2"
+                    >
+                        Search
+                    </button>
+                </div>
+
+                {/* Filter by Status */}
+                <div className="flex items-center space-x-2">
+                    <input
+                        type="text"
+                        value={filterStatus}
+                        onChange={(e) => setFilterStatus(e.target.value)}
+                        placeholder="Enter complaint status"
+                        className="border border-gray-300 p-2 rounded"
+                    />
+                    <button
+                        onClick={handleFilterComplaintsByStatus}
+                        disabled={isLoadingFiltered}
+                        className="bg-blue-500 text-white rounded-md px-4 py-2"
+                    >
+                        {isLoadingFiltered ? 'Loading...' : 'Filter Complaints'}
+                    </button>
+                </div>
+            </div>
+
+
+            <div className="p-6">
+            <div className="mb-4">
                 <button
-                    onClick={handleSearchComplaints}
+                    onClick={fetchSortedComplaints}
+                    disabled={loadingSortedComplaints}
                     className="bg-blue-500 text-white rounded-md px-4 py-2"
                 >
-                    Search
+                    Sort Complaints by Date
                 </button>
+                {loadingSortedComplaints && <p>Loading complaints...</p>}
+                {sortedComplaintsError && <p>{sortedComplaintsError}</p>}
             </div>
-            <div className="p-6">
-            {showComplaints | (filteredComplaints.length > 0 || emailInput) && (
+
+            {showComplaints || filteredComplaints.length > 0 || emailInput ? (
                 <table className="min-w-full bg-white border border-gray-300">
                     <thead>
                         <tr className="bg-gray-200">
@@ -539,7 +737,8 @@ const handleFlagItinerary = async () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {(emailInput ? filteredComplaints : complaints).map((complaint) => (
+                        {/* Display sorted complaints if they exist, otherwise display the original complaints */}
+                        {(sortedComplaints.length > 0 ? sortedComplaints : (filteredComplaints.length > 0 ? filteredComplaints : complaints)).map((complaint) => (
                             <tr key={complaint._id} className="hover:bg-gray-100">
                                 <td className="py-2 px-4 border">{complaint.Tourist_Email}</td>
                                 <td className="py-2 px-4 border">{complaint.Title}</td>
@@ -561,8 +760,12 @@ const handleFlagItinerary = async () => {
                         ))}
                     </tbody>
                 </table>
+            ) : (
+                <p>No complaints found.</p>
             )}
-            </div>
+        </div>
+
+
 
             {/* Modal for replying to complaints */}
             {showreplyModal && (
@@ -808,60 +1011,7 @@ const handleFlagItinerary = async () => {
            </div>
            <br />
     
-        <div>
-            
-            <button onClick={fetchSortedComplaints} disabled={loadingSortedComplaints}>
-                Sort Complaints by Date
-            </button>
-            {loadingSortedComplaints ? (
-                <p>Loading complaints...</p>
-            ) : sortedComplaintsError ? (
-                <p>{sortedComplaintsError}</p>
-            ) : (
-                <ul>
-                    {sortedComplaints.map((complaint) => (
-                        <li key={complaint._id}>
-                            <p><strong>Email:</strong> {complaint.Tourist_Email}</p>
-                            <p><strong>Date:</strong> {complaint.Date_Of_Complaint}</p>
-                            <p><strong>Complaint:</strong> {complaint.Complaint_Text}</p>
-                            <p><strong>Reply:</strong> {complaint.Reply || 'No reply yet'}</p>
-                        </li>
-                    ))}
-                </ul>
-            )}
-        </div>
-        <div>
-            <h2>Filter Complaints by Status</h2>
-            <input
-                type="text"
-                value={filterStatus}
-                onChange={(e) => setFilterStatus(e.target.value)}
-                placeholder="Enter complaint status"
-            />
-            <button onClick={handleFilterComplaintsByStatus} disabled={isLoadingFiltered}>
-                {isLoadingFiltered ? 'Loading...' : 'Filter Complaints'}
-            </button>
-            {filterErrorMsg && <p style={{ color: 'red' }}>{filterErrorMsg}</p>}
-
-            <h2>Filtered Complaints</h2>
-            {isLoadingFiltered ? (
-                <p>Loading complaints...</p>
-            ) : (
-                <ul>
-                    {allComplaints.map((complaint) => (
-                        <li key={complaint._id}>
-                            <strong>Title:</strong> {complaint.Title}<br />
-                            <strong>Email:</strong> {complaint.Tourist_Email}<br />
-                            <strong>Body:</strong> {complaint.Body}<br />
-                            <strong>Status:</strong> {complaint.Status}<br />
-                            <strong>Date:</strong> {new Date(complaint.Date_Of_Complaint).toLocaleDateString()}<br />
-                            <strong>Reply:</strong> {complaint.Reply ? complaint.Reply : 'No reply yet'}<br />
-                            <hr />
-                        </li>
-                    ))}
-                </ul>
-            )}
-        </div>
+       
         <footer className="bg-brandBlue shadow dark:bg-brandBlue m-0">
                 <div className="w-full mx-auto md:py-8">
                     <div className="sm:flex sm:items-center sm:justify-between">
