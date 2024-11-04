@@ -620,7 +620,7 @@ const TouristHome = () => {
             <form onSubmit={handleActivityCancelBooking}>
                 
                 <div className="mb-4">
-                    <label htmlFor="Cancelbooking-Activity-name" className="block text-gray-700 font-medium mb-2">Itinerary Name:</label>
+                    <label htmlFor="Cancelbooking-Activity-name" className="block text-gray-700 font-medium mb-2">Activity Name:</label>
                     <input
                         id="Cancelbooking-Activity-name"
                         type="text"
