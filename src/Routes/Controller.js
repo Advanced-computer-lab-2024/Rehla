@@ -5,7 +5,6 @@ const itinerarym = require('../Models/itineraries') ;
 const Tourist = require('../Models/tourists');
 const sellerm = require('../Models/sellers');
 const Guest = require('../Models/Requests');
-
 const tour_guidem=require('../Models/tour_guides');
 const AdvertisersModel = require('../Models/Advertisers.js');
 const Request= require('../Models/Requests.js');
@@ -32,14 +31,8 @@ const tourist_products = require('../Models/tourist_products.js');
 const tourist_complaints = require('../Models/tourist_complaints.js');
 const tourist_activities = require('../Models/tourist_activities.js');
 const TouristGuideReview = require('../Models/tour_guide_reviews.js');
-
 const multer = require('multer');
 const path = require('path');
-
-
-
-
-
 
 // Creating a new Admin user or Tourism Governor
 const createUserAdmin = async (req, res) => {
@@ -195,7 +188,7 @@ const updateAdmin= async (req, res) => {
         // Handle errors
         res.status(500).json({ message: 'Error updating Admin profile', error: error.message });
     }
-  };
+};
 
 const getAllProducts = async (req, res) => {
     try {
@@ -310,9 +303,9 @@ const sortActivities = async (req, res) => {
         console.error('Error sorting activities:', error);
         res.status(500).json({ error: 'Error sorting activities', details: error.message });
     }
-  };
+};
 
-  const sortItineraries = async (req, res) => {
+const sortItineraries = async (req, res) => {
     try {
         const { sortBy } = req.query; // Extract sorting criteria from query parameters
         const sortOptions = {};
@@ -348,7 +341,6 @@ const sortActivities = async (req, res) => {
         res.status(500).json({ error: 'Error sorting itineraries', details: error.message });
     }
 };
-
 
 const filterPlacesAndMuseums = async (req, res) => {
     const { category, value } = req.params; // Get category and value from request parameters
@@ -448,8 +440,6 @@ const viewAllRequests = async (req, res) => {
     }
 };
 
-// Example of setting up a route to use this function
-
 const processRequestByEmail = async (req, res) => {
     const { email } = req.params; // Get the email from request parameters
 
@@ -530,7 +520,6 @@ const processRequestByEmail = async (req, res) => {
     }
 };
 
-
 const registerTourist = async (req, res) => {
     try {
         const { Username, Email, Password, Mobile_Number, Nationality, DOB, Job_Student } = req.body;
@@ -598,7 +587,7 @@ const redeemPoints = async (req, res) => {
       console.error('Error details:', error);
       return res.status(500).json({ error: 'Error redeeming points', details: error.message });
     }
-  };
+};
 
 const registerRequest = async (req, res) => {
     try {
@@ -762,8 +751,7 @@ const updatePreferenceTag = async (req, res) => {
         res.status(500).json({ error: 'Error updating Tag', details: error.message });
     }
 };
-  
-  
+
 const deletePreferenceTag = async (req,res) =>{
     try {
   
@@ -877,7 +865,7 @@ const createPreference = async (req, res) => {
     } catch (error) {
       return res.status(500).json({ message: 'Error creating preference', error });
     }
-  };
+};
 
 // Update a preference
 const updatePreference = async (req, res) => {
@@ -899,7 +887,7 @@ const updatePreference = async (req, res) => {
     } catch (error) {
       return res.status(500).json({ message: 'Error updating preference', error });
     }
-  };
+};
 
 // Get preferences by email
 const readPreferences = async (req, res) => {
@@ -911,7 +899,7 @@ const readPreferences = async (req, res) => {
     } catch (error) {
       return res.status(500).json({ message: 'Error retrieving preferences', error });
     }
-  };
+};
 
 // Function to view all complaints
 const viewAllComplaints = async (req, res) => {
@@ -940,7 +928,7 @@ const viewComplaintByEmail = async (req, res) => {
     } catch (error) {
       res.status(500).json({ error: 'Server error' });
     }
-  };
+};
 
 // Function to view all complaints sorted by date
 const viewAllComplaintsSortedByDate = async (req, res) => {
@@ -957,7 +945,7 @@ const viewAllComplaintsSortedByDate = async (req, res) => {
     } catch (error) {
       res.status(500).json({ error: 'Server error' });
     }
-  };
+};
 
 // Function to filter complaints by status
 const filterComplaintsByStatus = async (req, res) => {
@@ -975,7 +963,7 @@ const filterComplaintsByStatus = async (req, res) => {
     } catch (error) {
       res.status(500).json({ error: 'Server error' });
     }
-  };
+};
 
   const flagActivity = async (req, res) => {
     try {
@@ -1183,8 +1171,6 @@ const updateProduct = async (req, res) => {
       res.status(500).json({ message: 'Error updating product', error: error.message });
     }
 };
-
-//Tourist - Guest :Activities Filter 
 
 // Tourist : view Tourist profile
 const getTouristProfile = async (req, res) => {
@@ -1592,7 +1578,6 @@ const getItineraryByName = async (req, res) => {
     }
 };
 
-
 //Update itinerary by name
 const updateItinerary = async (req, res) => {
     try {
@@ -1667,9 +1652,6 @@ const updateItinerary = async (req, res) => {
         return res.status(500).json({ message: 'Error updating itinerary', error: error.message });
     }
 };
-
-
-
 
 //Delete Itinerary 
 const deleteItinerary = async (req, res) => {
@@ -1860,7 +1842,6 @@ const createActivityByAdvertiser = async (req, res) => {
     }
 };
 
-
 //Advertiser Reading Activity
 const readActivity = async (req,res)=>{
     try{
@@ -1877,7 +1858,6 @@ const readActivity = async (req,res)=>{
         res.status(500).json({ error: 'Error fetching Activity:', details: error.message });
     }
 }
-
 
 //Advertiser Updates Activity
 const updateActivityByAdvertiser = async (req, res) => {
@@ -1947,8 +1927,6 @@ const updateActivityByAdvertiser = async (req, res) => {
         res.status(500).json({ message: 'Server error', details: error.message });
     }
 };
-
-
 
 //Advertiser deletes activity
 const deleteActivityByAdvertiser = async (req, res) => {
@@ -2026,7 +2004,6 @@ const updateTourism_Governer= async (req, res) => {
     }
   };
 
-
  const deleteUserTourism_Governer = async (req, res) => {
     try {
         const Email = req.body;
@@ -2043,7 +2020,6 @@ const updateTourism_Governer= async (req, res) => {
         res.status(500).json({ error: 'Error deleting user', details: error });
     }
 };
-
 
 const createMuseum = async (req, res) => {
     try {
@@ -2157,7 +2133,6 @@ const createHistoricalPlace = async (req, res) => {
     }
 };
 
-
 const readHistoricalPlace = async (req,res)=>{
     try{
         const { name } = req.body; 
@@ -2203,7 +2178,6 @@ const updateMuseum = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
     }
 };
-
 
 const updateHistoricalPlace = async (req, res) => {
     //update a user in the database
@@ -2383,7 +2357,6 @@ const viewMyCreatedItenrary = async (req, res) => {
     }
 };
 
-
 const viewMyCreatedMuseumsAndHistoricalPlaces = async(req, res) =>{
     try{
         const { Email } = req.body;
@@ -2530,7 +2503,6 @@ const getAllCreatedByEmail = async (req, res) => {
     }
 };
 
-
 const rateTourGuide = async (req, res) => {
     try {
         const { Tourist_Email, TourGuide_Email, Rating } = req.body;
@@ -2563,7 +2535,6 @@ const rateTourGuide = async (req, res) => {
     }
 };
 
-
 const commentTourGuide = async (req, res) => {
     try {
         const { Tourist_Email, TourGuide_Email, Comment } = req.body;
@@ -2595,7 +2566,6 @@ const commentTourGuide = async (req, res) => {
         res.status(500).json({ message: "Error submitting review", error: err.message });
     }
 };
-
 
 const rateItinerary = async (req, res) => {
     try {
@@ -2705,7 +2675,6 @@ const commentOnEvent = async (req, res) => {
     }
 };
 
-
 const productRateReview = async (req, res) => {
     const { Tourist_Email, Product_Name, Review, Rating } = req.body;
 
@@ -2744,7 +2713,6 @@ const productRateReview = async (req, res) => {
         });
     }
 };
-
 
 const getMyComplaints = async (req, res) => {
     const { Tourist_Email } = req.body; // Get the email from request body
@@ -3352,10 +3320,7 @@ const deleteTouristActivity = async (req, res) => {
 
 //no 6
 // Setup Multer for file uploads
-
-
 const fs = require('fs'); // Include the file system module
-
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, './uploads'); // Define the directory where files should be stored
@@ -3382,6 +3347,7 @@ const picFilter = (req, file, cb) => {
         cb(new Error('Invalid file type. Only JPG and PNG files are allowed.'), false); // Reject the file
     }
 };
+
 const upload = multer({
     storage: storage,
     limits: { fileSize: 1024 * 1024 * 5 }, // Limit file size to 5MB
@@ -3438,7 +3404,6 @@ const uploadGuestDocuments = async (req, res) => {
     });
 };
 
-
 const uploadProfilePicture = async (req, res) => {
     picture.single('document')(req, res, async (err) => {
         try {
@@ -3482,7 +3447,6 @@ const uploadProfilePicture = async (req, res) => {
         }
     });
 };
-
 
 //activate/deactivate Accessibility of an itinerary
 const Itineraryactivation = async (req, res) => {
@@ -3662,6 +3626,7 @@ const calculateItineraryRating = async (req, res) => {
         res.status(500).json({ error: 'Error calculating itinerary rating', details: error.message });
     }
 };
+
 const acceptTermsTourGuide = async (req,res) => {
     try {
         // First, check if the tour guide exists
@@ -3787,6 +3752,7 @@ const deactivateItinerary = async (req, res) => {
         return res.status(500).json({ message: 'Error deactivating itinerary', error: error.message });
     }
 };
+
 const activateItinerary = async (req, res) => {
     try {
         const { itineraryName } = req.body; // Get the itinerary name from the request body
@@ -3812,7 +3778,6 @@ const activateItinerary = async (req, res) => {
         return res.status(500).json({ message: 'Error deactivating itinerary', error: error.message });
     }
 };
-
 
 // ----------------- Activity Category CRUD -------------------
 
@@ -3924,6 +3889,5 @@ module.exports = { getPurchasedProducts,
     acceptTermsSeller,
     checkTermsAcceptedSeller,
     deactivateItinerary,
-    activateItinerary
-    
+    activateItinerary    
 };
