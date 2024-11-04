@@ -138,6 +138,7 @@ const deleteUserAdmin = async (req, res) => {
         }
 
 
+
             // Check the type of the user
         if (deletedUser.Type === 'SELLER') {
             const shopName = deletedUser.Shop_Name;
@@ -1814,24 +1815,40 @@ const updateUserAdvertiser = async (req, res) => {
 const createActivityByAdvertiser = async (req, res) => {
     try {
         const { 
-            Name, Location, Time, Duration, Price, Date, Discount_Percent, Available_Spots ,Created_By,Picture
+            Name, Location, Time, Duration, Price, Date, Discount_Percent, Available_Spots, 
+            Category, Tag ,Created_By
         } = req.body;
 
         // Check if all required fields are provided
         if (!Name || !Location || !Time || !Duration || !Price || !Date || 
-            !Discount_Percent || !Available_Spots || !Created_By) {
+            !Discount_Percent || !Available_Spots || !Category || !Tag || !Created_By) {
             return res.status(400).json({ error: 'All fields are required.' });
         }
 
         // Create a new activity
         const newActivity = new activity({
             Name, Location, Time, Duration, Price, Date, 
-            Discount_Percent, Available_Spots, Created_By,Picture
+            Discount_Percent, Available_Spots , Created_By
         });
 
         // Save the new activity
         const savedActivity = await newActivity.save();
 
+        // Create the category entry
+        const newCategory = new activity_categoriesm({
+            Activity: savedActivity.Name,  // Link category to the created activity
+            Category
+        });
+
+        await newCategory.save(); // Save the category
+
+        // Create the tag entry
+        const newTag = new activity_tagsm({
+            Activity: savedActivity.Name,  // Link tag to the created activity
+            Tag
+        });
+
+        await newTag.save(); // Save the tag
 
         // Return success response
         res.status(201).json({ 
@@ -1858,8 +1875,8 @@ const readActivity = async (req,res)=>{
         res.status(200).json({ message: 'Activity fetched successfully', data: activityDetails });
     }
     catch(error){
-        console.error("Error fetching company profile:", error.message);
-        res.status(500).json({ error: 'Error fetching company profile', details: error.message });
+        console.error("Error fetching Activity:", error.message);
+        res.status(500).json({ error: 'Error fetching Activity:', details: error.message });
     }
 }
 
@@ -1877,10 +1894,7 @@ const updateActivityByAdvertiser = async (req, res) => {
             Tag, 
             Category, 
             Discount_Percent,
-            Booking_Available,
             Available_Spots,
-            Booked_Spots,
-            Rating,
             Created_By,
             Picture 
         } = req.body;
@@ -1898,10 +1912,7 @@ const updateActivityByAdvertiser = async (req, res) => {
         if (Price) updateData.Price = Price;
         if (Date) updateData.Date = Date;
         if (Discount_Percent) updateData.Discount_Percent = Discount_Percent;
-        if (Booking_Available) updateData.Booking_Available = Booking_Available;
         if (Available_Spots) updateData.Available_Spots = Available_Spots;
-        if (Booked_Spots) updateData.Booked_Spots = Booked_Spots;
-        if (Rating) updateData.Rating = Rating;
         if (Created_By) updateData.Created_By = Created_By;
         if (Picture) updateData.Picture = Picture;
 
