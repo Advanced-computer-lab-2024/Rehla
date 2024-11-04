@@ -1501,10 +1501,8 @@ const createItinerary = async (req, res) => {
             Accessibility, 
             Pick_Up_Point, 
             Drop_Of_Point, 
-            Booked, 
             Empty_Spots, 
             Country, 
-            Rating, 
             P_Tag,
             Created_By,
             Picture
@@ -1513,8 +1511,8 @@ const createItinerary = async (req, res) => {
         // Validate required fields
         if (!Itinerary_Name || !Timeline || !Duration || !Language || 
             !Tour_Price || !Available_Date_Time || !Accessibility || 
-            !Pick_Up_Point || !Drop_Of_Point || !Booked || 
-            !Empty_Spots || !Country || !Rating || !P_Tag  || !Created_By || !Picture) {
+            !Pick_Up_Point || !Drop_Of_Point ||
+            !Empty_Spots || !Country || !P_Tag  || !Created_By || !Picture) {
             return res.status(400).json({ error: 'All fields are required.' });
         }
 
@@ -1535,10 +1533,8 @@ const createItinerary = async (req, res) => {
             Accessibility,
             Pick_Up_Point,
             Drop_Of_Point,
-            Booked,
             Empty_Spots,
             Country,
-            Rating,
             P_Tag,
             Created_By,
             Picture

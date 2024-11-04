@@ -54,7 +54,7 @@ const itinerarysSchema = new Schema({
     
     Booked: {
         type : Number , 
-        required : true ,
+        //required : true ,
     },
 
     
@@ -70,7 +70,7 @@ const itinerarysSchema = new Schema({
     },
     Rating:{
         type:Number,
-        required: true,
+        //required: true,
     },
     P_Tag: {
         type:String,
