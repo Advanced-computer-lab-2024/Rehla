@@ -56,7 +56,8 @@ function App() {
                 <Route path="/AdvertiserHome/AdvertiserProfile" element={<AdvertiserProfile />} />
                 <Route path="/TourGuideHome" element={<TourGuideHome />} />
                 <Route path="/TourGuideHome/TourGuideProfile" element={<TourGuideProfile />} />
-                
+                <Route path="/TourisimGovernerHome" element={<TourisimGovernerHome />} />
+
                 <Route path="/MyEvents" element={<MyEvents />} />
 
                 <Route path="/Adminproducts" element={<AdminProductList />} />

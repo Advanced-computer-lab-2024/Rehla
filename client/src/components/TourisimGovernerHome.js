@@ -169,177 +169,250 @@ const TourisimGovernerHome = () => {
                     </ul>
                 </nav>
             </div>
-            <h1>Tourism Governor Home</h1>
+            <br></br>
+            <br></br>
+            <br></br>
+            <br></br>
+
+            <h1 className="text-3xl font-bold mb-8 text-center">Tourism Governor Home</h1>
 
             {/* Museum Form */}
-            <h2>Create Museum</h2>
-            <form onSubmit={handleCreateMuseum}>
-                {Object.keys(museumData).map((key) => (
+            <section className="max-w-md mx-auto mb-8 p-4 bg-gray-100 rounded-lg shadow-lg">
+                <h2 className="text-2xl font-semibold mb-4">Create Museum</h2>
+                <form onSubmit={handleCreateMuseum} className="space-y-4">
+                    {Object.keys(museumData).map((key) => (
+                        <input
+                            key={key}
+                            placeholder={key.replace(/_/g, ' ')}
+                            value={museumData[key]}
+                            onChange={(e) => setMuseumData({ ...museumData, [key]: e.target.value })}
+                            required
+                            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                    ))}
+                    <button
+                        type="submit"
+                        className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-200"
+                    >
+                        Create Museum
+                    </button>
+                </form>
+            </section>
+
+            <section className="max-w-md mx-auto mb-8 p-4 bg-gray-100 rounded-lg shadow-lg">
+                <h2 className="text-2xl font-semibold mb-4">Read Museum</h2>
+                <form onSubmit={handleReadMuseum} className="space-y-4">
                     <input
-                        key={key}
-                        placeholder={key.replace(/_/g, ' ')}
-                        value={museumData[key]}
-                        onChange={(e) => setMuseumData({ ...museumData, [key]: e.target.value })}
+                        type="text"
+                        placeholder="Enter Museum Name"
+                        value={museumName}
+                        onChange={(e) => setMuseumName(e.target.value)}
                         required
+                        className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
-                ))}
-                <button type="submit">Create Museum</button>
-            </form>
+                    <button
+                        type="submit"
+                        className="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600 transition duration-200"
+                    >
+                        Read Museum
+                    </button>
+                </form>
+            </section>
 
-            <h2>Read Museum</h2>
-            <form onSubmit={handleReadMuseum}>
-                <input
-                    type="text"
-                    placeholder="Enter Museum Name"
-                    value={museumName}
-                    onChange={(e) => setMuseumName(e.target.value)}
-                    required
-                />
-                <button type="submit">Read Museum</button>
-            </form>
-
-            <h2>Update Museum</h2>
-            <form onSubmit={handleUpdateMuseum}>
-                <input
-                    type="text"
-                    placeholder="Enter Museum Name to Update"
-                    value={museumUpdateData.Name}
-                    onChange={(e) => setMuseumUpdateData({ ...museumUpdateData, Name: e.target.value })}
-                    required
-                />
-                {Object.keys(museumUpdateData).map((key) => (
+            <section className="max-w-md mx-auto mb-8 p-4 bg-gray-100 rounded-lg shadow-lg">
+                <h2 className="text-2xl font-semibold mb-4">Update Museum</h2>
+                <form onSubmit={handleUpdateMuseum} className="space-y-4">
                     <input
-                        key={key}
-                        placeholder={key.replace(/_/g, ' ')}
-                        value={museumUpdateData[key]}
-                        onChange={(e) => setMuseumUpdateData({ ...museumUpdateData, [key]: e.target.value })}
+                        type="text"
+                        placeholder="Enter Museum Name to Update"
+                        value={museumUpdateData.Name}
+                        onChange={(e) => setMuseumUpdateData({ ...museumUpdateData, Name: e.target.value })}
                         required
+                        className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
-                ))}
-                <button type="submit">Update Museum</button>
-            </form>
+                    {Object.keys(museumUpdateData).map((key) => (
+                        <input
+                            key={key}
+                            placeholder={key.replace(/_/g, ' ')}
+                            value={museumUpdateData[key]}
+                            onChange={(e) => setMuseumUpdateData({ ...museumUpdateData, [key]: e.target.value })}
+                            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                    ))}
+                    <button
+                        type="submit"
+                        className="w-full bg-yellow-500 text-white py-2 rounded hover:bg-yellow-600 transition duration-200"
+                    >
+                        Update Museum
+                    </button>
+                </form>
+            </section>
 
-            <h2>Delete Museum</h2>
-            <form onSubmit={handleDeleteMuseum}>
-                <input
-                    type="text"
-                    placeholder="Enter Museum Name to Delete"
-                    value={deleteMuseumName}
-                    onChange={(e) => setDeleteMuseumName(e.target.value)}
-                    required
-                />
-                <button type="submit">Delete Museum</button>
-            </form>
+            <section className="max-w-md mx-auto mb-8 p-4 bg-gray-100 rounded-lg shadow-lg">
+                <h2 className="text-2xl font-semibold mb-4">Delete Museum</h2>
+                <form onSubmit={handleDeleteMuseum} className="space-y-4">
+                    <input
+                        type="text"
+                        placeholder="Enter Museum Name to Delete"
+                        value={deleteMuseumName}
+                        onChange={(e) => setDeleteMuseumName(e.target.value)}
+                        required
+                        className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    <button
+                        type="submit"
+                        className="w-full bg-red-500 text-white py-2 rounded hover:bg-red-600 transition duration-200"
+                    >
+                        Delete Museum
+                    </button>
+                </form>
+            </section>
+
+
+            <h1 className="text-3xl font-bold mb-8 text-center">Historical Places</h1>
 
             {/* Historical Place Form */}
-            <h2>Create Historical Place</h2>
-            <form onSubmit={handleCreateHistoricalPlace}>
-                {Object.keys(placeData).map((key) => (
+            <section className="max-w-md mx-auto mb-8 p-4 bg-gray-100 rounded-lg shadow-lg">
+                <h2 className="text-2xl font-semibold mb-4">Create Historical Place</h2>
+                <form onSubmit={handleCreateHistoricalPlace} className="space-y-4">
+                    {Object.keys(placeData).map((key) => (
+                        <input
+                            key={key}
+                            placeholder={key.replace(/_/g, ' ')}
+                            value={placeData[key]}
+                            onChange={(e) => setPlaceData({ ...placeData, [key]: e.target.value })}
+                            required
+                            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                    ))}
+                    <button
+                        type="submit"
+                        className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-200"
+                    >
+                        Create Historical Place
+                    </button>
+                </form>
+            </section>
+
+            <section className="max-w-md mx-auto mb-8 p-4 bg-gray-100 rounded-lg shadow-lg">
+                <h2 className="text-2xl font-semibold mb-4">Read Historical Place</h2>
+                <form onSubmit={handleReadHistoricalPlace} className="space-y-4">
                     <input
-                        key={key}
-                        placeholder={key.replace(/_/g, ' ')}
-                        value={placeData[key]}
-                        onChange={(e) => setPlaceData({ ...placeData, [key]: e.target.value })}
+                        type="text"
+                        placeholder="Enter Historical Place Name"
+                        value={historicalPlaceName}
+                        onChange={(e) => setHistoricalPlaceName(e.target.value)}
                         required
+                        className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
-                ))}
-                <button type="submit">Create Historical Place</button>
-            </form>
+                    <button
+                        type="submit"
+                        className="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600 transition duration-200"
+                    >
+                        Read Historical Place
+                    </button>
+                </form>
+            </section>
 
-            <h2>Read Historical Place</h2>
-            <form onSubmit={handleReadHistoricalPlace}>
-                <input
-                    type="text"
-                    placeholder="Enter Historical Place Name"
-                    value={historicalPlaceName}
-                    onChange={(e) => setHistoricalPlaceName(e.target.value)}
-                    required
-                />
-                <button type="submit">Read Historical Place</button>
-            </form>
-
-            <h2>Update Historical Place</h2>
-            <form onSubmit={handleUpdateHistoricalPlace}>
-                <input
-                    type="text"
-                    placeholder="Enter Historical Place Name to Update"
-                    value={placeUpdateData.Name}
-                    onChange={(e) => setPlaceUpdateData({ ...placeUpdateData, Name: e.target.value })}
-                    required
-                />
-                {Object.keys(placeUpdateData).map((key) => (
+            <section className="max-w-md mx-auto mb-8 p-4 bg-gray-100 rounded-lg shadow-lg">
+                <h2 className="text-2xl font-semibold mb-4">Update Historical Place</h2>
+                <form onSubmit={handleUpdateHistoricalPlace} className="space-y-4">
                     <input
-                        key={key}
-                        placeholder={key.replace(/_/g, ' ')}
-                        value={placeUpdateData[key]}
-                        onChange={(e) => setPlaceUpdateData({ ...placeUpdateData, [key]: e.target.value })}
+                        type="text"
+                        placeholder="Enter Historical Place Name to Update"
+                        value={placeUpdateData.Name}
+                        onChange={(e) => setPlaceUpdateData({ ...placeUpdateData, Name: e.target.value })}
                         required
+                        className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
-                ))}
-                <button type="submit">Update Historical Place</button>
-            </form>
+                    {Object.keys(placeUpdateData).map((key) => (
+                        <input
+                            key={key}
+                            placeholder={key.replace(/_/g, ' ')}
+                            value={placeUpdateData[key]}
+                            onChange={(e) => setPlaceUpdateData({ ...placeUpdateData, [key]: e.target.value })}
+                            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                    ))}
+                    <button
+                        type="submit"
+                        className="w-full bg-yellow-500 text-white py-2 rounded hover:bg-yellow-600 transition duration-200"
+                    >
+                        Update Historical Place
+                    </button>
+                </form>
+            </section>
 
-            <h2>Delete Historical Place</h2>
-            <form onSubmit={handleDeleteHistoricalPlace}>
-                <input
-                    type="text"
-                    placeholder="Enter Historical Place Name to Delete"
-                    value={deleteHistoricalPlaceName}
-                    onChange={(e) => setDeleteHistoricalPlaceName(e.target.value)}
-                    required
-                />
-                <button type="submit">Delete Historical Place</button>
-            </form>
+            <section className="max-w-md mx-auto mb-8 p-4 bg-gray-100 rounded-lg shadow-lg">
+                <h2 className="text-2xl font-semibold mb-4">Delete Historical Place</h2>
+                <form onSubmit={handleDeleteHistoricalPlace} className="space-y-4">
+                    <input
+                        type="text"
+                        placeholder="Enter Historical Place Name to Delete"
+                        value={deleteHistoricalPlaceName}
+                        onChange={(e) => setDeleteHistoricalPlaceName(e.target.value)}
+                        required
+                        className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    <button
+                        type="submit"
+                        className="w-full bg-red-500 text-white py-2 rounded hover:bg-red-600 transition duration-200"
+                    >
+                        Delete Historical Place
+                    </button>
+                </form>
+            </section>
+
 
             {/* Museum Response */}
             {museumResponse && museumResponse.data && (
-                <div>
-                    <h3>Museum Response:</h3>
-                    <table style={{ borderCollapse: 'collapse', width: '100%' }}>
+                <div className="mb-8 p-4 bg-gray-100 rounded-lg shadow-md">
+                    <h3 className="text-2xl font-semibold mb-4">Museum Response</h3>
+                    <table className="table-auto w-full border-collapse">
                         <tbody>
-                            <tr>
-                                <th style={{ border: '1px solid black', padding: '8px' }}>Name</th>
-                                <td style={{ border: '1px solid black', padding: '8px' }}>{museumResponse.data.Name}</td>
+                            <tr className="border-b border-gray-300">
+                                <th className="px-4 py-2 text-left font-medium">Name</th>
+                                <td className="px-4 py-2">{museumResponse.data.Name}</td>
+                            </tr>
+                            <tr className="border-b border-gray-300">
+                                <th className="px-4 py-2 text-left font-medium">Description</th>
+                                <td className="px-4 py-2">{museumResponse.data.description}</td>
+                            </tr>
+                            <tr className="border-b border-gray-300">
+                                <th className="px-4 py-2 text-left font-medium">Pictures</th>
+                                <td className="px-4 py-2">{museumResponse.data.pictures}</td>
+                            </tr>
+                            <tr className="border-b border-gray-300">
+                                <th className="px-4 py-2 text-left font-medium">Location</th>
+                                <td className="px-4 py-2">{museumResponse.data.location}</td>
+                            </tr>
+                            <tr className="border-b border-gray-300">
+                                <th className="px-4 py-2 text-left font-medium">Country</th>
+                                <td className="px-4 py-2">{museumResponse.data.Country}</td>
+                            </tr>
+                            <tr className="border-b border-gray-300">
+                                <th className="px-4 py-2 text-left font-medium">Opening Hours</th>
+                                <td className="px-4 py-2">{museumResponse.data.Opening_Hours}</td>
+                            </tr>
+                            <tr className="border-b border-gray-300">
+                                <th className="px-4 py-2 text-left font-medium">Standard Ticket Prices</th>
+                                <td className="px-4 py-2">{museumResponse.data.S_Tickets_Prices}</td>
+                            </tr>
+                            <tr className="border-b border-gray-300">
+                                <th className="px-4 py-2 text-left font-medium">Foreign Ticket Prices</th>
+                                <td className="px-4 py-2">{museumResponse.data.F_Tickets_Prices}</td>
+                            </tr>
+                            <tr className="border-b border-gray-300">
+                                <th className="px-4 py-2 text-left font-medium">National Ticket Prices</th>
+                                <td className="px-4 py-2">{museumResponse.data.N_Tickets_Prices}</td>
+                            </tr>
+                            <tr className="border-b border-gray-300">
+                                <th className="px-4 py-2 text-left font-medium">Tag</th>
+                                <td className="px-4 py-2">{museumResponse.data.Tag}</td>
                             </tr>
                             <tr>
-                                <th style={{ border: '1px solid black', padding: '8px' }}>Description</th>
-                                <td style={{ border: '1px solid black', padding: '8px' }}>{museumResponse.data.description}</td>
-                            </tr>
-                            <tr>
-                                <th style={{ border: '1px solid black', padding: '8px' }}>Pictures</th>
-                                <td style={{ border: '1px solid black', padding: '8px' }}>{museumResponse.data.pictures}</td>
-                            </tr>
-                            <tr>
-                                <th style={{ border: '1px solid black', padding: '8px' }}>Location</th>
-                                <td style={{ border: '1px solid black', padding: '8px' }}>{museumResponse.data.location}</td>
-                            </tr>
-                            <tr>
-                                <th style={{ border: '1px solid black', padding: '8px' }}>Country</th>
-                                <td style={{ border: '1px solid black', padding: '8px' }}>{museumResponse.data.Country}</td>
-                            </tr>
-                            <tr>
-                                <th style={{ border: '1px solid black', padding: '8px' }}>Opening Hours</th>
-                                <td style={{ border: '1px solid black', padding: '8px' }}>{museumResponse.data.Opening_Hours}</td>
-                            </tr>
-                            <tr>
-                                <th style={{ border: '1px solid black', padding: '8px' }}>Standard Ticket Prices</th>
-                                <td style={{ border: '1px solid black', padding: '8px' }}>{museumResponse.data.S_Tickets_Prices}</td>
-                            </tr>
-                            <tr>
-                                <th style={{ border: '1px solid black', padding: '8px' }}>Foreign Ticket Prices</th>
-                                <td style={{ border: '1px solid black', padding: '8px' }}>{museumResponse.data.F_Tickets_Prices}</td>
-                            </tr>
-                            <tr>
-                                <th style={{ border: '1px solid black', padding: '8px' }}>National Ticket Prices</th>
-                                <td style={{ border: '1px solid black', padding: '8px' }}>{museumResponse.data.N_Tickets_Prices}</td>
-                            </tr>
-                            <tr>
-                                <th style={{ border: '1px solid black', padding: '8px' }}>Tag</th>
-                                <td style={{ border: '1px solid black', padding: '8px' }}>{museumResponse.data.Tag}</td>
-                            </tr>
-                            <tr>
-                                <th style={{ border: '1px solid black', padding: '8px' }}>Created By</th>
-                                <td style={{ border: '1px solid black', padding: '8px' }}>{museumResponse.data.Created_By}</td>
+                                <th className="px-4 py-2 text-left font-medium">Created By</th>
+                                <td className="px-4 py-2">{museumResponse.data.Created_By}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -348,58 +421,59 @@ const TourisimGovernerHome = () => {
 
             {/* Historical Place Response */}
             {placeResponse && placeResponse.data && (
-    <div>
-        <h3>Historical Place Response:</h3>
-        <table style={{ borderCollapse: 'collapse', width: '100%' }}>
-            <tbody>
-                <tr>
-                    <th style={{ border: '1px solid black', padding: '8px' }}>Name</th>
-                    <td style={{ border: '1px solid black', padding: '8px' }}>{placeResponse.data.Name}</td>
-                </tr>
-                <tr>
-                    <th style={{ border: '1px solid black', padding: '8px' }}>Description</th>
-                    <td style={{ border: '1px solid black', padding: '8px' }}>{placeResponse.data.Description}</td>
-                </tr>
-                <tr>
-                    <th style={{ border: '1px solid black', padding: '8px' }}>Pictures</th>
-                    <td style={{ border: '1px solid black', padding: '8px' }}>{placeResponse.data.Pictures}</td>
-                </tr>
-                <tr>
-                    <th style={{ border: '1px solid black', padding: '8px' }}>Location</th>
-                    <td style={{ border: '1px solid black', padding: '8px' }}>{placeResponse.data.Location}</td>
-                </tr>
-                <tr>
-                    <th style={{ border: '1px solid black', padding: '8px' }}>Country</th>
-                    <td style={{ border: '1px solid black', padding: '8px' }}>{placeResponse.data.Country}</td>
-                </tr>
-                <tr>
-                    <th style={{ border: '1px solid black', padding: '8px' }}>Opens At</th>
-                    <td style={{ border: '1px solid black', padding: '8px' }}>{placeResponse.data.Opens_At}</td>
-                </tr>
-                <tr>
-                    <th style={{ border: '1px solid black', padding: '8px' }}>Closes At</th>
-                    <td style={{ border: '1px solid black', padding: '8px' }}>{placeResponse.data.Closes_At}</td>
-                </tr>
-                <tr>
-                    <th style={{ border: '1px solid black', padding: '8px' }}>Standard Ticket Prices</th>
-                    <td style={{ border: '1px solid black', padding: '8px' }}>{placeResponse.data.S_Ticket_Prices}</td>
-                </tr>
-                <tr>
-                    <th style={{ border: '1px solid black', padding: '8px' }}>Foreign Ticket Prices</th>
-                    <td style={{ border: '1px solid black', padding: '8px' }}>{placeResponse.data.F_Ticket_Prices}</td>
-                </tr>
-                <tr>
-                    <th style={{ border: '1px solid black', padding: '8px' }}>National Ticket Prices</th>
-                    <td style={{ border: '1px solid black', padding: '8px' }}>{placeResponse.data.N_Ticket_Prices}</td>
-                </tr>
-                <tr>
-                    <th style={{ border: '1px solid black', padding: '8px' }}>Created By</th>
-                    <td style={{ border: '1px solid black', padding: '8px' }}>{placeResponse.data.Created_By}</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-)}
+                <div className="mb-8 p-4 bg-gray-100 rounded-lg shadow-md">
+                    <h3 className="text-2xl font-semibold mb-4">Historical Place Response</h3>
+                    <table className="table-auto w-full border-collapse">
+                        <tbody>
+                            <tr className="border-b border-gray-300">
+                                <th className="px-4 py-2 text-left font-medium">Name</th>
+                                <td className="px-4 py-2">{placeResponse.data.Name}</td>
+                            </tr>
+                            <tr className="border-b border-gray-300">
+                                <th className="px-4 py-2 text-left font-medium">Description</th>
+                                <td className="px-4 py-2">{placeResponse.data.Description}</td>
+                            </tr>
+                            <tr className="border-b border-gray-300">
+                                <th className="px-4 py-2 text-left font-medium">Pictures</th>
+                                <td className="px-4 py-2">{placeResponse.data.Pictures}</td>
+                            </tr>
+                            <tr className="border-b border-gray-300">
+                                <th className="px-4 py-2 text-left font-medium">Location</th>
+                                <td className="px-4 py-2">{placeResponse.data.Location}</td>
+                            </tr>
+                            <tr className="border-b border-gray-300">
+                                <th className="px-4 py-2 text-left font-medium">Country</th>
+                                <td className="px-4 py-2">{placeResponse.data.Country}</td>
+                            </tr>
+                            <tr className="border-b border-gray-300">
+                                <th className="px-4 py-2 text-left font-medium">Opens At</th>
+                                <td className="px-4 py-2">{placeResponse.data.Opens_At}</td>
+                            </tr>
+                            <tr className="border-b border-gray-300">
+                                <th className="px-4 py-2 text-left font-medium">Closes At</th>
+                                <td className="px-4 py-2">{placeResponse.data.Closes_At}</td>
+                            </tr>
+                            <tr className="border-b border-gray-300">
+                                <th className="px-4 py-2 text-left font-medium">Standard Ticket Prices</th>
+                                <td className="px-4 py-2">{placeResponse.data.S_Ticket_Prices}</td>
+                            </tr>
+                            <tr className="border-b border-gray-300">
+                                <th className="px-4 py-2 text-left font-medium">Foreign Ticket Prices</th>
+                                <td className="px-4 py-2">{placeResponse.data.F_Ticket_Prices}</td>
+                            </tr>
+                            <tr className="border-b border-gray-300">
+                                <th className="px-4 py-2 text-left font-medium">National Ticket Prices</th>
+                                <td className="px-4 py-2">{placeResponse.data.N_Ticket_Prices}</td>
+                            </tr>
+                            <tr>
+                                <th className="px-4 py-2 text-left font-medium">Created By</th>
+                                <td className="px-4 py-2">{placeResponse.data.Created_By}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            )}
+
         </div>
     );
 };

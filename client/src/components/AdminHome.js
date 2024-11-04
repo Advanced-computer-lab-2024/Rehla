@@ -430,7 +430,7 @@ const handleFlagItinerary = async () => {
                         <a 
                             href="#" 
                             onClick={() => setIsModalOpen(true)} 
-                            className="text-blue-500 hover:underline"
+                            className="text-white hover:underline"
                         >
                             Activities Management
                         </a>
@@ -438,161 +438,209 @@ const handleFlagItinerary = async () => {
                    </ul>
                </nav>   
             </div>
-            <div className= "w-36"> 
-              {/* Modal */}
-              {isModalOpen && (
-                <div className="fixed inset-0 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg shadow-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6">
-                        <h2 className="text-xl font-bold mb-4">Manage Activity Categories</h2>
-
-                        {/* Form for adding new category */}
-                        <form onSubmit={handleCreateCategory} className="mb-4">
-                            <label className="block text-sm font-medium mb-1">Category Name:</label>
-                            <input
-                                type="text"
-                                value={categoryName}
-                                onChange={(e) => setCategoryName(e.target.value)}
-                                required
-                                className="border border-gray-300 p-2 rounded w-full"
-                            />
-                            <button type="submit" className="mt-2 bg-blue-500 text-white rounded-md px-4 py-2">
-                                Add Category
-                            </button>
-                        </form>
-
-                        {/* Form for updating category */}
-                        <form onSubmit={handleUpdateCategory} className="mb-4">
-                            <label className="block text-sm font-medium mb-1">Current Category Name:</label>
-                            <select
-                                value={currentCategory}
-                                onChange={(e) => setCurrentCategory(e.target.value)}
-                                required
-                                className="border border-gray-300 p-2 rounded w-full"
-                            >
-                                <option value="">Select Category</option>
-                                {categories.map((cat) => (
-                                    <option key={cat._id} value={cat.Name}>
-                                        {cat.Name}
-                                    </option>
-                                ))}
-                            </select>
-                            <label className="block text-sm font-medium mb-1 mt-2">New Category Name:</label>
-                            <input
-                                type="text"
-                                value={newCategoryName}
-                                onChange={(e) => setNewCategoryName(e.target.value)}
-                                required
-                                className="border border-gray-300 p-2 rounded w-full"
-                            />
-                            <button type="submit" className="mt-2 bg-blue-500 text-white rounded-md px-4 py-2">
-                                Update Category
-                            </button>
-                        </form>
-
-                        {/* Form for deleting category */}
-                        <form onSubmit={handleDeleteCategory} className="mb-4">
-                            <label className="block text-sm font-medium mb-1">Delete Category:</label>
-                            <select
-                                value={currentCategory}
-                                onChange={(e) => setCurrentCategory(e.target.value)}
-                                required
-                                className="border border-gray-300 p-2 rounded w-full"
-                            >
-                                <option value="">Select Category</option>
-                                {categories.map((cat) => (
-                                    <option key={cat._id} value={cat.Name}>
-                                        {cat.Name}
-                                    </option>
-                                ))}
-                            </select>
-                            <button type="submit" className="mt-2 bg-red-500 text-white rounded-md px-4 py-2">
-                                Delete Category
-                            </button>
-                        </form>
-
-                        <h2 className="text-xl font-bold mb-4">Manage Preference Tags</h2>
-
-                        {/* Form for adding new tag */}
-                        <form onSubmit={handleCreateTag} className="mb-4">
-                            <label className="block text-sm font-medium mb-1">Tag Name:</label>
-                            <input
-                                type="text"
-                                value={tagName}
-                                onChange={(e) => setTagName(e.target.value)}
-                                required
-                                className="border border-gray-300 p-2 rounded w-full"
-                            />
-                            <button type="submit" className="mt-2 bg-blue-500 text-white rounded-md px-4 py-2">
-                                Add Tag
-                            </button>
-                        </form>
-
-                        {/* Form for updating tag */}
-                        <form onSubmit={handleUpdateTag} className="mb-4">
-                            <label className="block text-sm font-medium mb-1">Current Tag Name:</label>
-                            <select
-                                value={currentTagName}
-                                onChange={(e) => setCurrentTagName(e.target.value)}
-                                required
-                                className="border border-gray-300 p-2 rounded w-full"
-                            >
-                                <option value="">Select Tag</option>
-                                {tags.map((tag) => (
-                                    <option key={tag._id} value={tag.Name}>
-                                        {tag.Name}
-                                    </option>
-                                ))}
-                            </select>
-                            <label className="block text-sm font-medium mb-1 mt-2">New Tag Name:</label>
-                            <input
-                                type="text"
-                                value={newTagName}
-                                onChange={(e) => setNewTagName(e.target.value)}
-                                required
-                                className="border border-gray-300 p-2 rounded w-full"
-                            />
-                            <button type="submit" className="mt-2 bg-blue-500 text-white rounded-md px-4 py-2">
-                                Update Tag
-                            </button>
-                        </form>
-
-                        {/* Form for deleting tag */}
-                        <form onSubmit={handleDeleteTag} className="mb-4">
-                            <label className="block text-sm font-medium mb-1">Delete Tag:</label>
-                            <select
-                                value={currentTagName}
-                                onChange={(e) => setCurrentTagName(e.target.value)}
-                                required
-                                className="border border-gray-300 p-2 rounded w-full"
-                            >
-                                <option value="">Select Tag</option>
-                                {tags.map((tag) => (
-                                    <option key={tag._id} value={tag.Name}>
-                                        {tag.Name}
-                                    </option>
-                                ))}
-                            </select>
-                            <button type="submit" className="mt-2 bg-red-500 text-white rounded-md px-4 py-2">
-                                Delete Tag
-                            </button>
-                        </form>
-
-                        {/* Close Button */}
-                        <button
-                            onClick={() => setIsModalOpen(false)}
-                            className="mt-4 bg-gray-300 text-black rounded-md px-4 py-2"
-                        >
-                            Close
-                        </button>
-                    </div>
-                    <div className="fixed inset-0 bg-black opacity-50" onClick={() => setIsModalOpen(false)}></div>
-                </div>
-            )}
-            </div>
+            
             <br />
             <br></br>
             <br></br>
             <br></br>
+            <div className="w-36 py-6">
+                {/* Modal */}
+                {isModalOpen && (
+                    <>
+                        <div className="fixed inset-0 bg-black opacity-50 z-40" onClick={() => setIsModalOpen(false)}></div>
+                        <div className="fixed inset-0 flex items-center justify-center z-50">
+                            <div className="bg-white rounded-lg shadow-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6 relative">
+                                <h2 className="text-xl font-bold mb-4">Manage Activity Categories</h2>
+
+                                {/* Form for adding new category */}
+                                <form onSubmit={handleCreateCategory} className="mb-4">
+                                    <label className="block text-sm font-medium mb-1">Category Name:</label>
+                                    <input
+                                        type="text"
+                                        value={categoryName}
+                                        onChange={(e) => setCategoryName(e.target.value)}
+                                        required
+                                        className="border border-gray-300 p-2 rounded w-full"
+                                    />
+                                    <button type="submit" className="mt-2 bg-blue-500 text-white rounded-md px-4 py-2">
+                                        Add Category
+                                    </button>
+                                </form>
+
+                                {/* Form for updating category */}
+                                <form onSubmit={handleUpdateCategory} className="mb-4">
+                                    <label className="block text-sm font-medium mb-1">Current Category Name:</label>
+                                    <select
+                                        value={currentCategory}
+                                        onChange={(e) => setCurrentCategory(e.target.value)}
+                                        required
+                                        className="border border-gray-300 p-2 rounded w-full"
+                                    >
+                                        <option value="">Select Category</option>
+                                        {categories.map((cat) => (
+                                            <option key={cat._id} value={cat.Name}>
+                                                {cat.Name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <label className="block text-sm font-medium mb-1 mt-2">New Category Name:</label>
+                                    <input
+                                        type="text"
+                                        value={newCategoryName}
+                                        onChange={(e) => setNewCategoryName(e.target.value)}
+                                        required
+                                        className="border border-gray-300 p-2 rounded w-full"
+                                    />
+                                    <button type="submit" className="mt-2 bg-blue-500 text-white rounded-md px-4 py-2">
+                                        Update Category
+                                    </button>
+                                </form>
+
+                                {/* Form for deleting category */}
+                                <form onSubmit={handleDeleteCategory} className="mb-4">
+                                    <label className="block text-sm font-medium mb-1">Delete Category:</label>
+                                    <select
+                                        value={currentCategory}
+                                        onChange={(e) => setCurrentCategory(e.target.value)}
+                                        required
+                                        className="border border-gray-300 p-2 rounded w-full"
+                                    >
+                                        <option value="">Select Category</option>
+                                        {categories.map((cat) => (
+                                            <option key={cat._id} value={cat.Name}>
+                                                {cat.Name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <button type="submit" className="mt-2 bg-red-500 text-white rounded-md px-4 py-2">
+                                        Delete Category
+                                    </button>
+                                </form>
+
+                                <h2 className="text-xl font-bold mb-4">Manage Preference Tags</h2>
+
+                                {/* Form for adding new tag */}
+                                <form onSubmit={handleCreateTag} className="mb-4">
+                                    <label className="block text-sm font-medium mb-1">Tag Name:</label>
+                                    <input
+                                        type="text"
+                                        value={tagName}
+                                        onChange={(e) => setTagName(e.target.value)}
+                                        required
+                                        className="border border-gray-300 p-2 rounded w-full"
+                                    />
+                                    <button type="submit" className="mt-2 bg-blue-500 text-white rounded-md px-4 py-2">
+                                        Add Tag
+                                    </button>
+                                </form>
+
+                                {/* Form for updating tag */}
+                                <form onSubmit={handleUpdateTag} className="mb-4">
+                                    <label className="block text-sm font-medium mb-1">Current Tag Name:</label>
+                                    <select
+                                        value={currentTagName}
+                                        onChange={(e) => setCurrentTagName(e.target.value)}
+                                        required
+                                        className="border border-gray-300 p-2 rounded w-full"
+                                    >
+                                        <option value="">Select Tag</option>
+                                        {tags.map((tag) => (
+                                            <option key={tag._id} value={tag.Name}>
+                                                {tag.Name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <label className="block text-sm font-medium mb-1 mt-2">New Tag Name:</label>
+                                    <input
+                                        type="text"
+                                        value={newTagName}
+                                        onChange={(e) => setNewTagName(e.target.value)}
+                                        required
+                                        className="border border-gray-300 p-2 rounded w-full"
+                                    />
+                                    <button type="submit" className="mt-2 bg-blue-500 text-white rounded-md px-4 py-2">
+                                        Update Tag
+                                    </button>
+                                </form>
+
+                                {/* Form for deleting tag */}
+                                <form onSubmit={handleDeleteTag} className="mb-4">
+                                    <label className="block text-sm font-medium mb-1">Delete Tag:</label>
+                                    <select
+                                        value={currentTagName}
+                                        onChange={(e) => setCurrentTagName(e.target.value)}
+                                        required
+                                        className="border border-gray-300 p-2 rounded w-full"
+                                    >
+                                        <option value="">Select Tag</option>
+                                        {tags.map((tag) => (
+                                            <option key={tag._id} value={tag.Name}>
+                                                {tag.Name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <button type="submit" className="mt-2 bg-red-500 text-white rounded-md px-4 py-2">
+                                        Delete Tag
+                                    </button>
+                                </form>
+                                <div className="p-6 max-w-md mx-auto bg-white rounded-lg shadow-md space-y-8">
+                                {/* Flag Activity Section */}
+                                <div>
+                                    <h3 className="text-lg font-semibold text-gray-700 mb-2">Flag Activity as Inappropriate</h3>
+                                    <div className="flex items-center space-x-4">
+                                        <input
+                                            type="text"
+                                            placeholder="Enter Activity Name"
+                                            value={activityName}
+                                            onChange={(e) => setActivityName(e.target.value)}
+                                            className="border border-gray-300 rounded-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        />
+                                        <button
+                                            onClick={handleFlagActivity}
+                                            className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition duration-200"
+                                        >
+                                            Flag Activity
+                                        </button>
+                                    </div>
+                                    {flagMessage && <p className="text-sm text-green-600 mt-2">{flagMessage}</p>}
+                                </div>
+
+                                {/* Flag Itinerary Section */}
+                                <div>
+                                    <h3 className="text-lg font-semibold text-gray-700 mb-2">Flag an Itinerary as Inappropriate</h3>
+                                    <div className="flex items-center space-x-4">
+                                        <input
+                                            type="text"
+                                            value={itineraryName}
+                                            onChange={(e) => setItineraryName(e.target.value)}
+                                            placeholder="Enter Itinerary Name"
+                                            className="border border-gray-300 rounded-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        />
+                                        <button
+                                            onClick={handleFlagItinerary}
+                                            className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition duration-200"
+                                        >
+                                            Flag Itinerary
+                                        </button>
+                                    </div>
+                                    {itineraryFlagMessage && <p className="text-sm text-green-600 mt-2">{itineraryFlagMessage}</p>}
+                                    {flagError && <p className="text-sm text-red-600 mt-2">{flagError}</p>}
+                                </div>
+                            </div>
+
+                                {/* Close Button */}
+                                <button
+                                    onClick={() => setIsModalOpen(false)}
+                                    className="mt-4 bg-gray-300 text-black rounded-md px-4 py-2"
+                                >
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+                    </>
+                )}
+            </div>
+
             <div className="p-6 bg-gray-50">
                 <h1 className="text-2xl font-bold text-center mb-6">Admin Home</h1>
 
@@ -1039,32 +1087,7 @@ const handleFlagItinerary = async () => {
                     <span className="block text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2023 <a href="/" className="hover:underline">Rehla™</a>. All Rights Reserved.</span>
                 </div>
             </footer>
-            <div>
-            <h3>Flag Activity as Inappropriate</h3>
-            <div>
-                <input 
-                    type="text" 
-                    placeholder="Enter Activity Name" 
-                    value={activityName} 
-                    onChange={(e) => setActivityName(e.target.value)} 
-                />
-                <button onClick={handleFlagActivity}>Flag Activity</button>
-            </div>
-            {flagMessage && <p>{flagMessage}</p>} {/* Display success/error message */}
-        </div>
-        <div>
-            <h3>Flag an Itinerary as Inappropriate</h3>
-            <input
-                type="text"
-                value={itineraryName}
-                onChange={(e) => setItineraryName(e.target.value)}
-                placeholder="Enter itinerary name"
-            />
-            <button onClick={handleFlagItinerary}>Flag Itinerary</button>
-            
-            {itineraryFlagMessage && <p style={{ color: 'green' }}>{itineraryFlagMessage}</p>}
-            {flagError && <p style={{ color: 'red' }}>{flagError}</p>}
-        </div>
+
 
         
         </div>
