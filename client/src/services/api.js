@@ -864,7 +864,12 @@ export const createTouristItinerary = async (touristEmail, itineraryName) => {
         });
         return response.data; // Return the response from the API
     } catch (error) {
-        console.error('Error creating tourist itinerary:', error.response || error.message);
-        throw error; // Rethrow the error for handling in the calling component
+        if (error.response && error.response.data) {
+            // Return the error message from backend if available
+            throw new Error(error.response.data.error);
+        } else {
+            console.error('Error creating tourist itinerary:', error);
+            throw error;
+        }
     }
 };

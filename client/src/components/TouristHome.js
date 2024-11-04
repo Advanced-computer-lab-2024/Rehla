@@ -199,7 +199,7 @@ const TouristHome = () => {
             setBookingItineraryName(''); // Reset input
         } catch (error) {
             console.error('Error booking itinerary:', error);
-            alert('Failed to book itinerary. Please try again later.');
+            alert(error.message);
         }
     };
     
