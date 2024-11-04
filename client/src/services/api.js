@@ -892,3 +892,45 @@ export const createTouristActivity = async (touristEmail, activityName) => {
         }
     }
 };
+
+
+export const deleteTouristItenrary = async (touristEmail, itineraryName) => {
+    try {
+        const response = await axios.delete(`${API_URL}/deleteTouristItenrary`, {
+            data: {
+                Tourist_Email: touristEmail,
+                Itinerary_Name: itineraryName,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        if (error.response && error.response.data) {
+            // Return the error message from backend if available
+            throw new Error(error.response.data.error);
+        } else {
+            console.error('Error creating tourist itinerary:', error);
+            throw error;
+        }
+    }
+};
+
+
+export const deleteTouristActivity = async (touristEmail, activityName) => {
+    try {
+        const response = await axios.delete(`${API_URL}/deleteTouristActivity`, {
+            data: {
+                Tourist_Email: touristEmail,
+                Activity_Name: activityName
+            },
+        });
+        return response.data;
+    } catch (error) {
+        if (error.response && error.response.data) {
+            // Return the error message from backend if available
+            throw new Error(error.response.data.error);
+        } else {
+            console.error('Error creating tourist itinerary:', error);
+            throw error;
+        }
+    }
+};
