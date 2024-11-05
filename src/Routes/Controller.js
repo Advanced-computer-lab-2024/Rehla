@@ -3807,6 +3807,85 @@ const activateItinerary = async (req, res) => {
     }
 };
 
+const getActivitiesinItinerary = async (req, res) => {
+    const { itineraryName } = req.body;
+
+    if (!itineraryName) {
+        return res.status(400).json({ message: 'Itinerary name is required' });
+    }
+
+    try {
+        const itinerary = await itinerarym.findOne({ Itinerary_Name: itineraryName });
+        if (!itinerary) {
+            return res.status(404).json({ message: 'Itinerary not found' });
+        }
+
+        const itineraryActivities = await itinerary_activitiesm.find({ Itinerary_Name: itineraryName }).populate('Activities');
+        console.log('Populated Itinerary Activities:', itineraryActivities); // Debugging line
+
+        //check that the itinerary has activities
+        if (itineraryActivities.length === 0) {
+            return res.status(404).json({ message: 'No activities found for this itinerary.' });
+        }
+
+        //find the itinrary activites in table activities
+        const activities = await activity.find({ Name: { $in: itineraryActivities.map(item => item.Activities) } });
+        //check that the activities are found
+        if (activities.length === 0) {
+            return res.status(404).json({ message: 'No activities found for this itinerary.' });
+        }
+
+        // Return the activities and its durations in the itinerary
+        return res.status(200).json({ itineraryActivities});
+
+    } catch (error) {
+        console.error('Error fetching activities:', error);
+        return res.status(500).json({ message: 'Error fetching activities', error: error.message });
+    }
+    
+};
+
+// Function to add activity to an itinerary
+const addActivitiesinItinerary = async (req, res) => {
+    const { itineraryName, activityName } = req.body;
+
+    // Validate input
+    if (!itineraryName || !activityName) {
+        return res.status(400).json({ message: 'Itinerary name and activity name are required' });
+    }
+
+    try {
+        // Find the itinerary by name
+        const itinerary = await itinerarym.findOne({ Itinerary_Name: itineraryName });
+        // Check if the itinerary exists
+        if (!itinerary) {
+            return res.status(404).json({ message: 'Itinerary not found' });
+        }
+
+        // Find the activity by name
+        const activityy = await activity.findOne({ Name: activityName });
+        // Check if the activity exists
+        if (!activityy) {
+            return res.status(404).json({ message: 'Activity not found' });
+        }
+
+        // Check if the activity is already in the itinerary
+        const existingActivity = await itinerary_activitiesm.findOne({ Itinerary_Name: itineraryName, Activities: activityName });
+        if (existingActivity) {
+            return res.status(409).json({ message: 'Activity already exists in the itinerary' });
+        }
+
+        // Create a new itinerary activity
+        const newItineraryActivity = new itinerary_activitiesm({ Itinerary_Name: itineraryName, Activities: activityName ,Duration:activityy.Duration});
+        const savedItineraryActivity = await newItineraryActivity.save();
+        //return the saved itinerary activity
+        return res.status(201).json({ message: 'Activity added to itinerary successfully', itineraryActivity: savedItineraryActivity });
+    } catch (error) {
+        console.error('Error adding activity to itinerary:', error);
+        return res.status(500).json({ message: 'Error adding activity to itinerary', error: error.message });
+    }
+};
+
 // ----------------- Activity Category CRUD -------------------
 
 module.exports = { getPurchasedProducts,
@@ -3917,5 +3996,7 @@ module.exports = { getPurchasedProducts,
     acceptTermsSeller,
     checkTermsAcceptedSeller,
     deactivateItinerary,
-    activateItinerary    
+    activateItinerary,
+    getActivitiesinItinerary,
+    addActivitiesinItinerary    
 };

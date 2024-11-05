@@ -111,7 +111,9 @@ const {createUserAdmin,
   acceptTermsSeller,
   checkTermsAcceptedSeller,
   deactivateItinerary,
-  activateItinerary
+  activateItinerary,
+  getActivitiesinItinerary,
+  addActivitiesinItinerary,
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -258,3 +260,5 @@ app.put("/acceptTermsSeller", acceptTermsSeller);
 app.get("/checkTermsAcceptedSeller" ,checkTermsAcceptedSeller);
 app.put("/deactivateItinerary",deactivateItinerary);
 app.put("/activateItinerary",activateItinerary);
+app.get("/getActivitiesinItinerary",getActivitiesinItinerary);
+app.post("/addActivitiesinItinerary",addActivitiesinItinerary);

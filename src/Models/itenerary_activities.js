@@ -10,6 +10,9 @@ const itenerary_activitiesSchema = new Schema({
         type: String,
         required: true,
     },
+    Duration: {
+        type: String,
+    },
 },{ versionKey: false });
 
 const itenerary_activities = mongoose.model('itenerary_activities', itenerary_activitiesSchema);
