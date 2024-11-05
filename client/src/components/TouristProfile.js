@@ -67,7 +67,7 @@ const TouristProfile = () => {
     try {
       await uploadProfilePicture(email, file); // Call your upload function
       alert('Profile picture uploaded successfully!');
-      window.location.reload(); // Reload to fetch the new profile picture
+      //window.location.reload(); // Reload to fetch the new profile picture
     } catch (error) {
       console.error('Error uploading profile picture:', error);
       alert('Failed to upload profile picture.');
