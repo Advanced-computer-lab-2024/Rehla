@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getTouristProfile, updateTouristProfile, uploadProfilePicture } from '../services/api';
+import { getTouristProfile, updateTouristProfile, gettouristprofilepic } from '../services/api';
 import { Link } from 'react-router-dom';
 import logo from '../images/logo.png';
 
@@ -64,7 +64,7 @@ const TouristProfile = () => {
     formData.append('email', tourist.Email); // Include the user's email
 
     try {
-        const response = await uploadProfilePicture(formData);
+        const response = await gettouristprofilepic(formData);
         alert('Profile picture uploaded successfully!');
 
         // Fetch updated profile data

@@ -99,7 +99,7 @@ const {createUserAdmin,
   payForTouristActivity,
   deleteTouristActivity,
   uploadGuestDocuments,
-  uploadProfilePicture,
+  gettouristprofilepic,
   Itineraryactivation,
   getAttendedItineraries,
   getAttendedActivities,
@@ -244,7 +244,7 @@ app.post("/createTouristActivity",createTouristActivity);
 app.put("/payForTouristActivity",payForTouristActivity);
 app.delete("/deleteTouristActivity",deleteTouristActivity);
 app.post("/uploadGuestDocuments", uploadGuestDocuments);
-app.post("/uploadProfilePicture", uploadProfilePicture);
+app.post("/gettouristprofilepic", gettouristprofilepic);
 app.put("/Itineraryactivation", Itineraryactivation);
 app.post("/getAttendedItineraries",getAttendedItineraries);
 app.post("/getAttendedActivities" ,getAttendedActivities);

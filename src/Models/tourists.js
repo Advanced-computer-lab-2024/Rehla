@@ -52,6 +52,10 @@ const touristsSchema = new Schema({
         enum: ['Level 1', 'Level 2', 'Level 3'],
         default : 'Level 1', 
     },
+    Profile_Pic: {
+        type: String
+    },
+
 }, { versionKey: false });
 
 const Tourist = mongoose.model('Tourist', touristsSchema);

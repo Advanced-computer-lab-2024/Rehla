@@ -3420,7 +3420,7 @@ const uploadGuestDocuments = async (req, res) => {
     });
 };
 
-const uploadProfilePicture = async (req, res) => {
+const gettouristprofilepic = async (req, res) => {
     picture.single('document')(req, res, async (err) => {
         try {
             if (err instanceof multer.MulterError) {
@@ -3435,26 +3435,38 @@ const uploadProfilePicture = async (req, res) => {
             }
 
             const email = req.body.email;
-            
 
-            // Validate email a
-            if (!email ) {
-                return res.status(400).json({ error: 'Missing email or index in reques' });
+            // Validate email
+            if (!email) {
+                return res.status(400).json({ error: 'Missing email in request' });
             }
 
-            // Define the new picture name using email and index
-            const newFileName = `${email}_4`;
-            const newFilePath = path.join('./uploads', newFileName);
-
-            // Rename the file to include email and index
-            fs.rename(req.file.path, newFilePath, async (err) => {
+            // Read the file and convert it to base64
+            const filePath = req.file.path;
+            fs.readFile(filePath, { encoding: 'base64' }, async (err, base64Data) => {
                 if (err) {
-                    return res.status(500).json({ error: 'Error renaming picture', details: err.message });
+                    return res.status(500).json({ error: 'Error reading picture', details: err.message });
                 }
 
-                // Here, you can perform additional logic if needed (like saving to a database)
-                
-                res.status(200).json({ message: 'picture uploaded and renamed successfully.', document: newFileName });
+                // Optionally, you can also delete the file after reading it
+                fs.unlink(filePath, (unlinkErr) => {
+                    if (unlinkErr) {
+                        console.error('Error deleting temporary file:', unlinkErr);
+                    }
+                });
+
+                // Here you can store the base64 string in the database
+                const base64String = `data:${req.file.mimetype};base64,${base64Data}`;
+
+                // Save the base64 string to the Tourist document
+                const tourist = await Tourist.findOne({ Email: email });
+
+                tourist.Profile_Pic= base64String;
+                const updatedTourist = await tourist.save();
+
+
+                // Respond with a success message
+                res.status(200).json({ message: 'Picture uploaded successfully.', document: tourist });
             });
 
         } catch (error) {
@@ -3894,7 +3906,7 @@ module.exports = { getPurchasedProducts,
     payForTouristActivity,
     deleteTouristActivity,
     uploadGuestDocuments,
-    uploadProfilePicture,
+    gettouristprofilepic,
     Itineraryactivation,
     getAttendedItineraries,
     getAttendedActivities,

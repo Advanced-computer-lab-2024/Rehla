@@ -812,9 +812,9 @@ export const filterComplaintsByStatus = async (status) => {
 
 
 // upload picture
-export const uploadProfilePicture = async (formData) => {
+export const gettouristprofilepic = async (formData) => {
     try {
-        const response = await axios.post(`${API_URL}/uploadProfilePicture`, formData, {
+        const response = await axios.post(`${API_URL}/gettouristprofilepic`, formData, {
           
         });
         return response.data; // Return the response data from the server
