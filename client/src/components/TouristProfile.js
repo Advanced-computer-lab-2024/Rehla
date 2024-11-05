@@ -90,18 +90,16 @@ const TouristProfile = () => {
       <div className="flex items-center justify-center flex-grow pt-6">
         <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-3xl">
           <div className="flex flex-col items-center mb-8">
-            {tourist.profilePicture ? (
-              <img
-                src={tourist.profilePicture}
-                alt={`${tourist.Username}'s Profile`}
-                className="w-32 h-32 rounded-full object-cover mb-4"
-              />
-            ) : (
-              <div className="w-32 h-32 rounded-full bg-brandBlue text-white text-center flex items-center justify-center mb-4">
-                <span className="text-2xl font-bold">{tourist.Username.charAt(0)}</span>
+            
+         
+                {formData.Profile_Pic ? (
+                    <img src={formData.Profile_Pic} alt={`${formData.Name}'s profile`} />
+                ) :
+              (<div className="w-32 h-32 rounded-full bg-brandBlue text-white text-center flex items-center justify-center mb-4">
+                <span className="text-2xl font-bold">{formData.Username.charAt(0)}</span>
               </div>
             )}
-            <h2 className="text-3xl font-bold text-brandBlue mb-2">{tourist.Username}</h2>
+            <h2 className="text-3xl font-bold text-brandBlue mb-2">{formData.Username}</h2>
             <button
               className="bg-brandBlue text-white py-2 px-4 rounded-lg hover:bg-opacity-90 transition duration- 300"
               onClick={handleEdit}
