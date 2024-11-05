@@ -809,20 +809,7 @@ export const filterComplaintsByStatus = async (status) => {
         throw error; // Rethrow to handle it in the component
     }
 };
-
-
-// upload picture
-export const gettouristprofilepic = async (formData) => {
-    try {
-        const response = await axios.post(`${API_URL}/gettouristprofilepic`, formData, {
-          
-        });
-        return response.data; // Return the response data from the server
-    } catch (error) {
-        console.error('Error uploading profile picture:', error);
-        throw error; // Rethrow the error for handling in the calling component
-    }
-};
+     
 
 
 export const updateComplaintStatus = async (email) => {

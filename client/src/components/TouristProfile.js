@@ -15,6 +15,7 @@ const TouristProfile = () => {
     Job_Student: '',
   });
   const [file, setFile] = useState(null);
+  const [preview, setPreview] = useState(null); // State to hold the image preview
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -49,33 +50,7 @@ const TouristProfile = () => {
     setIsEditing(true);
   };
 
-  const handleFileChange = (event) => {
-    setFile(event.target.files[0]);
-  };
-
-  const handleUpload = async () => {
-    if (!file) {
-        alert('Please select a file to upload.');
-        return;
-    }
-
-    const formData = new FormData();
-    formData.append('document', file);
-    formData.append('email', tourist.Email); // Include the user's email
-
-    try {
-        const response = await gettouristprofilepic(formData);
-        alert('Profile picture uploaded successfully!');
-
-        // Fetch updated profile data
-        const updatedProfile = await getTouristProfile({ Email: tourist.Email });
-        setTourist(updatedProfile); // Update tourist state with the new profile data
-
-    } catch (error) {
-        console.error('Error uploading profile picture:', error);
-        alert('Failed to upload profile picture.');
-    }
-};
+ 
 
 
   if (!tourist) {
@@ -111,7 +86,7 @@ const TouristProfile = () => {
               onClick={handleEdit}
             >
               Edit Profile
-            </button>
+            </button >
           </div>
 
           {isEditing ? (
@@ -186,22 +161,7 @@ const TouristProfile = () => {
                   </div>
                 </div>
 
-                <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Upload Profile Picture:</label>
-                  <input
-                    type="file"
-                    onChange={handleFileChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
-                  />
-                </div>
-
-                <button
-                  type="button"
-                  onClick={handleUpload}
-                  className="w-full bg-brandBlue text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300 mt-4"
-                >
-                  Update Profile Picture
-                </button>
+                
 
                 <button
                   type="button"
@@ -225,7 +185,7 @@ const TouristProfile = () => {
               <p><strong>Username:</strong> {tourist.Username}</p>
               <p><strong>Email:</strong> {tourist.Email}</p>
               <p><strong>Mobile Number:</strong> {tourist.Mobile_Number}</p>
-              <p><strong>Nationality:</strong> {tourist.Nationality}</p>
+              <p><strong>Nationality:</strong> {tourist.Nationality }</p>
               <p><strong>Job/Student:</strong> {tourist.Job_Student}</p>
             </div>
           )}
