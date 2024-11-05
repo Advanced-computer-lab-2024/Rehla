@@ -34,42 +34,50 @@ const TourisimGovernerPlaces = () => {
     };
 
     return (
-        <div>
-            <h1>My Created Activities</h1>
+        <div className="min-h-screen bg-gray-50 p-6">
+            <h1 className="text-3xl font-bold text-center text-blue-700 mb-6">My Created Activities</h1>
 
-            {loading && <div>Loading...</div>}
-            {error && <div>Error: {error.message}</div>}
+            {loading && <div className="text-center text-gray-500">Loading...</div>}
+            {error && <div className="text-center text-red-600">Error: {error.message}</div>}
 
             {!loading && !error && (
-                <>
-                    <h2>Activities</h2>
-                    <ul>
-                        {data.activities.map((activity) => (
-                            <li key={activity._id}>{activity.Name}</li>
-                        ))}
-                    </ul>
+                <div className="space-y-8">
+                    <section>
+                        <h2 className="text-2xl font-semibold text-gray-800 mb-4">Activities</h2>
+                        <ul className="space-y-2 bg-white rounded-lg shadow-lg p-4">
+                            {data.activities.map((activity) => (
+                                <li key={activity._id} className="p-2 bg-blue-50 rounded-md shadow-sm">{activity.Name}</li>
+                            ))}
+                        </ul>
+                    </section>
 
-                    <h2>Historical Places</h2>
-                    <ul>
-                        {data.historicalPlaces.map((place) => (
-                            <li key={place._id}>{place.Name}</li>
-                        ))}
-                    </ul>
+                    <section>
+                        <h2 className="text-2xl font-semibold text-gray-800 mb-4">Historical Places</h2>
+                        <ul className="space-y-2 bg-white rounded-lg shadow-lg p-4">
+                            {data.historicalPlaces.map((place) => (
+                                <li key={place._id} className="p-2 bg-blue-50 rounded-md shadow-sm">{place.Name}</li>
+                            ))}
+                        </ul>
+                    </section>
 
-                    <h2>Museums</h2>
-                    <ul>
-                        {data.museums.map((museum) => (
-                            <li key={museum._id}>{museum.Name}</li>
-                        ))}
-                    </ul>
+                    <section>
+                        <h2 className="text-2xl font-semibold text-gray-800 mb-4">Museums</h2>
+                        <ul className="space-y-2 bg-white rounded-lg shadow-lg p-4">
+                            {data.museums.map((museum) => (
+                                <li key={museum._id} className="p-2 bg-blue-50 rounded-md shadow-sm">{museum.Name}</li>
+                            ))}
+                        </ul>
+                    </section>
 
-                    <h2>Itineraries</h2>
-                    <ul>
-                        {data.itineraries.map((itinerary) => (
-                            <li key={itinerary._id}>{itinerary.Itinerary_Name}</li>
-                        ))}
-                    </ul>
-                </>
+                    <section>
+                        <h2 className="text-2xl font-semibold text-gray-800 mb-4">Itineraries</h2>
+                        <ul className="space-y-2 bg-white rounded-lg shadow-lg p-4">
+                            {data.itineraries.map((itinerary) => (
+                                <li key={itinerary._id} className="p-2 bg-blue-50 rounded-md shadow-sm">{itinerary.Itinerary_Name}</li>
+                            ))}
+                        </ul>
+                    </section>
+                </div>
             )}
         </div>
     );

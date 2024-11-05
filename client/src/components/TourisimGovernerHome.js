@@ -32,8 +32,19 @@ const TourisimGovernerHome = () => {
     const [museumResponse, setMuseumResponse] = useState(null);
 
     // State for Museum update data
-    const [museumUpdateData, setMuseumUpdateData] = useState({ ...museumData });
-
+    const [museumUpdateData, setMuseumUpdateData] = useState({
+        Name: '',
+        description: '',
+        pictures: '',
+        location: '',
+        Country: '',
+        Opening_Hours: '',
+        S_Tickets_Prices: '',
+        F_Tickets_Prices: '',
+        N_Tickets_Prices: '',
+        Tag: '',
+        Created_By: ''
+    });
     // State for Historical Place data
     const [placeData, setPlaceData] = useState({
         Name: '',
@@ -109,15 +120,16 @@ const TourisimGovernerHome = () => {
         }
     };
 
-    // Update Museum
+    // Handle form submission
     const handleUpdateMuseum = async (e) => {
         e.preventDefault();
         try {
             const response = await updateMuseum(museumUpdateData);
-            setMuseumResponse(response.data);
+            setMuseumResponse({ message: 'Museum updated successfully!', data: response.data });
         } catch (error) {
-            console.error(error);
-            setMuseumResponse({ error: error.message });
+            setMuseumResponse({
+                error: error.response?.data?.message || 'An error occurred while updating the museum'
+            });
         }
     };
 
@@ -222,23 +234,126 @@ const TourisimGovernerHome = () => {
             <section className="max-w-md mx-auto mb-8 p-4 bg-gray-100 rounded-lg shadow-lg">
                 <h2 className="text-2xl font-semibold mb-4">Update Museum</h2>
                 <form onSubmit={handleUpdateMuseum} className="space-y-4">
+                    {/* Name (Required) */}
                     <input
                         type="text"
-                        placeholder="Enter Museum Name to Update"
+                        placeholder="Museum Name"
                         value={museumUpdateData.Name}
-                        onChange={(e) => setMuseumUpdateData({ ...museumUpdateData, Name: e.target.value })}
+                        onChange={(e) =>
+                            setMuseumUpdateData({ ...museumUpdateData, Name: e.target.value })
+                        }
                         required
                         className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
-                    {Object.keys(museumUpdateData).map((key) => (
-                        <input
-                            key={key}
-                            placeholder={key.replace(/_/g, ' ')}
-                            value={museumUpdateData[key]}
-                            onChange={(e) => setMuseumUpdateData({ ...museumUpdateData, [key]: e.target.value })}
-                            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                    ))}
+
+                    {/* Description */}
+                    <input
+                        type="text"
+                        placeholder="Description"
+                        value={museumUpdateData.description}
+                        onChange={(e) =>
+                            setMuseumUpdateData({ ...museumUpdateData, description: e.target.value })
+                        }
+                        className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+
+                    {/* Pictures */}
+                    <input
+                        type="text"
+                        placeholder="Pictures URL"
+                        value={museumUpdateData.pictures}
+                        onChange={(e) =>
+                            setMuseumUpdateData({ ...museumUpdateData, pictures: e.target.value })
+                        }
+                        className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+
+                    {/* Location */}
+                    <input
+                        type="text"
+                        placeholder="Location"
+                        value={museumUpdateData.location}
+                        onChange={(e) =>
+                            setMuseumUpdateData({ ...museumUpdateData, location: e.target.value })
+                        }
+                        className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+
+                    {/* Country */}
+                    <input
+                        type="text"
+                        placeholder="Country"
+                        value={museumUpdateData.Country}
+                        onChange={(e) =>
+                            setMuseumUpdateData({ ...museumUpdateData, Country: e.target.value })
+                        }
+                        className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+
+                    {/* Opening Hours */}
+                    <input
+                        type="text"
+                        placeholder="Opening Hours"
+                        value={museumUpdateData.Opening_Hours}
+                        onChange={(e) =>
+                            setMuseumUpdateData({ ...museumUpdateData, Opening_Hours: e.target.value })
+                        }
+                        className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+
+                    {/* Tickets Prices */}
+                    <input
+                        type="number"
+                        placeholder="Student Ticket Price"
+                        value={museumUpdateData.S_Tickets_Prices}
+                        onChange={(e) =>
+                            setMuseumUpdateData({ ...museumUpdateData, S_Tickets_Prices: e.target.value })
+                        }
+                        className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+
+                    <input
+                        type="number"
+                        placeholder="Foreigner Ticket Price"
+                        value={museumUpdateData.F_Tickets_Prices}
+                        onChange={(e) =>
+                            setMuseumUpdateData({ ...museumUpdateData, F_Tickets_Prices: e.target.value })
+                        }
+                        className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+
+                    <input
+                        type="number"
+                        placeholder="National Ticket Price"
+                        value={museumUpdateData.N_Tickets_Prices}
+                        onChange={(e) =>
+                            setMuseumUpdateData({ ...museumUpdateData, N_Tickets_Prices: e.target.value })
+                        }
+                        className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+
+                    {/* Tag */}
+                    <input
+                        type="text"
+                        placeholder="Tag"
+                        value={museumUpdateData.Tag}
+                        onChange={(e) =>
+                            setMuseumUpdateData({ ...museumUpdateData, Tag: e.target.value })
+                        }
+                        className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+
+                    {/* Created By */}
+                    <input
+                        type="text"
+                        placeholder="Created By"
+                        value={museumUpdateData.Created_By}
+                        onChange={(e) =>
+                            setMuseumUpdateData({ ...museumUpdateData, Created_By: e.target.value })
+                        }
+                        className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+
                     <button
                         type="submit"
                         className="w-full bg-yellow-500 text-white py-2 rounded hover:bg-yellow-600 transition duration-200"
@@ -246,7 +361,15 @@ const TourisimGovernerHome = () => {
                         Update Museum
                     </button>
                 </form>
+
+                {/* Response Message */}
+                {museumResponse && (
+                    <div className={`mt-4 ${museumResponse.error ? 'text-red-600' : 'text-green-600'}`}>
+                        {museumResponse.error || museumResponse.message}
+                    </div>
+                )}
             </section>
+
 
             <section className="max-w-md mx-auto mb-8 p-4 bg-gray-100 rounded-lg shadow-lg">
                 <h2 className="text-2xl font-semibold mb-4">Delete Museum</h2>

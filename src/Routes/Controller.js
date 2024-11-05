@@ -2150,64 +2150,80 @@ const readHistoricalPlace = async (req,res)=>{
 }
 
 const updateMuseum = async (req, res) => {
-    //update a user in the database
-    try{
-        const {Name,
-            description,
-            pictures, 
-            location,
-            Country,
-            Opening_Hours,
-            S_Tickets_Prices,
-            F_Tickets_Prices,
-            N_Tickets_Prices,
-            Tag, Created_By} = req.body;
+    try {
+        const { Name, ...fieldsToUpdate } = req.body;
+
+        // Check if the Name field is provided, as it's required
+        if (!Name) {
+            return res.status(400).json({ message: 'Museum name is required' });
+        }
+
+        // Filter out empty or undefined fields from fieldsToUpdate
+        const updateFields = Object.keys(fieldsToUpdate).reduce((acc, key) => {
+            if (fieldsToUpdate[key] !== undefined && fieldsToUpdate[key] !== '') {
+                acc[key] = fieldsToUpdate[key];
+            }
+            return acc;
+        }, {});
+
+        // Ensure Name is included in the update, as it is required
+        updateFields.Name = Name;
+
         const updatedMuseum = await museumsm.findOneAndUpdate(
-            {Name: Name },
-            {Name,description,pictures, location,Country,
-            Opening_Hours,S_Tickets_Prices,F_Tickets_Prices,N_Tickets_Prices,Tag ,Created_By},  // Fields to update
-            {new: true, runValidators: true }  // Options: return the updated document and run schema validators
+            { Name: Name },
+            updateFields,  // Only update fields provided in the request
+            { new: true, runValidators: true }  // Options: return the updated document and run schema validators
         );
-    if (!updatedMuseum) {
-        return res.status(404).json({ message: 'Museum not found' });
-    }
-    res.status(200).json({ message: 'Museum updated successfully', user: updatedMuseum });
-    }
-    catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
+
+        if (!updatedMuseum) {
+            return res.status(404).json({ message: 'Museum not found' });
+        }
+
+        res.status(200).json({ message: 'Museum updated successfully', museum: updatedMuseum });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error' });
     }
 };
 
+
 const updateHistoricalPlace = async (req, res) => {
-    //update a user in the database
-    try{
-        const {Name, 
-            Description, 
-            Pictures, 
-            Location, 
-            Country, 
-            Opens_At, 
-            Closes_At, 
-            S_Ticket_Prices, 
-            F_Ticket_Prices, 
-            N_Ticket_Prices,Created_By} = req.body;
+    try {
+        const { Name, ...fieldsToUpdate } = req.body;
+
+        // Check if the Name field is provided, as it's required
+        if (!Name) {
+            return res.status(400).json({ message: 'Historical Place name is required' });
+        }
+
+        // Filter out fields that are empty or undefined in the request body
+        const updateFields = Object.keys(fieldsToUpdate).reduce((acc, key) => {
+            if (fieldsToUpdate[key] !== undefined && fieldsToUpdate[key] !== '') {
+                acc[key] = fieldsToUpdate[key];
+            }
+            return acc;
+        }, {});
+
+        // Ensure Name is included in the update, as it is required
+        updateFields.Name = Name;
+
         const updatedHistoricalPlace = await historical_placesm.findOneAndUpdate(
-            {Name: Name },
-            {Name, Description,Pictures, Location,Country,Opens_At, 
-            Closes_At, S_Ticket_Prices,F_Ticket_Prices, N_Ticket_Prices,Created_By },  // Fields to update
-            {new: true, runValidators: true }  // Options: return the updated document and run schema validators
+            { Name: Name },
+            updateFields,  // Only update fields provided in the request
+            { new: true, runValidators: true }  // Options: return the updated document and run schema validators
         );
-    if (!updatedHistoricalPlace) {
-        return res.status(404).json({ message: 'Historical Place not found' });
-    }
-    res.status(200).json({ message: 'Historical Place updated successfully', user: updatedHistoricalPlace });
-    }
-    catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
+
+        if (!updatedHistoricalPlace) {
+            return res.status(404).json({ message: 'Historical Place not found' });
+        }
+
+        res.status(200).json({ message: 'Historical Place updated successfully', historicalPlace: updatedHistoricalPlace });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error' });
     }
 };
+
 
 const deleteMuseum = async (req, res) => {
     try {
