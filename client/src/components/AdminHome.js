@@ -95,7 +95,8 @@ const AdminHome = () => {
 
     //Activity management modal
     const [isModalOpen, setIsModalOpen] = useState(false);
-
+    //user Modal
+    const [isUserModalOpen, setUserModalOpen] = useState(false);
     // Fetch activity categories and preference tags on component mount
     useEffect(() => {
         const fetchCategories = async () => {
@@ -405,6 +406,10 @@ const handleFlagItinerary = async () => {
     }
 };
 
+const toggleUserModal = () => {
+    setUserModalOpen(!isUserModalOpen);
+  };
+
 
 
     return (
@@ -423,6 +428,15 @@ const handleFlagItinerary = async () => {
                         >
                             Activities Management
                         </a>
+
+                        <a 
+                            href="#" 
+                            onClick={() => setUserModalOpen(true)} 
+                            className="text-white hover:underline"
+                        >
+                            users Management
+                        </a>
+
                     </li>
                    </ul>
                </nav>   
@@ -433,205 +447,212 @@ const handleFlagItinerary = async () => {
             <br></br>
             <br></br>
             <div className="w-36 py-6">
-                {/* Modal */}
-                {isModalOpen && (
-                    <>
-                        <div className="fixed inset-0 bg-black opacity-50 z-40" onClick={() => setIsModalOpen(false)}></div>
-                        <div className="fixed inset-0 flex items-center justify-center z-50">
-                            <div className="bg-white rounded-lg shadow-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6 relative">
-                                <h2 className="text-xl font-bold mb-4">Manage Activity Categories</h2>
+               {/* Modal */}
+            {isModalOpen && (
+                <>
+                    <div className="fixed inset-0 bg-black opacity-50 z-40" onClick={() => setIsModalOpen(false)}></div>
+                    <div className="fixed inset-0 flex items-center justify-center z-50 mt-20">
+                        <div className="bg-white rounded-lg shadow-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6 relative">
+                            <h2 className="text-xl font-bold mb-4">Manage Activity Categories</h2>
 
-                                {/* Form for adding new category */}
-                                <form onSubmit={handleCreateCategory} className="mb-4">
-                                    <label className="block text-sm font-medium mb-1">Category Name:</label>
-                                    <input
-                                        type="text"
-                                        value={categoryName}
-                                        onChange={(e) => setCategoryName(e.target.value)}
-                                        required
-                                        className="border border-gray-300 p-2 rounded w-full"
-                                    />
-                                    <button type="submit" className="mt-2 bg-blue-500 text-white rounded-md px-4 py-2">
-                                        Add Category
-                                    </button>
-                                </form>
-
-                                {/* Form for updating category */}
-                                <form onSubmit={handleUpdateCategory} className="mb-4">
-                                    <label className="block text-sm font-medium mb-1">Current Category Name:</label>
-                                    <select
-                                        value={currentCategory}
-                                        onChange={(e) => setCurrentCategory(e.target.value)}
-                                        required
-                                        className="border border-gray-300 p-2 rounded w-full"
-                                    >
-                                        <option value="">Select Category</option>
-                                        {categories.map((cat) => (
-                                            <option key={cat._id} value={cat.Name}>
-                                                {cat.Name}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    <label className="block text-sm font-medium mb-1 mt-2">New Category Name:</label>
-                                    <input
-                                        type="text"
-                                        value={newCategoryName}
-                                        onChange={(e) => setNewCategoryName(e.target.value)}
-                                        required
-                                        className="border border-gray-300 p-2 rounded w-full"
-                                    />
-                                    <button type="submit" className="mt-2 bg-blue-500 text-white rounded-md px-4 py-2">
-                                        Update Category
-                                    </button>
-                                </form>
-
-                                {/* Form for deleting category */}
-                                <form onSubmit={handleDeleteCategory} className="mb-4">
-                                    <label className="block text-sm font-medium mb-1">Delete Category:</label>
-                                    <select
-                                        value={currentCategory}
-                                        onChange={(e) => setCurrentCategory(e.target.value)}
-                                        required
-                                        className="border border-gray-300 p-2 rounded w-full"
-                                    >
-                                        <option value="">Select Category</option>
-                                        {categories.map((cat) => (
-                                            <option key={cat._id} value={cat.Name}>
-                                                {cat.Name}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    <button type="submit" className="mt-2 bg-red-500 text-white rounded-md px-4 py-2">
-                                        Delete Category
-                                    </button>
-                                </form>
-
-                                <h2 className="text-xl font-bold mb-4">Manage Preference Tags</h2>
-
-                                {/* Form for adding new tag */}
-                                <form onSubmit={handleCreateTag} className="mb-4">
-                                    <label className="block text-sm font-medium mb-1">Tag Name:</label>
-                                    <input
-                                        type="text"
-                                        value={tagName}
-                                        onChange={(e) => setTagName(e.target.value)}
-                                        required
-                                        className="border border-gray-300 p-2 rounded w-full"
-                                    />
-                                    <button type="submit" className="mt-2 bg-blue-500 text-white rounded-md px-4 py-2">
-                                        Add Tag
-                                    </button>
-                                </form>
-
-                                {/* Form for updating tag */}
-                                <form onSubmit={handleUpdateTag} className="mb-4">
-                                    <label className="block text-sm font-medium mb-1">Current Tag Name:</label>
-                                    <select
-                                        value={currentTagName}
-                                        onChange={(e) => setCurrentTagName(e.target.value)}
-                                        required
-                                        className="border border-gray-300 p-2 rounded w-full"
-                                    >
-                                        <option value="">Select Tag</option>
-                                        {tags.map((tag) => (
-                                            <option key={tag._id} value={tag.Name}>
-                                                {tag.Name}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    <label className="block text-sm font-medium mb-1 mt-2">New Tag Name:</label>
-                                    <input
-                                        type="text"
-                                        value={newTagName}
-                                        onChange={(e) => setNewTagName(e.target.value)}
-                                        required
-                                        className="border border-gray-300 p-2 rounded w-full"
-                                    />
-                                    <button type="submit" className="mt-2 bg-blue-500 text-white rounded-md px-4 py-2">
-                                        Update Tag
-                                    </button>
-                                </form>
-
-                                {/* Form for deleting tag */}
-                                <form onSubmit={handleDeleteTag} className="mb-4">
-                                    <label className="block text-sm font-medium mb-1">Delete Tag:</label>
-                                    <select
-                                        value={currentTagName}
-                                        onChange={(e) => setCurrentTagName(e.target.value)}
-                                        required
-                                        className="border border-gray-300 p-2 rounded w-full"
-                                    >
-                                        <option value="">Select Tag</option>
-                                        {tags.map((tag) => (
-                                            <option key={tag._id} value={tag.Name}>
-                                                {tag.Name}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    <button type="submit" className="mt-2 bg-red-500 text-white rounded-md px-4 py-2">
-                                        Delete Tag
-                                    </button>
-                                </form>
-                                <div className="p-6 max-w-md mx-auto bg-white rounded-lg shadow-md space-y-8">
-                                {/* Flag Activity Section */}
-                                <div>
-                                    <h3 className="text-lg font-semibold text-gray-700 mb-2">Flag Activity as Inappropriate</h3>
-                                    <div className="flex items-center space-x-4">
-                                        <input
-                                            type="text"
-                                            placeholder="Enter Activity Name"
-                                            value={activityName}
-                                            onChange={(e) => setActivityName(e.target.value)}
-                                            className="border border-gray-300 rounded-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        />
-                                        <button
-                                            onClick={handleFlagActivity}
-                                            className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition duration-200"
-                                        >
-                                            Flag Activity
-                                        </button>
-                                    </div>
-                                    {flagMessage && <p className="text-sm text-green-600 mt-2">{flagMessage}</p>}
-                                </div>
-
-                                {/* Flag Itinerary Section */}
-                                <div>
-                                    <h3 className="text-lg font-semibold text-gray-700 mb-2">Flag an Itinerary as Inappropriate</h3>
-                                    <div className="flex items-center space-x-4">
-                                        <input
-                                            type="text"
-                                            value={itineraryName}
-                                            onChange={(e) => setItineraryName(e.target.value)}
-                                            placeholder="Enter Itinerary Name"
-                                            className="border border-gray-300 rounded-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        />
-                                        <button
-                                            onClick={handleFlagItinerary}
-                                            className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition duration-200"
-                                        >
-                                            Flag Itinerary
-                                        </button>
-                                    </div>
-                                    {itineraryFlagMessage && <p className="text-sm text-green-600 mt-2">{itineraryFlagMessage}</p>}
-                                    {flagError && <p className="text-sm text-red-600 mt-2">{flagError}</p>}
-                                </div>
-                            </div>
-
-                                {/* Close Button */}
-                                <button
-                                    onClick={() => setIsModalOpen(false)}
-                                    className="mt-4 bg-gray-300 text-black rounded-md px-4 py-2"
-                                >
-                                    Close
+                            {/* Label for Category Management */}
+                            <label className="block text-lg font-semibold mb-2">Category Management</label>
+                            {/* Form for adding new category */}
+                            <form onSubmit={handleCreateCategory} className="mb-4">
+                                <label className="block text-sm font-medium mb-1">Category Name:</label>
+                                <input
+                                    type="text"
+                                    value={categoryName}
+                                    onChange={(e) => setCategoryName(e.target.value)}
+                                    required
+                                    className="border border-gray-300 p-2 rounded w-full"
+                                />
+                                <button type="submit" className="mt-2 bg-brandBlue text-white rounded-md px-4 py-2">
+                                    Add Category
                                 </button>
-                            </div>
+                            </form>
+
+                            {/* Form for updating category */}
+                            <form onSubmit={handleUpdateCategory} className="mb-4">
+                                <label className="block text-sm font-medium mb-1">Current Category Name:</label>
+                                <select
+                                    value={currentCategory}
+                                    onChange={(e) => setCurrentCategory(e.target.value)}
+                                    required
+                                    className="border border-gray-300 p-2 rounded w-full"
+                                >
+                                    <option value="">Select Category</option>
+                                    {categories.map((cat) => (
+                                        <option key={cat._id} value={cat.Name}>
+                                            {cat.Name}
+                                        </option>
+                                    ))}
+                                </select>
+                                <label className="block text-sm font-medium mb-1 mt-2">New Category Name:</label>
+                                <input
+                                    type="text"
+                                    value={newCategoryName}
+                                    onChange={(e) => setNewCategoryName(e.target.value)}
+                                    required
+                                    className="border border-gray-300 p-2 rounded w-full"
+                                />
+                                <button type="submit" className="mt-2 bg-brandBlue text-white rounded-md px-4 py-2">
+                                    Update Category
+                                </button>
+                            </form>
+
+                            {/* Form for deleting category */}
+                            <form onSubmit={handleDeleteCategory} className="mb-4">
+                                <label className="block text-sm font-medium mb-1">Delete Category:</label>
+                                <select
+                                    value={currentCategory}
+                                    onChange={(e) => setCurrentCategory(e.target.value)}
+                                    required
+                                    className="border border-gray-300 p-2 rounded w-full"
+                                >
+                                    <option value="">Select Category</option>
+                                    {categories.map((cat) => (
+                                        <option key={cat._id} value={cat.Name}>
+                                            {cat.Name}
+                                        </option>
+                                    ))}
+                                </select>
+                                <button type="submit" className="mt-2 bg-logoOrange text-white rounded-md px-4 py-2">
+                                    Delete Category
+                                </button>
+                            </form>
+
+                            <h2 className="text-xl font-bold mb-4">Manage Preference Tags</h2>
+                            {/* Label for Tag Management */}
+                            <label className="block text-lg font-semibold mb-2">Tag Management</label>
+
+                            {/* Form for adding new tag */}
+                            <form onSubmit={handleCreateTag} className="mb-4">
+                                <label className="block text-sm font-medium mb-1">Tag Name:</label>
+                                <input
+                                    type="text"
+                                    value={tagName}
+                                    onChange={(e) => setTagName(e.target.value)}
+                                    required
+                                    className="border border-gray-300 p-2 rounded w-full"
+                                />
+                                <button type="submit" className="mt-2 bg-brandBlue text-white rounded-md px-4 py-2">
+                                    Add Tag
+                                </button>
+                            </form>
+
+                            {/* Form for updating tag */}
+                            <form onSubmit={handleUpdateTag} className="mb-4">
+                                <label className="block text-sm font-medium mb-1">Current Tag Name:</label>
+                                <select
+                                    value={currentTagName}
+                                    onChange={(e) => setCurrentTagName(e.target.value)}
+                                    required
+                                    className="border border-gray-300 p-2 rounded w-full"
+                                >
+                                    <option value="">Select Tag</option>
+                                    {tags.map((tag) => (
+                                        <option key={tag._id} value={tag.Name}>
+                                            {tag.Name}
+                                        </option>
+                                    ))}
+                                </select>
+                                <label className="block text-sm font-medium mb-1 mt-2">New Tag Name:</label>
+                                <input
+                                    type="text"
+                                    value={newTagName}
+                                    onChange={(e) => setNewTagName(e.target.value)}
+                                    required
+                                    className="border border-gray-300 p-2 rounded w-full"
+                                />
+                                <button type="submit" className="mt-2 bg-brandBlue text-white rounded-md px-4 py-2">
+                                    Update Tag
+                                </button>
+                            </form>
+
+                            {/* Form for deleting tag */}
+                            <form onSubmit={handleDeleteTag} className="mb-4">
+                                <label className="block text-sm font-medium mb-1">Delete Tag:</label>
+                                <select
+                                    value={currentTagName}
+                                    onChange={(e) => setCurrentTagName(e.target.value)}
+                                    required
+                                    className="border border-gray-300 p-2 rounded w-full"
+                                >
+                                    <option value="">Select Tag</option>
+                                    {tags.map((tag) => (
+                                        <option key={tag._id} value={tag.Name}>
+                                            {tag.Name}
+                                        </option>
+                                    ))}
+                                </select>
+                                <button type="submit" className="mt-2 bg-logoOrange text-white rounded-md px-4 py-2">
+                                    Delete Tag
+                                </button>
+                            </form>
+
+                            <h2 className="text-xl font-bold mb-4">Flag Activities and Itineraries</h2>
+
+                            {/* Flag Activity Section */}
+                            <form onSubmit={handleFlagActivity} className="mb-4">
+                                <label className="block text-sm font-medium mb-1">Flag Activity as Inappropriate:</label>
+                                <div className="flex items-center space-x-4">
+                                    <input
+                                        type="text"
+                                        placeholder="Enter Activity Name"
+                                        value={activityName}
+                                        onChange={(e) => setActivityName(e.target.value)}
+                                        className="border border-gray-300 rounded-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    />
+                                    <button
+                                        type="submit"
+                                        className="mt-2 bg-logoOrange text-white rounded-md px-4 py-2 "
+                                    >
+                                        Flag Activity
+                                    </button>
+                             </div>
+                                {flagMessage && <p className="text-sm text-green-600 mt-2">{flagMessage}</p>}
+                            </form>
+
+                            {/* Flag Itinerary Section */}
+                            <form onSubmit={handleFlagItinerary} className="mb-4">
+                                <label className="block text-sm font-medium mb-1">Flag Itinerary as Inappropriate:</label>
+                                <div className="flex items-center space-x-4">
+                                    <input
+                                        type="text"
+                                        value={itineraryName}
+                                        onChange={(e) => setItineraryName(e.target.value)}
+                                        placeholder="Enter Itinerary Name"
+                                        className="border border-gray-300 rounded-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    />
+                                    <button
+                                        type="submit"
+                                        className="mt-2 bg-logoOrange text-white rounded-md px-4 py-2 "
+                                    >
+                                        Flag Itinerary
+                                    </button>
+                                </div>
+                                {itineraryFlagMessage && <p className="text-sm text-green-600 mt-2">{itineraryFlagMessage}</p>}
+                                {flagError && <p className="text-sm text-red-600 mt-2">{flagError}</p>}
+                            </form>
+
+                            {/* Close Button */}
+                            <button
+                                onClick={() => setIsModalOpen(false)}
+                                className="mt-4 bg-logoOrange text-white rounded-md px-4 py-2"
+                            >
+                                Close
+                            </button>
                         </div>
-                    </>
-                )}
+                    </div>
+                </>
+            )}
+
             </div>
 
-            <div className="p-6 bg-gray-50">
+            <div className="p-6 bg-gray-50 mt-[-80px]">
                 <h1 className="text-2xl font-bold text-center mb-6">Admin Home</h1>
+                <h1 className="text-3xl font-extrabold text-center mb-8 mt-8 text-brandBlue">Users Requests</h1>
 
                 {/* Loading indicator */}
                 {loading && <p className="text-gray-500 text-center">Loading requests...</p>}
@@ -667,7 +688,7 @@ const handleFlagItinerary = async () => {
                                         <td className="py-2 px-6 border-t">
                                             <button 
                                                 onClick={() => handleProcessRequest(request.Email)} 
-                                                className="text-blue-500 hover:text-blue-700 font-semibold"
+                                                className="text-logoOrange hover:text-brandBlue font-semibold"
                                             >
                                                 Process Request
                                             </button>
@@ -680,37 +701,108 @@ const handleFlagItinerary = async () => {
                 )}
             </div>
 
-           {/* Form for deleting a user */}
-           <div className="admin-action p-6 bg-white rounded shadow-md">
-                <h2 className="text-2xl font-semibold mb-4">Delete User</h2>
-                <form onSubmit={handleDeleteUser} className="flex flex-col">
-                    <label htmlFor="email" className="mb-2 font-medium">
-                        Enter Email of User to Delete:
-                    </label>
+      
+            {isUserModalOpen && (
+    <>
+        <div className="fixed inset-0 bg-black opacity-50 z-40" onClick={() => setUserModalOpen(false)}></div>
+        <div className="fixed inset-0 flex items-center justify-center z-50" style={{ paddingTop: '80px' }}> {/* Adjust this value as needed */}
+            <div className="bg-white rounded-lg shadow-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6 relative">
+                <h2 className="text-xl font-bold mb-4">User Management</h2>
+
+                {/* Form for creating a new user */}
+                <form onSubmit={handleCreateUser} className="mb-4">
+                    <label className="block mb-2">Username:</label>
                     <input
-                        type="email"
-                        id="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        type="text"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
                         required
                         className="border border-gray-300 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
                     />
-                    <button 
-                        type="submit" 
-                        className="bg-red-500 text-white rounded-md px-4 py-2 transition duration-200 hover:bg-red-600"
+
+                    <label className="block mb-2">Email:</label>
+                    <input
+                        type="email"
+                        value={newEmail}
+                        onChange={(e) => setNewEmail(e.target.value)}
+                        required
+                        className="border border-gray-300 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    />
+
+                    <label className="block mb-2">Password:</label>
+                    <input
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                        className="border border-gray-300 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    />
+
+                    <label className="block mb-2">Type:</label>
+                    <select
+                        value={type}
+                        onChange={(e) => setType(e.target.value)}
+                        required
+                        className="border border-gray-300 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
                     >
+                        <option value="">Select Type</option>
+                        <option value="Admin">Admin</option>
+                        <option value="Tourism_Governor">Tourism Governor</option>
+                    </select>
+
+                    <div className="flex space-x-4">
+                        <button 
+                            type="submit" 
+                            className="bg-brandBlue text-white rounded-md px-4 py-2 transition duration-200 "
+                        >
+                            Create User
+                        </button>
+                        <button 
+                            type="button" 
+                            onClick={handleCancel}
+                            className="bg-logoOrange text-white rounded-md px-4 py-2 transition duration-200 "
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+
+                {/* Form for deleting a user */}
+                <form onSubmit={handleDeleteUser} className="mb-4">
+                    <label className="block text-sm font-medium mb-1">Enter Email of User to Delete:</label>
+                    <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                        className="border border-gray-300 p-2 rounded w-full mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    />
+                    <button type="submit" className="mt-2 bg-logoOrange text-white rounded-md px-4 py-2">
                         Delete User
                     </button>
                 </form>
-                {message && <p className="mt-4 text-red-600">{message}</p>}
+
+                {/* Close Button */}
+                <button
+                    onClick={() => setUserModalOpen(false)}
+                    className="mt-4 bg-logoOrange text-white rounded-md px-4 py-2"
+                >
+                    Close
+                </button>
             </div>
-            <div>
+        </div>
+    </>
+)}
+
+  <h1 className="text-3xl font-extrabold text-center mb-8 mt-10 text-brandBlue">
+    Tourist Complaints</h1>
+        <div>
             {loadingg && <p>Loading complaints...</p>}
             {errorr && <p className="text-red-500">Error: {errorr}</p>}
             {showComplaints && complaints.length === 0 && !loadingg && <p>No complaints found.</p>}
 
             {/* Search Input for Email */}
-            <div className="flex space-x-4 mb-4 p-4">
+            <div className="flex flex-col items-center space-y-4 mb-4 p-2"> {/* Centered the search inputs */}
                 {/* Search by Email */}
                 <div className="flex items-center space-x-2">
                     <input
@@ -718,11 +810,11 @@ const handleFlagItinerary = async () => {
                         value={emailInput}
                         onChange={(e) => setEmailInput(e.target.value)}
                         placeholder="Enter email to search complaints"
-                        className="border border-gray-300 p-2 rounded"
+                        className="border border-gray-300 p-2 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400" // More rounded
                     />
                     <button
                         onClick={handleSearchComplaints}
-                        className="bg-blue-500 text-white rounded-md px-4 py-2"
+                        className="bg-brandBlue text-white rounded-full px-4 py-2 transition duration-200 hover:bg-logoOrange" // More rounded
                     >
                         Search
                     </button>
@@ -735,72 +827,74 @@ const handleFlagItinerary = async () => {
                         value={filterStatus}
                         onChange={(e) => setFilterStatus(e.target.value)}
                         placeholder="Enter complaint status"
-                        className="border border-gray-300 p-2 rounded"
+                        className="border border-gray-300 p-2 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400" // More rounded
                     />
                     <button
                         onClick={handleFilterComplaintsByStatus}
                         disabled={isLoadingFiltered}
-                        className="bg-blue-500 text-white rounded-md px-4 py-2"
+                        className="bg-brandBlue text-white rounded-full px-4 py-2 transition duration-200 hover:bg-logoOrange" // More rounded
                     >
                         {isLoadingFiltered ? 'Loading...' : 'Filter Complaints'}
                     </button>
+
+                    {/* Sort Complaints by Date (Positioned beside the status input) */}
+                    <button
+                        onClick={fetchSortedComplaints}
+                        disabled={loadingSortedComplaints}
+                        className="bg-brandBlue text-white rounded-full px-4 py-2 transition duration-200 hover:bg-logoOrange" // More rounded
+                    >
+                        Sort Complaints by Date
+                    </button>
+                    {loadingSortedComplaints && <p>Loading complaints...</p>}
+                    {sortedComplaintsError && <p>{sortedComplaintsError}</p>}
                 </div>
             </div>
 
-
             <div className="p-6">
-            <div className="mb-4">
-                <button
-                    onClick={fetchSortedComplaints}
-                    disabled={loadingSortedComplaints}
-                    className="bg-blue-500 text-white rounded-md px-4 py-2"
-                >
-                    Sort Complaints by Date
-                </button>
-                {loadingSortedComplaints && <p>Loading complaints...</p>}
-                {sortedComplaintsError && <p>{sortedComplaintsError}</p>}
+                {showComplaints || filteredComplaints.length > 0 || emailInput ? (
+                    <table className="min-w-full bg-white border border-gray-300">
+                        <thead>
+                            <tr className="bg-gray-200">
+                                <th className="py-2 px-4 border">Username</th>
+                                <th className="py-2 px-4 border">Title</th>
+                                <th className="py-2 px-4 border">Complaint</th>
+                                <th className="py-2 px-4 border">Status</th>
+                                <th className="py-2 px-4 border">Date</th>
+                                <th className="py-2 px-4 border">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {/* Display sorted complaints if they exist, otherwise display the original complaints */}
+                            {(sortedComplaints.length > 0 ? sortedComplaints : (filteredComplaints.length > 0 ? filteredComplaints : complaints)).map((complaint) => (
+                                <tr key={complaint._id} className="hover:bg-gray-100">
+                                    <td className="py-2 px-4 border">{complaint.Tourist_Email}</td>
+                                    <td className="py-2 px-4 border">{complaint.Title}</td>
+                                    <td className="py-2 px-4 border">{complaint.Body}</td>
+                                    <td className="py-2 px-4 border">{complaint.Status}</td>
+                                    <td className="py-2 px-4 border">{complaint.Date_Of_Complaint}</td>
+                                    <td className="py-2 px-4 border">
+                                        <button
+                                            onClick={() => {
+                                                setComplaintEmail(complaint.Tourist_Email);
+                                                setShowreplyModal(true);
+                                            }}
+                                            className="bg-brandBlue text-white rounded-md px-2 py-1 transition duration-200 hover:bg-logoOrange"
+                                        >
+                                            Reply
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                ) : (
+                    <p>No complaints found.</p>
+                )}
             </div>
 
-            {showComplaints || filteredComplaints.length > 0 || emailInput ? (
-                <table className="min-w-full bg-white border border-gray-300">
-                    <thead>
-                        <tr className="bg-gray-200">
-                            <th className="py-2 px-4 border">Username</th>
-                            <th className="py-2 px-4 border">Title</th>
-                            <th className="py-2 px-4 border">Complaint</th>
-                            <th className="py-2 px-4 border">Status</th>
-                            <th className="py-2 px-4 border">Date</th>
-                            <th className="py-2 px-4 border">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {/* Display sorted complaints if they exist, otherwise display the original complaints */}
-                        {(sortedComplaints.length > 0 ? sortedComplaints : (filteredComplaints.length > 0 ? filteredComplaints : complaints)).map((complaint) => (
-                            <tr key={complaint._id} className="hover:bg-gray-100">
-                                <td className="py-2 px-4 border">{complaint.Tourist_Email}</td>
-                                <td className="py-2 px-4 border">{complaint.Title}</td>
-                                <td className="py-2 px-4 border">{complaint.Body}</td>
-                                <td className="py-2 px-4 border">{complaint.Status}</td>
-                                <td className="py-2 px-4 border">{complaint.Date_Of_Complaint}</td>
-                                <td className="py-2 px-4 border">
-                                    <button
-                                        onClick={() => {
-                                            setComplaintEmail(complaint.Tourist_Email);
-                                            setShowreplyModal(true);
-                                        }}
-                                        className="bg-blue-500 text-white rounded-md px-2 py-1 transition duration-200 hover:bg-blue-600"
-                                    >
-                                        Reply
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            ) : (
-                <p>No complaints found.</p>
-            )}
-        </div>
+
+
+
 
 
 
@@ -825,13 +919,13 @@ const handleFlagItinerary = async () => {
                         <button
                             onClick={handleReplyToComplaint}
                             disabled={isSendingReply}
-                            className="bg-blue-500 text-white rounded-md px-4 py-2 mr-2 transition duration-200 hover:bg-blue-600"
+                            className="bg-brandBlue text-white rounded-md px-4 py-2 mr-2 transition duration-200 hover:bg-logoOrange"
                         >
                             {isSendingReply ? 'Sending...' : 'Send Reply'}
                         </button>
                         <button
                             onClick={() => setShowreplyModal(false)}
-                            className="bg-gray-300 text-black rounded-md px-4 py-2 transition duration-200 hover:bg-gray-400"
+                            className="bg-logoOrange text-black rounded-md px-4 py-2 transition duration-200 "
                         >
                             Cancel
                         </button>
@@ -845,79 +939,6 @@ const handleFlagItinerary = async () => {
 
            <br />
 
-           {/* Form for creating a new user */}
-           <div className="admin-actions">
-            <button 
-                onClick={() => setShowModal(true)} 
-                className="bg-blue-500 text-white rounded-md px-4 py-2 mb-4 transition duration-200 hover:bg-blue-600"
-            >
-                Add New User
-            </button>
-
-            {showModal && (
-                <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-                    <div className="bg-white rounded-lg shadow-lg p-6 w-96">
-                        <h2 className="text-xl font-semibold mb-4">Create New User (Admin or Tourism Governor)</h2>
-                        <form onSubmit={handleCreateUser}>
-                            <label className="block mb-2">Username:</label>
-                            <input
-                                type="text"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                                required
-                                className="border border-gray-300 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                            />
-                            <label className="block mb-2">Email:</label>
-                            <input
-                                type="email"
-                                value={newEmail}
-                                onChange={(e) => setNewEmail(e.target.value)}
-                                required
-                                className="border border-gray-300 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                            />
-                            <label className="block mb-2">Password:</label>
-                            <input
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                                className="border border-gray-300 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                            />
-                            <label className="block mb-2">Type:</label>
-                            <select
-                                value={type}
-                                onChange={(e) => setType(e.target.value)}
-                                required
-                                className="border border-gray-300 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                            >
-                                <option value="">Select Type</option>
-                                <option value="Admin">Admin</option>
-                                <option value="Tourism_Governor">Tourism Governor</option>
-                            </select>
-                            <div className="flex space-x-4">
-                                <button 
-                                    type="submit" 
-                                    className="bg-green-500 text-white rounded-md px-4 py-2 transition duration-200 hover:bg-green-600"
-                                >
-                                    Create User
-                                </button>
-                                <button 
-                                    type="button" 
-                                    onClick={handleCancel}
-                                    className="bg-gray-500 text-white rounded-md px-4 py-2 transition duration-200 hover:bg-gray-600"
-                                >
-                                    Cancel
-                                </button>
-                            </div>
-                        </form>
-                        {message && <p className="mt-4 text-green-600">{message}</p>}
-                    </div>
-                </div>
-            )}
-        </div>
-           <br />
-    
-       
         <footer className="bg-brandBlue shadow dark:bg-brandBlue m-0">
                 <div className="w-full mx-auto md:py-8">
                     <div className="sm:flex sm:items-center sm:justify-between">
