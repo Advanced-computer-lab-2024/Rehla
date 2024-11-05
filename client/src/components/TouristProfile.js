@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getTouristProfile, updateTouristProfile, gettouristprofilepic } from '../services/api';
+import { getTouristProfile, updateTouristProfile, uploadProfilePicture } from '../services/api'; // Import your new upload function
 import { Link } from 'react-router-dom';
 import logo from '../images/logo.png';
 
@@ -15,7 +15,7 @@ const TouristProfile = () => {
     Job_Student: '',
   });
   const [file, setFile] = useState(null);
-  const [preview, setPreview] = useState(null); // State to hold the image preview
+  const [preview, setPreview] = useState(null);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -50,8 +50,29 @@ const TouristProfile = () => {
     setIsEditing(true);
   };
 
- 
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      setPreview(URL.createObjectURL(selectedFile)); // Create a preview URL
+    }
+  };
 
+  const handleUploadProfilePicture = async () => {
+    if (!file) {
+      alert('Please select a file to upload.');
+      return;
+    }
+    const email = formData.Email; // Get the email from formData
+    try {
+      await uploadProfilePicture(email, file); // Call your upload function
+      alert('Profile picture uploaded successfully!');
+      window.location.reload(); // Reload to fetch the new profile picture
+    } catch (error) {
+      console.error('Error uploading profile picture:', error);
+      alert('Failed to upload profile picture.');
+    }
+  };
 
   if (!tourist) {
     return <div>Loading...</div>;
@@ -82,11 +103,11 @@ const TouristProfile = () => {
             )}
             <h2 className="text-3xl font-bold text-brandBlue mb-2">{tourist.Username}</h2>
             <button
-              className="bg-brandBlue text-white py-2 px-4 rounded-lg hover:bg-opacity-90 transition duration-300"
+              className="bg-brandBlue text-white py-2 px-4 rounded-lg hover:bg-opacity-90 transition duration- 300"
               onClick={handleEdit}
             >
               Edit Profile
-            </button >
+            </button>
           </div>
 
           {isEditing ? (
@@ -161,7 +182,21 @@ const TouristProfile = () => {
                   </div>
                 </div>
 
-                
+                {/* New File Input for Profile Picture */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-gray-700 text-sm font-bold mb-2">Upload Profile Picture:</label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                    />
+                    {preview && (
+                      <img src={preview} alt="Preview" className="mt-2 w-32 h-32 rounded-full object-cover" />
+                    )}
+                  </div>
+                </div>
 
                 <button
                   type="button"
@@ -169,6 +204,14 @@ const TouristProfile = () => {
                   className="w-full bg-brandBlue text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300 mt-2"
                 >
                   Cancel
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleUploadProfilePicture}
+                  className="w-full bg-brandBlue text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300 mt-2"
+                >
+                  Upload Profile Picture
                 </button>
 
                 <button
@@ -185,7 +228,7 @@ const TouristProfile = () => {
               <p><strong>Username:</strong> {tourist.Username}</p>
               <p><strong>Email:</strong> {tourist.Email}</p>
               <p><strong>Mobile Number:</strong> {tourist.Mobile_Number}</p>
-              <p><strong>Nationality:</strong> {tourist.Nationality }</p>
+              <p><strong>Nationality:</strong> {tourist.Nationality}</p>
               <p><strong>Job/Student:</strong> {tourist.Job_Student}</p>
             </div>
           )}
@@ -199,4 +242,4 @@ const TouristProfile = () => {
   );
 };
 
-export default TouristProfile;
+export default TouristProfile; 

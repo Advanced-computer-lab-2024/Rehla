@@ -921,3 +921,26 @@ export const deleteTouristActivity = async (touristEmail, activityName) => {
         }
     }
 };
+
+export const uploadProfilePicture = async (email, file) => {
+    const formData = new FormData();
+    formData.append('document', file); // Append the file to the form data
+    formData.append('email', email); // Append the email to the form data
+
+    try {
+        const response = await axios.post(`${API_URL}/uploadProfilePicture`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data', // Set the content type for file upload
+            },
+        });
+        return response.data; // Return the response data from the server
+    } catch (error) {
+        if (error.response && error.response.data) {
+            // Return the error message from backend if available
+            throw new Error(error.response.data.error);
+        } else {
+            console.error('Error creating tourist itinerary:', error);
+            throw error;
+        }
+    }
+};
