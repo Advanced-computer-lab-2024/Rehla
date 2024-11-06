@@ -522,7 +522,7 @@ const processRequestByEmail = async (req, res) => {
 
 const registerTourist = async (req, res) => {
     try {
-        const { Username, Email, Password, Mobile_Number, Nationality, DOB, Job_Student } = req.body;
+        const { Username, Email, Password, Mobile_Number, Nationality, DOB, Job_Student, Profile_Pic } = req.body;
 
         // Ensure all required fields are provided
         if (!Username || !Email || !Password || !Mobile_Number || !Nationality || !DOB || !Job_Student) {
@@ -547,7 +547,8 @@ const registerTourist = async (req, res) => {
             Type: 'Tourist', // Default type is Tourist
             Wallet: 0, // Initial wallet balance
             Points: 0,
-            Badge: 'Level 1'
+            Badge: 'Level 1',
+            Profile_Pic
         });
 
         // Save the tourist to the database
@@ -1201,7 +1202,7 @@ const getTouristProfile = async (req, res) => {
 const updateTouristProfile= async (req, res) => {
   try {
       // Extract the email and fields to update from the request body
-      const { Email, Password, Mobile_Number, Nationality, Job_Student, Type, Wallet } = req.body;
+      const { Email, Password, Mobile_Number, Nationality, Job_Student, Type, Wallet, Profile_Pic } = req.body;
 
       if (!Email) {
           return res.status(400).json({ message: 'Email is required' });
@@ -1221,6 +1222,7 @@ const updateTouristProfile= async (req, res) => {
       if (Job_Student) tourist.Job_Student = Job_Student;
       if (Type) tourist.Type = Type;
       if (Wallet) tourist.Wallet = Wallet;
+      if (Profile_Pic) tourist.Profile_Pic = Profile_Pic;
 
 
       // Save the updated profile
