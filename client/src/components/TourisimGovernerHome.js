@@ -561,7 +561,7 @@ const TourisimGovernerHome = () => {
                                 placeholder="Description"
                                 value={museumUpdateData?.description || selectedMuseum?.description || ''}
                                 onChange={(e) =>
-                                    setMuseumUpdateData({ ...museumUpdateData, description: e.target.value })
+                                    setMuseumUpdateData({ ...selectedMuseum, description: e.target.value })
                                 }
                                 className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
@@ -570,7 +570,7 @@ const TourisimGovernerHome = () => {
                                 placeholder="Pictures URL"
                                 value={museumUpdateData?.pictures || selectedMuseum?.pictures || ''}
                                 onChange={(e) =>
-                                    setMuseumUpdateData({ ...museumUpdateData, pictures: e.target.value })
+                                    setMuseumUpdateData({ ...selectedMuseum, pictures: e.target.value })
                                 }
                                 className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
@@ -579,7 +579,7 @@ const TourisimGovernerHome = () => {
                                 placeholder="Location"
                                 value={museumUpdateData?.location || selectedMuseum?.location || ''}
                                 onChange={(e) =>
-                                    setMuseumUpdateData({ ...museumUpdateData, location: e.target.value })
+                                    setMuseumUpdateData({ ...selectedMuseum, location: e.target.value })
                                 }
                                 className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
@@ -588,7 +588,7 @@ const TourisimGovernerHome = () => {
                                 placeholder="Country"
                                 value={museumUpdateData?.Country || selectedMuseum?.Country || ''}
                                 onChange={(e) =>
-                                    setMuseumUpdateData({ ...museumUpdateData, Country: e.target.value })
+                                    setMuseumUpdateData({ ...selectedMuseum, Country: e.target.value })
                                 }
                                 className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
@@ -597,7 +597,7 @@ const TourisimGovernerHome = () => {
                                 placeholder="Opening Hours"
                                 value={museumUpdateData?.Opening_Hours || selectedMuseum?.Opening_Hours || ''}
                                 onChange={(e) =>
-                                    setMuseumUpdateData({ ...museumUpdateData, Opening_Hours: e.target.value })
+                                    setMuseumUpdateData({ ...selectedMuseum, Opening_Hours: e.target.value })
                                 }
                                 className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
@@ -606,7 +606,7 @@ const TourisimGovernerHome = () => {
                                 placeholder="Standard Ticket Price"
                                 value={museumUpdateData?.S_Tickets_Prices || selectedMuseum?.S_Tickets_Prices || ''}
                                 onChange={(e) =>
-                                    setMuseumUpdateData({ ...museumUpdateData, S_Tickets_Prices: e.target.value })
+                                    setMuseumUpdateData({ ...selectedMuseum, S_Tickets_Prices: e.target.value })
                                 }
                                 className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
@@ -615,7 +615,7 @@ const TourisimGovernerHome = () => {
                                 placeholder="Family Ticket Price"
                                 value={museumUpdateData?.F_Tickets_Prices || selectedMuseum?.F_Tickets_Prices || ''}
                                 onChange={(e) =>
-                                    setMuseumUpdateData({ ...museumUpdateData, F_Tickets_Prices: e.target.value })
+                                    setMuseumUpdateData({ ...selectedMuseum, F_Tickets_Prices: e.target.value })
                                 }
                                 className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
@@ -624,7 +624,7 @@ const TourisimGovernerHome = () => {
                                 placeholder="New Ticket Price"
                                 value={museumUpdateData?.N_Tickets_Prices || selectedMuseum?.N_Tickets_Prices || ''}
                                 onChange={(e) =>
-                                    setMuseumUpdateData({ ...museumUpdateData, N_Tickets_Prices: e.target.value })
+                                    setMuseumUpdateData({ ...selectedMuseum, N_Tickets_Prices: e.target.value })
                                 }
                                 className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
@@ -633,7 +633,7 @@ const TourisimGovernerHome = () => {
                                 placeholder="Tag"
                                 value={museumUpdateData?.Tag || selectedMuseum?.Tag || ''}
                                 onChange={(e) =>
-                                    setMuseumUpdateData({ ...museumUpdateData, Tag: e.target.value })
+                                    setMuseumUpdateData({ ...selectedMuseum, Tag: e.target.value })
                                 }
                                 className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
@@ -643,7 +643,7 @@ const TourisimGovernerHome = () => {
                                 placeholder="Created By"
                                 value={selectedMuseum?.Created_By || ''}
                                 onChange={(e) =>
-                                    setMuseumUpdateData({ ...museumUpdateData, Created_By: e.target.value })
+                                    setMuseumUpdateData({ ...selectedMuseum, Created_By: e.target.value })
                                 }
                                 className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
