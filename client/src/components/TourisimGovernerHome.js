@@ -1,5 +1,5 @@
 // TourisimGovernerHome.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../css/Home.css';
 import logo from '../images/logo.png';
@@ -11,10 +11,52 @@ import {
     updateMuseum,
     updateHistoricalPlace,
     deleteMuseum,
-    deleteHistoricalPlace
+    deleteHistoricalPlace,
+    getAllCreatedByEmail
 } from '../services/api'; // Adjust the import path based on your project structure
 
 const TourisimGovernerHome = () => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedMuseum, setSelectedMuseum] = useState(null);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+    const [isPlaceModalOpen, setIsPlaceModalOpen] = useState(false);
+
+
+    const [isPlaceEditModalOpen, setIsPlaceEditModalOpen] = useState(false);
+
+
+
+    const [selectedHistoricalPlace, setSelectedHistoricalPlace] = useState(null);
+
+
+    const handleMuseumClick = (museum) => {
+        setSelectedMuseum(museum);
+        setIsEditModalOpen(true); // Open the modal
+    };
+
+    // Function to toggle the modal's visibility
+    const toggleModal = () => setIsModalOpen(!isModalOpen);
+    const toggleEditModal = (museum) =>{
+        setSelectedMuseum(museum);
+        setDeleteMuseumName(museum.Name); // Set the name of the selected museum
+        setIsEditModalOpen(!isEditModalOpen);
+    } 
+
+    const togglePlaceModal = () => setIsPlaceModalOpen(!isPlaceModalOpen);
+
+     
+
+    const handleHistoricalPlaceClick = (historicalPlace) => {
+        setSelectedHistoricalPlace(historicalPlace);
+        setIsPlaceEditModalOpen(true);
+    };
+
+    const togglePlaceEditModal = (HistoricalPlace) =>{
+       
+        setIsPlaceEditModalOpen(!isPlaceEditModalOpen);
+    } 
+
     // State for Museum data
     const [museumData, setMuseumData] = useState({
         Name: '',
@@ -71,6 +113,37 @@ const TourisimGovernerHome = () => {
     // State for delete data
     const [deleteMuseumName, setDeleteMuseumName] = useState('');
     const [deleteHistoricalPlaceName, setDeleteHistoricalPlaceName] = useState('');
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    const [data, setData] = useState({
+        activities: [],
+        historicalPlaces: [],
+        museums: [],
+        itineraries: [],
+    });
+
+    useEffect(() => {
+        const email = localStorage.getItem('email'); // Get email from local storage
+        if (email) {
+            fetchPlaces(email);
+        } else {
+            setError(new Error('No email found in local storage'));
+            setLoading(false);
+        }
+    }, []);
+
+    const fetchPlaces = async (email) => {
+        setLoading(true); // Set loading state
+        try {
+            const result = await getAllCreatedByEmail(email); // Fetch data based on email
+            setData(result.data); // Update state with fetched data
+        } catch (err) {
+            setError(err); // Set error state if there's an issue
+        } finally {
+            setLoading(false); // Reset loading state
+        }
+    };
 
     // Create Museum
     const handleCreateMuseum = async (e) => {
@@ -126,6 +199,7 @@ const TourisimGovernerHome = () => {
         try {
             const response = await updateMuseum(museumUpdateData);
             setMuseumResponse({ message: 'Museum updated successfully!', data: response.data });
+            alert('Museum updated successfully!');
         } catch (error) {
             setMuseumResponse({
                 error: error.response?.data?.message || 'An error occurred while updating the museum'
@@ -187,29 +261,105 @@ const TourisimGovernerHome = () => {
             <br></br>
 
             <h1 className="text-3xl font-bold mb-8 text-center">Tourism Governor Home</h1>
-
-            {/* Museum Form */}
-            <section className="max-w-md mx-auto mb-8 p-4 bg-gray-100 rounded-lg shadow-lg">
-                <h2 className="text-2xl font-semibold mb-4">Create Museum</h2>
-                <form onSubmit={handleCreateMuseum} className="space-y-4">
-                    {Object.keys(museumData).map((key) => (
-                        <input
-                            key={key}
-                            placeholder={key.replace(/_/g, ' ')}
-                            value={museumData[key]}
-                            onChange={(e) => setMuseumData({ ...museumData, [key]: e.target.value })}
-                            required
-                            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
+            <section>
+                <h2 className="text-2xl font-semibold text-gray-800 mb-4">Historical Places</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 bg-white rounded-lg shadow-lg p-4">
+                    {data.historicalPlaces.map((place) => (
+                        <div
+                            key={place._id}
+                            className="bg-blue-50 rounded-lg shadow-md overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-lg"
+                            onClick={() => handleHistoricalPlaceClick(place)}
+                        >
+                            <img
+                                src={place.Pictures}
+                                alt={place.Name}
+                                className="w-full h-40 object-cover"
+                            />
+                            <div className="p-4">
+                                <h3 className="text-lg font-semibold text-gray-700">{place.Name}</h3>
+                            </div>
+                        </div>
                     ))}
-                    <button
-                        type="submit"
-                        className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-200"
+                    {/* Add New Museum Button */}
+                    <div
+                        onClick={togglePlaceModal}
+                        className="flex items-center justify-center p-4 bg-gray-200 rounded-md shadow-sm hover:bg-gray-300 cursor-pointer"
                     >
-                        Create Museum
-                    </button>
-                </form>
+                        <span className="text-3xl font-bold text-gray-500">+</span>
+                    </div>
+                </div>
             </section>
+
+
+
+
+            <section>
+                <h2 className="text-2xl font-semibold text-gray-800 mb-4">Museums</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 bg-white rounded-lg shadow-lg p-4">
+                    {data.museums.map((museum) => (
+                        <div
+                            key={museum._id}
+                            className="bg-blue-50 rounded-lg shadow-md overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-lg cursor-pointer"
+                            onClick={() => handleMuseumClick(museum)} // Add click handler
+                        >
+                            <img
+                                src={museum.pictures}
+                                alt={museum.Name}
+                                className="w-full h-40 object-cover"
+                            />
+                            <div className="p-4">
+                                <h3 className="text-lg font-semibold text-gray-700">{museum.Name}</h3>
+                            </div>
+                        </div>
+                    ))}
+
+                    {/* Add New Museum Button */}
+                    <div
+                        onClick={toggleModal}
+                        className="flex items-center justify-center p-4 bg-gray-200 rounded-md shadow-sm hover:bg-gray-300 cursor-pointer"
+                    >
+                        <span className="text-3xl font-bold text-gray-500">+</span>
+                    </div>
+                </div>
+            </section>
+
+
+
+
+           {/* Modal museums */}
+           {isModalOpen && (
+                <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white p-4 rounded-lg shadow-lg w-full max-w-md max-h-[500px] overflow-auto">
+                        <h2 className="text-2xl font-semibold mb-4">Create Museum</h2>
+                        <form onSubmit={handleCreateMuseum} className="space-y-4">
+                            {Object.keys(museumData).map((key) => (
+                                <input
+                                    key={key}
+                                    placeholder={key.replace(/_/g, ' ')}
+                                    value={museumData[key]}
+                                    onChange={(e) =>
+                                        setMuseumData({ ...museumData, [key]: e.target.value })
+                                    }
+                                    required
+                                    className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                />
+                            ))}
+                            <button
+                                type="submit"
+                                className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-200"
+                            >
+                                Create Museum
+                            </button>
+                        </form>
+                        <button
+                            onClick={toggleModal}
+                            className="mt-4 text-red-500 hover:underline"
+                        >
+                            Close
+                        </button>
+                    </div>
+                </div>
+            )}
 
             <section className="max-w-md mx-auto mb-8 p-4 bg-gray-100 rounded-lg shadow-lg">
                 <h2 className="text-2xl font-semibold mb-4">Read Museum</h2>
@@ -230,145 +380,309 @@ const TourisimGovernerHome = () => {
                     </button>
                 </form>
             </section>
-
-            <section className="max-w-md mx-auto mb-8 p-4 bg-gray-100 rounded-lg shadow-lg">
-                <h2 className="text-2xl font-semibold mb-4">Update Museum</h2>
-                <form onSubmit={handleUpdateMuseum} className="space-y-4">
-                    {/* Name (Required) */}
-                    <input
-                        type="text"
-                        placeholder="Museum Name"
-                        value={museumUpdateData.Name}
-                        onChange={(e) =>
-                            setMuseumUpdateData({ ...museumUpdateData, Name: e.target.value })
-                        }
-                        required
-                        className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-
-                    {/* Description */}
-                    <input
-                        type="text"
-                        placeholder="Description"
-                        value={museumUpdateData.description}
-                        onChange={(e) =>
-                            setMuseumUpdateData({ ...museumUpdateData, description: e.target.value })
-                        }
-                        className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-
-                    {/* Pictures */}
-                    <input
-                        type="text"
-                        placeholder="Pictures URL"
-                        value={museumUpdateData.pictures}
-                        onChange={(e) =>
-                            setMuseumUpdateData({ ...museumUpdateData, pictures: e.target.value })
-                        }
-                        className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-
-                    {/* Location */}
-                    <input
-                        type="text"
-                        placeholder="Location"
-                        value={museumUpdateData.location}
-                        onChange={(e) =>
-                            setMuseumUpdateData({ ...museumUpdateData, location: e.target.value })
-                        }
-                        className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-
-                    {/* Country */}
-                    <input
-                        type="text"
-                        placeholder="Country"
-                        value={museumUpdateData.Country}
-                        onChange={(e) =>
-                            setMuseumUpdateData({ ...museumUpdateData, Country: e.target.value })
-                        }
-                        className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-
-                    {/* Opening Hours */}
-                    <input
-                        type="text"
-                        placeholder="Opening Hours"
-                        value={museumUpdateData.Opening_Hours}
-                        onChange={(e) =>
-                            setMuseumUpdateData({ ...museumUpdateData, Opening_Hours: e.target.value })
-                        }
-                        className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-
-                    {/* Tickets Prices */}
-                    <input
-                        type="number"
-                        placeholder="Student Ticket Price"
-                        value={museumUpdateData.S_Tickets_Prices}
-                        onChange={(e) =>
-                            setMuseumUpdateData({ ...museumUpdateData, S_Tickets_Prices: e.target.value })
-                        }
-                        className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-
-                    <input
-                        type="number"
-                        placeholder="Foreigner Ticket Price"
-                        value={museumUpdateData.F_Tickets_Prices}
-                        onChange={(e) =>
-                            setMuseumUpdateData({ ...museumUpdateData, F_Tickets_Prices: e.target.value })
-                        }
-                        className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-
-                    <input
-                        type="number"
-                        placeholder="National Ticket Price"
-                        value={museumUpdateData.N_Tickets_Prices}
-                        onChange={(e) =>
-                            setMuseumUpdateData({ ...museumUpdateData, N_Tickets_Prices: e.target.value })
-                        }
-                        className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-
-                    {/* Tag */}
-                    <input
-                        type="text"
-                        placeholder="Tag"
-                        value={museumUpdateData.Tag}
-                        onChange={(e) =>
-                            setMuseumUpdateData({ ...museumUpdateData, Tag: e.target.value })
-                        }
-                        className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-
-                    {/* Created By */}
-                    <input
-                        type="text"
-                        placeholder="Created By"
-                        value={museumUpdateData.Created_By}
-                        onChange={(e) =>
-                            setMuseumUpdateData({ ...museumUpdateData, Created_By: e.target.value })
-                        }
-                        className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-
-                    <button
-                        type="submit"
-                        className="w-full bg-yellow-500 text-white py-2 rounded hover:bg-yellow-600 transition duration-200"
-                    >
-                        Update Museum
-                    </button>
-                </form>
-
-                {/* Response Message */}
-                {museumResponse && (
-                    <div className={`mt-4 ${museumResponse.error ? 'text-red-600' : 'text-green-600'}`}>
-                        {museumResponse.error || museumResponse.message}
+            {isPlaceModalOpen && (
+                <div className="fixed inset-0 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-lg shadow-lg p-4 max-w-lg w-full h-auto max-h-[500px] overflow-y-auto">
+                    <section className="max-w-md mx-auto mb-8 p-4 bg-gray-100 rounded-lg shadow-lg">
+                        <h2 className="text-2xl font-semibold mb-4">Create Historical Place</h2>
+                        <form onSubmit={handleCreateHistoricalPlace} className="space-y-4">
+                            {Object.keys(placeData).map((key) => (
+                                <input
+                                    key={key}
+                                    placeholder={key.replace(/_/g, ' ')}
+                                    value={placeData[key]}
+                                    onChange={(e) => setPlaceData({ ...placeData, [key]: e.target.value })}
+                                    required
+                                    className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                />
+                            ))}
+                            <button
+                                type="submit"
+                                className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-200"
+                            >
+                                Create Historical Place
+                            </button>
+                            <button
+                                onClick={togglePlaceModal}
+                                className="mt-4 text-red-500 hover:underline"
+                            >
+                                Close
+                            </button>
+                        </form>
+                    </section>
                     </div>
-                )}
-            </section>
+                </div>    
+            )}
+
+            {/* Modal for Updating Historical Place */}
+            {isPlaceEditModalOpen && (
+                <div className="fixed inset-0 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-lg shadow-lg p-4 max-w-lg w-full h-auto max-h-[500px] overflow-y-auto">
+                        <h2 className="text-2xl font-semibold mb-4">Update Historical Place</h2>
+                        <form onSubmit={handleUpdateHistoricalPlace} className="space-y-4">
+                            <input
+                                type="text"
+                                placeholder="Name (required)"
+                                value={selectedHistoricalPlace?.Name || ''}
+                                onChange={(e) =>
+                                    setSelectedHistoricalPlace({ ...selectedHistoricalPlace, Name: e.target.value })
+                                }
+                                required
+                                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                            <input
+                                type="text"
+                                placeholder="Description"
+                                value={placeUpdateData?.Description || selectedHistoricalPlace?.Description || ''}
+                                onChange={(e) =>
+                                    setPlaceUpdateData({ ...selectedHistoricalPlace, Description: e.target.value })
+                                }
+                                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                            <input
+                                type="text"
+                                placeholder="Pictures URL"
+                                value={placeUpdateData?.Pictures || selectedHistoricalPlace?.Pictures || ''}
+                                onChange={(e) =>
+                                    setSelectedHistoricalPlace({ ...selectedHistoricalPlace, Pictures: e.target.value })
+                                }
+                                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                            <input
+                                type="text"
+                                placeholder="Location"
+                                value={placeUpdateData?.Location || selectedHistoricalPlace?.Location || ''}
+                                onChange={(e) =>
+                                    setSelectedHistoricalPlace({ ...selectedHistoricalPlace, Location: e.target.value })
+                                }
+                                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                            <input
+                                type="text"
+                                placeholder="Country"
+                                value={placeUpdateData?.Country || selectedHistoricalPlace?.Country || ''}
+                                onChange={(e) =>
+                                    setSelectedHistoricalPlace({ ...selectedHistoricalPlace, Country: e.target.value })
+                                }
+                                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                            <input
+                                type="text"
+                                placeholder="Opens At"
+                                value={placeUpdateData?.Opens_At || selectedHistoricalPlace?.Opens_At || ''}
+                                onChange={(e) =>
+                                    setSelectedHistoricalPlace({ ...selectedHistoricalPlace, Opens_At: e.target.value })
+                                }
+                                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                            <input
+                                type="text"
+                                placeholder="Closes At"
+                                value={placeUpdateData?.Closes_At || selectedHistoricalPlace?.Closes_At || ''}
+                                onChange={(e) =>
+                                    setSelectedHistoricalPlace({ ...selectedHistoricalPlace, Closes_At: e.target.value })
+                                }
+                                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                            <input
+                                type="number"
+                                placeholder="Standard Ticket Price"
+                                value={placeUpdateData?.S_Ticket_Prices || selectedHistoricalPlace?.S_Ticket_Prices || ''}
+                                onChange={(e) =>
+                                    setSelectedHistoricalPlace({ ...selectedHistoricalPlace, S_Ticket_Prices: e.target.value })
+                                }
+                                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                            <input
+                                type="number"
+                                placeholder="Family Ticket Price"
+                                value={placeUpdateData?.F_Ticket_Prices || selectedHistoricalPlace?.F_Ticket_Prices || ''}
+                                onChange={(e) =>
+                                    setSelectedHistoricalPlace({ ...selectedHistoricalPlace, F_Ticket_Prices: e.target.value })
+                                }
+                                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                            <input
+                                type="number"
+                                placeholder="New Ticket Price"
+                                value={placeUpdateData?.N_Ticket_Prices || selectedHistoricalPlace?.N_Ticket_Prices || ''}
+                                onChange={(e) =>
+                                    setSelectedHistoricalPlace({ ...selectedHistoricalPlace, N_Ticket_Prices: e.target.value })
+                                }
+                                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                            <input
+                                type="text"
+                                placeholder="Created By"
+                                value={selectedHistoricalPlace?.Created_By || ''}
+                                onChange={(e) =>
+                                    setSelectedHistoricalPlace({ ...selectedHistoricalPlace, Created_By: e.target.value })
+                                }
+                                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+
+                            <button
+                                type="submit"
+                                className="w-full bg-yellow-500 text-white py-2 rounded hover:bg-yellow-600 transition duration-200"
+                            >
+                                Update Historical Place
+                            </button>
+                            <button
+                                type="button"
+                                onClick={togglePlaceEditModal}
+                                className="w-full bg-red-500 text-white py-2 rounded hover:bg-red-600 transition duration-200"
+                            >
+                                Close
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Modal for Updating Museum */}
+            {isEditModalOpen && (
+                <div className="fixed inset-0 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-lg shadow-lg p-4 max-w-lg w-full h-auto max-h-[500px] overflow-y-auto">
+                        <h2 className="text-2xl font-semibold mb-4">Update Museum</h2>
+                        <form onSubmit={handleUpdateMuseum} className="space-y-4">
+                            <input
+                                type="text"
+                                placeholder="Museum Name (required)"
+                                value={selectedMuseum?.Name || ''}
+                                onChange={(e) =>
+                                    setSelectedMuseum({ ...selectedMuseum, Name: e.target.value })
+                                }
+                                required
+                                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                            <input
+                                type="text"
+                                placeholder="Description"
+                                value={museumUpdateData?.description || selectedMuseum?.description || ''}
+                                onChange={(e) =>
+                                    setMuseumUpdateData({ ...museumUpdateData, description: e.target.value })
+                                }
+                                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                            <input
+                                type="text"
+                                placeholder="Pictures URL"
+                                value={museumUpdateData?.pictures || selectedMuseum?.pictures || ''}
+                                onChange={(e) =>
+                                    setMuseumUpdateData({ ...museumUpdateData, pictures: e.target.value })
+                                }
+                                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                            <input
+                                type="text"
+                                placeholder="Location"
+                                value={museumUpdateData?.location || selectedMuseum?.location || ''}
+                                onChange={(e) =>
+                                    setMuseumUpdateData({ ...museumUpdateData, location: e.target.value })
+                                }
+                                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                            <input
+                                type="text"
+                                placeholder="Country"
+                                value={museumUpdateData?.Country || selectedMuseum?.Country || ''}
+                                onChange={(e) =>
+                                    setMuseumUpdateData({ ...museumUpdateData, Country: e.target.value })
+                                }
+                                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                            <input
+                                type="text"
+                                placeholder="Opening Hours"
+                                value={museumUpdateData?.Opening_Hours || selectedMuseum?.Opening_Hours || ''}
+                                onChange={(e) =>
+                                    setMuseumUpdateData({ ...museumUpdateData, Opening_Hours: e.target.value })
+                                }
+                                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                            <input
+                                type="number"
+                                placeholder="Standard Ticket Price"
+                                value={museumUpdateData?.S_Tickets_Prices || selectedMuseum?.S_Tickets_Prices || ''}
+                                onChange={(e) =>
+                                    setMuseumUpdateData({ ...museumUpdateData, S_Tickets_Prices: e.target.value })
+                                }
+                                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                            <input
+                                type="number"
+                                placeholder="Family Ticket Price"
+                                value={museumUpdateData?.F_Tickets_Prices || selectedMuseum?.F_Tickets_Prices || ''}
+                                onChange={(e) =>
+                                    setMuseumUpdateData({ ...museumUpdateData, F_Tickets_Prices: e.target.value })
+                                }
+                                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                            <input
+                                type="number"
+                                placeholder="New Ticket Price"
+                                value={museumUpdateData?.N_Tickets_Prices || selectedMuseum?.N_Tickets_Prices || ''}
+                                onChange={(e) =>
+                                    setMuseumUpdateData({ ...museumUpdateData, N_Tickets_Prices: e.target.value })
+                                }
+                                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                            <input
+                                type="text"
+                                placeholder="Tag"
+                                value={museumUpdateData?.Tag || selectedMuseum?.Tag || ''}
+                                onChange={(e) =>
+                                    setMuseumUpdateData({ ...museumUpdateData, Tag: e.target.value })
+                                }
+                                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                            {/* Add Created_By field if necessary */}
+                            <input
+                                type="text"
+                                placeholder="Created By"
+                                value={selectedMuseum?.Created_By || ''}
+                                onChange={(e) =>
+                                    setMuseumUpdateData({ ...museumUpdateData, Created_By: e.target.value })
+                                }
+                                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+
+                            <button
+                                type="submit"
+                                className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-200"
+                            >
+                                Update Museum
+                            </button>
+                            {/* Delete Museum Section */}
+                            <h2 className="text-2xl font-semibold mb-4">Delete Museum</h2>
+                                <form onSubmit={handleDeleteMuseum} className="space-y-4">
+                                    <input
+                                        type="text"
+                                        placeholder="Enter Museum Name to Delete"
+                                        value={deleteMuseumName}
+                                        onChange={(e) => setDeleteMuseumName(e.target.value)}
+                                        required
+                                        className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    />
+                                    <button
+                                        type="submit"
+                                        className="w-full bg-red-500 text-white py-2 rounded hover:bg-red-600 transition duration-200"
+                                    >
+                                        Delete Museum
+                                    </button>
+                                </form>
+                            <button
+                                type="button"
+                                onClick={toggleEditModal}
+                                className="w-full bg-red-500 text-white py-2 rounded hover:bg-red-600 transition duration-200"
+                            >
+                                Close
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            )}
+
 
 
             <section className="max-w-md mx-auto mb-8 p-4 bg-gray-100 rounded-lg shadow-lg">
