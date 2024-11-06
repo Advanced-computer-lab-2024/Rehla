@@ -91,9 +91,11 @@ const TouristProfile = () => {
         <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-3xl">
           <div className="flex flex-col items-center mb-8">
             
-         
                 {formData.Profile_Pic ? (
-                    <img src={formData.Profile_Pic} alt={`${formData.Name}'s profile`} />
+                   
+
+                    <img src={formData.Profile_Pic} alt={`${formData.Name}'s profile`} className="mt-2 w-32 h-32 rounded-full object-cover" />
+                   
                 ) :
               (<div className="w-32 h-32 rounded-full bg-brandBlue text-white text-center flex items-center justify-center mb-4">
                 <span className="text-2xl font-bold">{formData.Username.charAt(0)}</span>
@@ -198,18 +200,18 @@ const TouristProfile = () => {
 
                 <button
                   type="button"
-                  onClick={() => window.location.reload()}
-                  className="w-full bg-brandBlue text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300 mt-2"
-                >
-                  Cancel
-                </button>
-
-                <button
-                  type="button"
                   onClick={handleUploadProfilePicture}
                   className="w-full bg-brandBlue text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300 mt-2"
                 >
                   Upload Profile Picture
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => window.location.reload()}
+                  className="w-full bg-brandBlue text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300 mt-2"
+                >
+                  Cancel
                 </button>
 
                 <button
