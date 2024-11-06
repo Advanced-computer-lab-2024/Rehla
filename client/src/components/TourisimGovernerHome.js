@@ -213,6 +213,7 @@ const TourisimGovernerHome = () => {
         try {
             const response = await updateHistoricalPlace(placeUpdateData);
             setPlaceResponse(response.data);
+            alert('Historical place updated successfully!');
         } catch (error) {
             console.error(error);
             setPlaceResponse({ error: error.message });
@@ -280,7 +281,7 @@ const TourisimGovernerHome = () => {
                             </div>
                         </div>
                     ))}
-                    {/* Add New Museum Button */}
+                    {/* Add New Place Button */}
                     <div
                         onClick={togglePlaceModal}
                         className="flex items-center justify-center p-4 bg-gray-200 rounded-md shadow-sm hover:bg-gray-300 cursor-pointer"
@@ -381,7 +382,7 @@ const TourisimGovernerHome = () => {
                 </form>
             </section>
             {isPlaceModalOpen && (
-                <div className="fixed inset-0 flex items-center justify-center z-50">
+                <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
                     <div className="bg-white rounded-lg shadow-lg p-4 max-w-lg w-full h-auto max-h-[500px] overflow-y-auto">
                     <section className="max-w-md mx-auto mb-8 p-4 bg-gray-100 rounded-lg shadow-lg">
                         <h2 className="text-2xl font-semibold mb-4">Create Historical Place</h2>
@@ -416,7 +417,7 @@ const TourisimGovernerHome = () => {
 
             {/* Modal for Updating Historical Place */}
             {isPlaceEditModalOpen && (
-                <div className="fixed inset-0 flex items-center justify-center z-50">
+                <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
                     <div className="bg-white rounded-lg shadow-lg p-4 max-w-lg w-full h-auto max-h-[500px] overflow-y-auto">
                         <h2 className="text-2xl font-semibold mb-4">Update Historical Place</h2>
                         <form onSubmit={handleUpdateHistoricalPlace} className="space-y-4">
@@ -444,7 +445,7 @@ const TourisimGovernerHome = () => {
                                 placeholder="Pictures URL"
                                 value={placeUpdateData?.Pictures || selectedHistoricalPlace?.Pictures || ''}
                                 onChange={(e) =>
-                                    setSelectedHistoricalPlace({ ...selectedHistoricalPlace, Pictures: e.target.value })
+                                    setPlaceUpdateData({ ...selectedHistoricalPlace, Pictures: e.target.value })
                                 }
                                 className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
@@ -453,7 +454,7 @@ const TourisimGovernerHome = () => {
                                 placeholder="Location"
                                 value={placeUpdateData?.Location || selectedHistoricalPlace?.Location || ''}
                                 onChange={(e) =>
-                                    setSelectedHistoricalPlace({ ...selectedHistoricalPlace, Location: e.target.value })
+                                    setPlaceUpdateData({ ...selectedHistoricalPlace, Location: e.target.value })
                                 }
                                 className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
@@ -462,7 +463,7 @@ const TourisimGovernerHome = () => {
                                 placeholder="Country"
                                 value={placeUpdateData?.Country || selectedHistoricalPlace?.Country || ''}
                                 onChange={(e) =>
-                                    setSelectedHistoricalPlace({ ...selectedHistoricalPlace, Country: e.target.value })
+                                    setPlaceUpdateData({ ...selectedHistoricalPlace, Country: e.target.value })
                                 }
                                 className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
@@ -471,7 +472,7 @@ const TourisimGovernerHome = () => {
                                 placeholder="Opens At"
                                 value={placeUpdateData?.Opens_At || selectedHistoricalPlace?.Opens_At || ''}
                                 onChange={(e) =>
-                                    setSelectedHistoricalPlace({ ...selectedHistoricalPlace, Opens_At: e.target.value })
+                                    setPlaceUpdateData({ ...selectedHistoricalPlace, Opens_At: e.target.value })
                                 }
                                 className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
@@ -480,7 +481,7 @@ const TourisimGovernerHome = () => {
                                 placeholder="Closes At"
                                 value={placeUpdateData?.Closes_At || selectedHistoricalPlace?.Closes_At || ''}
                                 onChange={(e) =>
-                                    setSelectedHistoricalPlace({ ...selectedHistoricalPlace, Closes_At: e.target.value })
+                                    setPlaceUpdateData({ ...selectedHistoricalPlace, Closes_At: e.target.value })
                                 }
                                 className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
@@ -489,7 +490,7 @@ const TourisimGovernerHome = () => {
                                 placeholder="Standard Ticket Price"
                                 value={placeUpdateData?.S_Ticket_Prices || selectedHistoricalPlace?.S_Ticket_Prices || ''}
                                 onChange={(e) =>
-                                    setSelectedHistoricalPlace({ ...selectedHistoricalPlace, S_Ticket_Prices: e.target.value })
+                                    setPlaceUpdateData({ ...selectedHistoricalPlace, S_Ticket_Prices: e.target.value })
                                 }
                                 className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
@@ -498,7 +499,7 @@ const TourisimGovernerHome = () => {
                                 placeholder="Family Ticket Price"
                                 value={placeUpdateData?.F_Ticket_Prices || selectedHistoricalPlace?.F_Ticket_Prices || ''}
                                 onChange={(e) =>
-                                    setSelectedHistoricalPlace({ ...selectedHistoricalPlace, F_Ticket_Prices: e.target.value })
+                                    setPlaceUpdateData({ ...selectedHistoricalPlace, F_Ticket_Prices: e.target.value })
                                 }
                                 className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
@@ -507,7 +508,7 @@ const TourisimGovernerHome = () => {
                                 placeholder="New Ticket Price"
                                 value={placeUpdateData?.N_Ticket_Prices || selectedHistoricalPlace?.N_Ticket_Prices || ''}
                                 onChange={(e) =>
-                                    setSelectedHistoricalPlace({ ...selectedHistoricalPlace, N_Ticket_Prices: e.target.value })
+                                    setPlaceUpdateData({ ...selectedHistoricalPlace, N_Ticket_Prices: e.target.value })
                                 }
                                 className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
@@ -560,7 +561,7 @@ const TourisimGovernerHome = () => {
                                 placeholder="Description"
                                 value={museumUpdateData?.description || selectedMuseum?.description || ''}
                                 onChange={(e) =>
-                                    setMuseumUpdateData({ ...museumUpdateData, description: e.target.value })
+                                    setMuseumUpdateData({ ...selectedMuseum, description: e.target.value })
                                 }
                                 className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
@@ -569,7 +570,7 @@ const TourisimGovernerHome = () => {
                                 placeholder="Pictures URL"
                                 value={museumUpdateData?.pictures || selectedMuseum?.pictures || ''}
                                 onChange={(e) =>
-                                    setMuseumUpdateData({ ...museumUpdateData, pictures: e.target.value })
+                                    setMuseumUpdateData({ ...selectedMuseum, pictures: e.target.value })
                                 }
                                 className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
@@ -578,7 +579,7 @@ const TourisimGovernerHome = () => {
                                 placeholder="Location"
                                 value={museumUpdateData?.location || selectedMuseum?.location || ''}
                                 onChange={(e) =>
-                                    setMuseumUpdateData({ ...museumUpdateData, location: e.target.value })
+                                    setMuseumUpdateData({ ...selectedMuseum, location: e.target.value })
                                 }
                                 className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
@@ -587,7 +588,7 @@ const TourisimGovernerHome = () => {
                                 placeholder="Country"
                                 value={museumUpdateData?.Country || selectedMuseum?.Country || ''}
                                 onChange={(e) =>
-                                    setMuseumUpdateData({ ...museumUpdateData, Country: e.target.value })
+                                    setMuseumUpdateData({ ...selectedMuseum, Country: e.target.value })
                                 }
                                 className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
@@ -596,7 +597,7 @@ const TourisimGovernerHome = () => {
                                 placeholder="Opening Hours"
                                 value={museumUpdateData?.Opening_Hours || selectedMuseum?.Opening_Hours || ''}
                                 onChange={(e) =>
-                                    setMuseumUpdateData({ ...museumUpdateData, Opening_Hours: e.target.value })
+                                    setMuseumUpdateData({ ...selectedMuseum, Opening_Hours: e.target.value })
                                 }
                                 className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
@@ -605,7 +606,7 @@ const TourisimGovernerHome = () => {
                                 placeholder="Standard Ticket Price"
                                 value={museumUpdateData?.S_Tickets_Prices || selectedMuseum?.S_Tickets_Prices || ''}
                                 onChange={(e) =>
-                                    setMuseumUpdateData({ ...museumUpdateData, S_Tickets_Prices: e.target.value })
+                                    setMuseumUpdateData({ ...selectedMuseum, S_Tickets_Prices: e.target.value })
                                 }
                                 className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
@@ -614,7 +615,7 @@ const TourisimGovernerHome = () => {
                                 placeholder="Family Ticket Price"
                                 value={museumUpdateData?.F_Tickets_Prices || selectedMuseum?.F_Tickets_Prices || ''}
                                 onChange={(e) =>
-                                    setMuseumUpdateData({ ...museumUpdateData, F_Tickets_Prices: e.target.value })
+                                    setMuseumUpdateData({ ...selectedMuseum, F_Tickets_Prices: e.target.value })
                                 }
                                 className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
@@ -623,7 +624,7 @@ const TourisimGovernerHome = () => {
                                 placeholder="New Ticket Price"
                                 value={museumUpdateData?.N_Tickets_Prices || selectedMuseum?.N_Tickets_Prices || ''}
                                 onChange={(e) =>
-                                    setMuseumUpdateData({ ...museumUpdateData, N_Tickets_Prices: e.target.value })
+                                    setMuseumUpdateData({ ...selectedMuseum, N_Tickets_Prices: e.target.value })
                                 }
                                 className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
@@ -632,7 +633,7 @@ const TourisimGovernerHome = () => {
                                 placeholder="Tag"
                                 value={museumUpdateData?.Tag || selectedMuseum?.Tag || ''}
                                 onChange={(e) =>
-                                    setMuseumUpdateData({ ...museumUpdateData, Tag: e.target.value })
+                                    setMuseumUpdateData({ ...selectedMuseum, Tag: e.target.value })
                                 }
                                 className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
@@ -642,7 +643,7 @@ const TourisimGovernerHome = () => {
                                 placeholder="Created By"
                                 value={selectedMuseum?.Created_By || ''}
                                 onChange={(e) =>
-                                    setMuseumUpdateData({ ...museumUpdateData, Created_By: e.target.value })
+                                    setMuseumUpdateData({ ...selectedMuseum, Created_By: e.target.value })
                                 }
                                 className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
@@ -653,24 +654,6 @@ const TourisimGovernerHome = () => {
                             >
                                 Update Museum
                             </button>
-                            {/* Delete Museum Section */}
-                            <h2 className="text-2xl font-semibold mb-4">Delete Museum</h2>
-                                <form onSubmit={handleDeleteMuseum} className="space-y-4">
-                                    <input
-                                        type="text"
-                                        placeholder="Enter Museum Name to Delete"
-                                        value={deleteMuseumName}
-                                        onChange={(e) => setDeleteMuseumName(e.target.value)}
-                                        required
-                                        className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    />
-                                    <button
-                                        type="submit"
-                                        className="w-full bg-red-500 text-white py-2 rounded hover:bg-red-600 transition duration-200"
-                                    >
-                                        Delete Museum
-                                    </button>
-                                </form>
                             <button
                                 type="button"
                                 onClick={toggleEditModal}
