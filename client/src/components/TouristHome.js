@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import logo from '../images/logo.png';
 import { searchEventsPlaces, commentOnItinerary, rateItinerary, rateActivity, commentOnEvent , rateTourGuide,commentTourGuide,viewComplaintByEmail,processComplaintByEmail,createTouristItinerary,createTouristActivity,deleteTouristItenrary,deleteTouristActivity} from '../services/api'; // Import the commentOnEvent function
 import Homet2 from '../components/Homet2.js';
+import Home from '../components/Home.js';
+
 
 const TouristHome = () => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -255,6 +257,8 @@ const TouristHome = () => {
                         <Link to="/">Home</Link>
                         <Link to="/products">Products</Link>
                         <Link to="/MyEvents">Events/Places</Link>
+                        <Link to="/">Sign out</Link>
+
                     </ul>
                 </nav>
 
