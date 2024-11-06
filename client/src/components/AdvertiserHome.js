@@ -8,6 +8,7 @@ import {
     updateActivityByAdvertiser,
     getAllCreatedByEmail,
 } from '../services/api';
+import MapComponent from './MapComponent';
 
 const AdvertiserHome = () => {
     const [data, setData] = useState({
@@ -124,6 +125,7 @@ const AdvertiserHome = () => {
             Created_By: localStorage.getItem('email') || '', // Assuming Created_By is the email of the advertiser
             Picture: '',
         });
+        //setLocationData(''); // Reset location data
         setCreateModalOpen(true);
     };
 
@@ -426,14 +428,7 @@ const AdvertiserHome = () => {
                             </label>
                             <label className="block mb-2">
                                 Location:
-                                <input
-                                    type="text"
-                                    name="Location"
-                                    value={newActivityData.Location}
-                                    onChange={handleNewActivityChange}
-                                    className="border rounded w-full px-2 py-1"
-                                    required
-                                />
+                                <MapComponent  onLocationSelect={(location) => setNewActivityData((prevData) => ({ ...prevData, Location: location }))} />
                             </label>
                             <label className="block mb-2">
                                 Time:

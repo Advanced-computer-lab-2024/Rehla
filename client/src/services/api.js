@@ -928,7 +928,7 @@ export const uploadProfilePicture = async (email, file) => {
     formData.append('email', email); // Append the email to the form data
 
     try {
-        const response = await axios.post(`${API_URL}/uploadProfilePicture`, formData, {
+        const response = await axios.post(`${API_URL}/gettouristprofilepic`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data', // Set the content type for file upload
             },
