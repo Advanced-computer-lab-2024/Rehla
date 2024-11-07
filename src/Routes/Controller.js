@@ -40,8 +40,8 @@ const app = express();
 app.use(express.json());
 
 const amadeus = new Amadeus({
-  clientId: process.env.AMADEUS_API_KEY,
-  clientSecret: process.env.AMADEUS_API_SECRET
+  clientId: "qLctFI8fqU7154VBw7z1IUCGWBPa1dCL",
+  clientSecret: "9j75tRpG4ts0dw6f"
 });
 
 // Creating a new Admin user or Tourism Governor

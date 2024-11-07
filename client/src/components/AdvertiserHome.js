@@ -427,7 +427,14 @@ const AdvertiserHome = () => {
                             </label>
                             <label className="block mb-2">
                                 Location:
-                                <MapComponent  onLocationSelect={(location) => setNewActivityData((prevData) => ({ ...prevData, Location: location }))} />
+                                <input
+                                    type="text"
+                                    name="Location"
+                                    value={newActivityData.Location}
+                                    onChange={handleNewActivityChange}
+                                    className="border rounded w-full px-2 py-1"
+                                    required
+                                />
                             </label>
                             <label className="block mb-2">
                                 Time:
