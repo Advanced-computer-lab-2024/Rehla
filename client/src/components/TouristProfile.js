@@ -2,6 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { getTouristProfile, updateTouristProfile, uploadProfilePicture } from '../services/api'; // Import your new upload function
 import { Link } from 'react-router-dom';
 import logo from '../images/logo.png';
+import Level1 from '../images/Level1.jpg';
+import Level2 from '../images/Level2.jpg';
+import Level3 from '../images/Level3.jpg';
+import { Point } from 'leaflet';
+
+const getBadgeImage = (Badge) => {
+  if (Badge === "Level 1") {
+    return Level1;
+  } else if (Badge === "Level 2") {
+    return Level2;
+  } else {
+    return Level3;
+  }
+};
+
 
 const TouristProfile = () => {
   const [tourist, setTourist] = useState(null);
@@ -13,9 +28,13 @@ const TouristProfile = () => {
     Mobile_Number: '',
     Nationality: '',
     Job_Student: '',
+    Points: 0, 
+    Badge: '',
   });
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
+  const badgeImage = getBadgeImage(formData.Badge);
+
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -230,6 +249,12 @@ const TouristProfile = () => {
               <p><strong>Mobile Number:</strong> {tourist.Mobile_Number}</p>
               <p><strong>Nationality:</strong> {tourist.Nationality}</p>
               <p><strong>Job/Student:</strong> {tourist.Job_Student}</p>
+              <p><strong>Points:</strong> {tourist.Points}</p>
+              <p><strong>Badge:</strong> {tourist.Badge}</p>
+              <img src={badgeImage}
+                alt={`${tourist.Username}'s badge`}
+                className="w-32 h-32 rounded-full object-cover"
+              />
             </div>
           )}
         </div>

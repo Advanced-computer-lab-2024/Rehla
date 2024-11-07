@@ -4159,5 +4159,7 @@ module.exports = { getPurchasedProducts,
     activateItinerary,
     getActivitiesinItinerary,
     addActivitiesinItinerary,
-    searchHotel ,searchFlights,getHotelPrice
+    searchHotel ,
+    searchFlights,
+    getHotelPrice
 };
