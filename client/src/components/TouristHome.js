@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../images/logo.png';
-import { searchEventsPlaces, commentOnItinerary, rateItinerary, rateActivity, commentOnEvent , rateTourGuide,commentTourGuide,viewComplaintByEmail,processComplaintByEmail,createTouristItinerary,createTouristActivity,deleteTouristItenrary,deleteTouristActivity} from '../services/api'; // Import the commentOnEvent function
+import { searchEventsPlaces, commentOnItinerary, rateItinerary, rateActivity, commentOnEvent , rateTourGuide,commentTourGuide,viewComplaintByEmail,processComplaintByEmail,createTouristItinerary,createTouristActivity,deleteTouristItenrary,deleteTouristActivity, createComplaint} from '../services/api'; // Import the commentOnEvent function
 import Homet2 from '../components/Homet2.js';
 import Home from '../components/Home.js';
-
 
 const TouristHome = () => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -41,9 +40,23 @@ const TouristHome = () => {
     const [cancelbookingItineraryName, setcancelBookingItineraryName] = useState(''); // State for itinerary name  
     const [cancelbookingActivityName, setcancelBookingActivityName] = useState(''); // State for activity name  
 
-
-
-
+    const [complaintTitle, setComplaintTitle] = useState('');
+    const [complaintBody, setComplaintBody] = useState('');
+    
+    const handleComplaintSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const result = await createComplaint(email, complaintTitle, complaintBody);
+            console.log('Complaint submitted:', result);
+            setComplaintTitle('');
+            setComplaintBody('');
+            alert('Complaint submitted successfully!');
+        } catch (error) {
+            console.error('Error submitting complaint:', error);
+            setError('Failed to submit the complaint. Please try again later.');
+        }
+    };
+    
 
 
 
@@ -514,6 +527,37 @@ const TouristHome = () => {
     </div>
 
     <div className="container mx-auto p-4">
+            <h2 className="text-xl font-semibold mb-4 text-gray-800">Submit a Complaint</h2>
+            <form onSubmit={handleComplaintSubmit}>
+                <div className="mb-4">
+                    <label htmlFor="complaint-title" className="block text-gray-700 font-medium mb-2">Title:</label>
+                    <input
+                        id="complaint-title"
+                        type="text"
+                        value={complaintTitle}
+                        onChange={(e) => setComplaintTitle(e.target.value)}
+                        required
+                        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    />
+                </div>
+                <div className="mb-4">
+                    <label htmlFor="complaint-body" className="block text-gray-700 font-medium mb-2">Body:</label>
+                    <textarea
+                        id="complaint-body"
+                        value={complaintBody}
+                        onChange={(e) => setComplaintBody(e.target.value)}
+                        required
+                        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        rows="4"
+                    ></textarea>
+                </div>
+                <button
+                    type="submit"
+                    className="w-full bg-indigo-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-indigo-500 transition-all duration-300"
+                >
+                    Submit Complaint
+                </button>
+            </form>
             <button
                 type="submit"
                 className="w-full bg-indigo-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-indigo-500 transition-all duration-300"
