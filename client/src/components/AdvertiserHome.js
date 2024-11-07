@@ -8,7 +8,6 @@ import {
     updateActivityByAdvertiser,
     getAllCreatedByEmail,
 } from '../services/api';
-import MapComponent from './MapComponent';
 
 const AdvertiserHome = () => {
     const [data, setData] = useState({
