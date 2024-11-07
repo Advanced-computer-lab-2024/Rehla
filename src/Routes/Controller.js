@@ -33,6 +33,16 @@ const tourist_activities = require('../Models/tourist_activities.js');
 const TouristGuideReview = require('../Models/tour_guide_reviews.js');
 const multer = require('multer');
 const path = require('path');
+require('dotenv').config();
+const express = require('express');
+const Amadeus = require('amadeus');
+const app = express();
+app.use(express.json());
+
+const amadeus = new Amadeus({
+  clientId: process.env.AMADEUS_API_KEY,
+  clientSecret: process.env.AMADEUS_API_SECRET
+});
 
 // Creating a new Admin user or Tourism Governor
 const createUserAdmin = async (req, res) => {
@@ -3888,6 +3898,97 @@ const addActivitiesinItinerary = async (req, res) => {
     }
 };
 
+//apis
+const searchHotel = async (req, res) => {
+    try {
+      const { hotelName, cityCode } = req.body;
+  
+      // Validate required input
+      if (!hotelName || !cityCode) {
+        return res.status(400).json({ error: 'Both hotel name and city code are required' });
+      }
+  
+      // Call Amadeus Hotel Search API by city
+      const response = await amadeus.referenceData.locations.hotels.byCity.get({
+        cityCode, // Use the provided city code dynamically
+      });
+  
+      // Check if hotels are found
+      if (response.data && response.data.length > 0) {
+        // Filter hotels by the provided hotel name (case-insensitive)
+        const filteredHotels = response.data.filter(hotel =>
+          hotel.name.toLowerCase().includes(hotelName.toLowerCase())
+        );
+  
+        // Check if any hotels match the search criteria
+        if (filteredHotels.length > 0) {
+          const hotels = filteredHotels.map(hotel => ({
+            id: hotel.hotelId,
+            name: hotel.name,
+            address: hotel.address,
+            rating: hotel.rating,
+            amenities: hotel.amenities,
+          }));
+  
+          return res.status(200).json({
+            success: true,
+            message: `${hotels.length} hotels found matching "${hotelName}"`,
+            hotels,
+          });
+        } else {
+          return res.status(404).json({
+            success: false,
+            message: `No hotels found matching "${hotelName}" in ${cityCode}`,
+          });
+        }
+      } else {
+        return res.status(404).json({ success: false, message: 'No hotels found in the specified city' });
+      }
+    } catch (error) {
+      console.error('Error fetching hotels:', error);
+      return res.status(500).json({
+        success: false,
+        error: 'An error occurred while searching for hotels. Please try again later.',
+        details: error.message, // Optional: Include error details for debugging
+      });
+    }
+  };
+  
+  const searchFlights = async (req, res) => {
+    try {
+      const { origin, destination, departureDate, returnDate, adults } = req.body;
+  
+      // Ensure required fields are provided
+      if (!origin || !destination || !departureDate || !adults) {
+        return res.status(400).json({ error: 'Origin, destination, departure date, and number of adults are required.' });
+      }
+  
+      // Call the Amadeus Flight Offers Search API
+      const response = await amadeus.shopping.flightOffersSearch.get({
+        originLocationCode: origin,
+        destinationLocationCode: destination,
+        departureDate: departureDate,
+        returnDate: returnDate, // Optional if it’s a one-way trip
+        adults: adults,
+        max: 5 // Limits the number of offers returned for simplicity
+      });
+  
+      // Check if flights are found
+      if (response.data && response.data.length > 0) {
+        res.status(200).json({
+          success: true,
+          flights: response.data
+        });
+      } else {
+        res.status(404).json({ message: 'No flights found' });
+      }
+    } catch (error) {
+      console.error('Error fetching flights:', error);
+      res.status(500).json({ error: error.message });
+    }
+  };
+  
+
 // ----------------- Activity Category CRUD -------------------
 
 module.exports = { getPurchasedProducts,
@@ -4000,5 +4101,6 @@ module.exports = { getPurchasedProducts,
     deactivateItinerary,
     activateItinerary,
     getActivitiesinItinerary,
-    addActivitiesinItinerary    
+    addActivitiesinItinerary,
+    searchHotel ,searchFlights
 };
