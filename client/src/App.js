@@ -29,6 +29,10 @@ import SellerProductList from './components/SellerProductList';
 import CreateTag from './components/CreateTag.js';
 import TourGuideItineraries from './components/TourGuideItineraries.js'
 import MyEvents from './components/MyEvents.js';
+import Flights from './components/Flights.js';
+import Hotels from './components/Hotels.js';
+
+
 
 
 //import ProductList from './components/Seller.js'
@@ -39,6 +43,8 @@ function App() {
         <div>
             <Routes>
                 <Route path="/" element={<Home />} />
+                <Route path="/Flights" element={<Flights />} />
+                <Route path="/Hotels" element={<Hotels/>} />
                 <Route path="/products" element={<ProductList />} />
                 <Route path="/create-user" element={<CreateUser />} />
                 <Route path="/signup" element={<GetTourist/>} />
