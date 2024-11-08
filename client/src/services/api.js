@@ -970,3 +970,21 @@ export const redeemPoints = async (email) => {
     }
 };
 //test//
+
+export const createPreference = async (email, historicAreas, beaches, familyFriendly, shopping, budgetFriendly) => {
+    try {
+        const response = await axios.post(`${API_URL}/createPreference`, {
+            email,
+            historicAreas,
+            beaches,
+            familyFriendly,
+            shopping,
+            budgetFriendly
+        });
+        return response.data; // Return the response data from the server
+    } catch (error) {
+        console.error('Error creating preference:', error);
+        throw error; // Rethrow the error for handling in the calling component
+    }
+};
+

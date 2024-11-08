@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../images/logo.png';
-import { searchEventsPlaces, commentOnItinerary, rateItinerary, rateActivity, commentOnEvent , rateTourGuide,commentTourGuide,viewComplaintByEmail,processComplaintByEmail,createTouristItinerary,createTouristActivity,deleteTouristItenrary,deleteTouristActivity, createComplaint,redeemPoints} from '../services/api'; // Import the commentOnEvent function
+import { searchEventsPlaces, commentOnItinerary, rateItinerary, rateActivity, commentOnEvent , rateTourGuide,commentTourGuide,viewComplaintByEmail,processComplaintByEmail,createTouristItinerary,createTouristActivity,deleteTouristItenrary,deleteTouristActivity, createComplaint,redeemPoints,createPreference } from '../services/api'; // Import the commentOnEvent function
 import Homet2 from '../components/Homet2.js';
 import Home from '../components/Home.js';
 
@@ -43,6 +43,16 @@ const TouristHome = () => {
 
     const [complaintTitle, setComplaintTitle] = useState('');
     const [complaintBody, setComplaintBody] = useState('');
+
+    const [preferenceData, setPreferenceData] = useState({
+        email: '',
+        historicAreas: false,
+        beaches: false,
+        familyFriendly: false,
+        shopping: false,
+        budgetFriendly: false
+    });
+    const [messagee, setMessagee] = useState('');
     
     const handleComplaintSubmit = async (e) => {
         e.preventDefault();
@@ -276,6 +286,36 @@ const TouristHome = () => {
             setMessage(error.message || 'Failed to redeem points.');
         }
     };
+
+    // Handle input changes for the form
+    const handleChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        setPreferenceData((prevData) => ({
+            ...prevData,
+            [name]: type === 'checkbox' ? checked : value,
+        }));
+    };
+
+    // Handle form submission to create preference
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await createPreference(
+                preferenceData.email,
+                preferenceData.historicAreas,
+                preferenceData.beaches,
+                preferenceData.familyFriendly,
+                preferenceData.shopping,
+                preferenceData.budgetFriendly
+            );
+            setMessagee('Preference created successfully');
+            console.log('Created preference:', response);
+        } catch (error) {
+            console.error('Error creating preference:', error);
+            setMessagee('Error creating preference');
+        }
+    };
+
 
     
     return (
@@ -728,7 +768,68 @@ const TouristHome = () => {
             {message && <p className="text-center mt-4 text-sm text-gray-700">{message}</p>}
         </div>
 
-
+        <div>
+            <h2>Create User Preference</h2>
+            <form onSubmit={handleSubmit}>
+                <label>
+                    Email:
+                    <input
+                        type="email"
+                        name="email"
+                        value={preferenceData.email}
+                        onChange={handleChange}
+                        required
+                    />
+                </label>
+                <label>
+                    Historic Areas:
+                    <input
+                        type="checkbox"
+                        name="historicAreas"
+                        checked={preferenceData.historicAreas}
+                        onChange={handleChange}
+                    />
+                </label>
+                <label>
+                    Beaches:
+                    <input
+                        type="checkbox"
+                        name="beaches"
+                        checked={preferenceData.beaches}
+                        onChange={handleChange}
+                    />
+                </label>
+                <label>
+                    Family Friendly:
+                    <input
+                        type="checkbox"
+                        name="familyFriendly"
+                        checked={preferenceData.familyFriendly}
+                        onChange={handleChange}
+                    />
+                </label>
+                <label>
+                    Shopping:
+                    <input
+                        type="checkbox"
+                        name="shopping"
+                        checked={preferenceData.shopping}
+                        onChange={handleChange}
+                    />
+                </label>
+                <label>
+                    Budget Friendly:
+                    <input
+                        type="checkbox"
+                        name="budgetFriendly"
+                        checked={preferenceData.budgetFriendly}
+                        onChange={handleChange}
+                    />
+                </label>
+                <button type="submit">Create Preference</button>
+            </form>
+            {messagee && <p>{messagee}</p>}
+        </div>
 
 
         
@@ -759,7 +860,7 @@ const TouristHome = () => {
                     <span className="block text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2023 <a href="/" className="hover:underline">Rehla™</a>. All Rights Reserved.</span>
                 </div>
             </footer>
-
+            
 
     </div>
 
