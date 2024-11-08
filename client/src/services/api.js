@@ -988,3 +988,17 @@ export const createPreference = async (email, historicAreas, beaches, familyFrie
     }
 };
 
+
+// Function to activate or update the itinerary accessibility
+export const Itineraryactivation = async (Itinerary_Name, Accessibility) => {
+    try {
+        const response = await axios.put(`${API_URL}/Itineraryactivation`, {
+            Itinerary_Name: Itinerary_Name,
+            Accessibility: Accessibility
+        });
+        return response.data; // Return the response data from the server
+    } catch (error) {
+        console.error('Error activating itinerary:', error);
+        throw error; // Rethrow the error for handling in the calling component
+    }
+};

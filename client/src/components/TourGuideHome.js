@@ -6,6 +6,7 @@ import {
     deleteItinerary,
     updateItinerary,
     getAllCreatedByEmail,
+    Itineraryactivation 
 } from '../services/api';
 
 const TourGuideHome = () => {
@@ -35,6 +36,10 @@ const TourGuideHome = () => {
         P_Tag: '',
         Created_By: ''
     });
+    const [itineraryNamee, setItineraryNamee] = useState('');
+    const [accessibilitye, setAccessibilitye] = useState('deactivated'); // Default to 'deactivated'
+    const [messageee, setMessageee] = useState('');
+
 
     useEffect(() => {
         const email = localStorage.getItem('email');
@@ -146,6 +151,31 @@ const TourGuideHome = () => {
             closeCreateModal();
         } catch (error) {
             console.error('Error creating Itinerary:', error);
+        }
+    };
+
+    // Handle input change for itinerary name
+    const handleItineraryNameChange = (e) => {
+        setItineraryNamee(e.target.value);
+    };
+
+    // Handle dropdown change for accessibility
+    const handleAccessibilityChange = (e) => {
+        setAccessibilitye(e.target.value);  // Set to 'activated' or 'deactivated'
+    };
+
+    // Handle form submission to activate or deactivate itinerary
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        // Convert 'activated' / 'deactivated' to boolean
+        const accessibilityValue = accessibilitye === 'activated';
+
+        try {
+            const response = await Itineraryactivation(itineraryNamee, accessibilityValue);
+            setMessageee(response.message);  // Display success message from the API
+        } catch (error) {
+            setMessageee('Error updating itinerary');
         }
     };
 
@@ -648,7 +678,32 @@ const TourGuideHome = () => {
                     </div>
                 </div>
             )}
+<div>
+            <h2>Activate or Deactivate Itinerary Accessibility</h2>
+            <form onSubmit={handleSubmit}>
+                <label>
+                    Itinerary Name:
+                    <input
+                        type="text"
+                        value={itineraryNamee}
+                        onChange={handleItineraryNameChange}
+                        required
+                    />
+                </label>
 
+                <label>
+                    Accessibility:
+                    <select value={accessibilitye} onChange={handleAccessibilityChange} required>
+                        <option value="activated">Activate</option>
+                        <option value="deactivated">Deactivate</option>
+                    </select>
+                </label>
+
+                <button type="submit">{accessibilitye === 'activated' ? 'Deactivate Itinerary' : 'Update Itinerary'}</button>
+            </form>
+
+            {messageee && <p>{messageee}</p>} {/* Display success/error message */}
+        </div>
         </div>
     );
 };
