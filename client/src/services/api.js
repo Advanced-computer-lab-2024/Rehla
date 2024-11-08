@@ -788,6 +788,17 @@ export const replyToComplaint = async (email, reply) => {
     }
 };
 
+// Archive or Unarchive Product
+export const toggleProductArchiveStatus = async (productName) => {
+    try {
+        const response = await axios.put(`${API_URL}/ArchiveProduct/${productName}`);
+        return response.data;
+    } catch (error) {
+        console.error('Failed to toggle product archive status:', error.message);
+        throw error;
+    }
+};
+
 // Function to view all complaints sorted by date
 export const viewAllComplaintsSortedByDate = async () => {
     try {
