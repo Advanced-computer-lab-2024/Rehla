@@ -969,3 +969,4 @@ export const redeemPoints = async (email) => {
         throw errorMessage;
     }
 };
+//test//
