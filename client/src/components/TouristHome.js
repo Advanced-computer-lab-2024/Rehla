@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../images/logo.png';
-import { searchEventsPlaces, commentOnItinerary, rateItinerary, rateActivity, commentOnEvent , rateTourGuide,commentTourGuide,viewComplaintByEmail,processComplaintByEmail,createTouristItinerary,createTouristActivity,deleteTouristItenrary,deleteTouristActivity, createComplaint} from '../services/api'; // Import the commentOnEvent function
+import { searchEventsPlaces, commentOnItinerary, rateItinerary, rateActivity, commentOnEvent , rateTourGuide,commentTourGuide,viewComplaintByEmail,processComplaintByEmail,createTouristItinerary,createTouristActivity,deleteTouristItenrary,deleteTouristActivity, createComplaint,redeemPoints} from '../services/api'; // Import the commentOnEvent function
 import Homet2 from '../components/Homet2.js';
 import Home from '../components/Home.js';
 
@@ -14,6 +14,7 @@ const TouristHome = () => {
     const [itineraryName, setItineraryName] = useState('');
     const [comment, setComment] = useState('');
     const [activityName, setActivityName] = useState('');
+    const [message, setMessage] = useState(''); // Use
 
     // Separate rating states for itinerary and activity
     const [itineraryRating, setItineraryRating] = useState(''); // State for itinerary rating
@@ -260,6 +261,22 @@ const TouristHome = () => {
             alert(error.message);
         }
     };
+
+    const handleRedeemPoints = async () => {
+        try {
+            if (!email) {
+                setMessage('Please enter a valid email.');
+                return;
+            }
+
+            const data = await redeemPoints(email);
+            setMessage(data.message || 'Points redeemed successfully!');
+        } catch (error) {
+            console.error('Error redeeming points:', error);
+            setMessage(error.message || 'Failed to redeem points.');
+        }
+    };
+
     
     return (
         <div>
@@ -683,6 +700,34 @@ const TouristHome = () => {
                 </button>
             </form>
         </div>
+
+        <div className="max-w-md mx-auto p-6 bg-gray-50 rounded-lg shadow-md mt-8">
+            <h2 className="text-xl font-semibold mb-4 text-gray-800">Redeem Points</h2>
+            
+            <div className="mb-4">
+                <label htmlFor="email" className="block text-gray-700 font-medium mb-2">Email:</label>
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="Enter your email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+            </div>
+
+            <button
+                onClick={handleRedeemPoints}
+                className="w-full bg-indigo-500 text-white py-2 px-4 rounded-md hover:bg-indigo-600"
+            >
+                Redeem Points
+            </button>
+
+            {/* Message Display */}
+            {message && <p className="text-center mt-4 text-sm text-gray-700">{message}</p>}
+        </div>
+
 
 
 

@@ -575,28 +575,35 @@ const registerTourist = async (req, res) => {
 
 const redeemPoints = async (req, res) => {
     try {
-      const { Email } = req.body;
-  
-      if (!Email) {
-        return res.status(400).json({ error: 'Email is required.' });
-      }
-  
-      const tourist = await Tourist.findOne({ Email });
-  
-      if (!tourist) {
-        return res.status(400).json({ error: 'Email not found.' });
-      }
-  
-      const pointsToRedeem = tourist.Points;
-      const pointsToWallet = pointsToRedeem / 100;
-  
-      await tourist.updateOne({ $set: { Points: 0 } }); // reset points to 0
-      await tourist.updateOne({ $inc: { Wallet: pointsToWallet } }); // add points to wallet
-  
-      return res.status(201).json({ message: 'Points redeemed successfully' });
+        const { Email } = req.body;
+
+        if (!Email) {
+            return res.status(400).json({ error: 'Email is required.' });
+        }
+
+        const tourist = await Tourist.findOne({ Email });
+
+        if (!tourist) {
+            return res.status(400).json({ error: 'Email not found.' });
+        }
+
+        const pointsToRedeem = tourist.Points;
+
+        // Check if there are no points to redeem
+        if (pointsToRedeem === 0) {
+            return res.status(200).json({ message: 'No points available to redeem.' });
+        }
+
+        const pointsToWallet = pointsToRedeem / 100;
+
+        // Reset points to 0 and add points to wallet
+        await tourist.updateOne({ $set: { Points: 0 } });
+        await tourist.updateOne({ $inc: { Wallet: pointsToWallet } });
+
+        return res.status(201).json({ message: 'Points redeemed successfully' });
     } catch (error) {
-      console.error('Error details:', error);
-      return res.status(500).json({ error: 'Error redeeming points', details: error.message });
+        console.error('Error details:', error);
+        return res.status(500).json({ error: 'Error redeeming points', details: error.message });
     }
 };
 

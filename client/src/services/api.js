@@ -956,3 +956,16 @@ export const createComplaint = async (email, complaintTitle, complaintBody) => {
         throw error; // Rethrow the error for handling in the calling component
     }
 };
+
+export const redeemPoints = async (email) => {
+    try {
+        const response = await axios.put(`${API_URL}/redeemPoints`, {
+            Email: email, // Match backend capitalization
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error redeeming points:", error);
+        const errorMessage = error.response ? error.response.data : { message: "Network error" };
+        throw errorMessage;
+    }
+};
