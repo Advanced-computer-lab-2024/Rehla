@@ -327,7 +327,8 @@ const TouristHome = () => {
                         <Link to="/">Home</Link>
                         <Link to="/products">Products</Link>
                         <Link to="/MyEvents">Events/Places</Link>
-                        <Link to="/">Sign out</Link>
+                        <Link to="/Flights">Flights</Link>
+                        <Link to="/Hotels">Hotels</Link>
 
                     </ul>
                 </nav>

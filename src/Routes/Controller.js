@@ -4051,6 +4051,9 @@ const searchHotel = async (req, res) => {
     }
   };
 
+
+  
+  
   
 
 // ----------------- Activity Category CRUD -------------------
@@ -4168,5 +4171,5 @@ module.exports = { getPurchasedProducts,
     addActivitiesinItinerary,
     searchHotel ,
     searchFlights,
-    getHotelPrice
+    getHotelPrice, bookFlight
 };
