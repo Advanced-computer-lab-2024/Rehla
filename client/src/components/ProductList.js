@@ -61,6 +61,24 @@ const ProductList = () => {
     const [searchResults, setSearchResults] = useState([]);
     const [isSearched, setIsSearched] = useState(false);
 
+    const [currency, setCurrency] = useState('USD');
+    const [conversionRates] = useState({
+        USD: 1,
+        EUR: 0.85,
+        GBP: 0.75,
+        JPY: 110,
+        CAD: 1.25,
+        AUD: 1.35
+    });
+
+    const convertPrice = (price) => {
+        return (price * conversionRates[currency]).toFixed(2);
+    };
+
+    const handleCurrencyChange = (e) => {
+        setCurrency(e.target.value);
+    };
+
     useEffect(() => {
         const fetchProducts = async () => {
             try {
@@ -194,6 +212,14 @@ const ProductList = () => {
                         Sort by Rating
                     </button>
                 </div>
+                <select value={currency} onChange={handleCurrencyChange} className="border rounded p-1 mx-2 bg-white">
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                    <option value="GBP">GBP</option>
+                    <option value="JPY">JPY</option>
+                    <option value="CAD">CAD</option>
+                    <option value="AUD">AUD</option>
+                </select>
             </div>
 
             {/* Conditionally Render Products */}
@@ -210,7 +236,7 @@ const ProductList = () => {
                                         alt={product.Product_Name} 
                                         className="w-full h-48 object-cover rounded-lg mt-4"
                                     />
-                                    <p className="mt-2 text-lg font-semibold">${product.Price}</p>
+                                    <p className="mt-2 text-lg font-semibold">{convertPrice(product.Price)} {currency}</p>
                                     <p className="text-gray-600 mt-2">{product.Description}</p>
         
                                 </div>
@@ -233,7 +259,7 @@ const ProductList = () => {
                                         alt={product.Product_Name} 
                                         className="w-full h-48 object-cover rounded-lg mt-4"
                                     />
-                                    <p className="mt-2 text-lg font-semibold">${product.Price}</p>
+                                    <p className="mt-2 text-lg font-semibold">{convertPrice(product.Price)} {currency}</p>
                                     <p className="text-gray-600 mt-2">{product.Description}</p>
                                 </div>
                             ))}
@@ -255,7 +281,7 @@ const ProductList = () => {
                                         alt={product.Product_Name} 
                                         className="w-full h-48 object-cover rounded-lg mt-4"
                                     />
-                                    <p className="mt-2 text-lg font-semibold">${product.Price}</p>
+                                    <p className="mt-2 text-lg font-semibold">{convertPrice(product.Price)} {currency}</p>
                                     <p className="text-gray-600 mt-2">{product.Description}</p>
                                     <p className="text-yellow-500 font-bold mt-2">Rating: {product.Rating}</p>
                                 </div>
@@ -275,7 +301,7 @@ const ProductList = () => {
                                 alt={product.Product_Name} 
                                 className="w-full h-48 object-cover rounded-lg mt-4"
                             />
-                            <p className="mt-2 text-lg font-semibold">${product.Price}</p>
+                            <p className="mt-2 text-lg font-semibold">{convertPrice(product.Price)} {currency}</p>
                             <p className="text-gray-600 mt-2">{product.Description}</p>
                             <p className="text-yellow-500 font-bold mt-2">Rating: {product.Rating}</p>
                         </div>
