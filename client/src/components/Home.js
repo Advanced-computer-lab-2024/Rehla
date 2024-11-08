@@ -9,6 +9,16 @@ import img3 from '../images/img3.jpg';
 const Home = () => {
     const [data, setData] = useState(null);
     const [error, setError] = useState(null);
+    const [currency, setCurrency] = useState('USD');
+    const [conversionRates] = useState({
+        USD: 1,
+        EUR: 0.85,
+        GBP: 0.75,
+        JPY: 110,
+        CAD: 1.25,
+        AUD: 1.35
+    });
+
     const [sortedActivities, setSortedActivities] = useState(null);
     const [sortedItineraries, setSortedItineraries] = useState(null);
     const [filteredPlacesAndMuseums, setFilteredPlacesAndMuseums] = useState(null);
@@ -48,6 +58,14 @@ const Home = () => {
         };
         fetchData();
     }, []);
+
+    const convertPrice = (price) => {
+        return (price * conversionRates[currency]).toFixed(2);
+    };
+
+    const handleCurrencyChange = (e) => {
+        setCurrency(e.target.value);
+    };
 
     const handleSortActivities = async (sortBy) => {
         try {
@@ -165,6 +183,15 @@ const Home = () => {
                         Sign up
                     </Link>
                 </nav>
+                {/* Currency Dropdown */}
+                <select value={currency} onChange={handleCurrencyChange} className="border rounded p-1 mx-2 bg-white">
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                    <option value="GBP">GBP</option>
+                    <option value="JPY">JPY</option>
+                    <option value="CAD">CAD</option>
+                    <option value="AUD">AUD</option>
+                </select>
             </div>
 
             <div className="p-8 rounded"> {/* Add padding here */}
@@ -271,9 +298,9 @@ const Home = () => {
                             className="w-72 h-72 object-cover rounded duration-300 ease-in-out hover:scale-105"
                         />
                         <div className="text-md font-medium text-center mt-2">{activity.Name}</div>
-                        <div className="text-sm text-gray-700">
-                            <span className="font-semibold">${activity.Price}</span> - Rating: {activity.Rating}
-                        </div>
+                            <div className="text-sm text-gray-700">
+                                <span className="font-semibold">{convertPrice(activity.Price)} {currency}</span> - Rating: {activity.Rating}
+                            </div>
                         </div>
                     ))}
                 </div>
@@ -378,7 +405,7 @@ const Home = () => {
                         />
                         <div className="text-md font-medium text-center mt-2">{itinerary.Itinerary_Name}</div>
                         <div className="text-sm text-gray-700">
-                            <span className="font-semibold">${itinerary.Tour_Price}</span> - Rating: {itinerary.Rating}
+                            <span className="font-semibold">{convertPrice(itinerary.Tour_Price)} {currency}</span> - Rating: {itinerary.Rating}
                         </div>
                         </div>
                     ))}
@@ -465,7 +492,7 @@ const Home = () => {
                                 <br />
                                 <span>Opening Hours: {museum.Opening_Hours}</span>
                                 <br />
-                                <span>Starting Prices: ${museum.S_Tickets_Prices}</span>
+                                <span>Starting Prices: {convertPrice(museum.S_Tickets_Prices)} {currency}</span>
                             </div>
                         </div>
                     ))}
@@ -482,7 +509,7 @@ const Home = () => {
                                 <br />
                                 <span>Opening Hours: {place.Opening_Time} - {place.Closing_Time}</span>
                                 <br />
-                                <span>Ticket Prices: ${place.S_Ticket_Prices}</span>
+                                <span>Ticket Prices: {convertPrice(place.S_Ticket_Prices)} {currency}</span>
                             </div>
                         </div>
                     ))} 
