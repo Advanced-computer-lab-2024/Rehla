@@ -114,7 +114,7 @@ const {createUserAdmin,
   activateItinerary,
   getActivitiesinItinerary,
   addActivitiesinItinerary,
-  searchHotel,searchFlights,getHotelPrice,bookFlight
+  searchHotel,searchFlights,getHotelPrice,acceptTerms,checkTermsAccepted
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -253,12 +253,14 @@ app.post("/getAttendedItineraries",getAttendedItineraries);
 app.post("/getAttendedActivities" ,getAttendedActivities);
 app.get("/getPurchasedProducts" , getPurchasedProducts);
 
-app.put("/acceptTermsTourGuide", acceptTermsTourGuide);
-app.get("/checkTermsAcceptedTourGuide" , checkTermsAcceptedTourGuide);
-app.put("/acceptTermsAdvertiser", acceptTermsAdvertiser);
-app.get("/checkTermsAcceptedAdvertiser" ,checkTermsAcceptedAdvertiser);
-app.put("/acceptTermsSeller", acceptTermsSeller);
-app.get("/checkTermsAcceptedSeller" ,checkTermsAcceptedSeller);
+// app.put("/acceptTermsTourGuide", acceptTermsTourGuide);
+// app.get("/checkTermsAcceptedTourGuide" , checkTermsAcceptedTourGuide);
+// app.put("/acceptTermsAdvertiser", acceptTermsAdvertiser);
+// app.get("/checkTermsAcceptedAdvertiser" ,checkTermsAcceptedAdvertiser);
+// app.put("/acceptTermsSeller", acceptTermsSeller);
+// app.get("/checkTermsAcceptedSeller" ,checkTermsAcceptedSeller);
+app.put("/acceptTerms", acceptTerms);
+app.get("/checkTermsAccepted" , checkTermsAccepted);
 app.put("/deactivateItinerary",deactivateItinerary);
 app.put("/activateItinerary",activateItinerary);
 app.get("/getActivitiesinItinerary",getActivitiesinItinerary);
@@ -266,4 +268,4 @@ app.post("/addActivitiesinItinerary",addActivitiesinItinerary);
 app.post("/searchHotel" ,searchHotel);
 app.post("/searchFlights" , searchFlights);
 app.get("/getHotelPrice" , getHotelPrice);
-app.post("/bookFlight" ,bookFlight);
+// app.post("/bookFlight" ,bookFlight);

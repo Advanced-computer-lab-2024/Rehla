@@ -3674,105 +3674,176 @@ const calculateItineraryRating = async (req, res) => {
     }
 };
 
-const acceptTermsTourGuide = async (req,res) => {
-    try {
-        // First, check if the tour guide exists
-        const {email} = req.body;
-        const tourGuide = await tour_guidem.findOne({ Email: email });
-        if (!tourGuide) {
-            return res.status(404).json({message:'Tour guide not found'});
-        }
-        // If found, update the TermsAccepted field
-        tourGuide.TermsAccepted = true;
-        await tourGuide.save(); // Save the updated tour guide
-        return res.status(200).json({ message: 'Terms accepted successfully', data: tourGuide });
-    } catch (error) {
-        console.error("Error accepting",error.message);
-        res.status(500).json({error:'Error accepting',details: error.message});
-    }
-};
+// const acceptTermsTourGuide = async (req,res) => {
+//     try {
+//         // First, check if the tour guide exists
+//         const {email} = req.body;
+//         const tourGuide = await tour_guidem.findOne({ Email: email });
+//         if (!tourGuide) {
+//             return res.status(404).json({message:'Tour guide not found'});
+//         }
+//         // If found, update the TermsAccepted field
+//         tourGuide.TermsAccepted = true;
+//         await tourGuide.save(); // Save the updated tour guide
+//         return res.status(200).json({ message: 'Terms accepted successfully', data: tourGuide });
+//     } catch (error) {
+//         console.error("Error accepting",error.message);
+//         res.status(500).json({error:'Error accepting',details: error.message});
+//     }
+// };
 
-const checkTermsAcceptedTourGuide = async (req,res) => {
-    try {
-        const {email} = req.body;
-        const tourGuide = await tour_guidem.findOne({ Email: email });
-        if (!tourGuide) {
-            return res.status(404).json({message:'Tour guide not found'});
-        }
+// const checkTermsAcceptedTourGuide = async (req,res) => {
+//     try {
+//         const {email} = req.body;
+//         const tourGuide = await tour_guidem.findOne({ Email: email });
+//         if (!tourGuide) {
+//             return res.status(404).json({message:'Tour guide not found'});
+//         }
         
-        return res.status(200).json({ termsAccepted: tourGuide.TermsAccepted });
-    } catch (error) {
-        console.error("Error checking",error.message);
-        res.status(500).json({error:'Error checking',details: error.message});
-    }
-};
+//         return res.status(200).json({ termsAccepted: tourGuide.TermsAccepted });
+//     } catch (error) {
+//         console.error("Error checking",error.message);
+//         res.status(500).json({error:'Error checking',details: error.message});
+//     }
+// };
 
-const acceptTermsAdvertiser = async (req,res) => {
-    try {
+// const acceptTermsAdvertiser = async (req,res) => {
+//     try {
         
-        const {email} = req.body;
-        const advertiser = await AdvertisersModel.findOne({ Email: email });
-        if (!advertiser) {
-            return res.status(404).json({message:'Advertiser not found'});
-        }
+//         const {email} = req.body;
+//         const advertiser = await AdvertisersModel.findOne({ Email: email });
+//         if (!advertiser) {
+//             return res.status(404).json({message:'Advertiser not found'});
+//         }
         
-        advertiser.TermsAccepted = true;
-        await advertiser.save(); // Save the updated tour guide
-        return res.status(200).json({ message: 'Terms accepted successfully', data: advertiser });;
-    } catch (error) {
-        console.error("Error accepting",error.message);
-        res.status(500).json({error:'Error accepting',details: error.message});
-    }
-};
+//         advertiser.TermsAccepted = true;
+//         await advertiser.save(); // Save the updated tour guide
+//         return res.status(200).json({ message: 'Terms accepted successfully', data: advertiser });;
+//     } catch (error) {
+//         console.error("Error accepting",error.message);
+//         res.status(500).json({error:'Error accepting',details: error.message});
+//     }
+// };
 
-const acceptTermsSeller = async (req,res) => {
-    try {
-        const {email} = req.body;
-        const seller = await Seller.findOne({ Email: email });
+// const acceptTermsSeller = async (req,res) => {
+//     try {
+//         const {email} = req.body;
+//         const seller = await Seller.findOne({ Email: email });
 
-        if (!seller) {
-            return res.status(404).json({message:'Seller not found'});
-        }
+//         if (!seller) {
+//             return res.status(404).json({message:'Seller not found'});
+//         }
 
-        // If found, update the TermsAccepted field
-        seller.TermsAccepted = true;
-        await seller.save(); // Save the updated 
-        return res.status(200).json({ message: 'Terms accepted successfully', data: seller });;
-    } catch (error) {
-        console.error(error);
-        throw error;
-    }
-};
+//         // If found, update the TermsAccepted field
+//         seller.TermsAccepted = true;
+//         await seller.save(); // Save the updated 
+//         return res.status(200).json({ message: 'Terms accepted successfully', data: seller });;
+//     } catch (error) {
+//         console.error(error);
+//         throw error;
+//     }
+// };
 
-const checkTermsAcceptedAdvertiser = async (req,res) => {
-    try {
-        const {email} = req.body;
-        const advertiser = await AdvertisersModel.findOne({ Email: email });
+// const checkTermsAcceptedAdvertiser = async (req,res) => {
+//     try {
+//         const {email} = req.body;
+//         const advertiser = await AdvertisersModel.findOne({ Email: email });
         
-        if (!advertiser) {
-            return res.status(404).json({message:'Advertiser not found'});
+//         if (!advertiser) {
+//             return res.status(404).json({message:'Advertiser not found'});
+//         }
+//         return res.status(200).json({ termsAccepted: advertiser.TermsAccepted });
+//     } catch (error) {
+//         console.error("Error accepting",error.message);
+//         res.status(500).json({error:'Error accepting',details: error.message});
+//     }
+// };
+
+// const checkTermsAcceptedSeller = async (req,res) => {
+//     try {
+//         const {email} = req.body;
+//         const seller = await Seller.findOne({ Email: email });
+        
+//         if (!seller) {
+//             return res.status(404).json({message:'Seller not found'});
+//         }
+//         return res.status(200).json({ termsAccepted: seller.TermsAccepted });
+//     } catch (error) {
+//         console.error(error);
+//         throw error;
+//     }
+// };
+const acceptTerms = async (req, res) => {
+    try {
+        const { email, type } = req.body;
+
+        if (!email || !type) {
+            return res.status(400).json({ message: 'Email and user type are required.' });
         }
-        return res.status(200).json({ termsAccepted: advertiser.TermsAccepted });
+
+        let user;
+        switch (type.toLowerCase()) {
+            case 'tour_guide':
+                user = await tour_guidem.findOne({ Email: email });
+                break;
+            case 'advertiser':
+                user = await AdvertisersModel.findOne({ Email: email });
+                break;
+            case 'seller':
+                user = await Seller.findOne({ Email: email });
+                break;
+            default:
+                return res.status(400).json({ message: 'Invalid user type.' });
+        }
+
+        if (!user) {
+            return res.status(404).json({ message: `${type} not found` });
+        }
+
+        user.TermsAccepted = true;
+        await user.save();
+
+        return res.status(200).json({ message: 'Terms accepted successfully', data: user });
     } catch (error) {
-        console.error("Error accepting",error.message);
-        res.status(500).json({error:'Error accepting',details: error.message});
+        console.error("Error accepting terms:", error.message);
+        res.status(500).json({ error: 'Error accepting terms', details: error.message });
     }
 };
 
-const checkTermsAcceptedSeller = async (req,res) => {
+const checkTermsAccepted = async (req, res) => {
     try {
-        const {email} = req.body;
-        const seller = await Seller.findOne({ Email: email });
-        
-        if (!seller) {
-            return res.status(404).json({message:'Seller not found'});
+        const { email, type } = req.body;
+
+        if (!email || !type) {
+            return res.status(400).json({ message: 'Email and user type are required.' });
         }
-        return res.status(200).json({ termsAccepted: seller.TermsAccepted });
+
+        let user;
+        switch (type.toLowerCase()) {
+            case 'tour_guide':
+                user = await tour_guidem.findOne({ Email: email });
+                break;
+            case 'advertiser':
+                user = await AdvertisersModel.findOne({ Email: email });
+                break;
+            case 'seller':
+                user = await Seller.findOne({ Email: email });
+                break;
+            default:
+                return res.status(400).json({ message: 'Invalid user type.' });
+        }
+
+        if (!user) {
+            return res.status(404).json({ message: `${type} not found` });
+        }
+
+        return res.status(200).json({ termsAccepted: user.TermsAccepted });
     } catch (error) {
-        console.error(error);
-        throw error;
+        console.error("Error checking terms acceptance:", error.message);
+        res.status(500).json({ error: 'Error checking terms acceptance', details: error.message });
     }
 };
+
 
 const deactivateItinerary = async (req, res) => {
     try {
@@ -4159,17 +4230,18 @@ module.exports = { getPurchasedProducts,
     Itineraryactivation,
     getAttendedItineraries,
     getAttendedActivities,
-    acceptTermsTourGuide,
-    checkTermsAcceptedTourGuide,
-    acceptTermsAdvertiser,
-    checkTermsAcceptedAdvertiser,
-    acceptTermsSeller,
-    checkTermsAcceptedSeller,
+    // acceptTermsTourGuide,
+    // checkTermsAcceptedTourGuide,
+    // acceptTermsAdvertiser,
+    // checkTermsAcceptedAdvertiser,
+    // acceptTermsSeller,
+    // checkTermsAcceptedSeller,
     deactivateItinerary,
     activateItinerary,
     getActivitiesinItinerary,
     addActivitiesinItinerary,
     searchHotel ,
     searchFlights,
-    getHotelPrice, bookFlight
+    getHotelPrice, 
+    acceptTerms,checkTermsAccepted
 };
