@@ -114,7 +114,10 @@ const {createUserAdmin,
   activateItinerary,
   getActivitiesinItinerary,
   addActivitiesinItinerary,
-  searchHotel,searchFlights,getHotelPrice,acceptTerms,checkTermsAccepted
+  searchHotel,searchFlights,
+  getHotelPrice,acceptTerms,
+  checkTermsAccepted,
+  viewMyPurchasedProducts,
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -269,3 +272,4 @@ app.post("/searchHotel" ,searchHotel);
 app.post("/searchFlights" , searchFlights);
 app.get("/getHotelPrice" , getHotelPrice);
 // app.post("/bookFlight" ,bookFlight);
+app.post("/viewMyPurchasedProducts", viewMyPurchasedProducts);
