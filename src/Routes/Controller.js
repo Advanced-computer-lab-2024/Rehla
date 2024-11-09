@@ -4094,12 +4094,8 @@ const searchHotel = async (req, res) => {
       });
     }
   };
-  
-
-
-  
-  
-  const searchFlights = async (req, res) => {
+ 
+const searchFlights = async (req, res) => {
     try {
       const { origin, destination, departureDate, returnDate, adults } = req.body;
   
@@ -4131,12 +4127,38 @@ const searchHotel = async (req, res) => {
       console.error('Error fetching flights:', error);
       res.status(500).json({ error: error.message });
     }
-  };
+};
 
+// view my purchased products
+const viewMyPurchasedProducts = async (req, res) => {
+    try {
+        const { Tourist_Email } = req.body;
 
-  
-  
-  
+        // Validate input
+        if (!Tourist_Email) {
+            return res.status(400).json({ error: 'Tourist email is required.' });
+        }
+        // existing tourist
+        const tourist = await Tourist.findOne({ Email: Tourist_Email });
+        if (!tourist) {
+            return res.status(404).json({ error: 'Tourist not found.' });
+        }
+
+        // Find the purchased products
+        const purchasedProducts = await tourist_products.find({ Tourist_Email });
+
+        // Check if purchased products were found
+        if (purchasedProducts.length === 0) {
+            return res.status(404).json({ message: 'No purchased products found for this tourist.' });
+        }
+
+        // Return the purchased products
+        res.status(200).json({ purchasedProducts });
+    } catch (error) {
+        console.error('Error fetching purchased products:', error);
+        res.status(500).json({ error: 'Error fetching purchased products', details: error.message });
+    }
+};
 
 // ----------------- Activity Category CRUD -------------------
 
@@ -4254,5 +4276,7 @@ module.exports = { getPurchasedProducts,
     searchHotel ,
     searchFlights,
     getHotelPrice, 
-    acceptTerms,checkTermsAccepted
+    acceptTerms,
+    checkTermsAccepted,
+    viewMyPurchasedProducts,
 };
