@@ -1,6 +1,5 @@
-
 import React, { useState } from "react";
-import { signIn } from "../services/api";
+import { signIn, acceptTerms } from "../services/api";
 import { useNavigate, Link } from "react-router-dom";
 import logo from '../images/logo.png'; // Assuming logo is in the same path as in the Home component
 
@@ -8,6 +7,8 @@ const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [showModal, setShowModal] = useState(false); // State for showing modal
+  const [termsAccepted, setTermsAccepted] = useState(false); // Checkbox state
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -16,36 +17,55 @@ const SignIn = () => {
 
     try {
       const data = await signIn(email, password);
-      localStorage.setItem('email', email);
 
-      const userType = data.Type.toUpperCase();
+      if (data && data.status === 403) {
+        // If the response is 403, show the modal to accept terms
+        setShowModal(true);
+      } else {
+        localStorage.setItem('email', email);
 
-      switch (userType) {
-        case "TOURIST":
-          navigate("/TouristHome");
-          break;
-        case "ADMIN":
-          navigate("/AdminHome");
-          break;
-        case "SELLER":
-          navigate("/SellerHome");
-          break;
-        case "TOUR_GUIDE":
-        case "TOUR GUIDE":
-          navigate("/TourGuideHome");
-          break;
-        case "ADVERTISER":
-          navigate("/AdvertiserHome");
-          break;
-        case "TOURISIM_GOVERNER":
-        case "TOURISIM GOVERNER":
-          navigate("/TourisimGovernerHome");
-          break;
-        default:
-          setError("Unknown user type");
+        const userType = data.Type.toUpperCase();
+
+        switch (userType) {
+          case "TOURIST":
+            navigate("/TouristHome");
+            break;
+          case "ADMIN":
+            navigate("/AdminHome");
+            break;
+          case "SELLER":
+            navigate("/SellerHome");
+            break;
+          case "TOUR_GUIDE":
+          case "TOUR GUIDE":
+            navigate("/TourGuideHome");
+            break;
+          case "ADVERTISER":
+            navigate("/AdvertiserHome");
+            break;
+          case "TOURISIM_GOVERNER":
+          case "TOURISIM GOVERNER":
+            navigate("/TourisimGovernerHome");
+            break;
+          default:
+            setError("Unknown user type");
+        }
       }
     } catch (err) {
       setError(err.message || "Failed to sign in");
+    }
+  };
+
+  const handleAcceptTerms = async () => {
+    if (termsAccepted) {
+      try {
+        await acceptTerms(email); // Update terms accepted status on the backend
+        setShowModal(false); // Close the modal
+        // You can also proceed to navigate if you want after accepting terms
+        navigate("/TouristHome");
+      } catch (err) {
+        setError("Failed to accept terms");
+      }
     }
   };
 
@@ -53,14 +73,9 @@ const SignIn = () => {
     <div className="min-h-screen flex flex-col">
       {/* Navigation bar */}
       <div className="bg-brandBlue shadow-md w-full mx-auto px-6 py-4 h-20 flex justify-between items-center ">
-        {/* Logo */}
         <img src={logo} alt="Logo" className="w-20" />
-
-        {/* Main Navigation */}
         <nav className="flex space-x-6">
-        <Link to="/" className="text-lg font-medium text-white hover:text-blue-500">
-          Home
-        </Link>
+          <Link to="/" className="text-lg font-medium text-white hover:text-blue-500">Home</Link>
         </nav>
       </div>
 
@@ -102,8 +117,34 @@ const SignIn = () => {
 
       {/* Footer */}
       <footer className="bg-brandBlue text-white py-6 text-center">
-      <p>&copy; {new Date().getFullYear()} Rehla. All rights reserved.</p>
+        <p>&copy; {new Date().getFullYear()} Rehla. All rights reserved.</p>
       </footer>
+
+      {/* Terms Acceptance Modal */}
+      {showModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+            <h3 className="text-xl mb-4">Please Accept Terms and Conditions</h3>
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                checked={termsAccepted}
+                onChange={() => setTermsAccepted(!termsAccepted)}
+              />
+              <span className="ml-2">I accept the terms and conditions</span>
+            </div>
+            <div className="mt-4">
+              <button
+                onClick={handleAcceptTerms}
+                disabled={!termsAccepted}
+                className={`w-full bg-brandBlue text-white py-2 rounded-lg ${!termsAccepted ? "opacity-50" : "opacity-100"}`}
+              >
+                Accept Terms
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

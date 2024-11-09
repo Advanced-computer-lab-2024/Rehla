@@ -188,16 +188,18 @@ export const getProductsSortedByRating = async () => {
 
 export const signIn = async (email, password) => {
     try {
-        const response = await axios.post(`${API_URL}/signIn`, {
-            Email: email,
-            Password: password
-        });
-        return response.data; // Returns response from backend
+      const response = await axios.post(`${API_URL}/signIn`, { Email: email, Password: password });
+      return response.data;
     } catch (error) {
-        console.error("Error signing in:", error);
-        throw error.response ? error.response.data : { message: "Network error" };
+      if (error.response && error.response.status === 403) {
+        // Return 403 status if terms are not accepted
+        return { status: 403, message: "You must accept the terms before signing in." };
+      } else {
+        throw error;
+      }
     }
-};
+  };
+  
 
 export const searchEventsPlaces = async (searchTerm) => {
     try {
@@ -1013,3 +1015,19 @@ export const Itineraryactivation = async (Itinerary_Name, Accessibility) => {
         throw error; // Rethrow the error for handling in the calling component
     }
 };
+
+export const acceptTerms = async (email) => {
+    try {
+        const response = await axios.put(`${API_URL}/acceptTerms`, {
+            Email: email, // Send the email of the user
+        });
+        return response.data; // Return the response data from the server
+    } catch (error) {
+        console.error('Error accepting terms:', error);
+        const errorMessage = error.response ? error.response.data : { message: "Network error" };
+        throw errorMessage; // Rethrow the error for handling in the calling component
+    }
+};
+
+
+

@@ -2477,6 +2477,9 @@ const signIn = async (req, res) => {
         // Check in sellers table
         user = await Seller.findOne({ Email, Password });
         if (user) {
+            if (!user.TermsAccepted) {
+                return res.status(403).json({ message: "You must accept the terms before signing in." });
+            }
             return res.status(200).json({ Type: user.Type });
         }
 
@@ -2489,21 +2492,29 @@ const signIn = async (req, res) => {
         // Check in tour guides table
         user = await tour_guidem.findOne({ Email, Password });
         if (user) {
+            if (!user.TermsAccepted) {
+                return res.status(403).json({ message: "You must accept the terms before signing in." });
+            }
             return res.status(200).json({ Type: user.Type });
         }
 
+        // Check in advertisers table
         user = await AdvertisersModel.findOne({ Email, Password });
         if (user) {
+            if (!user.TermsAccepted) {
+                return res.status(403).json({ message: "You must accept the terms before signing in." });
+            }
             return res.status(200).json({ Type: user.Type });
         }
 
         // If no user found
         return res.status(401).json({ message: "Invalid email or password." });
     } catch (error) {
-        console.error("Error during sign-in:", error);
+        console.error("Error during sign-in:", error.message);
         return res.status(500).json({ message: "Internal server error." });
     }
 };
+
 
 const getAllCreatedByEmail = async (req, res) => {
     try {
@@ -3775,41 +3786,41 @@ const calculateItineraryRating = async (req, res) => {
 // };
 const acceptTerms = async (req, res) => {
     try {
-        const { email, type } = req.body;
-
-        if (!email || !type) {
-            return res.status(400).json({ message: 'Email and user type are required.' });
-        }
-
-        let user;
-        switch (type.toLowerCase()) {
-            case 'tour_guide':
-                user = await tour_guidem.findOne({ Email: email });
-                break;
-            case 'advertiser':
-                user = await AdvertisersModel.findOne({ Email: email });
-                break;
-            case 'seller':
-                user = await Seller.findOne({ Email: email });
-                break;
-            default:
-                return res.status(400).json({ message: 'Invalid user type.' });
-        }
-
+      const { Email } = req.body;
+  
+      if (!Email) {
+        return res.status(400).json({ message: 'Email is required.' });
+      }
+  
+      // Check for the user in the possible collections
+      let user;
+  
+      // Check in tour guides table
+      user = await tour_guidem.findOne({ Email });
+      if (!user) {
+        // Check in advertisers table
+        user = await AdvertisersModel.findOne({ Email });
         if (!user) {
-            return res.status(404).json({ message: `${type} not found` });
+          // Check in sellers table
+          user = await Seller.findOne({ Email });
+          if (!user) {
+            return res.status(404).json({ message: 'User not found.' });
+          }
         }
-
-        user.TermsAccepted = true;
-        await user.save();
-
-        return res.status(200).json({ message: 'Terms accepted successfully', data: user });
+      }
+  
+      // Update TermsAccepted status to true
+      user.TermsAccepted = true;
+      await user.save();
+  
+      return res.status(200).json({ message: 'Terms accepted successfully.' });
+  
     } catch (error) {
-        console.error("Error accepting terms:", error.message);
-        res.status(500).json({ error: 'Error accepting terms', details: error.message });
+      console.error("Error accepting terms:", error.message);
+      return res.status(500).json({ error: 'Error accepting terms', details: error.message });
     }
-};
-
+  };
+  
 const checkTermsAccepted = async (req, res) => {
     try {
         const { email, type } = req.body;
