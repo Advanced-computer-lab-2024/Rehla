@@ -4178,6 +4178,36 @@ const viewAllDeleteRequests = async (req, res) => {
     }
 };
 
+// Function to delete a delete request by email
+const deleteRequest = async (req, res) => {
+    try {
+        const { Email } = req.body;
+
+        // Validate input
+        if (!Email) {
+            return res.status(400).json({ error: 'Email is required.' });
+        }
+
+        // Find the delete request by email
+        const deleteRequest = await DeleteRequestsm.findOne({ Email });
+
+        // Check if the delete request exists
+        if (!deleteRequest) {
+            return res.status(404).json({ error: 'Delete request not found.' });
+        }
+
+        // Delete the delete request
+        await deleteRequest.deleteOne();
+
+        // Send a success response
+        return res.status(200).json({ message: 'Delete request deleted successfully.' });
+    } catch (error) {
+        console.error('Error deleting delete request:', error);
+        return res.status(500).json({ error: 'Failed to delete delete request' });
+    }
+};
+
+
 // ----------------- Activity Category CRUD -------------------
 
 module.exports = { getPurchasedProducts,
@@ -4297,5 +4327,6 @@ module.exports = { getPurchasedProducts,
     acceptTerms,
     checkTermsAccepted,
     viewMyPurchasedProducts,
-    viewAllDeleteRequests
+    viewAllDeleteRequests,
+    deleteRequest
 };
