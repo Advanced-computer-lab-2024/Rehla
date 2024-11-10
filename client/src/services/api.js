@@ -1029,5 +1029,18 @@ export const acceptTerms = async (email) => {
     }
 };
 
+export const requestDeleteProfile = async (username, email, password, type) => {
+    try {
+        const requestData = { Username: username, Email: email, Password: password, Type: type };
+        const response = await axios.post(`${API_URL}/requestDeleteProfile`, requestData);
+        return response.data;  // Return the response data (e.g., success message or request details)
+    } catch (error) {
+        console.error("Error requesting profile deletion:", error);
+        throw error.response ? error.response.data : { message: "Network error" };
+    }
+};
+
+
+
 
 

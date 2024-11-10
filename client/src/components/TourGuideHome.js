@@ -190,7 +190,7 @@ const TourGuideHome = () => {
                 </nav>
 
                 <nav className="signing">
-                    <Link to="/AdvertiserHome/AdvertiserProfile">My Profile</Link>
+                <Link to="/TourGuideHome/TourGuideProfile">My Profile</Link>
                 </nav>
             </div>
 
