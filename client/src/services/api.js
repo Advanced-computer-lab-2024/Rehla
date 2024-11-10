@@ -1052,3 +1052,18 @@ export const getDeleteRequests = async () => {
         throw error.response ? error.response.data : new Error('Error fetching delete requests');
     }
 };
+
+// Function to update or add a review and rating for a product
+export const productRateReview = async (reviewData) => {
+    if (!reviewData.Tourist_Email || !reviewData.Product_Name || reviewData.Review === undefined || reviewData.Rating === undefined) {
+        throw new Error("Missing required fields: Tourist_Email, Product_Name, Review, and Rating must be provided.");
+    }
+
+    try {
+        const response = await axios.put(`${API_URL}/productRateReview`, reviewData);
+        return response.data; // Return the response data from the server
+    } catch (error) {
+        console.error('Error updating product review:', error.response?.data || error.message);
+        throw error; // Rethrow the error for handling in the calling component
+    }
+};

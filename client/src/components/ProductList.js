@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../images/logo.png';
-import { getProducts, getProductsSortedByRating } from '../services/api'; // Import the search API call
+import { getProducts, getProductsSortedByRating, productRateReview } from '../services/api'; // Import the search API call
 const Header = () => (
     <div className="NavBar">
     <img src={logo} alt="Logo" />
@@ -71,12 +71,52 @@ const ProductList = () => {
         AUD: 1.35
     });
 
+    const [reviewData, setReviewData] = useState({ productName: '', review: '', rating: '' });
+
     const convertPrice = (price) => {
         return (price * conversionRates[currency]).toFixed(2);
     };
 
     const handleCurrencyChange = (e) => {
         setCurrency(e.target.value);
+    };
+
+    const handleReviewChange = (e) => {
+        const { name, value } = e.target;
+        setReviewData(prevData => ({
+          ...prevData,
+          [name]: value
+        }));
+      };
+    
+      const handleSubmitReview = async (e) => {
+        e.preventDefault();
+        const Tourist_Email = localStorage.getItem('email');
+        if (!Tourist_Email) {
+          setError('You must be logged in to leave a review.');
+          return;
+        }
+    
+        // Check if the product name exists in the products list
+        const product = products.find(p => p.Product_Name === reviewData.productName);
+        if (!product) {
+          setError('Product not found. Please check the product name.');
+          return;
+        }
+    
+        try {
+          await productRateReview({
+            Tourist_Email,
+            Product_Name: reviewData.productName,
+            Review: reviewData.review,
+            Rating: reviewData.rating
+          });
+          setReviewData({ productName: '', review: '', rating: '' }); // Reset form
+          alert('Review submitted successfully!');
+        } catch (error) {
+          setError('Failed to submit the review. Please try again.');
+          console.error(error);
+        }
     };
 
     useEffect(() => {
@@ -309,6 +349,51 @@ const ProductList = () => {
                 </div>
             )}
 
+        </div>
+        {/* Review Form */}
+        <div className="mt-10 max-w-xl mx-auto">
+          <h3 className="text-2xl font-semibold mb-4">Submit a Review</h3>
+          <form onSubmit={handleSubmitReview}>
+            <div className="mb-4">
+              <label htmlFor="productName" className="block text-lg">Product Name</label>
+              <input
+                type="text"
+                id="productName"
+                name="productName"
+                value={reviewData.productName}
+                onChange={handleReviewChange}
+                className="w-full p-3 border rounded"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label htmlFor="rating" className="block text-lg">Rating</label>
+              <input
+                type="number"
+                id="rating"
+                name="rating"
+                value={reviewData.rating}
+                onChange={handleReviewChange}
+                min="1"
+                max="5"
+                className="w-full p-3 border rounded"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label htmlFor="review" className="block text-lg">Review</label>
+              <textarea
+                id="review"
+                name="review"
+                value={reviewData.review}
+                onChange={handleReviewChange}
+                className="w-full p-3 border rounded"
+                required
+              />
+            </div>
+            {error && <p className="text-red-500">{error}</p>}
+            <button type="submit" className="bg-brandBlue text-white px-6 py-3 rounded">Submit Review</button>
+          </form>
         </div>
         <Footer />
         </div>

@@ -2724,6 +2724,12 @@ const commentOnEvent = async (req, res) => {
 const productRateReview = async (req, res) => {
     const { Tourist_Email, Product_Name, Review, Rating } = req.body;
 
+    if (!Tourist_Email || !Product_Name || Review === undefined || Rating === undefined) {
+        return res.status(400).json({
+            message: "Missing required fields: Tourist_Email, Product_Name, Review, and Rating must be provided."
+        });
+    }
+
     try {
         // Find the existing product review based on Tourist_Email and Product_Name
         const existingReview = await tourist_products.findOne({
@@ -2732,30 +2738,25 @@ const productRateReview = async (req, res) => {
         });
 
         if (!existingReview) {
-            // If review does not exist, return an error
             return res.status(404).json({
                 message: "Review not found. Please ensure the product and email are correct."
             });
-        } else {
-            // Check if Review or Rating is provided and update them accordingly
-            if (Review !== undefined) {
-                existingReview.Review = Review;
-            }
-            if (Rating !== undefined) {
-                existingReview.Rating = Rating;
-            }
-
-            await existingReview.save();
-
-            return res.status(200).json({
-                message: "Review updated successfully",
-                review: existingReview
-            });
         }
+
+        // Update review and rating
+        existingReview.Review = Review;
+        existingReview.Rating = Rating;
+
+        await existingReview.save();
+
+        return res.status(200).json({
+            message: "Review updated successfully",
+            review: existingReview
+        });
     } catch (error) {
         return res.status(500).json({
             message: "Error updating review",
-            error
+            error: error.message || error
         });
     }
 };
