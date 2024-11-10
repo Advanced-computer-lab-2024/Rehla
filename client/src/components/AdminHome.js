@@ -31,6 +31,9 @@ import logo from '../images/logo.png';
 
 const AdminHome = () => {
     const [deleteRequests, setDeleteRequests] = useState([]);
+    const [loadingdelete, setLoadingdelete] = useState(false);
+    const [errordelete, setErrordelete] = useState(null);
+    const [showRequestsdelete, setShowRequestsdelete] = useState(false);
     const [email, setEmail] = useState(''); // For deleting user
     const [showModal, setShowModal] = useState(false);
     const [username, setUsername] = useState(''); // For creating user
@@ -124,20 +127,22 @@ const AdminHome = () => {
     }, []);
 
 
-    useEffect(() => {
-        const fetchDeleteRequests = async () => {
-          try {
-            const data = await getDeleteRequests(); // Get the delete requests from the API
-            setDeleteRequests(data); // Set the data in state
-          } catch (error) {
-            console.error('Error fetching delete requests:', error);
-          } finally {
-            setLoading(false); // Stop loading once data is fetched or error occurs
-          }
-        };
-        fetchDeleteRequests();
-      }, []);
+    const fetchDeleteRequests = async () => {
+        setLoadingdelete(true);
+        try {
+            const data = await getDeleteRequests();
+            setDeleteRequests(data.deleteRequests);
+            setShowRequestsdelete(true); // Show requests when fetched
+        } catch (err) {
+            setErrordelete(err.message || 'Failed to fetch delete requests');
+        } finally {
+            setLoadingdelete(false);
+        }
+    };
 
+    useEffect(() => {
+        fetchDeleteRequests(); // Fetch delete requests on component mount
+    }, []);
     const fetchRequests = async () => {
         setLoading(true);
         try {
@@ -185,6 +190,7 @@ const AdminHome = () => {
             setMessage(error);
         }
     };
+
 
     // Handle create user request
     const handleCreateUser = async (e) => {
@@ -958,46 +964,49 @@ const toggleUserModal = () => {
             )}
         </div>
 
-        <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Delete Requests</h1>
-      <div className="overflow-x-auto bg-white shadow-md rounded-lg">
-        <table className="min-w-full table-auto">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="border px-4 py-2">Username</th>
-              <th className="border px-4 py-2">Email</th>
-              <th className="border px-4 py-2">Type</th>
-              <th className="border px-4 py-2">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              <tr>
-                <td colSpan="4" className="text-center py-4">Loading...</td>
-              </tr>
-            ) : deleteRequests.length === 0 ? (
-              <tr>
-                <td colSpan="4" className="text-center py-4">No delete requests available.</td>
-              </tr>
-            ) : (
-              deleteRequests.map((request, index) => (
-                <tr key={index}>
-                  <td className="border px-4 py-2">{request.Username}</td>
-                  <td className="border px-4 py-2">{request.Email}</td>
-                  <td className="border px-4 py-2">{request.Type}</td>
-                  <td className="border px-4 py-2">
-                    {/* Action buttons like Approve */}
-                    <button className="bg-red-500 text-white px-4 py-2 rounded">Approve</button>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
-    </div>
-    
+        <div className="w-full p-6 bg-white shadow-lg rounded-lg">
+            <h2 className="text-2xl font-semibold mb-4 text-center text-gray-800">Delete Requests</h2>
+            {loadingdelete && <p className="text-blue-500 text-center mb-4">Loading...</p>}
+            {errordelete && <p className="text-red-500 text-center mb-4">{errordelete}</p>}
+            {message && <p className="text-green-500 text-center mb-4">{message}</p>} {/* Show success or error message */}
 
+            {showRequestsdelete && (
+                <div className="overflow-x-auto w-full">
+                    <table className="min-w-full bg-white border border-gray-300">
+                        <thead>
+                            <tr className="bg-gray-200">
+                                <th className="py-2 px-4 border">Username</th>
+                                <th className="py-2 px-4 border">Email</th>
+                                <th className="py-2 px-4 border">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {deleteRequests.length > 0 ? (
+                                deleteRequests.map((request) => (
+                                    <tr key={request._id} className="hover:bg-gray-100">
+                                        <td className="py-2 px-4 border">{request.Username}</td>
+                                        <td className="py-2 px-4 border">{request.Email}</td>
+                                        <td className="py-2 px-4 border">
+                                            <button 
+                                                className="bg-logoOrange text-white rounded-md px-2 py-1 transition duration-200 hover:brandBlue"
+                                            >
+                                                Delete User
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="3" className="py-4 px-4 text-center text-gray-500">
+                                        No delete requests found.
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            )}
+        </div>
            <br />
 
         <footer className="bg-brandBlue shadow dark:bg-brandBlue m-0">

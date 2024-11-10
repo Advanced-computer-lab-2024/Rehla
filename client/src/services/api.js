@@ -1046,10 +1046,9 @@ export const requestDeleteProfile = async (username, email, password, type) => {
 
 export const getDeleteRequests = async () => {
     try {
-        const response = await axios.get(`${API_URL}/viewDeleteRequests`);
-        return response.data.deleteRequests; // Return the delete requests from the response
+        const response = await axios.get(`${API_URL}/viewDeleteRequests`); // Ensure this matches your backend route
+        return response.data;
     } catch (error) {
-        console.error('Error fetching delete requests:', error);
-        throw error; // Rethrow for handling in the component
+        throw error.response ? error.response.data : new Error('Error fetching delete requests');
     }
 };
