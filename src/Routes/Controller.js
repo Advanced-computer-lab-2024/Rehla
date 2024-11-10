@@ -4192,7 +4192,7 @@ const deleteRequest = async (req, res) => {
         }
 
         // Find the delete request by email
-        const deleteRequest = await DeleteRequestsm.findOne({ Email });
+        const deleteRequest = await Guest.findOne({ Email });
 
         // Check if the delete request exists
         if (!deleteRequest) {
