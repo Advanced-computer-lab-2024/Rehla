@@ -4339,6 +4339,24 @@ const viewAllTransportation = async (req, res) => {
     }
 }
 
+const getAllUnarchivedProducts = async (req, res) => {
+    try {
+      // Fetch all  products from the database
+      const products = await Product.find({ Archived: false });
+
+      // Check if there are any products
+      if (!products || products.length === 0) {
+        return res.status(404).json({ message: "No products found." });
+      }
+  
+      // Send the list of products as a response
+      return res.status(200).json(products);
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: "An error occurred while fetching products." });
+    }
+};
+
 // ----------------- Activity Category CRUD -------------------
 
 module.exports = { getPurchasedProducts,
@@ -4462,5 +4480,6 @@ module.exports = { getPurchasedProducts,
     deleteRequest,
     createTransportation,
     bookTransportation,
-    viewAllTransportation
+    viewAllTransportation,
+    getAllUnarchivedProducts,
 };
