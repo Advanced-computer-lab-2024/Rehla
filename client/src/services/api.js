@@ -1067,3 +1067,13 @@ export const productRateReview = async (reviewData) => {
         throw error; // Rethrow the error for handling in the calling component
     }
 };
+
+export const getAllTransportation = async () => {
+    try {
+        // Make a GET request to the backend route for transportation data
+        const response = await axios.get(`${API_URL}/viewAllTransportation`); // Ensure this route matches your backend
+        return response.data; // Return the response data from the server
+    } catch (error) {
+        throw error.response ? error.response.data : new Error('Error fetching transportation');
+    }
+};
