@@ -21,7 +21,8 @@ import {
     viewAllComplaintsSortedByDate ,
     filterComplaintsByStatus ,
     flagActivity , flagItinerary 
-    ,getDeleteRequests
+    ,getDeleteRequests,
+    deleteRequest
     
 } from '../services/api'; // Import all API functions
 import '../css/Home.css';
@@ -174,9 +175,19 @@ const AdminHome = () => {
           console.error('Error processing request:', error);
           alert('Failed to process the request.');
         }
-      };  
+      };
 
-
+      const handleDeleteRequest = async (email) => {
+        try {
+          await deleteRequest(email);
+          alert('Request deleted successfully: ');
+          // Optionally, refresh the list of requests after processing
+          setRequests(requests.filter((req) => req.Email !== email));
+        } catch (error) {
+          console.error('Error processing request:', error);
+          alert('Failed to process the request.');
+        }
+      };
 
 
     // Handle delete user request
@@ -702,6 +713,7 @@ const toggleUserModal = () => {
                                     <th className="py-3 px-6 text-left">Email</th>
                                     <th className="py-3 px-6 text-left">Type</th>
                                     <th className="py-3 px-6 text-left">Actions</th> {/* New Actions column */}
+                                    <th className="py-3 px-6 text-left">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -719,6 +731,14 @@ const toggleUserModal = () => {
                                                 className="text-logoOrange hover:text-brandBlue font-semibold"
                                             >
                                                 Process Request
+                                            </button>
+                                        </td>
+                                        <td className="py-2 px-6 border-t">
+                                            <button 
+                                                onClick={() => handleDeleteRequest(request.Email)} 
+                                                className="text-red hover:text-brandBlue font-semibold"
+                                            >
+                                                Delete Request
                                             </button>
                                         </td>
                                     </tr>

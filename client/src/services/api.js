@@ -1077,3 +1077,14 @@ export const getAllTransportation = async () => {
         throw error.response ? error.response.data : new Error('Error fetching transportation');
     }
 };
+
+// Function to delete a request based on email
+export const deleteRequest = async (email) => {
+    try {
+        const response = await axios.delete(`${API_URL}/deleteRequest`, { data: { Email: email } });
+        return response.data;
+    } catch (error) {
+        console.error('Failed to delete request:', error);
+        throw error;
+    }
+};
