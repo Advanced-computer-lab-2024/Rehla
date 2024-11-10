@@ -174,6 +174,7 @@ const AdminProductList = () => {
                                 <h3>{product.Product_Name}</h3>
                                 <p>Price: ${product.Price}</p>
                                 <p>{product.Description}</p>
+                                <p>Sales: {product.Saled}</p>
                             </div>
                         ))}
                     </div>
@@ -191,6 +192,7 @@ const AdminProductList = () => {
                                     <h3>{product.Product_Name}</h3>
                                     <p>Price: ${product.Price.toFixed(2)}</p>
                                     <p>{product.Description}</p>
+                                    <p>Sales: {product.Saled}</p>
                                 </div>
                             ))}
                         </div>
@@ -238,6 +240,7 @@ const AdminProductList = () => {
                                         <h3>{product.Product_Name}</h3>
                                         <p>Price: ${product.Price.toFixed(2)}</p>
                                         <p>{product.Description}</p>
+                                        <p>Sales: {product.Saled}</p>
                                     </div>
                                 ))}
                             </div>
@@ -265,6 +268,7 @@ const AdminProductList = () => {
                                     <p>Rating: {product.Rating}</p>
                                     <p>Price: ${product.Price.toFixed(2)}</p>
                                     <p>{product.Description}</p>
+                                    <p>Sales: {product.Saled}</p>
                                 </div>
                             ))
                         ) : (

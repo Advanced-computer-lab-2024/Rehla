@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../images/logo.png';
-import { getProducts, getProductsSortedByRating, addProduct, updateProduct } from '../services/api';
+import { getProducts, getProductsSortedByRating, addProduct, updateProduct,toggleProductArchiveStatus } from '../services/api';
 
 const Header = () => (
     <div className="NavBar">
@@ -150,6 +150,20 @@ const AdminProductList = () => {
         }
     };
 
+    const handleArchiveToggle = async (productName) => {
+        try {
+            const updatedProduct = await toggleProductArchiveStatus(productName);
+            // Update the product list based on response, if needed
+            setProducts((prevProducts) =>
+                prevProducts.map((product) =>
+                    product.Product_Name === productName ? updatedProduct.data : product
+                )
+            );
+        } catch (error) {
+            console.error('Failed to toggle archive status:', error.message);
+        }
+    };
+
     if (loading) {
         return <div className="text-center py-10">Loading...</div>;
     }
@@ -234,6 +248,8 @@ const AdminProductList = () => {
                                             <h3 className="text-lg font-semibold">{product.Product_Name}</h3>
                                             <p>Price: ${product.Price}</p>
                                             <p>Rating: {product.Rating}</p>
+                                            <p>Quantity: {product.Quantity}</p>
+                                            <p>Sales: {product.Saled}</p>
                                             <p>{product.Description}</p>
                                         </div>
                                     ))}
@@ -255,6 +271,8 @@ const AdminProductList = () => {
                                             <h3 className="text-lg font-semibold">{product.Product_Name}</h3>
                                             <p>Price: ${product.Price}</p>
                                             <p>Rating: {product.Rating}</p>
+                                            <p>Quantity: {product.Quantity}</p>
+                                            <p>Sales: {product.Saled}</p>
                                             <p>{product.Description}</p>
                                         </div>
                                     ))}
@@ -276,6 +294,8 @@ const AdminProductList = () => {
                                                 <h3 className="text-lg font-semibold">{product.Product_Name}</h3>
                                                 <p>Price: ${product.Price}</p>
                                                 <p>Rating: {product.Rating}</p>
+                                                <p>Quantity: {product.Quantity}</p>
+                                                <p>Sales: {product.Saled}</p>
                                                 <p>{product.Description}</p>
                                             </div>
                                         ))}
@@ -296,6 +316,8 @@ const AdminProductList = () => {
                                             <h3 className="text-lg font-semibold">{product.Product_Name}</h3>
                                             <p>Price: ${product.Price}</p>
                                             <p>Rating: {product.Rating}</p>
+                                            <p>Quantity: {product.Quantity}</p>
+                                            <p>Sales: {product.Saled}</p>
                                             <p>{product.Description}</p>
                                         </div>
                                     ))}
@@ -475,7 +497,37 @@ const AdminProductList = () => {
                     </div>
                 )}
 
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {products.map((product) => (
+                        <div
+                            key={product._id}
+                            className={`bg-white shadow-lg rounded-lg p-6 transform hover:scale-105 transition-transform duration-300 cursor-pointer ${product.Archived ? 'opacity-50' : 'opacity-100'}`}
+                        >
+                            {product.Picture && (
+                                <img
+                                    src={product.Picture}
+                                    alt={product.Product_Name}
+                                    className="w-full h-40 object-cover mb-4 rounded"
+                                />
+                            )}
+                            <h3 className="text-lg font-semibold">{product.Product_Name}</h3>
+                            <p>Price: ${product.Price}</p>
+                            <p>Rating: {product.Rating}</p>
+                            <p>Quantity: {product.Quantity}</p>
+                            <p>Sales: {product.Saled}</p>
+                            <p>{product.Description}</p>
+                            
 
+                            {/* Archive/Unarchive Button */}
+                            <button
+                                onClick={() => handleArchiveToggle(product.Product_Name)}
+                                className={`mt-4 px-4 py-2 rounded-full text-white ${product.Archived ? 'bg-red-500' : 'bg-green-500'}`}
+                            >
+                                {product.Archived ? 'Unarchive' : 'Archive'}
+                            </button>
+                        </div>
+                    ))}
+                </div>
             </div>
             <Footer />
         </div>

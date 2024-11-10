@@ -8,7 +8,7 @@ const Header = () => (
         <img src={logo} alt="Logo" />
         <nav className="main-nav">
             <ul className="nav-links">
-                <Link to="/SellerHome">Home</Link>
+                <Link to="/">Home</Link>
                 <Link to="/Sellerproducts">Products</Link>
             </ul>
         </nav>
@@ -252,6 +252,8 @@ const SellerHome = () => {
                                             <h3 className="text-lg font-semibold">{product.Product_Name}</h3>
                                             <p>Price: ${product.Price}</p>
                                             <p>Rating: {product.Rating}</p>
+                                            <p>Quantity: {product.Quantity}</p>
+                                            <p>Sales: {product.Saled}</p>
                                             <p>{product.Description}</p>
                                         </div>
                                     ))}
@@ -273,6 +275,8 @@ const SellerHome = () => {
                                             <h3 className="text-lg font-semibold">{product.Product_Name}</h3>
                                             <p>Price: ${product.Price}</p>
                                             <p>Rating: {product.Rating}</p>
+                                            <p>Quantity: {product.Quantity}</p>
+                                            <p>Sales: {product.Saled}</p>
                                             <p>{product.Description}</p>
                                         </div>
                                     ))}
@@ -294,6 +298,8 @@ const SellerHome = () => {
                                                 <h3 className="text-lg font-semibold">{product.Product_Name}</h3>
                                                 <p>Price: ${product.Price}</p>
                                                 <p>Rating: {product.Rating}</p>
+                                                <p>Quantity: {product.Quantity}</p>
+                                                <p>Sales: {product.Saled}</p>
                                                 <p>{product.Description}</p>
                                             </div>
                                         ))}
@@ -314,6 +320,8 @@ const SellerHome = () => {
                                             <h3 className="text-lg font-semibold">{product.Product_Name}</h3>
                                             <p>Price: ${product.Price}</p>
                                             <p>Rating: {product.Rating}</p>
+                                            <p>Quantity: {product.Quantity}</p>
+                                            <p>Sales: {product.Saled}</p>
                                             <p>{product.Description}</p>
                                         </div>
                                     ))}
@@ -509,7 +517,10 @@ const SellerHome = () => {
             <h3 className="text-lg font-semibold">{product.Product_Name}</h3>
             <p>Price: ${product.Price}</p>
             <p>Rating: {product.Rating}</p>
+            <p>Quantity: {product.Quantity}</p>
+            <p>Sales: {product.Saled}</p>
             <p>{product.Description}</p>
+            
 
             {/* Archive/Unarchive Button */}
             <button
