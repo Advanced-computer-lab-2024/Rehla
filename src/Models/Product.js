@@ -43,6 +43,10 @@ const productsSchema = new Schema({
         type : Boolean,
         default : false,
     },
+    Saled:{
+        type: Number,
+        default: 0,
+    },
 
 
 },{ versionKey: false });
