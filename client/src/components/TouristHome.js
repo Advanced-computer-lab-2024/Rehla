@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../images/logo.png';
-import { searchEventsPlaces, commentOnItinerary, rateItinerary, rateActivity, commentOnEvent , rateTourGuide,commentTourGuide,viewComplaintByEmail,processComplaintByEmail,createTouristItinerary,createTouristActivity,deleteTouristItenrary,deleteTouristActivity, createComplaint,redeemPoints,createPreference ,getAllTransportation} from '../services/api'; // Import the commentOnEvent function
+import { searchEventsPlaces, commentOnItinerary, rateItinerary, rateActivity, 
+        commentOnEvent , rateTourGuide,commentTourGuide,viewComplaintByEmail,
+        processComplaintByEmail,createTouristItinerary,createTouristActivity,
+        deleteTouristItenrary,deleteTouristActivity, createComplaint,redeemPoints,
+        createPreference ,getAllTransportation,bookTransportation} from '../services/api'; // Import the commentOnEvent function
 import Homet2 from '../components/Homet2.js';
 import Home from '../components/Home.js';
 
@@ -15,6 +19,13 @@ const TouristHome = () => {
     const [comment, setComment] = useState('');
     const [activityName, setActivityName] = useState('');
     const [message, setMessage] = useState(''); // Use
+
+   
+    const [routeNumber, setRouteNumber] = useState(''); // Store the route number
+    const [loading, setLoading] = useState(false); // Loading state for button
+    const [messagebook, setMessagebook] = useState(''); // Message to show user
+    const [errorbook, setErrorbook] = useState(''); // Error message if any
+
 
     const [transportation, setTransportation] = useState([]);
     const [loadingtransportation, setLoadingtransportation] = useState(false);
@@ -99,6 +110,20 @@ const TouristHome = () => {
 
         fetchTransportation();
     }, []);
+
+    const handleBooking = async (routeNumber) => {
+        if (!email) {
+            alert('Please provide your email before booking.');
+            return;
+        }
+    
+        try {
+            const response = await bookTransportation(email, routeNumber);
+            alert(response.message); // Show success message from API
+        } catch (error) {
+            alert(error.message); // Show error message from API
+        }
+    };
 
     // Handle event comment submission
     const handleEventCommentSubmit = async (e) => {
@@ -432,13 +457,13 @@ const TouristHome = () => {
                                     <td className="py-2 px-4 border">{item.Avilable_Seats}</td>
                                     <td className="py-2 px-4 border">${item.Price}</td>
                                     <td className="py-2 px-4 border">{item.Booked_Seats}</td>
-                                    <td className="py-2 px-4 border">{item.Available ? 'Yes' : 'No'}</td>
+                                    <td className="py-2 px-4 border">{item.Avilable ? 'Yes' : 'No'}</td>
                                     <td className="py-2 px-4 border">
                                         <button
-                                           
-                                            className="bg-brandBlue text-white px-3 py-1 rounded hover:logoOrange"
+                                            onClick={() => handleBooking(item.Route_Number)} // Handle booking when the button is clicked
+                                            className="bg-brandBlue text-white px-3 py-1 rounded hover:bg-logoOrange"
                                         >
-                                            Action
+                                            Book Now
                                         </button>
                                     </td>
                                 </tr>
@@ -446,6 +471,7 @@ const TouristHome = () => {
                         </tbody>
                     </table>
                 </div>
+         
             ) : (
                 <p className="text-gray-500 text-center mt-4">No transportation records found.</p>
             )}

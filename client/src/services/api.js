@@ -1088,3 +1088,21 @@ export const deleteRequest = async (email) => {
         throw error;
     }
 };
+
+export const bookTransportation = async (touristEmail, routeNumber) => {
+    try {
+        const response = await axios.post(`${API_URL}/bookTransportation`, {
+            Tourist_Email: touristEmail,
+            Route_Number: routeNumber
+        });
+        return response.data; // Return the response from the API (success message, booking data, etc.)
+    } catch (error) {
+        if (error.response && error.response.data) {
+            // Return the error message from the backend if available
+            throw new Error(error.response.data.error);
+        } else {
+            console.error('Error booking transportation:', error);
+            throw error;
+        }
+    }
+};
