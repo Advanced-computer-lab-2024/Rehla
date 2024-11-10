@@ -120,6 +120,9 @@ const {createUserAdmin,
   viewMyPurchasedProducts,
   viewAllDeleteRequests,
   deleteRequest,
+  createTransportation,
+  bookTransportation,
+  viewAllTransportation,
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -277,3 +280,6 @@ app.get("/getHotelPrice" , getHotelPrice);
 app.post("/viewMyPurchasedProducts", viewMyPurchasedProducts);
 app.get("/viewDeleteRequests", viewAllDeleteRequests);
 app.delete("/deleteRequest", deleteRequest);
+app.post("/createTransportation", createTransportation);
+app.post("/bookTransportation", bookTransportation);
+app.get("/viewAllTransportation", viewAllTransportation);

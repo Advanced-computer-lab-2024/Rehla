@@ -57,6 +57,19 @@ const transportationSchema = new Schema({
             type: Number,
             required: true,
         },
+
+        Booked_Seats: {
+            type: Number,
+            required: true,
+            default: 0,
+        },
+
+        Avilable: {
+            type: Boolean,
+            required: true,
+            default: true,
+        },
+
     },{versionKey: false});
 
 const Transportation = mongoose.model('Transportation', transportationSchema);

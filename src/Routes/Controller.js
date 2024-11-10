@@ -31,6 +31,8 @@ const tourist_products = require('../Models/tourist_products.js');
 const tourist_complaints = require('../Models/tourist_complaints.js');
 const tourist_activities = require('../Models/tourist_activities.js');
 const TouristGuideReview = require('../Models/tour_guide_reviews.js');
+const tourist_transportationsm = require('../Models/tourist_tranportations.js');
+const transportationm = require('../Models/transportation.js');
 const multer = require('multer');
 const path = require('path');
 require('dotenv').config();
@@ -4208,6 +4210,134 @@ const deleteRequest = async (req, res) => {
     }
 };
 
+// Function to create new transportation
+const createTransportation = async (req, res) => {
+    try {
+        const { 
+            Route_Number, 
+            Advertiser_Name , 
+            Advertiser_Email, 
+            Advertiser_Phone ,
+            Pickup_Location ,
+            Dropoff_Location, 
+            Pickup_Date, 
+            Pickup_Time, 
+            Droppff_Time, 
+            Avilable_Seats, 
+            Price } = req.body;
+        
+        // Validate input
+        if (!Route_Number || !Advertiser_Name || !Advertiser_Email || !Advertiser_Phone || !Pickup_Location || !Dropoff_Location || !Pickup_Date || !Pickup_Time || !Droppff_Time || !Avilable_Seats || !Price) {
+            return res.status(400).json({ error: 'All fields are required.' });
+        }
+
+        // Check if the transportation already exists
+        const existingTransportation = await transportationm.findOne({ Route_Number });
+        if (existingTransportation) {
+            return res.status(409).json({ error: 'Transportation already exists.' });
+        }
+
+        // Create a new transportation
+        const newTransportation = new transportationm({
+            Route_Number,
+            Advertiser_Name,
+            Advertiser_Email,
+            Advertiser_Phone,
+            Pickup_Location,
+            Dropoff_Location,
+            Pickup_Date,
+            Pickup_Time,
+            Droppff_Time,
+            Avilable_Seats,
+            Price
+        });
+        
+        // Save the transportation to the database
+        await newTransportation.save();
+
+        // Send a success response
+        return res.status(201).json({ message: 'Transportation created successfully.', transportation: newTransportation });
+    }catch (error) {
+        console.error('Error creating transportation:', error);
+        return res.status(500).json({ error: 'Failed to create transportation.' });
+    }
+}
+
+// function to book a tourist transportation
+const bookTransportation = async (req, res) => {
+    try {
+        const {Tourist_Email,Route_Number} = req.body;
+
+        // Validate input
+        if (!Tourist_Email || !Route_Number) {
+            return res.status(400).json({ error: 'Tourist email and Route number are required.' });
+        }
+
+        // Check if the transportation exists
+        const transportation = await transportationm.findOne({ Route_Number });
+        if (!transportation) {
+            return res.status(404).json({ error: 'Transportation not found.' });
+        }
+
+        // Check if the tourist exists
+        const tourist = await Tourist.findOne({ Email: Tourist_Email });
+        if (!tourist) {
+            return res.status(404).json({ error: 'Tourist not found.' });
+        }
+
+        // Check if the transportation has available seats using avilable falg 
+        if (!transportation.Avilable) {
+            return res.status(400).json({ error: 'No available seats for this transportation.' });
+        }
+
+        // check that this tourist has not booked this transportation before
+        const existingBooking = await tourist_transportationsm.findOne({ Tourist_Email, Route_Number });
+        if (existingBooking) {
+            return res.status(409).json({ error: 'You have already booked this transportation.' });
+        }
+
+        // Create a new booking
+        const newBooking = new tourist_transportationsm({
+            Tourist_Email,
+            Route_Number,
+        });
+
+        // Save the booking to the database
+        await newBooking.save();
+
+        // Decrease the available seats by 1 and increase the booked seats by 1
+        transportation.Avilable_Seats -= 1;
+        await transportation.save();
+        transportation.Booked_Seats += 1;
+        await transportation.save();
+
+        //update avilable flag
+        if (transportation.Avilable_Seats === 0) {
+            transportation.Avilable = false;
+            await transportation.save();
+        }
+
+        // Send a success response
+        return res.status(201).json({ message: 'Transportation booked successfully.', booking: newBooking });
+    }catch (error) {
+        console.error('Error booking transportation:', error);
+        return res.status(500).json({ error: 'Failed to book transportation.' });
+    }
+}
+
+//function to view all transportation
+const viewAllTransportation = async (req, res) => {
+    try {
+        // Fetch all transportation from the database
+        const transportation = await transportationm.find();
+
+        // Send the list of transportation as a response
+        return res.status(200).json({ message: "All transportation fetched successfully", transportation });
+    } catch (error) {
+        console.error('Error fetching transportation:', error);
+        return res.status(500).json({ error: 'Failed to retrieve transportation' });
+    }
+}
 
 // ----------------- Activity Category CRUD -------------------
 
@@ -4329,5 +4459,8 @@ module.exports = { getPurchasedProducts,
     checkTermsAccepted,
     viewMyPurchasedProducts,
     viewAllDeleteRequests,
-    deleteRequest
+    deleteRequest,
+    createTransportation,
+    bookTransportation,
+    viewAllTransportation
 };
