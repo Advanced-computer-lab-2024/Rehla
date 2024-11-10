@@ -4160,6 +4160,24 @@ const viewMyPurchasedProducts = async (req, res) => {
     }
 };
 
+
+// Function to retrieve all delete requests
+const viewAllDeleteRequests = async (req, res) => {
+    try {
+        // Fetch all delete requests from the database
+        const deleteRequests = await DeleteRequestsm.find();
+        
+        // Send the list of delete requests as a response
+        return res.status(200).json({
+            message: "All delete requests fetched successfully",
+            deleteRequests,
+        });
+    } catch (error) {
+        console.error('Error fetching delete requests:', error);
+        return res.status(500).json({ error: 'Failed to retrieve delete requests' });
+    }
+};
+
 // ----------------- Activity Category CRUD -------------------
 
 module.exports = { getPurchasedProducts,
@@ -4279,4 +4297,5 @@ module.exports = { getPurchasedProducts,
     acceptTerms,
     checkTermsAccepted,
     viewMyPurchasedProducts,
+    viewAllDeleteRequests
 };

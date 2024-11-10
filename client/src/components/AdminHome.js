@@ -21,6 +21,7 @@ import {
     viewAllComplaintsSortedByDate ,
     filterComplaintsByStatus ,
     flagActivity , flagItinerary 
+    ,getDeleteRequests
     
 } from '../services/api'; // Import all API functions
 import '../css/Home.css';
@@ -29,6 +30,7 @@ import logo from '../images/logo.png';
 
 
 const AdminHome = () => {
+    const [deleteRequests, setDeleteRequests] = useState([]);
     const [email, setEmail] = useState(''); // For deleting user
     const [showModal, setShowModal] = useState(false);
     const [username, setUsername] = useState(''); // For creating user
@@ -121,6 +123,21 @@ const AdminHome = () => {
         fetchTags(); // Fetch preference tags on component mount
     }, []);
 
+
+    useEffect(() => {
+        const fetchDeleteRequests = async () => {
+          try {
+            const data = await getDeleteRequests(); // Get the delete requests from the API
+            setDeleteRequests(data); // Set the data in state
+          } catch (error) {
+            console.error('Error fetching delete requests:', error);
+          } finally {
+            setLoading(false); // Stop loading once data is fetched or error occurs
+          }
+        };
+        fetchDeleteRequests();
+      }, []);
+
     const fetchRequests = async () => {
         setLoading(true);
         try {
@@ -153,6 +170,9 @@ const AdminHome = () => {
           alert('Failed to process the request.');
         }
       };  
+
+
+
 
     // Handle delete user request
     const handleDeleteUser = async (e) => {
@@ -410,6 +430,8 @@ const toggleUserModal = () => {
     setUserModalOpen(!isUserModalOpen);
   };
 
+
+  
 
 
     return (
@@ -935,6 +957,45 @@ const toggleUserModal = () => {
                 </div>
             )}
         </div>
+
+        <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">Delete Requests</h1>
+      <div className="overflow-x-auto bg-white shadow-md rounded-lg">
+        <table className="min-w-full table-auto">
+          <thead>
+            <tr className="bg-gray-100">
+              <th className="border px-4 py-2">Username</th>
+              <th className="border px-4 py-2">Email</th>
+              <th className="border px-4 py-2">Type</th>
+              <th className="border px-4 py-2">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {loading ? (
+              <tr>
+                <td colSpan="4" className="text-center py-4">Loading...</td>
+              </tr>
+            ) : deleteRequests.length === 0 ? (
+              <tr>
+                <td colSpan="4" className="text-center py-4">No delete requests available.</td>
+              </tr>
+            ) : (
+              deleteRequests.map((request, index) => (
+                <tr key={index}>
+                  <td className="border px-4 py-2">{request.Username}</td>
+                  <td className="border px-4 py-2">{request.Email}</td>
+                  <td className="border px-4 py-2">{request.Type}</td>
+                  <td className="border px-4 py-2">
+                    {/* Action buttons like Approve */}
+                    <button className="bg-red-500 text-white px-4 py-2 rounded">Approve</button>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
     
 
            <br />
@@ -970,6 +1031,8 @@ const toggleUserModal = () => {
 
         
         </div>
+
+        
     );
 };
 

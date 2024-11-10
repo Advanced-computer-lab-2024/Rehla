@@ -118,6 +118,7 @@ const {createUserAdmin,
   getHotelPrice,acceptTerms,
   checkTermsAccepted,
   viewMyPurchasedProducts,
+  viewAllDeleteRequests
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -273,3 +274,4 @@ app.post("/searchFlights" , searchFlights);
 app.get("/getHotelPrice" , getHotelPrice);
 // app.post("/bookFlight" ,bookFlight);
 app.post("/viewMyPurchasedProducts", viewMyPurchasedProducts);
+app.get("/viewDeleteRequests", viewAllDeleteRequests);
