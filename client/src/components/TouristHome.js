@@ -769,68 +769,97 @@ const TouristHome = () => {
             {message && <p className="text-center mt-4 text-sm text-gray-700">{message}</p>}
         </div>
 
-        <div>
-            <h2>Create User Preference</h2>
-            <form onSubmit={handleSubmit}>
-                <label>
-                    Email:
-                    <input
-                        type="email"
-                        name="email"
-                        value={preferenceData.email}
-                        onChange={handleChange}
-                        required
-                    />
-                </label>
-                <label>
-                    Historic Areas:
-                    <input
-                        type="checkbox"
-                        name="historicAreas"
-                        checked={preferenceData.historicAreas}
-                        onChange={handleChange}
-                    />
-                </label>
-                <label>
-                    Beaches:
-                    <input
-                        type="checkbox"
-                        name="beaches"
-                        checked={preferenceData.beaches}
-                        onChange={handleChange}
-                    />
-                </label>
-                <label>
-                    Family Friendly:
-                    <input
-                        type="checkbox"
-                        name="familyFriendly"
-                        checked={preferenceData.familyFriendly}
-                        onChange={handleChange}
-                    />
-                </label>
-                <label>
-                    Shopping:
-                    <input
-                        type="checkbox"
-                        name="shopping"
-                        checked={preferenceData.shopping}
-                        onChange={handleChange}
-                    />
-                </label>
-                <label>
-                    Budget Friendly:
-                    <input
-                        type="checkbox"
-                        name="budgetFriendly"
-                        checked={preferenceData.budgetFriendly}
-                        onChange={handleChange}
-                    />
-                </label>
-                <button type="submit">Create Preference</button>
-            </form>
-            {messagee && <p>{messagee}</p>}
-        </div>
+        <div className="max-w-lg mx-auto p-4 bg-white rounded-lg shadow-lg">
+  <h2 className="text-2xl font-semibold text-center mb-6">Create User Preference</h2>
+  
+  <form onSubmit={handleSubmit} className="space-y-4">
+    {/* Email Input */}
+    <div className="flex flex-col">
+      <label htmlFor="email" className="text-sm font-medium text-gray-700 mb-1">Email:</label>
+      <input
+        type="email"
+        name="email"
+        value={preferenceData.email}
+        onChange={handleChange}
+        required
+        className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+    </div>
+
+    {/* Historic Areas Checkbox */}
+    <div className="flex items-center">
+      <input
+        type="checkbox"
+        name="historicAreas"
+        checked={preferenceData.historicAreas}
+        onChange={handleChange}
+        className="h-5 w-5 text-blue-500 border-gray-300 rounded"
+      />
+      <label htmlFor="historicAreas" className="ml-2 text-sm text-gray-700">Historic Areas</label>
+    </div>
+
+    {/* Beaches Checkbox */}
+    <div className="flex items-center">
+      <input
+        type="checkbox"
+        name="beaches"
+        checked={preferenceData.beaches}
+        onChange={handleChange}
+        className="h-5 w-5 text-blue-500 border-gray-300 rounded"
+      />
+      <label htmlFor="beaches" className="ml-2 text-sm text-gray-700">Beaches</label>
+    </div>
+
+    {/* Family Friendly Checkbox */}
+    <div className="flex items-center">
+      <input
+        type="checkbox"
+        name="familyFriendly"
+        checked={preferenceData.familyFriendly}
+        onChange={handleChange}
+        className="h-5 w-5 text-blue-500 border-gray-300 rounded"
+      />
+      <label htmlFor="familyFriendly" className="ml-2 text-sm text-gray-700">Family Friendly</label>
+    </div>
+
+    {/* Shopping Checkbox */}
+    <div className="flex items-center">
+      <input
+        type="checkbox"
+        name="shopping"
+        checked={preferenceData.shopping}
+        onChange={handleChange}
+        className="h-5 w-5 text-blue-500 border-gray-300 rounded"
+      />
+      <label htmlFor="shopping" className="ml-2 text-sm text-gray-700">Shopping</label>
+    </div>
+
+    {/* Budget Friendly Checkbox */}
+    <div className="flex items-center">
+      <input
+        type="checkbox"
+        name="budgetFriendly"
+        checked={preferenceData.budgetFriendly}
+        onChange={handleChange}
+        className="h-5 w-5 text-blue-500 border-gray-300 rounded"
+      />
+      <label htmlFor="budgetFriendly" className="ml-2 text-sm text-gray-700">Budget Friendly</label>
+    </div>
+
+    {/* Submit Button */}
+    <div className="text-center">
+      <button
+        type="submit"
+        className="w-full py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      >
+        Create Preference
+      </button>
+    </div>
+  </form>
+
+  {/* Message Display */}
+  {messagee && <p className="text-center text-sm text-green-500 mt-4">{messagee}</p>}
+</div>
 
 
         
