@@ -3620,6 +3620,63 @@ const getsellerLogo = async (req, res) => {
     });
 };
 
+const getadvertiserLogo = async (req, res) => {
+    picture.single('document')(req, res, async (err) => {
+        try {
+            if (err instanceof multer.MulterError) {
+                return res.status(400).json({ error: err.message }); // Handle Multer errors
+            } else if (err) {
+                return res.status(400).json({ error: err.message }); // Handle other errors
+            }
+
+            // Check if a file is uploaded
+            if (!req.file) {
+                return res.status(400).json({ error: 'Please upload a picture.' });
+            }
+
+            const email = req.body.email;
+
+            // Validate email
+            if (!email) {
+                return res.status(400).json({ error: 'Missing email in request' });
+            }
+
+            // Read the file and convert it to base64
+            const filePath = req.file.path;
+            fs.readFile(filePath, { encoding: 'base64' }, async (err, base64Data) => {
+                if (err) {
+                    return res.status(500).json({ error: 'Error reading picture', details: err.message });
+                }
+
+                // Optionally, you can also delete the file after reading it
+                fs.unlink(filePath, (unlinkErr) => {
+                    if (unlinkErr) {
+                        console.error('Error deleting temporary file:', unlinkErr);
+                    }
+                });
+
+                // Here you can store the base64 string in the database
+                const base64String = `data:${req.file.mimetype};base64,${base64Data}`;
+
+                // Save the base64 string to the Tourist document
+                const advertiser = await AdvertisersModel.findOne({ Email: email });
+
+                advertiser.Logo= base64String;
+                const updatedadvertiser = await advertiser.save();
+
+
+                // Respond with a success message
+                res.status(200).json({ message: 'Picture uploaded successfully.', document: advertiser });
+            });
+
+        } catch (error) {
+            console.error('Error uploading picture:', error);
+            res.status(500).json({ error: 'Error uploading picture', details: error.message });
+        }
+    });
+};
+
+
 
 const getproductpic = async (req, res) => {
     picture.single('document')(req, res, async (err) => {
@@ -4626,6 +4683,7 @@ module.exports = { getPurchasedProducts,
     gettouristprofilepic,
     gettourguideprofilepic,
     getsellerLogo,
+    getadvertiserLogo,
     getproductpic,
     Itineraryactivation,
     getAttendedItineraries,

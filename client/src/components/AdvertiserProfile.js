@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getAdvertiserProfile, updateAdvertiserProfile,requestDeleteProfile } from '../services/api'; // Import the API functions
+import { getAdvertiserProfile, updateAdvertiserProfile,requestDeleteProfile ,uploadadvertiserLogo} from '../services/api'; // Import the API functions
 import { Link } from 'react-router-dom';
 import logo from '../images/logo.png';
 
@@ -23,6 +23,9 @@ const AdvertiserProfile = () => {
     const [password, setPassword] = useState('');
     const [type, setType] = useState('');
     const [message, setMessage] = useState('');
+     
+    const [file, setFile] = useState(null);
+    const [preview, setPreview] = useState(null);
 
     const handleDeleteRequest = async () => {
         try {
@@ -67,10 +70,34 @@ const AdvertiserProfile = () => {
         try {
             await updateAdvertiserProfile(formData); // Send the updated form data to the API
             setIsEditing(false); // Exit edit mode after saving
+            window.location.reload();
         } catch (error) {
             console.error("Error updating profile:", error);
         }
     };
+    const handleFileChange = (e) => {
+        const selectedFile = e.target.files[0];
+        if (selectedFile) {
+          setFile(selectedFile);
+          setPreview(URL.createObjectURL(selectedFile)); // Create a preview URL
+        }
+      };
+    
+      const handleUploadLogo = async () => {
+        if (!file) {
+          alert('Please select a file to upload.');
+          return;
+        }
+        const email = formData.Email; // Get the email from formData
+        try {
+          await uploadadvertiserLogo(email, file); // Call your upload function
+          alert('Profile picture uploaded successfully!');
+          //window.location.reload(); // Reload to fetch the new  picture
+        } catch (error) {
+          console.error('Error uploading  picture:', error);
+          alert('Failed to upload  picture.');
+        }
+      };
 
     // Render loading state if profile is not yet loaded
     if (!advertiser) {
@@ -87,14 +114,22 @@ const AdvertiserProfile = () => {
                 </Link>
             </div>
 
-            {/* Main profile section */}
-            <div className="flex items-center justify-center flex-grow pt-6">
-                <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-3xl">
-                    {/* Profile Section */}
-                    <div className="flex flex-col items-center mb-8">
-                        <div className="w-32 h-32 rounded-full bg-brandBlue text-white text-center flex items-center justify-center mb-4">
-                            <span className="text-2xl font-bold">{advertiser.Username.charAt(0)}</span> {/* Initial */}
+                        {/* Main profile section */}
+                        <div className="flex items-center justify-center flex-grow pt-6">
+                            <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-3xl">
+                                {/* Profile Section */}
+                                <div className="flex flex-col items-center mb-8">
+                                    
+                                {formData.Logo ? (
+                            
+
+                            <img src={formData.Logo} alt={`${formData.Company_Name}'s profile`} className="mt-2 w-32 h-32 rounded-full object-cover" />
+                            
+                        ) :
+                        (<div className="w-32 h-32 rounded-full bg-brandBlue text-white text-center flex items-center justify-center mb-4">
+                        <span className="text-2xl font-bold">{formData.Company_Name.charAt(0)}</span>
                         </div>
+                    )}
                         <h2 className="text-3xl font-bold text-brandBlue mb-2">{advertiser.Company_Name}</h2>
                         <p className="text-gray-600 mb-4">{advertiser.Link_to_website}</p>
                         <button
@@ -178,6 +213,37 @@ const AdvertiserProfile = () => {
                                         />
                                     </div>
                                 </div>
+                                  {/* New File Input for Profile Picture */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label className="block text-gray-700 text-sm font-bold mb-2">Upload Company Logo:</label>
+                                    <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleFileChange}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                                    />
+                                    {preview && (
+                                    <img src={preview} alt="Preview" className="mt-2 w-32 h-32 rounded-full object-cover" />
+                                    )}
+                                </div>
+                                </div>
+
+                                <button
+                                type="button"
+                                onClick={handleUploadLogo}
+                                className="w-full bg-brandBlue text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300 mt-2"
+                                >
+                                Upload Company LOGO 
+                                </button>
+
+                                <button
+                                type="button"
+                                onClick={() => window.location.reload()}
+                                className="w-full bg-brandBlue text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300 mt-2"
+                                >
+                                Cancel
+                                </button>
 
                                 <button
                                     type="button"

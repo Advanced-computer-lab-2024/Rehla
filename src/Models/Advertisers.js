@@ -31,6 +31,10 @@ const AdvertisersSchema = new Schema({
         type: String,
        // required: true
     },
+    Logo:{
+        type : String ,
+        //required : true,
+    },
     TermsAccepted: {
         type: Boolean,
         default: false,
