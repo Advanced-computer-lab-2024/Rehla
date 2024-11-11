@@ -33,6 +33,10 @@ const tourist_activities = require('../Models/tourist_activities.js');
 const TouristGuideReview = require('../Models/tour_guide_reviews.js');
 const tourist_transportationsm = require('../Models/tourist_tranportations.js');
 const transportationm = require('../Models/transportation.js');
+const tourguidefiles = require('../Models/filesTourguide.js');
+const sellerfiles = require('../Models/filesseller.js');
+const advertiserfiles = require('../Models/filesadvertiser.js');
+
 const multer = require('multer');
 const path = require('path');
 require('dotenv').config();
@@ -3370,6 +3374,11 @@ const deleteTouristActivity = async (req, res) => {
 //no 6
 // Setup Multer for file uploads
 const fs = require('fs'); // Include the file system module
+const Tesseract = require('tesseract.js');
+const pdfParse = require('pdf-parse');
+const storage2 = multer.memoryStorage(); // Store file in memory
+
+
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, './uploads'); // Define the directory where files should be stored
@@ -3380,11 +3389,12 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (req, file, cb) => {
-    const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png'];
+    // console.log("File MIME type:", file.mimetype); // Log the MIME type
+    const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg'];
     if (allowedTypes.includes(file.mimetype)) {
-        cb(null, true); // Accept the file
+        cb(null, true);
     } else {
-        cb(new Error('Invalid file type. Only PDFs, JPG, and PNG files are allowed.'), false); // Reject the file
+        cb(new Error("Unsupported file type. Only PDF and image files are supported."), false);
     }
 };
 
@@ -3398,7 +3408,7 @@ const picFilter = (req, file, cb) => {
 };
 
 const upload = multer({
-    storage: storage,
+    storage: storage2,
     limits: { fileSize: 1024 * 1024 * 5 }, // Limit file size to 5MB
     fileFilter: fileFilter
 });
@@ -3409,41 +3419,56 @@ const picture = multer({
     fileFilter: picFilter
 });
 
+// Extract text from image files using Tesseract
+const extractTextFromImage = async (buffer) => {
+    return Tesseract.recognize(buffer, 'eng')
+        .then(result => result.data.text)
+        .catch(err => { throw new Error('Error extracting text from image'); });
+};
+
+// Extract text from PDF files using pdf-parse
+const extractTextFromPDF = async (buffer) => {
+    return pdfParse(buffer)
+        .then(data => data.text)
+        .catch(err => { throw new Error('Error extracting text from PDF'); });
+};
+
+
+
+// Upload and process guest document
 const uploadGuestDocuments = async (req, res) => {
     upload.single('document')(req, res, async (err) => {
         try {
             if (err instanceof multer.MulterError) {
-                return res.status(400).json({ error: err.message }); // Handle Multer errors
+                return res.status(400).json({ error: err.message });
             } else if (err) {
-                return res.status(400).json({ error: err.message }); // Handle other errors
+                return res.status(400).json({ error: err.message });
             }
 
-            // Check if a file is uploaded
+            // Check if a file was uploaded
             if (!req.file) {
                 return res.status(400).json({ error: 'Please upload a document.' });
             }
 
-            const email = req.body.email;
-            const index = req.body.index;
+            const fileBuffer = req.file.buffer; // File is in memory, accessed using `req.file.buffer`
 
-            // Validate email and index
-            if (!email || !index) {
-                return res.status(400).json({ error: 'Missing email or index in request' });
+            // Extract text from the document
+            let extractedText = '';
+            const fileExtension = req.file.mimetype.toLowerCase();
+
+            // Check the file type and extract text accordingly
+            if (fileExtension === 'application/pdf') {
+                extractedText = await extractTextFromPDF(fileBuffer);
+            } else if (['image/jpeg', 'image/png', 'image/jpg'].includes(fileExtension)) {
+                extractedText = await extractTextFromImage(fileBuffer);
+            } else {
+                return res.status(400).json({ error: 'Unsupported file type. Only PDF and image files are supported.' });
             }
 
-            // Define the new file name using email and index
-            const newFileName = `${email}_${index}`;
-            const newFilePath = path.join('./uploads', newFileName);
-
-            // Rename the file to include email and index
-            fs.rename(req.file.path, newFilePath, async (err) => {
-                if (err) {
-                    return res.status(500).json({ error: 'Error renaming file', details: err.message });
-                }
-
-                // Here, you can perform additional logic if needed (like saving to a database)
-                
-                res.status(200).json({ message: 'Document uploaded and renamed successfully.', document: newFileName });
+            // Return the response with the extracted text
+            res.status(200).json({
+                message: 'Document uploaded and text extracted successfully.',
+                extractedText: extractedText
             });
 
         } catch (error) {
@@ -3452,6 +3477,7 @@ const uploadGuestDocuments = async (req, res) => {
         }
     });
 };
+
 
 const gettouristprofilepic = async (req, res) => {
     picture.single('document')(req, res, async (err) => {
