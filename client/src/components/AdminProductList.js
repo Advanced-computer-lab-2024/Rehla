@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../images/logo.png';
-import { getProducts, getProductsSortedByRating, addProduct, updateProduct,toggleProductArchiveStatus } from '../services/api';
+import { getProducts, getProductsSortedByRating, addProduct, updateProduct,toggleProductArchiveStatus,uploadProductPicture } from '../services/api';
 
 const Header = () => (
     <div className="NavBar">
@@ -53,6 +53,9 @@ const AdminProductList = () => {
     const [newProduct, setNewProduct] = useState({ Product_Name: '',Picture: '' , Price: '', Quantity: '',Seller_Name: '',Description: ''});
     const [isAdding, setIsAdding] = useState(false);
     const [alertMessage, setAlertMessage] = useState('');
+    const [file, setFile] = useState(null);
+    const [preview, setPreview] = useState(null);
+    
 
 
     useEffect(() => {
@@ -163,6 +166,38 @@ const AdminProductList = () => {
             console.error('Failed to toggle archive status:', error.message);
         }
     };
+    const handleFileChange = (e) => {
+        const selectedFile = e.target.files[0];
+        if (selectedFile) {
+          setFile(selectedFile);
+          setPreview(URL.createObjectURL(selectedFile)); // Create a preview URL
+        }
+      };
+    
+      const handleUploadProductPicture = async () => {
+        if (!file) {
+            alert('Please select a file to upload.');
+            return;
+        }
+    
+        const productname = updatedProduct.Product_Name;
+        if (!productname) {
+            alert('Product name is missing.');
+            return;
+        }
+    
+        try {
+            const response = await uploadProductPicture(productname, file);
+            alert('Product picture uploaded successfully!');
+            
+            window.location.reload(); // Reload to fetch the new profile picture
+
+        } catch (error) {
+            console.error('Error uploading picture:', error);
+            alert('Failed to upload picture.');
+        }
+    };
+    
 
     if (loading) {
         return <div className="text-center py-10">Loading...</div>;
@@ -335,15 +370,27 @@ const AdminProductList = () => {
                                             <h3 className="text-lg font-semibold" >{updatedProduct.Product_Name}</h3>
                                         </div>
                                         {/* Product Picture Input */}
+                                        <div>
                                         <div className="mb-2">
                                             <label className="block font-medium">Product Picture:</label>
                                             <input
-                                                type="text"
-                                                placeholder="Enter product picture URL"
-                                                value={updatedProduct.Picture}
-                                                onChange={(e) => setUpdatedProduct({ ...updatedProduct, Picture: e.target.value })}
-                                                className="border border-gray-300 rounded-lg px-4 py-2 w-full"
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={handleFileChange}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
                                             />
+                                            {preview && (
+                                            <img src={preview} alt="Preview"   className="mt-2 w-32 h-32 rounded-full object-cover"/>
+                                            )}
+                                        </div>
+                                            <button
+                                            type="button"
+                                            onClick={handleUploadProductPicture}
+                                            className="bg-brandBlue text-white px-6 py-2 rounded-lg"
+                                            >
+                                            Upload Product Picture
+                                            </button>
+
                                         </div>
                                         {/* Price Input */}
                                         <div className="mb-2">

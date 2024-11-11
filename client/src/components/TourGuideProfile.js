@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getTourGuideProfile, updateTourGuideProfile ,requestDeleteProfile} from '../services/api'; // Import your API functions
+import { getTourGuideProfile, updateTourGuideProfile ,requestDeleteProfile,uploadTourguidePicture} from '../services/api'; // Import your API functions
 import { Link } from 'react-router-dom';
 import logo from '../images/logo.png'; // Replace with your logo path
 
@@ -21,6 +21,8 @@ const TourGuideProfile = () => {
     const [password, setPassword] = useState('');
     const [type, setType] = useState('');
     const [message, setMessage] = useState('');
+    const [file, setFile] = useState(null);
+    const [preview, setPreview] = useState(null);
 
     const handleDeleteRequest = async () => {
         try {
@@ -60,6 +62,8 @@ const TourGuideProfile = () => {
         try {
             await updateTourGuideProfile(formData); // Send the updated form data to the API
             setIsEditing(false); // Exit edit mode after saving
+            window.location.reload(); // Reload to fetch the new profile picture
+
         } catch (error) {
             console.error("Error updating profile:", error);
         }
@@ -70,9 +74,35 @@ const TourGuideProfile = () => {
         setIsEditing(true); // Enable edit mode
     };
 
+    const handleFileChange = (e) => {
+        const selectedFile = e.target.files[0];
+        if (selectedFile) {
+          setFile(selectedFile);
+          setPreview(URL.createObjectURL(selectedFile)); // Create a preview URL
+        }
+      };
+    
+      const handleUploadProfilePicture = async () => {
+        if (!file) {
+          alert('Please select a file to upload.');
+          return;
+        }
+        const email = formData.Email; // Get the email from formData
+        try {
+          await uploadTourguidePicture(email, file); // Call your upload function
+          alert('Profile picture uploaded successfully!');
+          //window.location.reload(); // Reload to fetch the new profile picture
+        } catch (error) {
+          console.error('Error uploading profile picture:', error);
+          alert('Failed to upload profile picture.');
+        }
+      };
+
     if (!tourGuide) {
         return <div>Loading...</div>; // Render loading state if profile is not loaded yet
     }
+
+
 
     return (
         <div className="min-h-screen flex flex-col justify-between bg-gray-100">
@@ -84,14 +114,19 @@ const TourGuideProfile = () => {
                 </Link>
             </div>
 
-            {/* Main Profile Section */}
             <div className="flex items-center justify-center flex-grow pt-6">
-                <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-3xl">
-                    {/* Profile Header */}
-                    <div className="flex flex-col items-center mb-8">
-                        <div className="w-32 h-32 rounded-full bg-brandBlue text-white text-center flex items-center justify-center mb-4">
-                            <span className="text-2xl font-bold">{tourGuide.Username.charAt(0)}</span> {/* Initial */}
-                        </div>
+        <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-3xl">
+          <div className="flex flex-col items-center mb-8">
+            
+                {formData.Pic ? (
+                   
+                    <img src={formData.Pic} alt={`${formData.Name}'s profile`} className="mt-2 w-32 h-32 rounded-full object-cover" />
+                   
+                ) :
+              (<div className="w-32 h-32 rounded-full bg-brandBlue text-white text-center flex items-center justify-center mb-4">
+                <span className="text-2xl font-bold">{formData.Username.charAt(0)}</span>
+              </div>
+            )}
                         <h2 className="text-3xl font-bold text-brandBlue mb-2">{tourGuide.Username}</h2> {/* Replaced Email with Username */}
                         <button
                             className="bg-brandBlue text-white py-2 px-4 rounded-lg hover:bg-opacity-90 transition duration-300"
@@ -184,6 +219,39 @@ const TourGuideProfile = () => {
                                     />
                                 </div>
                             </div>
+
+                             {/* New File Input for Profile Picture */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-gray-700 text-sm font-bold mb-2">Upload Profile Picture:</label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                    />
+                    {preview && (
+                      <img src={preview} alt="Preview" className="mt-2 w-32 h-32 rounded-full object-cover" />
+                    )}
+                  </div>
+                </div>
+
+                            <button
+                            type="button"
+                            onClick={handleUploadProfilePicture}
+                            className="w-full bg-brandBlue text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300 mt-2"
+                            >
+                            Upload Profile Picture
+                            </button>
+
+                            <button
+                            type="button"
+                            onClick={() => window.location.reload()}
+                            className="w-full bg-brandBlue text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300 mt-2"
+                            >
+                            Cancel
+                            </button>
+
 
                             <button
                                 type="button"

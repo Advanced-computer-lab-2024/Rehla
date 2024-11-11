@@ -100,6 +100,7 @@ const {createUserAdmin,
   deleteTouristActivity,
   uploadGuestDocuments,
   gettouristprofilepic,
+  gettourguideprofilepic,
   getproductpic,
   Itineraryactivation,
   getAttendedItineraries,
@@ -259,6 +260,8 @@ app.delete("/deleteTouristActivity",deleteTouristActivity);
 app.post("/uploadGuestDocuments", uploadGuestDocuments);
 app.post("/gettouristprofilepic", gettouristprofilepic);
 app.post("/getproductpic", getproductpic);
+app.post("/gettourguideprofilepic", gettourguideprofilepic);
+
 
 
 app.put("/Itineraryactivation", Itineraryactivation);
