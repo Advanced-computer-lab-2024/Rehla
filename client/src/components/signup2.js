@@ -100,9 +100,9 @@ const RegisterRequest = () => {
                                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
                             >
                                 <option value="">Select Type</option>
-                                <option value="TOURGUIDE">Tour Guide</option>
-                                <option value="SELLER">Seller</option>
-                                <option value="ADVERTISER">Advertiser</option>
+                                <option value="Tour Guide">Tour Guide</option>
+                                <option value="Seller">Seller</option>
+                                <option value="Advertiser">Advertiser</option>
                             </select>
                         </label>
                     </div>

@@ -52,8 +52,13 @@ export const registerRequest= async(requestData)=>{
         const response = await axios.post(`${API_URL}/registerRequest`, requestData);
         return response.data;
     } catch (error) {
-        console.error('Error sending request:', error);
-        throw error;
+        if (error.response && error.response.data) {
+            // Return the error message from backend if available
+            throw new Error(error.response.data.error);
+        } else {
+            console.error('Error 3:', error);
+            throw error;
+        }
 
     }
 };
