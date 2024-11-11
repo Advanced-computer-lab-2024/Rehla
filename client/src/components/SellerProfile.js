@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getSellerProfile, updateSellerProfile,requestDeleteProfile } from '../services/api'; // Import your API functions
+import { getSellerProfile, updateSellerProfile,requestDeleteProfile ,uploadsellerLogo} from '../services/api'; // Import your API functions
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../images/logo.png'; // Assuming you have a logo file
 
@@ -13,6 +13,9 @@ const SellerProfile = () => {
     const [password, setPassword] = useState('');
     const [type, setType] = useState('');
     const [message, setMessage] = useState('');
+    
+  const [file, setFile] = useState(null);
+  const [preview, setPreview] = useState(null);
   
     const [formData, setFormData] = useState({
         Username: '',
@@ -73,10 +76,36 @@ const SellerProfile = () => {
             setSeller(response.seller); // Update the seller state with the new data
             setIsEditing(false); // Stop editing mode
             setError(''); // Clear any previous errors
+            window.location.reload();
+
         } catch (error) {
             setError('Failed to update profile. Please try again later.');
         }
     };
+
+    const handleFileChange = (e) => {
+        const selectedFile = e.target.files[0];
+        if (selectedFile) {
+          setFile(selectedFile);
+          setPreview(URL.createObjectURL(selectedFile)); // Create a preview URL
+        }
+      };
+    
+      const handleUploadLogo = async () => {
+        if (!file) {
+          alert('Please select a file to upload.');
+          return;
+        }
+        const email = formData.Email; // Get the email from formData
+        try {
+          await uploadsellerLogo(email, file); // Call your upload function
+          alert('Profile picture uploaded successfully!');
+          //window.location.reload(); // Reload to fetch the new profile picture
+        } catch (error) {
+          console.error('Error uploading profile picture:', error);
+          alert('Failed to upload profile picture.');
+        }
+      };
 
     return (
         <div className="min-h-screen flex flex-col justify-between bg-gray-100">
@@ -94,9 +123,17 @@ const SellerProfile = () => {
             <div className="flex flex-col items-center mb-8 mt-6"> {/* Added mt-6 for padding */}
                 <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-2xl">
                     <div className="flex flex-col items-center mb-4">
-                        <div className="w-32 h-32 rounded-full bg-brandBlue text-white text-center flex items-center justify-center mb-4">
-                            <span className="text-4xl font-bold">{seller.Username?.charAt(0)}</span> {/* Initial */}
-                        </div>
+           
+                    {formData.Logo ? (
+                   
+
+                   <img src={formData.Logo} alt={`${formData.Shop_Name}'s profile`} className="mt-2 w-32 h-32 rounded-full object-cover" />
+                  
+               ) :
+             (<div className="w-32 h-32 rounded-full bg-brandBlue text-white text-center flex items-center justify-center mb-4">
+               <span className="text-2xl font-bold">{formData.Shop_Name.charAt(0)}</span>
+             </div>
+           )}
                         <h2 className="text-3xl font-bold text-brandBlue mb-1">{seller.Shop_Name}</h2>
                     </div>
 
@@ -199,6 +236,29 @@ const SellerProfile = () => {
                                     required
                                 />
                             </div>
+                             {/* New File Input for Profile Picture */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label className="block text-gray-700 text-sm font-bold mb-2">Upload Company Logo :</label>
+                                <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleFileChange}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                                />
+                                {preview && (
+                                <img src={preview} alt="Preview" className="mt-2 w-32 h-32 rounded-full object-cover" />
+                                )}
+                            </div>
+                            </div>
+
+                            <button
+                            type="button"
+                            onClick={handleUploadLogo}
+                            className="w-full bg-brandBlue text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300 mt-2"
+                            >
+                            Upload Company Logo
+                            </button>
 
                             <div className="space-x-4">
                                 <button
@@ -210,6 +270,7 @@ const SellerProfile = () => {
                                 <button
                                     type="button"
                                     onClick={() => setIsEditing(false)}
+                                    
                                     className="bg-gray-400 text-white py-2 px-4 rounded-lg hover:bg-opacity-90 transition duration-300"
                                 >
                                     Cancel

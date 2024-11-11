@@ -101,6 +101,7 @@ const {createUserAdmin,
   uploadGuestDocuments,
   gettouristprofilepic,
   gettourguideprofilepic,
+  getsellerLogo,
   getproductpic,
   Itineraryactivation,
   getAttendedItineraries,
@@ -261,6 +262,7 @@ app.post("/uploadGuestDocuments", uploadGuestDocuments);
 app.post("/gettouristprofilepic", gettouristprofilepic);
 app.post("/getproductpic", getproductpic);
 app.post("/gettourguideprofilepic", gettourguideprofilepic);
+app.post("/getsellerLogo", getsellerLogo);
 
 
 

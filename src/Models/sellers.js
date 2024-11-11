@@ -38,6 +38,10 @@ const sellersSchema = new Schema({
         required : true,
         default : "SELLER",
     },
+    Logo:{
+        type : String ,
+        //required : true,
+    },
     TermsAccepted: {
         type: Boolean,
         default: false,
