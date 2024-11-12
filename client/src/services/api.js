@@ -1227,3 +1227,18 @@ export const uploadGuestDocuments = async (email, type, files) => {
         }
     }
 };
+
+
+export const getAllFiles = async () => {
+    try {
+        const response = await axios.get(`${API_URL}/getAllFiles`);  // Call the new endpoint
+        return response.data;  // Return the response data from the server
+    } catch (error) {
+        if (error.response && error.response.data) {
+            throw new Error(error.response.data.error);  // If error data is available, throw it
+        } else {
+            console.error('Error retrieving files:', error);  // Log any error
+            throw error;
+        }
+    }
+};

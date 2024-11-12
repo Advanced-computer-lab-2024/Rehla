@@ -4737,6 +4737,33 @@ const getAllUnarchivedProducts = async (req, res) => {
     }
 };
 
+// Function to get all rows from the files collections
+const getAllFiles = async (req, res) => {
+    try {
+        // Fetch all documents from each collection
+        const tourGuideFiles = await tourguidefiles.find({});
+        const sellerFiles = await sellerfiles.find({});
+        const advertiserFiles = await advertiserfiles.find({});
+
+        // Combine all the results into one object
+        const allFiles = {
+            tourGuideFiles,
+            sellerFiles,
+            advertiserFiles
+        };
+
+        // Return the combined result as JSON
+        res.status(200).json({
+            message: 'Files retrieved successfully',
+            allFiles
+        });
+    } catch (error) {
+        console.error('Error retrieving files:', error);
+        res.status(500).json({ error: 'Error retrieving files', details: error.message });
+    }
+};
+
+
 // ----------------- Activity Category CRUD -------------------
 
 module.exports = { getPurchasedProducts,
@@ -4866,4 +4893,5 @@ module.exports = { getPurchasedProducts,
     bookTransportation,
     viewAllTransportation,
     getAllUnarchivedProducts,
+    getAllFiles,
 };

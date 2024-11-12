@@ -128,6 +128,7 @@ const {createUserAdmin,
   bookTransportation,
   viewAllTransportation,
   getAllUnarchivedProducts,
+  getAllFiles,
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -296,3 +297,5 @@ app.post("/createTransportation", createTransportation);
 app.post("/bookTransportation", bookTransportation);
 app.get("/viewAllTransportation", viewAllTransportation);
 app.get("/getAllUnarchivedProducts", getAllUnarchivedProducts);
+app.get('/getAllFiles', getAllFiles);
+
