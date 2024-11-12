@@ -3546,20 +3546,43 @@ const uploadGuestDocuments = async (req, res) => {
                 return res.status(400).json({ error: 'Please upload a document.' });
             }
 
+            const email = req.body.email;
+            const type = req.body.type;
+
+            // Validate email and type
+            if (!email || !type) {
+                return res.status(400).json({ error: 'Missing email or type in request' });
+            }
+
+
             const fileBuffer = req.file.buffer; // File is in memory, accessed using `req.file.buffer`
 
             // Extract text from the document
-            let extractedText = '';
-            const fileExtension = req.file.mimetype.toLowerCase();
+            const base64String = req.file.buffer.toString('base64');
 
             // Check the file type and extract text accordingly
             if (fileExtension === 'application/pdf') {
-                extractedText = await extractTextFromPDF(fileBuffer);
+                base64String = await extractTextFromPDF(fileBuffer);
             } else if (['image/jpeg', 'image/png', 'image/jpg'].includes(fileExtension)) {
-                extractedText = await extractTextFromImage(fileBuffer);
+                base64String = await extractTextFromImage(fileBuffer);
             } else {
                 return res.status(400).json({ error: 'Unsupported file type. Only PDF and image files are supported.' });
             }
+
+            //check the type 
+            if (type === 'Seller') {
+                const seller = new sellerfiles({ Email: email, Files: base64String });
+                await seller.save();
+            } else if (type === 'Tour Guide') {
+                const tour_guide = new tourguidefiles({ Email: email, Files: base64String });
+                await tour_guide.save();
+            }else if (type === 'Advertiser') {
+                const advertiser = new advertiserfiles({ Email: email, Files: base64String });
+                await advertiser.save();
+            } else {
+                return res.status(400).json({ error: 'Invalid type. Please specify Seller, Tour Guide, or Advertiser.' });
+            }
+
 
             // Return the response with the extracted text
             res.status(200).json({
