@@ -3552,7 +3552,7 @@ const uploadGuestDocuments = async (req, res) => {
             if (!email || !type) {
                 return res.status(400).json({ error: 'Missing email or type in request' });
             }
-
+ 
             // Process each file
             const fileBuffers = req.files.map(file => file.buffer);
             const base64Strings = await Promise.all(fileBuffers.map(async (fileBuffer, index) => {
@@ -3577,12 +3577,24 @@ const uploadGuestDocuments = async (req, res) => {
             // Check the type 
             if (type === 'Seller') {
                 const seller = new sellerfiles({ Email: email, Files: base64Strings[0], File2: base64Strings[1] });
+                const checkSeller = await sellerfiles.findOne({ Email: email });
+                if (checkSeller) {
+                    return res.status(409).json({ error: 'Seller files already uploaded.' });
+                }
                 await seller.save();
             } else if (type === 'Tour Guide') {
                 const tour_guide = new tourguidefiles({ Email: email, Files: base64Strings[0], File2: base64Strings[1] });
+                const checkTourGuide = await tourguidefiles.findOne({ Email: email });
+                if (checkTourGuide) {
+                    return res.status(409).json({ error: 'Tour guide files already uploaded.' });
+                }
                 await tour_guide.save();
             } else if (type === 'Advertiser') {
-                const advertiser = new advertiserfiles({ Email: email, Files: base64Strings[0], File2: base64Strings[1 ] });
+                const advertiser = new advertiserfiles({ Email: email, Files: base64Strings[0], File2: base64Strings[1] });
+                const checkAdvertiser = await advertiserfiles.findOne({ Email : email });
+                if (checkAdvertiser) {
+                    return res.status(409).json({ error: 'Advertiser files already uploaded.' });
+                }
                 await advertiser.save();
             } else {
                 return res.status(400).json({ error: 'Invalid type. Please specify Seller, Tour Guide, or Advertiser.' });

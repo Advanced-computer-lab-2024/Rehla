@@ -1202,3 +1202,28 @@ export const bookTransportation = async (touristEmail, routeNumber) => {
         }
     }
 };
+
+export const uploadGuestDocuments = async (email, type, files) => {
+    const formData = new FormData();
+    files.forEach((file) => {
+        formData.append('document', file); // Ensure the field name matches what the server expects
+    });
+    formData.append('email', email);
+    formData.append('type', type);
+
+    try {
+        const response = await axios.post(`${API_URL}/uploadGuestDocuments`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        return response.data;
+    } catch (error) {
+        if (error.response && error.response.data) {
+            throw new Error(error.response.data.error);
+        } else {
+            console.error('Error uploading documents:', error);
+            throw error;
+        }
+    }
+};

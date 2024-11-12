@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { registerRequest } from '../services/api'; // Import the API call function
+import { registerRequest, uploadGuestDocuments } from '../services/api'; // Import the API call function
 import { Link } from 'react-router-dom';
 import logo from '../images/logo.png';  // Assuming your logo is stored in the assets folder
 
@@ -12,6 +12,27 @@ const RegisterRequest = () => {
     });
 
     const [message, setMessage] = useState('');
+
+    const [files, setFiles] = useState([]);
+
+    const handleFileChange = (e, index) => {
+        const selectedFiles = Array.from(e.target.files);
+        setFiles(prevFiles => {
+            const newFiles = [...prevFiles];
+            newFiles[index] = selectedFiles;
+            return newFiles.flat();
+        });
+    };
+
+    const handleFileUpload = async () => {
+        try {
+            const response = await uploadGuestDocuments(employee.Email, employee.Type, files);
+            setMessage('Files uploaded successfully!');
+            console.log(response); // Log the response for debugging
+        } catch (error) {
+            setMessage('Error uploading files: ' + error.message);
+        }
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -106,6 +127,42 @@ const RegisterRequest = () => {
                             </select>
                         </label>
                     </div>
+
+                    {/* File upload fields */}
+                    <div>
+                        <label className="block text-gray-700 text-sm font-bold mb-2">
+                            Upload File 1:
+                            <input
+                                type="file"
+                                name="files1"
+                                onChange={(e) => handleFileChange(e, 0)}
+                                multiple
+                                required
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                            />
+                        </label>
+                    </div>
+                    <div>
+                        <label className="block text-gray-700 text-sm font-bold mb-2">
+                            Upload File 2:
+                            <input
+                                type="file"
+                                name="files2"
+                                onChange={(e) => handleFileChange(e, 1)}
+                                multiple
+                                required
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                            />
+                        </label>
+                    </div>
+
+                    <button
+                        type="button"
+                        onClick={handleFileUpload}
+                        className="w-full bg-brandBlue text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300"
+                    >
+                        Upload Files
+                    </button>
 
                     <button
                         type="submit"
