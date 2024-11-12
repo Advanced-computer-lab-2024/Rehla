@@ -3543,8 +3543,6 @@ const uploadGuestDocuments = async (req, res) => {
                 return res.status(400).json({ error: 'Please upload two documents.' });
             }
 
-            console.log('Uploaded files:', req.files);
-
             const email = req.body.email;
             const type = req.body.type;
 
@@ -3557,9 +3555,6 @@ const uploadGuestDocuments = async (req, res) => {
             const fileBuffers = req.files.map(file => file.buffer);
             const base64Strings = await Promise.all(fileBuffers.map(async (fileBuffer, index) => {
                 const fileExtension = req.files[index].mimetype;
-
-                console.log(`Processing file ${index + 1}:`, req.files[index].originalname, fileExtension);
-
                 try {
                     if (fileExtension === 'application/pdf') {
                         return await extractTextFromPDF(fileBuffer);
