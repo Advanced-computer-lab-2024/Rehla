@@ -22,7 +22,8 @@ import {
     filterComplaintsByStatus ,
     flagActivity , flagItinerary 
     ,getDeleteRequests,
-    deleteRequest
+    deleteRequest,
+    updateComplaintStatus
     
 } from '../services/api'; // Import all API functions
 import '../css/Home.css';
@@ -79,6 +80,7 @@ const AdminHome = () => {
     const [isSendingReply, setIsSendingReply] = useState(false); // Loading state
     const [replyErrorMessage, setReplyErrorMessage] = useState('');
     const [replySuccessMessage, setReplySuccessMessage] = useState('');
+    const [complaintTitle, setComplaintTitle] = useState('');
 
     
     const [sortedComplaints, setSortedComplaints] = useState([]);
@@ -386,6 +388,18 @@ const AdminHome = () => {
             console.error('Error in replying to complaint:', error);
         } finally {
             setIsSendingReply(false);
+        }
+    };
+
+    const handleComplaintStatus = async (email, title) => {
+        try {
+            const response = await updateComplaintStatus(email, title);
+            alert("Complaint resolved")
+            setReplySuccessMessage(response.message);
+            setErrorMessage(null);
+        } catch (error) {
+            setErrorMessage('Failed to update complaint status.');
+            console.error('Error:', error);
         }
     };
 
@@ -909,6 +923,7 @@ const toggleUserModal = () => {
                                 <th className="py-2 px-4 border">Status</th>
                                 <th className="py-2 px-4 border">Date</th>
                                 <th className="py-2 px-4 border">Action</th>
+                                <th className="py-2 px-4 border">Solve</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -929,6 +944,14 @@ const toggleUserModal = () => {
                                             className="bg-brandBlue text-white rounded-md px-2 py-1 transition duration-200 hover:bg-logoOrange"
                                         >
                                             Reply
+                                        </button>
+                                    </td>
+                                    <td className="py-2 px-4 border">
+                                        <button
+                                            onClick={() => handleComplaintStatus(complaint.Tourist_Email, complaint.Title)}
+                                            className="bg-brandBlue text-white rounded-md px-2 py-1 transition duration-200 hover:bg-logoOrange"
+                                        >
+                                            Resolve
                                         </button>
                                     </td>
                                 </tr>

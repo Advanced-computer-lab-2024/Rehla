@@ -830,9 +830,9 @@ export const filterComplaintsByStatus = async (status) => {
      
 
 
-export const updateComplaintStatus = async (email) => {
+export const updateComplaintStatus = async (email,title) => {
     try {
-        const response = await axios.put(`${API_URL}/ComplaintStatus/${email}`);
+        const response = await axios.put(`${API_URL}/ComplaintStatus/${email}/${title}`);
         return response.data; // Returns the updated complaint with the resolved status
     } catch (error) {
         console.error('Error updating complaint status:', error);
