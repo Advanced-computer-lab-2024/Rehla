@@ -3529,11 +3529,8 @@ const extractTextFromPDF = async (buffer) => {
         .catch(err => { throw new Error('Error extracting text from PDF'); });
 };
 
-
-
-// Upload and process guest document
 const uploadGuestDocuments = async (req, res) => {
-    upload.single('document')(req, res, async (err) => {
+    upload.array('document', 2)(req, res, async (err) => {
         try {
             if (err instanceof multer.MulterError) {
                 return res.status(400).json({ error: err.message });
@@ -3541,10 +3538,12 @@ const uploadGuestDocuments = async (req, res) => {
                 return res.status(400).json({ error: err.message });
             }
 
-            // Check if a file was uploaded
-            if (!req.file) {
-                return res.status(400).json({ error: 'Please upload a document.' });
+            // Check if files were uploaded
+            if (!req.files || req.files.length < 2) {
+                return res.status(400).json({ error: 'Please upload two documents.' });
             }
+
+            console.log('Uploaded files:', req.files);
 
             const email = req.body.email;
             const type = req.body.type;
@@ -3554,43 +3553,46 @@ const uploadGuestDocuments = async (req, res) => {
                 return res.status(400).json({ error: 'Missing email or type in request' });
             }
 
+            // Process each file
+            const fileBuffers = req.files.map(file => file.buffer);
+            const base64Strings = await Promise.all(fileBuffers.map(async (fileBuffer, index) => {
+                const fileExtension = req.files[index].mimetype;
 
-            const fileBuffer = req.file.buffer; // File is in memory, accessed using `req.file.buffer`
-            const fileBuffer2 = req.file2.buffer; // File is in memory, accessed using `req.file.buffer`
+                console.log(`Processing file ${index + 1}:`, req.files[index].originalname, fileExtension);
 
-            // Extract text from the document
-            const base64String = req.file.buffer.toString('base64');
+                try {
+                    if (fileExtension === 'application/pdf') {
+                        return await extractTextFromPDF(fileBuffer);
+                    } else if (['image/jpeg', 'image/png', 'image/jpg'].includes(fileExtension)) {
+                        return await extractTextFromImage(fileBuffer);
+                    } else {
+                        throw new Error('Unsupported file type. Only PDF and image files are supported.');
+                    }
+                } catch (error) {
+                    console.error(`Error extracting text from file ${index + 1}:`, error);
+                    return ''; // Return an empty string if extraction fails
+                }
+            }));
 
-            // Check the file type and extract text accordingly
-            if (fileExtension === 'application/pdf') {
-                base64String = await extractTextFromPDF(fileBuffer);
-            } else if (['image/jpeg', 'image/png', 'image/jpg'].includes(fileExtension)) {
-                base64String = await extractTextFromImage(fileBuffer);
-            } else {
-                return res.status(400).json({ error: 'Unsupported file type. Only PDF and image files are supported.' });
-            }
-
-
-
-            //check the type 
+            // Check the type 
             if (type === 'Seller') {
-                const seller = new sellerfiles({ Email: email, Files: base64String });
+                const seller = new sellerfiles({ Email: email, Files: base64Strings[0], File2: base64Strings[1] });
                 await seller.save();
             } else if (type === 'Tour Guide') {
-                const tour_guide = new tourguidefiles({ Email: email, Files: base64String });
+                const tour_guide = new tourguidefiles({ Email: email, Files: base64Strings[0], File2: base64Strings[1] });
                 await tour_guide.save();
-            }else if (type === 'Advertiser') {
-                const advertiser = new advertiserfiles({ Email: email, Files: base64String });
+            } else if (type === 'Advertiser') {
+                const advertiser = new advertiserfiles({ Email: email, Files: base64Strings[0], File2: base64Strings[1 ] });
                 await advertiser.save();
             } else {
                 return res.status(400).json({ error: 'Invalid type. Please specify Seller, Tour Guide, or Advertiser.' });
             }
 
-
             // Return the response with the extracted text
             res.status(200).json({
-                message: 'Document uploaded and text extracted successfully.',
-                extractedText: extractedText
+                message: 'Documents uploaded and text extracted successfully.',
+                extractedText1: base64Strings[0],
+                extractedText2: base64Strings[1]
             });
 
         } catch (error) {
@@ -3600,9 +3602,8 @@ const uploadGuestDocuments = async (req, res) => {
     });
 };
 
-
 const gettouristprofilepic = async (req, res) => {
-    picture.single('document')(req, res, async (err) => {
+    picture.single('document',2)(req, res, async (err) => {
         try {
             if (err instanceof multer.MulterError) {
                 return res.status(400).json({ error: err.message }); // Handle Multer errors
