@@ -11,7 +11,13 @@ Email: {
 Files: {
     type: String,
     //required: true
+},
+
+File2: {
+    type: String,
+    //required: true
 }
+
 },{ versionKey: false });
 
 const tourguide_fileModel = mongoose.model('tourguide_files', tourguide_filesSchema);

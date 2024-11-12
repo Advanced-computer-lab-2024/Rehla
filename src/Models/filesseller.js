@@ -11,7 +11,13 @@ Email: {
 Files: {
     type: String,
     //required: true
+},
+
+File2: {
+    type: String,
+    //required: true
 }
+
 },{ versionKey: false });
 
 const seller_fileModel = mongoose.model('seller_files', seller_filesSchema);

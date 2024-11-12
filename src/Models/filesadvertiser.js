@@ -11,7 +11,13 @@ Email: {
 Files: {
     type: String,
     //required: true
+},
+
+File2: {
+    type: String,
+    //required: true
 }
+
 },{ versionKey: false });
 
 const advertiser_fileModel = mongoose.model('advertiser_files', advertiser_filesSchema);

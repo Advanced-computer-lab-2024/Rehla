@@ -3556,6 +3556,7 @@ const uploadGuestDocuments = async (req, res) => {
 
 
             const fileBuffer = req.file.buffer; // File is in memory, accessed using `req.file.buffer`
+            const fileBuffer2 = req.file2.buffer; // File is in memory, accessed using `req.file.buffer`
 
             // Extract text from the document
             const base64String = req.file.buffer.toString('base64');
@@ -3568,6 +3569,8 @@ const uploadGuestDocuments = async (req, res) => {
             } else {
                 return res.status(400).json({ error: 'Unsupported file type. Only PDF and image files are supported.' });
             }
+
+
 
             //check the type 
             if (type === 'Seller') {
