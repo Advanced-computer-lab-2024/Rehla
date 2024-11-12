@@ -10,6 +10,9 @@ const Home = () => {
     const [data, setData] = useState(null);
     const [error, setError] = useState(null);
 
+    const [selectedActivity, setSelectedActivity] = useState(null); // New state for selected activity
+    const [isModalOpen, setIsModalOpen] = useState(false); // State to manage modal visibility
+
     const [currency, setCurrency] = useState('USD');
     const [conversionRates] = useState({
         USD: 1,
@@ -135,6 +138,24 @@ const Home = () => {
         }));
     };
 
+    // Open modal and set the selected activity
+    const handleActivityClick = (activity) => {
+        setSelectedActivity(activity);
+        setIsModalOpen(true);
+    };
+
+    // Close the modal
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setSelectedActivity(null); // Reset selected activity when closing
+    };
+
+    // Generate shareable link
+    const generateShareLink = () => {
+        const activityLink = `${window.location.origin}/activity/${selectedActivity._id}`;
+        return activityLink;
+    };
+
     if (error) {
         return <div className="text-red-500 text-center">Error: {error.message}</div>;
     }
@@ -256,6 +277,7 @@ const Home = () => {
                         <div
                         key={activity._id}
                         className="gallery-item flex-none flex flex-col items-center w-80"
+                        onClick={() => handleActivityClick(activity)}
                         >
                         <img
                             src={activity.Picture}
@@ -270,6 +292,36 @@ const Home = () => {
                     ))}
                 </div>
             </section>
+             {/* Modal for Activity Details */}
+             {isModalOpen && selectedActivity && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+                    <div className="bg-white p-6 rounded-lg w-96">
+                        <h3 className="text-2xl font-semibold">{selectedActivity.Name}</h3>
+                        <p className="text-lg">{selectedActivity.Description}</p>
+                        <p className="text-lg">
+                            Price: {convertPrice(selectedActivity.Price)} {currency}
+                        </p>
+                        <p className="text-lg">Rating: {selectedActivity.Rating}</p>
+                        <div className="mt-4">
+                            <button
+                                className="bg-brandBlue text-white px-4 py-2 rounded"
+                                onClick={() => {
+                                    const link = generateShareLink();
+                                    alert(`Share this link: ${link}`); // You can also copy it to the clipboard or handle sharing in other ways
+                                }}
+                            >
+                                Share Activity
+                            </button>
+                            <button
+                                className="bg-gray-500 text-white px-4 py-2 rounded ml-2"
+                                onClick={handleCloseModal} // Close modal
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <section className="flex justify-between items-center mb-10 p-8 ml-10">
                 <div className="flex-1 pr-4">
@@ -362,6 +414,7 @@ const Home = () => {
                         <div
                         key={itinerary._id}
                         className="gallery-item flex-none flex flex-col items-center w-80"
+                        onClick={() => handleActivityClick(itinerary)}
                         >
                         <img
                             src={itinerary.Picture}
@@ -446,7 +499,9 @@ const Home = () => {
                 <h2 className="text-2xl font-semibold mb-4 text-center">Museums and Historical Places</h2>
                 <div className="flex overflow-x-auto scrollbar-hide gap-6 px-6 py-4">
                     {(filteredPlacesAndMuseums?.museums || data.museums).map((museum) => (
-                        <div key={museum._id} className="gallery-item flex-none flex flex-col items-center w-80">
+                        <div key={museum._id} className="gallery-item flex-none flex flex-col items-center w-80"
+                        onClick={() => handleActivityClick(museum)}
+>
                             <img
                                 src={museum.pictures}
                                 alt={museum.Name}
@@ -463,7 +518,9 @@ const Home = () => {
                         </div>
                     ))}
                     {(filteredPlacesAndMuseums?.historicalPlaces || data.historicalPlaces).map((place) => (
-                        <div key={place._id} className="gallery-item flex-none flex flex-col items-center w-80">
+                        <div key={place._id} className="gallery-item flex-none flex flex-col items-center w-80"
+                        onClick={() => handleActivityClick(place)}
+>
                             <img
                                 src={place.Pictures}
                                 alt={place.Name}
