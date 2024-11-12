@@ -3236,6 +3236,54 @@ const createTouristActivity = async (req, res) => {
             { Booking_Available: false }
         );
 
+        //PAY FOR THE ACTIVITY
+        const activityy = await activity.findOne({ Name: Activity_Name });
+
+        // Check if the tourist has enough money in their wallet
+        if (touristExists.Wallet < activityy.Price) {
+            return res.status(400).json({ error: 'Insufficient funds in your wallet to book this activity.' });
+        }
+
+        // Deduct the activity price from the tourist's wallet balance
+        touristExists.Wallet -= activityy.Price;
+
+        // Calculate points based on the level
+        let points = 0;
+        switch (touristExists.Badge) {
+            case 'Level 1':
+                points = activityy.Price * 0.5;
+                break;
+            case 'Level 2':
+                points = activityy.Price * 1;
+                break;
+            case 'Level 3':
+                points = activityy.Price * 1.5;
+                break;
+            default:
+                points = 0;
+        }
+
+        // Add points to the tourist's account
+        touristExists.Points += points;
+        await touristExists.save();
+
+        // Update the tourist's badge based on the new points
+        if (touristExists.Points <= 100000) {
+            touristExists.Badge = 'Level 1';
+        } else if (touristExists.Points <= 500000) {
+            touristExists.Badge = 'Level 2';
+        } else {
+            touristExists.Badge = 'Level 3';
+        }
+
+        await touristExists.save();
+
+        // Mark the tourist activity as paid
+        savedTouristActivity.Paid = true;
+        await savedTouristActivity.save();
+
+        
+
         // Send a response
         res.status(201).json({ message: 'Tourist activity created successfully', tourist_activity: savedTouristActivity });
 
