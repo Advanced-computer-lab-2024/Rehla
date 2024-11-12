@@ -1057,9 +1057,9 @@ const replyToComplaint = async (req, res) => {
 
 const ComplaintStatus = async (req, res) => {
     try {
-        const { email } = req.params; 
+        const { email,title } = req.params; 
 
-        const complaint = await tourist_complaints.findOne({ Tourist_Email: email });
+        const complaint = await tourist_complaints.findOne({ Tourist_Email: email, Title:title });
 
         if (!complaint) {
             return res.status(404).json({ message: 'Complaint not found for this email.' });

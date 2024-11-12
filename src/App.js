@@ -191,7 +191,7 @@ app.get("/filterComplaintsByStatus/:status", filterComplaintsByStatus);
 app.put("/flagActivity/:name", flagActivity);      
 app.put("/flagItinerary/:name", flagItinerary); 
 app.put("/replyComplaint/:email", replyToComplaint);
-app.put("/ComplaintStatus/:email",ComplaintStatus);
+app.put("/ComplaintStatus/:email/:title",ComplaintStatus);
 app.put("/ArchiveProduct/:productName", ProductArchiveStatus);
 app.get("/getProductsSortedByRating" , getProductsSortedByRating); //Tourist-Admin-Seller :sort products by rating 
 app.post("/addProduct" ,addProduct); //Admin - Seller : add a new product
