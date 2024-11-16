@@ -96,7 +96,7 @@ const AdvertiserHome = () => {
         const confirmDelete = window.confirm("Are you sure you want to delete this activity?");
         if (confirmDelete) {
             try {
-                await deleteActivityByAdvertiser(selectedActivity._id);
+                await deleteActivityByAdvertiser(selectedActivity.Name);
                 console.log('Activity deleted successfully');
                 fetchActivities(localStorage.getItem('email'));
                 setSelectedActivity(null);
@@ -115,14 +115,10 @@ const AdvertiserHome = () => {
             Price: '',
             Date: '',
             Discount_Percent: '',
-            Booking_Available: false,
             Available_Spots: '',
-            Booked_Spots: '',
-            Rating: '',
             Category: '',
             Tag: '',
-            Created_By: localStorage.getItem('email') || '', // Assuming Created_By is the email of the advertiser
-            Picture: '',
+            Created_By: localStorage.getItem('email') || '' // Assuming Created_By is the email of the advertiser
         });
         //setLocationData(''); // Reset location data
         setCreateModalOpen(true);
@@ -490,21 +486,7 @@ const AdvertiserHome = () => {
                                     className="border rounded w-full px-2 py-1"
                                 />
                             </label>
-                            <label className="block mb-2">
-                                Booking Available:
-                                <input
-                                    type="checkbox"
-                                    name="Booking_Available"
-                                    checked={newActivityData.Booking_Available}
-                                    onChange={(e) => {
-                                        setNewActivityData((prevData) => ({
-                                            ...prevData,
-                                            Booking_Available: e.target.checked,
-                                        }));
-                                    }}
-                                    className="ml-2"
-                                />
-                            </label>
+                            
                             <label className="block mb-2">
                                 Available Spots:
                                 <input
@@ -514,27 +496,6 @@ const AdvertiserHome = () => {
                                     onChange={handleNewActivityChange}
                                     className="border rounded w-full px-2 py-1"
                                     required
-                                />
-                            </label>
-                            <label className="block mb-2">
-                                Booked Spots:
-                                <input
-                                    type="number"
-                                    name="Booked_Spots"
-                                    value={newActivityData.Booked_Spots}
-                                    onChange={handleNewActivityChange}
-                                    className="border rounded w-full px-2 py-1"
-                                    required
-                                />
-                            </label>
-                            <label className="block mb-2">
-                                Rating:
-                                <input
-                                    type="number"
-                                    name="Rating"
-                                    value={newActivityData.Rating}
-                                    onChange={handleNewActivityChange}
-                                    className="border rounded w-full px-2 py-1"
                                 />
                             </label>
                             <label className="block mb-2">
@@ -569,17 +530,7 @@ const AdvertiserHome = () => {
                                     required
                                 />
                             </label>
-                            <label className="block mb-2">
-                                Picture URL:
-                                <input
-                                    type="text"
-                                    name="Picture"
-                                    value={newActivityData.Picture}
-                                    onChange={handleNewActivityChange}
-                                    className="border rounded w-full px-2 py-1"
-                                    
-                                />
-                            </label>
+                            
                             <button
                                 type="submit"
                                 className="mt-4 bg-green-500 text-white px-4 py-2 rounded"

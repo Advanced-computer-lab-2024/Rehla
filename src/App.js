@@ -215,9 +215,9 @@ app.post("/addUserAdvertisers", createUserAdvertiser);  // Advertiser request
 app.post("/readAdvertisers", readAdvertiser); // Route for reading an advertiser by email
 app.put("/updateUserAdvertisers", updateUserAdvertiser); //updating advertiser
 
-app.post("/api/createActivityByAdvert", createActivityByAdvertiser);
+app.post("/createActivityByAdvert", createActivityByAdvertiser);
 app.get("/readActivity/:name", readActivity);
-app.put("/api/updateActivity", updateActivityByAdvertiser);
+app.put("/updateActivity", updateActivityByAdvertiser);
 app.delete("/deleteActivityByAdvert", deleteActivityByAdvertiser);
 
 app.post("/createUserTourism_Governer", createUserTourism_Governer);
