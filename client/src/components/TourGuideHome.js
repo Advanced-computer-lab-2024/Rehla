@@ -100,7 +100,7 @@ const TourGuideHome = () => {
         const confirmDelete = window.confirm("Are you sure you want to delete this Itinerary?");
         if (confirmDelete) {
             try {
-                await deleteItinerary(selectedItinerary._id);
+                await deleteItinerary(selectedItinerary.Itinerary_Name);
                 console.log('Itinerary deleted successfully');
                 fetchActivities(localStorage.getItem('email'));
                 setSelectedItinerary(null);
@@ -125,7 +125,8 @@ const TourGuideHome = () => {
         Country: '',
         Rating: '',
         P_Tag: '',
-        Created_By: localStorage.getItem('email') || ''
+        Created_By: localStorage.getItem('email') || '',
+        Picture: ''
         });
         setCreateModalOpen(true);
     };
@@ -273,33 +274,23 @@ const TourGuideHome = () => {
                             Itinerary Name:
                                 <input
                                     type="text"
-                                    name="Name"
-                                    value={newItineraryData.Itinerary_Name}
-                                    onChange={handleNewItineraryChange}
+                                    name="Itinerary_Name"
+                                    value={itineraryData.Itinerary_Name}
+                                    onChange={handleEditItineraryChange}
                                     className="border rounded w-full px-2 py-1"
-                                    required
+                                    
                                 />
                             </label>
-                            <label className="block mb-2">
-                                Location:
-                                <input
-                                    type="text"
-                                    name="Location"
-                                    value={newItineraryData.Country}
-                                    onChange={handleNewItineraryChange}
-                                    className="border rounded w-full px-2 py-1"
-                                    required
-                                />
-                            </label>
+                           
                             <label className="block mb-2">
                                 Time:
                                 <input
                                     type="text"
-                                    name="Time"
-                                    value={newItineraryData.Timeline}
-                                    onChange={handleNewItineraryChange}
+                                    name="Timeline"
+                                    value={itineraryData.Timeline}
+                                    onChange={handleEditItineraryChange}
                                     className="border rounded w-full px-2 py-1"
-                                    required
+                                    
                                 />
                             </label>
                             <label className="block mb-2">
@@ -307,41 +298,52 @@ const TourGuideHome = () => {
                                 <input
                                     type="text"
                                     name="Duration"
-                                    value={newItineraryData.Duration}
-                                    onChange={handleNewItineraryChange}
+                                    value={itineraryData.Duration}
+                                    onChange={handleEditItineraryChange}
                                     className="border rounded w-full px-2 py-1"
-                                    required
+                                    
+                                />
+                            </label>
+                            <label className="block mb-2">
+                                Language:
+                                <input
+                                    type="text"
+                                    name="Language"
+                                    value={itineraryData.Language}
+                                    onChange={handleEditItineraryChange}
+                                    className="border rounded w-full px-2 py-1"
+                                    
                                 />
                             </label>
                             <label className="block mb-2">
                                 Price:
                                 <input
                                     type="number"
-                                    name="Price"
-                                    value={newItineraryData.Tour_Price}
-                                    onChange={handleNewItineraryChange}
+                                    name="Tour_Price"
+                                    value={itineraryData.Tour_Price}
+                                    onChange={handleEditItineraryChange}
                                     className="border rounded w-full px-2 py-1"
-                                    required
+                                    
                                 />
                             </label>
                             <label className="block mb-2">
                                 Date:
                                 <input
                                     type="date"
-                                    name="Date"
-                                    value={newItineraryData.Available_Date_Time}
-                                    onChange={handleNewItineraryChange}
+                                    name="Available_Date_Time"
+                                    value={itineraryData.Available_Date_Time}
+                                    onChange={handleEditItineraryChange}
                                     className="border rounded w-full px-2 py-1"
-                                    required
+                                    
                                 />
                             </label>
                             <label className="block mb-2">
                                 Accessibility:
                                 <input
                                     type="number"
-                                    name="Discount_Percent"
-                                    value={newItineraryData.Accessibility}
-                                    onChange={handleNewItineraryChange}
+                                    name="Accessibility"
+                                    value={itineraryData.Accessibility}
+                                    onChange={handleEditItineraryChange}
                                     className="border rounded w-full px-2 py-1"
                                 />
                             </label>
@@ -350,10 +352,10 @@ const TourGuideHome = () => {
                                 <input
                                     type="text"
                                     name="Pick_Up_Point"
-                                    value={newItineraryData.Pick_Up_Point}
-                                    onChange={handleNewItineraryChange}
+                                    value={itineraryData.Pick_Up_Point}
+                                    onChange={handleEditItineraryChange}
                                     className="border rounded w-full px-2 py-1"
-                                    required
+                                    
                                 />
                             </label>
                             <label className="block mb-2">
@@ -361,30 +363,30 @@ const TourGuideHome = () => {
                                 <input
                                     type="text"
                                     name="Drop_Of_Point"
-                                    value={newItineraryData.Drop_Of_Point}
-                                    onChange={handleNewItineraryChange}
+                                    value={itineraryData.Drop_Of_Point}
+                                    onChange={handleEditItineraryChange}
                                     className="border rounded w-full px-2 py-1"
-                                    required
+                                    
                                 />
                             </label>
                             <label className="block mb-2">
                                 Booked Spots:
                                 <input
                                     type="number"
-                                    name="Booked_Spots"
-                                    value={newItineraryData.Booked}
-                                    onChange={handleNewItineraryChange}
+                                    name="Booked"
+                                    value={itineraryData.Booked}
+                                    onChange={handleEditItineraryChange}
                                     className="border rounded w-full px-2 py-1"
-                                    required
+                                    
                                 />
                             </label>
                             <label className="block mb-2">
                                 Empty_Spots:
                                 <input
                                     type="number"
-                                    name="Rating"
-                                    value={newItineraryData.Empty_Spots}
-                                    onChange={handleNewItineraryChange}
+                                    name="Empty_Spots"
+                                    value={itineraryData.Empty_Spots}
+                                    onChange={handleEditItineraryChange}
                                     className="border rounded w-full px-2 py-1"
                                 />
                             </label>
@@ -392,20 +394,20 @@ const TourGuideHome = () => {
                             Country:
                                 <input
                                     type="text"
-                                    name="Category"
-                                    value={newItineraryData.Country}
-                                    onChange={handleNewItineraryChange}
+                                    name="Country"
+                                    value={itineraryData.Country}
+                                    onChange={handleEditItineraryChange}
                                     className="border rounded w-full px-2 py-1"
-                                    required
+                                    
                                 />
                             </label>
                             <label className="block mb-2">
                                 Rating:
                                 <input
                                     type="text"
-                                    name="Tag"
-                                    value={newItineraryData.Rating}
-                                    onChange={handleNewItineraryChange}
+                                    name="Rating"
+                                    value={itineraryData.Rating}
+                                    onChange={handleEditItineraryChange}
                                     className="border rounded w-full px-2 py-1"
                                 />
                             </label>
@@ -413,11 +415,11 @@ const TourGuideHome = () => {
                                 P_Tag:
                                 <input
                                     type="text"
-                                    name="Created_By"
-                                    value={newItineraryData.P_Tag}
-                                    onChange={handleNewItineraryChange}
+                                    name="P_Tag"
+                                    value={itineraryData.P_Tag}
+                                    onChange={handleEditItineraryChange}
                                     className="border rounded w-full px-2 py-1"
-                                    required
+                                
                                 />
                             </label>
                             <label className="block mb-2">
@@ -425,30 +427,8 @@ const TourGuideHome = () => {
                                 <input
                                     type="text"
                                     name="Picture"
-                                    value={newItineraryData.Created_By}
-                                    onChange={handleNewItineraryChange}
-                                    className="border rounded w-full px-2 py-1"
-                                    
-                                />
-                            </label>
-                            <label className="block mb-2">
-                                Flagged:
-                                <input
-                                    type="text"
-                                    name="Picture"
-                                    value={newItineraryData.Flagged}
-                                    onChange={handleNewItineraryChange}
-                                    className="border rounded w-full px-2 py-1"
-                                    
-                                />
-                            </label>
-                            <label className="block mb-2">
-                                Picture:
-                                <input
-                                    type="text"
-                                    name="Picture"
-                                    value={newItineraryData.Picture}
-                                    onChange={handleNewItineraryChange}
+                                    value={itineraryData.Created_By}
+                                    onChange={handleEditItineraryChange}
                                     className="border rounded w-full px-2 py-1"
                                     
                                 />
@@ -481,7 +461,7 @@ const TourGuideHome = () => {
                             Itinerary Name:
                                 <input
                                     type="text"
-                                    name="Name"
+                                    name="Itinerary_Name"
                                     value={newItineraryData.Itinerary_Name}
                                     onChange={handleNewItineraryChange}
                                     className="border rounded w-full px-2 py-1"
@@ -489,21 +469,10 @@ const TourGuideHome = () => {
                                 />
                             </label>
                             <label className="block mb-2">
-                                Location:
+                                Timeline:
                                 <input
                                     type="text"
-                                    name="Location"
-                                    value={newItineraryData.Country}
-                                    onChange={handleNewItineraryChange}
-                                    className="border rounded w-full px-2 py-1"
-                                    required
-                                />
-                            </label>
-                            <label className="block mb-2">
-                                Time:
-                                <input
-                                    type="text"
-                                    name="Time"
+                                    name="Timeline"
                                     value={newItineraryData.Timeline}
                                     onChange={handleNewItineraryChange}
                                     className="border rounded w-full px-2 py-1"
@@ -522,10 +491,21 @@ const TourGuideHome = () => {
                                 />
                             </label>
                             <label className="block mb-2">
+                                Language:
+                                <input
+                                    type="text"
+                                    name="Language"
+                                    value={newItineraryData.Language}
+                                    onChange={handleNewItineraryChange}
+                                    className="border rounded w-full px-2 py-1"
+                                    required
+                                />
+                            </label>
+                            <label className="block mb-2">
                                 Price:
                                 <input
                                     type="number"
-                                    name="Price"
+                                    name="Tour_Price"
                                     value={newItineraryData.Tour_Price}
                                     onChange={handleNewItineraryChange}
                                     className="border rounded w-full px-2 py-1"
@@ -536,7 +516,7 @@ const TourGuideHome = () => {
                                 Date:
                                 <input
                                     type="date"
-                                    name="Date"
+                                    name="Available_Date_Time"
                                     value={newItineraryData.Available_Date_Time}
                                     onChange={handleNewItineraryChange}
                                     className="border rounded w-full px-2 py-1"
@@ -546,9 +526,9 @@ const TourGuideHome = () => {
                             <label className="block mb-2">
                                 Accessibility:
                                 <input
-                                    type="number"
-                                    name="Discount_Percent"
-                                    value={newItineraryData.Accessibility}
+                                    type="checkbox"
+                                    name="Accessibility"
+                                    checked={newItineraryData.Accessibility}
                                     onChange={handleNewItineraryChange}
                                     className="border rounded w-full px-2 py-1"
                                 />
@@ -575,22 +555,12 @@ const TourGuideHome = () => {
                                     required
                                 />
                             </label>
-                            <label className="block mb-2">
-                                Booked Spots:
-                                <input
-                                    type="number"
-                                    name="Booked_Spots"
-                                    value={newItineraryData.Booked}
-                                    onChange={handleNewItineraryChange}
-                                    className="border rounded w-full px-2 py-1"
-                                    required
-                                />
-                            </label>
+                            
                             <label className="block mb-2">
                                 Empty_Spots:
                                 <input
                                     type="number"
-                                    name="Rating"
+                                    name="Empty_Spots"
                                     value={newItineraryData.Empty_Spots}
                                     onChange={handleNewItineraryChange}
                                     className="border rounded w-full px-2 py-1"
@@ -600,7 +570,7 @@ const TourGuideHome = () => {
                             Country:
                                 <input
                                     type="text"
-                                    name="Category"
+                                    name="Country"
                                     value={newItineraryData.Country}
                                     onChange={handleNewItineraryChange}
                                     className="border rounded w-full px-2 py-1"
@@ -608,20 +578,10 @@ const TourGuideHome = () => {
                                 />
                             </label>
                             <label className="block mb-2">
-                                Rating:
-                                <input
-                                    type="text"
-                                    name="Tag"
-                                    value={newItineraryData.Rating}
-                                    onChange={handleNewItineraryChange}
-                                    className="border rounded w-full px-2 py-1"
-                                />
-                            </label>
-                            <label className="block mb-2">
                                 P_Tag:
                                 <input
                                     type="text"
-                                    name="Created_By"
+                                    name="P_Tag"
                                     value={newItineraryData.P_Tag}
                                     onChange={handleNewItineraryChange}
                                     className="border rounded w-full px-2 py-1"
@@ -632,24 +592,14 @@ const TourGuideHome = () => {
                                 Created_By:
                                 <input
                                     type="text"
-                                    name="Picture"
+                                    name="Created_By"
                                     value={newItineraryData.Created_By}
                                     onChange={handleNewItineraryChange}
                                     className="border rounded w-full px-2 py-1"
                                     
                                 />
                             </label>
-                            <label className="block mb-2">
-                                Flagged:
-                                <input
-                                    type="text"
-                                    name="Picture"
-                                    value={newItineraryData.Flagged}
-                                    onChange={handleNewItineraryChange}
-                                    className="border rounded w-full px-2 py-1"
-                                    
-                                />
-                            </label>
+                            
                             <label className="block mb-2">
                                 Picture:
                                 <input
@@ -665,7 +615,7 @@ const TourGuideHome = () => {
                                 type="submit"
                                 className="mt-4 bg-green-500 text-white px-4 py-2 rounded"
                             >
-                                Create Activity
+                                Create Itinerary
                             </button>
                             <button
                                 onClick={closeCreateModal}
