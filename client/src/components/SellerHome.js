@@ -245,7 +245,14 @@ const SellerHome = () => {
         setIsLoading(true);
         try {
             const data = await fetchSalesReport(seller.Shop_Name); // Fetch sales report using email
-            setReport(data);
+            const updatedReport = {
+                ...data,
+                products: data.products.map(product => ({
+                    ...product,
+                    revenue: product.Price * product.Saled *0.9 // Calculate revenue dynamically
+                })),
+            };
+            setReport(updatedReport);
         } catch (err) {
             setFetchError(err.message || "Failed to fetch sales report.");
         } finally {
@@ -625,7 +632,7 @@ const SellerHome = () => {
 </div>
 <div className="p-6 bg-gray-100">
             <h2 className="text-2xl font-bold text-center">Seller Dashboard</h2>
-            <p className="text-lg text-center mt-2">View your sales report and total revenue.</p>
+            <p className="text-lg text-center mt-2">View your sales report and total revenue for {seller.Shop_Name || "your shop"}.</p>
 
             <div className="mt-6 flex justify-center">
                 <button
@@ -648,7 +655,8 @@ const SellerHome = () => {
                         {report.products.map((product) => (
                             <li key={product._id}>
                                 <span className="font-medium">{product.Product_Name}</span> - 
-                                {product.Saled} sold at ${product.Price.toFixed(2)} each
+                                {product.Saled} sold at ${product.Price.toFixed(2)} each. 
+                                <span className="font-semibold text-green-600 ml-2">Revenue: ${product.revenue.toFixed(2)}</span>
                             </li>
                         ))}
                     </ul>
