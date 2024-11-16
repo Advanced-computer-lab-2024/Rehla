@@ -172,29 +172,30 @@ const AdvertiserHome = () => {
                 {!loading && !error && (
                     <>
                         <h2 className="text-xl">Activities</h2>
-                        <button
-                            onClick={openCreateModal}
-                            className="mb-4 bg-green-500 text-white px-4 py-2 rounded"
-                        >
-                            Create New Activity
-                        </button>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 bg-white rounded-lg shadow-lg p-4">
                             {data.activities.map((activity) => (
                                 <div
-                                    key={activity._id}
-                                    className="border rounded-lg p-4 hover:shadow-lg cursor-pointer"
-                                    onClick={() => handleActivityClick(activity)}
-                                >
-                                    {activity.Picture && (
-                                        <img
-                                            src={activity.Picture}
-                                            alt={activity.Name}
-                                            className="w-full h-32 object-cover mb-2 rounded"
-                                        />
-                                    )}
-                                    <h3 className="text-lg font-semibold">{activity.Name}</h3>
+                                key={activity._id}
+                                className="bg-blue-50 rounded-lg shadow-md overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-lg"
+                                
+                            >
+                                <img
+                                    src={activity.Picture}
+                                    alt={activity.Name}
+                                    className="w-full h-40 object-cover"
+                                />
+                                <div className="p-4">
+                                    <h3 className="text-lg font-semibold text-gray-700">{activity.Name}</h3>
                                 </div>
+                            </div>
                             ))}
+                            {/* Add New Place Button */}
+                            <div
+                                onClick={openCreateModal}
+                                className="flex items-center justify-center p-4 bg-gray-200 rounded-md shadow-sm hover:bg-gray-300 cursor-pointer"
+                            >
+                                <span className="text-3xl font-bold text-gray-500">+</span>
+                            </div>
                         </div>
 
                         {selectedActivity && (
