@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link,useNavigate } from 'react-router-dom';
 import logo from '../images/logo.png';
-import { getProducts, getProductsSortedByRating, addProduct, updateProduct,toggleProductArchiveStatus,uploadProductPicture } from '../services/api';
-
+import { getProducts, getProductsSortedByRating, addProduct, updateProduct,toggleProductArchiveStatus,uploadProductPicture,fetchSalesReport,getSellerProfile  } from '../services/api';
+//import { Link, useNavigate } from 'react-router-dom';
 
 const Header = () => (
     <div className="NavBar">
@@ -60,9 +60,34 @@ const SellerHome = () => {
     const [alertMessage, setAlertMessage] = useState('');
     const [file, setFile] = useState(null);
     const [preview, setPreview] = useState(null);
+    const [email] = useState(localStorage.getItem('email')); // Get seller's email from localStorage
+    const [report, setReport] = useState(null);
+    const [fetchError, setFetchError] = useState(""); // Renamed error state
+    const [isLoading, setIsLoading] = useState(false); // Renamed loading state
+    const [seller, setSeller] = useState({});
+    const navigate = useNavigate();
     
 
+    useEffect(() => {
+        const fetchProfile = async () => {
+            const email = localStorage.getItem('email'); // Get email from local storage
 
+            if (!email) {
+                navigate('/login'); // Redirect to login if no email found
+                return;
+            }
+
+            try {
+                const response = await getSellerProfile({ Email: email });
+                setSeller(response);
+                //setFormData(response); // Set form data for editing
+            } catch (error) {
+                setError('Failed to fetch profile. Please try again later.');
+            }
+        };
+
+        fetchProfile();
+    }, [navigate]);
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -215,6 +240,19 @@ const SellerHome = () => {
     if (error) {
         return <div className="text-red-500 text-center py-10">{error}</div>;
     }
+    const handleFetchReport = async () => {
+        setFetchError("");
+        setIsLoading(true);
+        try {
+            const data = await fetchSalesReport(seller.Shop_Name); // Fetch sales report using email
+            setReport(data);
+        } catch (err) {
+            setFetchError(err.message || "Failed to fetch sales report.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
 
     return (
         <div>
@@ -585,7 +623,38 @@ const SellerHome = () => {
         </div>
     ))}
 </div>
+<div className="p-6 bg-gray-100">
+            <h2 className="text-2xl font-bold text-center">Seller Dashboard</h2>
+            <p className="text-lg text-center mt-2">View your sales report and total revenue.</p>
 
+            <div className="mt-6 flex justify-center">
+                <button
+                    onClick={handleFetchReport}
+                    className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300"
+                >
+                    {isLoading ? "Fetching..." : "View Sales Report"}
+                </button>
+            </div>
+
+            {fetchError && <p className="text-red-500 text-center mt-4">{fetchError}</p>}
+
+            {report && (
+                <div className="mt-6 bg-white p-4 rounded-lg shadow-md">
+                    <h3 className="text-xl font-semibold">Sales Report</h3>
+                    <p className="text-lg mt-2">Total Revenue: ${report.totalRevenue.toFixed(2)}</p>
+
+                    <h4 className="text-lg font-semibold mt-4">Products:</h4>
+                    <ul className="list-disc pl-5">
+                        {report.products.map((product) => (
+                            <li key={product._id}>
+                                <span className="font-medium">{product.Product_Name}</span> - 
+                                {product.Saled} sold at ${product.Price.toFixed(2)} each
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
+        </div>
             </div>
             <Footer />
         </div>

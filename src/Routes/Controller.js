@@ -4780,7 +4780,7 @@ const getSalesReport = async (req, res) => {
         }
 
         // Calculate total revenue
-        const totalRevenue = products.reduce((sum, product) => sum + (product.Saled * product.Price), 0);
+        const totalRevenue = products.reduce((sum, product) => (sum + (product.Saled * product.Price))*0.9, 0);
 
         res.status(200).json({ sellerName, totalRevenue, products });
     } catch (error) {

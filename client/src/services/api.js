@@ -1242,3 +1242,14 @@ export const getAllFiles = async () => {
         }
     }
 };
+
+export const fetchSalesReport = async (sellerName) => {
+    try {
+        const response = await axios.get(`${API_URL}/salesReport/${sellerName}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching sales report:', error);
+        throw error.response ? error.response.data : { message: "Network error" };
+    }
+};
+
