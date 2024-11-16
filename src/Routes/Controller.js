@@ -4763,6 +4763,31 @@ const getAllFiles = async (req, res) => {
     }
 };
 
+const getSalesReport = async (req, res) => {
+    try {
+        const { sellerName } = req.params;
+
+        // Validate the seller name
+        if (!sellerName) {
+            return res.status(400).json({ message: "Seller name is required." });
+        }
+
+        // Fetch products by the seller
+        const products = await Product.find({ Seller_Name: sellerName });
+
+        if (!products || products.length === 0) {
+            return res.status(404).json({ message: "No products found for this seller." });
+        }
+
+        // Calculate total revenue
+        const totalRevenue = products.reduce((sum, product) => sum + (product.Saled * product.Price), 0);
+
+        res.status(200).json({ sellerName, totalRevenue, products });
+    } catch (error) {
+        console.error("Error fetching sales report:", error);
+        res.status(500).json({ error: "Internal server error." });
+    }
+};
 
 // ----------------- Activity Category CRUD -------------------
 
@@ -4894,4 +4919,5 @@ module.exports = { getPurchasedProducts,
     viewAllTransportation,
     getAllUnarchivedProducts,
     getAllFiles,
+    getSalesReport,
 };
