@@ -196,39 +196,44 @@ const TourGuideHome = () => {
             </div>
 
             <div className="mt-24">
-                <h1 className="text-2xl font-bold">My Created Itineraries</h1>
 
                 {loading && <div>Loading...</div>}
                 {error && <div>Error: {error.message}</div>}
 
                 {!loading && !error && (
                     <>
-                        <h2 className="text-xl">Itineraries</h2>
-                        <button
-                            onClick={openCreateModal}
-                            className="mb-4 bg-green-500 text-white px-4 py-2 rounded"
-                        >
-                            Create New Itinerary
-                        </button>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                            {data.itineraries.map((itinerary) => (
+                        <section>
+                            <h2 className="text-2xl font-semibold text-gray-800 mb-4">My Created Itineraries</h2>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 bg-white rounded-lg shadow-lg p-4">
+                                {data.itineraries.map((itinerary) => (
+                                    <div
+                                        key={itinerary._id}
+                                        className="bg-blue-50 rounded-lg shadow-md overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-lg cursor-pointer"
+                                        onClick={() => handleItineraryClick(itinerary)}
+                                    >
+                                        {itinerary.Picture && (
+                                            <img
+                                                src={itinerary.Picture}
+                                                alt={itinerary.Itinerary_Name}
+                                                className="w-full h-40 object-cover"
+                                            />
+                                        )}
+                                        <div className="p-4">
+                                            <h3 className="text-lg font-semibold text-gray-700">{itinerary.Itinerary_Name}</h3>
+                                        </div>
+                                    </div>
+                                ))}
+                                {/* Add New Itinerary Button */}
                                 <div
-                                    key={itinerary._id}
-                                    className="border rounded-lg p-4 hover:shadow-lg cursor-pointer"
-                                    onClick={() => handleItineraryClick(itinerary)}
+                                    onClick={openCreateModal}
+                                    className="flex items-center justify-center p-4 bg-gray-200 rounded-md shadow-sm hover:bg-gray-300 cursor-pointer"
                                 >
-                                    {itinerary.Picture && (
-                                        <img
-                                            src={itinerary.Picture}
-                                            alt={itinerary.Itinerary_Name}
-                                            className="w-full h-32 object-cover mb-2 rounded"
-                                        />
-                                    )}
-                                    <h3 className="text-lg font-semibold">{itinerary.Itinerary_Name}</h3>
+                                    <span className="text-3xl font-bold text-gray-500">+</span>
                                 </div>
-                            ))}
-                        </div>
+                            </div>
+                        </section>
 
+                            {/*openCreateModal*/}
                         {selectedItinerary && (
                             <div className="mt-8 border rounded-lg p-4">
                                 <h3 className="text-xl font-semibold">{selectedItinerary.Itinerary_Name}</h3>
