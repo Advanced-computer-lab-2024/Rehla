@@ -31,6 +31,8 @@ import TourGuideItineraries from './components/TourGuideItineraries.js'
 import MyEvents from './components/MyEvents.js';
 import Flights from './components/Flights.js';
 import Hotels from './components/Hotels.js';
+import EventDetails from './components/EventDetails';
+
 
 
 
@@ -71,6 +73,7 @@ function App() {
                 <Route path="/MyPlaces" element={<TourisimGovernerPlaces />} />
                 <Route path="/CreateTag" element={<CreateTag />} />
                 <Route path="/TourGuideItineraries" element={<TourGuideItineraries />} />
+                <Route path="/event-details/:type/:name" element={<EventDetails />} />
                 <Route path="/" component={Home} />
 
 

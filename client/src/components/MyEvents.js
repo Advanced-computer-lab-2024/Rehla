@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link ,useNavigate} from 'react-router-dom';
 import { getAttendedItineraries, getAttendedActivities, rateActivity, commentOnEvent, commentOnItinerary, rateItinerary } from '../services/api'; // Adjust the import based on your file structure
 import logo from '../images/logo.png';
 
@@ -11,7 +11,7 @@ const MyEvents = () => {
     const [activityComments, setActivityComments] = useState({});
     const [itineraryRatings, setItineraryRatings] = useState({});
     const [itineraryComments, setItineraryComments] = useState({});
-
+    const navigate = useNavigate();
     useEffect(() => {
         const storedEmail = localStorage.getItem('email');
         if (storedEmail) {
@@ -77,6 +77,12 @@ const MyEvents = () => {
         }
     };
 
+    const handleEventClick = (name, type) => {
+        localStorage.setItem('selectedName', name); // Save the name in local storage
+        localStorage.setItem('selectedType', type); // Save the type (e.g., "itinerary" or "activity") in local storage
+        navigate(`/event-details/${type}/${name}`); // Redirect to the new component
+    };
+
     return (
         <div className="bg-white shadow-md">
             <div className="w-full mx-auto px-6 py-4 h-20 bg-brandBlue shadow flex justify-between items-center">
@@ -96,7 +102,11 @@ const MyEvents = () => {
                 <h2 className="text-xl font-semibold mb-4">Itineraries</h2>
                 <ul className="flex flex-wrap list-none">
                     {attendedItineraries.map(itinerary => (
-                        <li key={itinerary.Itinerary_Name} className="flex items-start mb-4 w-1/2 p-2">
+                            <li
+                            key={itinerary.Itinerary_Name}
+                            className="flex items-start mb-4 w-1/2 p-2 cursor-pointer"
+                            onClick={() => handleEventClick(itinerary.Itinerary_Name, 'itinerary')}
+                        >
                             <div className="flex items-start bg-gray-100 p-4 rounded-lg shadow-md w-full">
                                 <img
                                     src={itinerary.Picture}
@@ -150,7 +160,11 @@ const MyEvents = () => {
                 <h2 className="text-xl font-semibold mb-4">Activities</h2>
                 <ul className="flex flex-wrap list-none">
                     {attendedActivities.map(activity => (
-                        <li key={activity.Activity_Name} className="flex items-start mb-4 w-1/2 p-2">
+                            <li
+                            key={activity.Activity_Name}
+                            className="flex items-start mb-4 w-1/2 p-2 cursor-pointer"
+                            onClick={() => handleEventClick(activity.Activity_Name, 'activity')}
+                        >
                             <div className="flex items-start bg-gray-100 p-4 rounded-lg shadow-md w-full">
                                 <img
                                     src={activity.Picture}
