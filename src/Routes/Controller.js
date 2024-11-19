@@ -1446,10 +1446,7 @@ const getTourGuideProfile = async (req, res) => {
         }
 
         // Return the tour guide profile
-        res.status(200).json({
-            message: 'Tour guide profile retrieved successfully',
-            tour_guide: tour_guide
-        });
+        res.status(200).json(tour_guide);
     } catch (error) {
         // Handle errors
         res.status(500).json({ message: 'Error retrieving tour guide profile', error: error.message });

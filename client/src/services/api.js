@@ -434,8 +434,13 @@ export const createTourGuideProfile = async (data) => {
 };
 
 export const getTourGuideProfile = async (data) => {
-    const response = await axios.post(`${API_URL}/getTourGuideProfile`, data);
-    return response.data; // Return the profile data
+    try {
+        const response = await axios.post(`${API_URL}/getTourGuideProfile`, data); // Ensure correct API method
+        return response.data; // Return the tour Guide profile data
+      } catch (error) {
+        console.error('Error in getTourGuideProfile API:', error);
+        throw error;
+      }
 };
 
 export const updateTourGuideProfile = async (data) => {

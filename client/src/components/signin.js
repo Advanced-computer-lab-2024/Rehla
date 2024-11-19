@@ -62,7 +62,7 @@ const SignIn = () => {
         await acceptTerms(email); // Update terms accepted status on the backend
         setShowModal(false); // Close the modal
         // You can also proceed to navigate if you want after accepting terms
-        navigate("/TouristHome");
+        //navigate("/TouristHome");
       } catch (err) {
         setError("Failed to accept terms");
       }

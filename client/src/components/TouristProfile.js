@@ -28,22 +28,21 @@ const TouristProfile = () => {
     Mobile_Number: '',
     Nationality: '',
     Job_Student: '',
+    Type: '',
     Points: 0, 
     Badge: '',
   });
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const badgeImage = getBadgeImage(formData.Badge);
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [type, setType] = useState('');
   const [message, setMessage] = useState('');
 
   const handleDeleteRequest = async () => {
     try {
         // Call the requestDeleteProfile function from api.js
-        const result = await requestDeleteProfile(username, email, password, type);
+        const email = localStorage.getItem('email');
+        const profileData = await getTouristProfile({ Email: email });
+        const result = await requestDeleteProfile(profileData.Username, profileData.Email, profileData.Password, profileData.Type);
         setMessage(result.message); // Set the success message
     } catch (error) {
         // Handle errors (e.g., validation errors or server errors)
@@ -257,6 +256,16 @@ const TouristProfile = () => {
                 >
                   Save Profile
                 </button>
+                <button 
+          type="button"
+                    class="w-full py-2 px-4 bg-red-600 text-white font-semibold rounded-md hover:bg-red-700 transition duration-200"
+                    onClick={handleDeleteRequest}
+                >
+                    Delete Profile
+                </button>
+            
+
+              {message && <p class="mt-4 text-center text-red-600">{message}</p>}
               </form>
             </div>
           ) : (
@@ -274,74 +283,10 @@ const TouristProfile = () => {
               />
             </div>
           )}
+          
         </div>
+        
       </div>
-
-      <div class="max-w-md mx-auto bg-white shadow-md rounded-lg p-8">
-    <h1 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Delete Profile</h1>
-    <form onSubmit={(e) => { e.preventDefault(); handleDeleteRequest(); }} class="space-y-4">
-        
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Username:</label>
-            <input 
-                type="text" 
-                value={username} 
-                onChange={(e) => setUsername(e.target.value)} 
-                required 
-                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brandBlue focus:border-transparent"
-            />
-        </div>
-        
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Email:</label>
-            <input 
-                type="email" 
-                value={email} 
-                onChange={(e) => setEmail(e.target.value)} 
-                required 
-                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brandBlue focus:border-transparent"
-            />
-        </div>
-        
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Password:</label>
-            <input 
-                type="password" 
-                value={password} 
-                onChange={(e) => setPassword(e.target.value)} 
-                required 
-                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brandBlue focus:border-transparent"
-            />
-        </div>
-        
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Type:</label>
-            <select 
-                value={type} 
-                onChange={(e) => setType(e.target.value)} 
-                required
-                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brandBlue focus:border-transparent"
-            >
-                <option value="">Select Type</option>
-                <option value="TOURIST">Tourist</option>
-                <option value="Tour Guide">Tour Guide</option>
-                <option value="Advertiser">Advertiser</option>
-                <option value="Seller">Seller</option>
-            </select>
-        </div>
-        
-        <button 
-            type="submit"
-            class="w-full py-2 px-4 bg-red-600 text-white font-semibold rounded-md hover:bg-red-700 transition duration-200"
-        >
-            Submit Request
-        </button>
-    </form>
-
-    {message && <p class="mt-4 text-center text-red-600">{message}</p>} {/* Show success or error message */}
-</div>
-
-
       <footer className="w-full bg-brandBlue py-4 text-center text-white mt-6">
         <p>&copy; 2024 Tourist Profile. All rights reserved.</p>
       </footer>
