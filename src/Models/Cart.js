@@ -4,9 +4,20 @@ const Schema = mongoose.Schema;
 
 // Define the cart schema
 const cartSchema = new Schema({
-  Email: { type: String, required: true, unique: true }, // User's email
-  Products: [{ type: String, required: true }],         // Array of product names
-  Quantities: [{ type: Number, required: true }]        // Array of quantities
+  Email: { 
+    type: String, 
+    required: true, 
+    unique: true 
+  },
+  Productname: { 
+    type: String, 
+    required: true 
+  },
+  Quantity: { 
+    type: Number, 
+    required: true ,
+    default: 1
+  }
 },{ versionKey: false });
 
 // Create the model
