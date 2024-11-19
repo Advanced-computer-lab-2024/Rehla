@@ -36,6 +36,7 @@ const transportationm = require('../Models/transportation.js');
 const tourguidefiles = require('../Models/filesTourguide.js');
 const sellerfiles = require('../Models/filesseller.js');
 const advertiserfiles = require('../Models/filesadvertiser.js');
+const cartm = require('../Models/Cart.js');
 
 const multer = require('multer');
 const path = require('path');
@@ -4795,6 +4796,82 @@ const getSalesReport = async (req, res) => {
     }
 };
 
+//make function to update cart quantity by incrementing by 1
+const updateCartItem = async (req, res) => {
+    try {
+        const { Email, Productname } = req.body;
+
+        // Validate input
+        if (!Email || !Productname) {
+            return res.status(400).json({ error: 'Email and product name are required.' });
+        }
+
+        // get the cart item
+        const cartItem = await cartm.findOne({ Email, Productname });
+        if (!cartItem) {
+            return res.status(404).json({ error: 'Cart item not found.' });
+        }
+
+        // Increment the quantity by 1
+        cartItem.Quantity += 1;
+        await cartItem.save();
+
+        // Send a success response
+        return res.status(200).json({ message: 'Cart item updated successfully.', cartItem });
+    } catch (error) {
+        console.error('Error updating cart item:', error);
+        return res.status(500).json({ error: 'Failed to update cart item.' });
+    }
+}
+
+//create new cart item
+const createCartItem = async (req, res) => {
+    try {
+        const {Email, Productname } = req.body;
+
+        // Validate input
+        if (!Tourist_Email || !Productname ) {
+            return res.status(400).json({ error: 'All fields are required.' });
+        }
+
+        // Check if the tourist exists
+        const tourist = await Tourist.findOne({ Email });
+        if (!tourist) {
+            return res.status(404).json({ error: 'Tourist not found.' });
+        }
+
+        // Check if the product exists
+        const product = await Product.findOne({ Product_Name : Productname });
+        if (!product) {
+            return res.status(404).json({ error: 'Product not found.' });
+        }
+
+        // Check if the product is already in the cart
+        const existingCartItem = await cartm.findOne({ Email, Productname });
+        if (existingCartItem) {
+            return res.status(409).json({ error: 'Product already in cart.' });
+        }
+
+        // Create a new cart item
+        const newCartItem = new cartm({
+            Email,
+            Productname
+        });
+
+        // Save the cart item to the database
+        await newCartItem.save();
+
+        // Send a success response
+        return res.status(201).json({ message: 'Cart item created successfully.', cartItem: newCartItem });
+    } catch (error) {
+        console.error('Error creating cart item:', error);
+        return res.status(500).json({ error: 'Failed to create cart item.' });
+    }
+}
+
+
+
+
 // ----------------- Activity Category CRUD -------------------
 
 module.exports = { getPurchasedProducts,
@@ -4926,4 +5003,6 @@ module.exports = { getPurchasedProducts,
     getAllUnarchivedProducts,
     getAllFiles,
     getSalesReport,
+    updateCartItem,
+    createCartItem,
 };
