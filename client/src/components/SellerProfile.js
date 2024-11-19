@@ -262,31 +262,28 @@ const SellerProfile = () => {
                             Upload Company Logo
                             </button>
 
-                            <div className="space-x-4">
+                            <div className="flex flex-col space-y-4">
                                 <button
                                     type="submit"
-                                    className="bg-brandBlue text-white py-2 px-4 rounded-lg hover:bg-opacity-90 transition duration-300"
+                                    className="w-full bg-brandBlue text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300"
                                 >
                                     Save Changes
                                 </button>
-                                <button 
-                                onClick={handleDeleteRequest}
-                                type="button"
-                                class="w-full py-2 px-4 bg-red-600 text-white font-semibold rounded-md hover:bg-red-700 transition duration-200"
-                                    >
-                                        Delete Profile
-                                    </button>
-                        
-
-                        {message && <p class="mt-4 text-center text-red-600">{message}</p>} {/* Show success or error message */}
                                 <button
                                     type="button"
                                     onClick={() => setIsEditing(false)}
-                                    
-                                    className="bg-gray-400 text-white py-2 px-4 rounded-lg hover:bg-opacity-90 transition duration-300"
+                                    className="w-full bg-brandBlue text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300"
                                 >
                                     Cancel
                                 </button>
+                                <button
+                                    onClick={handleDeleteRequest}
+                                    type="button"
+                                    className="w-full py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition duration-300"
+                                >
+                                    Delete Profile
+                                </button>
+                                {message && <p class="mt-4 text-center text-red-600">{message}</p>}
                             </div>
                         </form>
                     )}
