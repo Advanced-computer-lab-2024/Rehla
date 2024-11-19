@@ -1776,21 +1776,30 @@ const createUserAdvertiser = async (req, res) => {
 };
 
 //Reading all advertiser detail by email
-const readAdvertiser = async (req,res)=>{
-    try{
-        const { email } = req.body; 
-        const advertiserProfile = await AdvertisersModel.findOne({ Email: email });
-
-        if (!advertiserProfile) {
-            return res.status(404).json({ message: 'Company profile not found' });
+const readAdvertiser = async (req, res) => {
+    try {
+        // Extract the email from the request body
+        const { Email } = req.body; // Destructure Email from req.body
+  
+        // Check if Email is provided
+        if (!Email) {
+            return res.status(400).json({ message: 'Email is required' });
         }
-        res.status(200).json({ message: 'Advertiser fetched successfully', data: advertiserProfile });
+  
+        // Find the tourist by email
+        const advertiser = await AdvertisersModel.findOne({ Email });
+        
+        // Check if the tourist was found
+        if (!advertiser) {
+            return res.status(404).json({ message: 'Advertiser not found' });
+        }
+  
+        // Return the tourist profile
+        res.status(200).json(advertiser);
+    } catch (error) {
+        res.status(500).json({ message: 'Error retrieving advertiser profile', error: error.message });
     }
-    catch(error){
-        console.error("Error fetching company profile:", error.message);
-        res.status(500).json({ error: 'Error fetching company profile', details: error.message });
-    }
-}
+  };
 
 //Updating advertiser using email
 const updateUserAdvertiser = async (req, res) => {

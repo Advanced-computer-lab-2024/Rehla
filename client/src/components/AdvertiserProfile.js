@@ -30,7 +30,9 @@ const AdvertiserProfile = () => {
     const handleDeleteRequest = async () => {
         try {
             // Call the requestDeleteProfile function from api.js
-            const result = await requestDeleteProfile(username, email, password, type);
+            const email = localStorage.getItem('email');
+            const profileData = await getAdvertiserProfile({ Email: email });
+            const result = await requestDeleteProfile(profileData.Username, profileData.Email, profileData.Password, profileData.Type);
             setMessage(result.message); // Set the success message
         } catch (error) {
             // Handle errors (e.g., validation errors or server errors)
@@ -44,9 +46,9 @@ const AdvertiserProfile = () => {
         const fetchProfile = async () => {
             try {
                 const email = localStorage.getItem('email'); // Assuming email is stored after login
-                const profileData = await getAdvertiserProfile(email); // Fetch profile by email
-                setAdvertiser(profileData.data); // Set fetched profile in state
-                setFormData(profileData.data); // Pre-fill form with fetched data
+                const profileData = await getAdvertiserProfile({Email :email}); // Fetch profile by email
+                setAdvertiser(profileData); // Set fetched profile in state
+                setFormData(profileData); // Pre-fill form with fetched data
             } catch (error) {
                 console.error("Error fetching profile:", error);
             }
@@ -252,6 +254,16 @@ const AdvertiserProfile = () => {
                                 >
                                     Save Profile
                                 </button>
+
+                                <button 
+                                    onClick={handleDeleteRequest}
+                                    type="button"
+                                    class="w-full py-2 px-4 bg-red-600 text-white font-semibold rounded-md hover:bg-red-700 transition duration-200"
+                                >
+                                    Delete Profile
+                                </button>
+
+                            {message && <p class="mt-4 text-center text-red-600">{message}</p>} {/* Show success or error message */}
                             </form>
                         </div>
                     ) : (
@@ -268,69 +280,7 @@ const AdvertiserProfile = () => {
             </div>
 
 
-            <div class="max-w-md mx-auto bg-white shadow-md rounded-lg p-8">
-    <h1 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Delete Profile</h1>
-    <form onSubmit={(e) => { e.preventDefault(); handleDeleteRequest(); }} class="space-y-4">
-        
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Username:</label>
-            <input 
-                type="text" 
-                value={username} 
-                onChange={(e) => setUsername(e.target.value)} 
-                required 
-                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brandBlue focus:border-transparent"
-            />
-        </div>
-        
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Email:</label>
-            <input 
-                type="email" 
-                value={email} 
-                onChange={(e) => setEmail(e.target.value)} 
-                required 
-                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brandBlue focus:border-transparent"
-            />
-        </div>
-        
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Password:</label>
-            <input 
-                type="password" 
-                value={password} 
-                onChange={(e) => setPassword(e.target.value)} 
-                required 
-                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brandBlue focus:border-transparent"
-            />
-        </div>
-        
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Type:</label>
-            <select 
-                value={type} 
-                onChange={(e) => setType(e.target.value)} 
-                required
-                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brandBlue focus:border-transparent"
-            >
-                <option value="">Select Type</option>
-                <option value="TOURIST">Tourist</option>
-                <option value="Tour Guide">Tour Guide</option>
-                <option value="Advertiser">Advertiser</option>
-                <option value="Seller">Seller</option>
-            </select>
-        </div>
-        
-        <button 
-            type="submit"
-            class="w-full py-2 px-4 bg-red-600 text-white font-semibold rounded-md hover:bg-red-700 transition duration-200"
-        >
-            Submit Request
-        </button>
-    </form>
-
-    {message && <p class="mt-4 text-center text-red-600">{message}</p>} {/* Show success or error message */}
-</div>
+ 
 
             {/* Footer */}
             <footer className="w-full bg-brandBlue py-4 text-center text-white mt-6">

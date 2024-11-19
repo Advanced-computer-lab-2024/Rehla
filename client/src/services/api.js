@@ -458,9 +458,9 @@ export const createAdvertiserProfile = async (advertiserData) => {
     }
 };
 
-export const getAdvertiserProfile = async (email) => {
+export const getAdvertiserProfile = async (data) => {
     try {
-        const response = await axios.post(`${API_URL}/readAdvertisers`, { email });
+        const response = await axios.post(`${API_URL}/readAdvertisers`, data);
         return response.data;
     } catch (error) {
         console.error("Error fetching advertiser profile:", error);
