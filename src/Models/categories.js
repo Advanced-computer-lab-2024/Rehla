@@ -5,6 +5,8 @@ const categoriesSchema = new Schema({
     Name: {
         type: String,
         required: true,
+        unique : true,
+
     },
 },{ versionKey: false });
 

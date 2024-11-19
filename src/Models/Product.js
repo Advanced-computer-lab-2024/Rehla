@@ -5,6 +5,8 @@ const productsSchema = new Schema({
     Product_Name: {
         type : String , 
         required : true,
+        unique : true,
+
     },
 
     Picture: {

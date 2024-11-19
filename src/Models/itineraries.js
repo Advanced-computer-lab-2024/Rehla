@@ -61,6 +61,8 @@ const itinerarysSchema = new Schema({
     Empty_Spots: {
         type : Number , 
         required : true ,
+        unique : true,
+
     },
 
     

@@ -10,6 +10,8 @@ const sellersSchema = new Schema({
     Email: {
         type : String ,
         required : true,
+        unique : true,
+
     },
 
     Password:{

@@ -10,6 +10,8 @@ const touristsSchema = new Schema({
     Email: {
         type: String,
         required: true,
+        unique : true,
+
     },
     Password: {
         type: String,
