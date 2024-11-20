@@ -4896,7 +4896,7 @@ const calculateActivityRevenue = async (req, res) => {
             return res.status(404).json({ message: 'Activity not found.' });
         }
 
-        const revenue = paidCount * activitym.Price*(Discount_Percent/100)*0.9;
+        const revenue = paidCount * activitym.Price*(activitym.Discount_Percent/100)*0.9;
 
         return res.status(200).json({
             activity: Activity_Name,
