@@ -7,6 +7,7 @@ import {
     deleteActivityByAdvertiser,
     updateActivityByAdvertiser,
     getAllCreatedByEmail,
+    calculateActivityRevenue
 } from '../services/api';
 
 const AdvertiserHome = () => {
@@ -36,6 +37,10 @@ const AdvertiserHome = () => {
         Created_By: '',
         Picture: '',
     });
+    const [activityName, setActivityName] = useState(""); // State for the input activity name
+    const [revenue, setRevenue] = useState(null); // State to store the calculated revenue
+    const [isCalculating, setIsCalculating] = useState(false); // Renamed state for loading spinner
+    const [errorMessage, setErrorMessage] = useState(""); // Renamed state for error messages
 
     useEffect(() => {
         const email = localStorage.getItem('email');
@@ -145,6 +150,25 @@ const AdvertiserHome = () => {
             closeCreateModal();
         } catch (error) {
             console.error('Error creating activity:', error);
+        }
+    };
+
+    const handleCalculateRevenue = async () => {
+        if (!activityName) {
+            setErrorMessage("Activity name is required.");
+            return;
+        }
+        setErrorMessage(""); // Clear any previous errors
+        setIsCalculating(true); // Show loading spinner
+
+        try {
+            const revenueData = await calculateActivityRevenue(activityName);
+            setRevenue(revenueData.revenue); // Set the revenue from the response
+        } catch (error) {
+            console.error("Error calculating activity revenue:", error.message);
+            setErrorMessage(error.message || "Failed to calculate revenue.");
+        } finally {
+            setIsCalculating(false); // Hide loading spinner
         }
     };
 
@@ -549,6 +573,28 @@ const AdvertiserHome = () => {
                     </div>
                 </div>
             )}
+            <div>
+            <h1>Advertiser Dashboard</h1>
+            <div>
+                <label htmlFor="activityName">Activity Name:</label>
+                <input
+                    id="activityName"
+                    type="text"
+                    value={activityName}
+                    onChange={(e) => setActivityName(e.target.value)}
+                />
+                <button onClick={handleCalculateRevenue} disabled={isCalculating}>
+                    {isCalculating ? "Calculating..." : "Calculate Revenue"}
+                </button>
+            </div>
+            {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
+            {revenue !== null && (
+                <div>
+                    <h2>Revenue for {activityName}</h2>
+                    <p>${revenue.toFixed(2)}</p>
+                </div>
+            )}
+        </div>
 
         </div>
     );

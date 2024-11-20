@@ -132,6 +132,7 @@ const {createUserAdmin,
   getSalesReport,
   updateCartItem,
   createCartItem,
+  calculateActivityRevenue,
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -304,4 +305,5 @@ app.get('/getAllFiles', getAllFiles);
 app.get('/salesReport/:sellerName', getSalesReport);
 app.put('/updateCartItem', updateCartItem);
 app.post('/createCartItem', createCartItem);
+app.post('/calculateActivityRevenue', calculateActivityRevenue);
 

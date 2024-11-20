@@ -4869,6 +4869,49 @@ const createCartItem = async (req, res) => {
     }
 }
 
+const calculateActivityRevenue = async (req, res) => {
+    try {
+        const { Activity_Name } = req.body;
+
+        if (!Activity_Name) {
+            return res.status(400).json({ message: 'Activity_Name is required.' });
+        }
+
+        // Count the number of paid records for the activity
+        const paidCount = await tourist_activities.countDocuments({
+            Activity_Name: Activity_Name,
+            Paid: true,
+        });
+
+        if (paidCount === 0) {
+            return res.status(200).json({
+                message: `No revenue generated for the activity: ${Activity_Name}`,
+                revenue: 0,
+            });
+        }
+
+        // Retrieve the price of the activity
+        const activitym = await activity.findOne({ Name: Activity_Name });
+        if (!activitym) {
+            return res.status(404).json({ message: 'Activity not found.' });
+        }
+
+        const revenue = paidCount * activitym.Price*(Discount_Percent/100)*0.9;
+
+        return res.status(200).json({
+            activity: Activity_Name,
+            pricePerUnit: activitym.Price,
+            paidCount,
+            revenue,
+        });
+    } catch (error) {
+        console.error('Error calculating activity revenue:', error.message);
+        return res.status(500).json({
+            error: 'Error calculating activity revenue',
+            details: error.message,
+        });
+    }
+};
 
 
 
@@ -5005,4 +5048,5 @@ module.exports = { getPurchasedProducts,
     getSalesReport,
     updateCartItem,
     createCartItem,
+    calculateActivityRevenue,
 };

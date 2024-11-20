@@ -1258,3 +1258,18 @@ export const fetchSalesReport = async (sellerName) => {
     }
 };
 
+export const calculateActivityRevenue = async (Activity_Name) => {
+    try {
+        const response = await axios.post(`${API_URL}/calculateActivityRevenue`, {
+            Activity_Name,
+        });
+        return response.data; // Return the response data from the server
+    } catch (error) {
+        console.error('Error calculating activity revenue:', error);
+        const errorMessage = error.response
+            ? error.response.data
+            : { message: 'Network error' };
+        throw errorMessage; // Rethrow the error for handling in the calling component
+    }
+};
+
