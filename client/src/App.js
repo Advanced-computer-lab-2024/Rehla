@@ -32,6 +32,7 @@ import MyEvents from './components/MyEvents.js';
 import Flights from './components/Flights.js';
 import Hotels from './components/Hotels.js';
 import EventDetails from './components/EventDetails';
+import ActivityDetails from './components/ActivityDetails.js';
 
 
 
@@ -65,6 +66,7 @@ function App() {
                 <Route path="/TourGuideHome" element={<TourGuideHome />} />
                 <Route path="/TourGuideHome/TourGuideProfile" element={<TourGuideProfile />} />
                 <Route path="/TourisimGovernerHome" element={<TourisimGovernerHome />} />
+                <Route path="/activity-details/:activityName" element={<ActivityDetails />} />
 
                 <Route path="/MyEvents" element={<MyEvents />} />
 

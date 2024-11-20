@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { getAllUpcomingEventsAndPlaces, sortActivities, sortItineraries, filterActivities, filterItineraries , filterPlacesAndMuseums} from '../services/api';
 import logo from '../images/logo.png';
 import img1 from '../images/img10.jpg';
@@ -7,6 +7,9 @@ import img2 from '../images/img4.jpg';
 import img3 from '../images/img3.jpg';
 
 const Home = () => {
+
+    const navigate = useNavigate();
+
     const [data, setData] = useState(null);
     const [error, setError] = useState(null);
 
@@ -138,10 +141,14 @@ const Home = () => {
         }));
     };
 
-    // Open modal and set the selected activity
+    // // Open modal and set the selected activity
+    // const handleActivityClick = (activity) => {
+    //     setSelectedActivity(activity);
+    //     setIsModalOpen(true);
+    // };
+
     const handleActivityClick = (activity) => {
-        setSelectedActivity(activity);
-        setIsModalOpen(true);
+        navigate(`/activity-details/${encodeURIComponent(activity.Name)}`); // Encode to make the URL safe
     };
 
     // Close the modal
