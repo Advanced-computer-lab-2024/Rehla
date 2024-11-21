@@ -4913,6 +4913,39 @@ const calculateActivityRevenue = async (req, res) => {
     }
 };
 
+const calculateItineraryRevenue = async (req, res) => {
+    try {
+        const { Itinerary_Name } = req.body;
+
+        if (!Itinerary_Name) {
+            return res.status(400).json({ message: 'Itinerary_Name is required.' });
+        }
+
+        // Count all records with Paid = true for the given Itinerary_Name
+        const paidCount = await touristIteneraries.countDocuments({
+            Itinerary_Name: Itinerary_Name,
+            Paid: true,
+        });
+
+        if (paidCount === 0) {
+            return res.status(200).json({ itinerary: Itinerary_Name, revenue: 0 });
+        }
+
+        // Retrieve the Tour_Price for the given Itinerary_Name
+        const itineraryDetails = await itinerarym.findOne({ Itinerary_Name: Itinerary_Name });
+
+        if (!itineraryDetails) {
+            return res.status(404).json({ message: 'Itinerary not found.' });
+        }
+
+        const revenue = paidCount * itineraryDetails.Tour_Price*0.9;
+
+        return res.status(200).json({ itinerary: Itinerary_Name, revenue });
+    } catch (error) {
+        console.error("Error calculating itinerary revenue:", error.message);
+        return res.status(500).json({ error: 'Error calculating itinerary revenue', details: error.message });
+    }
+};
 
 
 // ----------------- Activity Category CRUD -------------------
@@ -5049,4 +5082,5 @@ module.exports = { getPurchasedProducts,
     updateCartItem,
     createCartItem,
     calculateActivityRevenue,
+    calculateItineraryRevenue,
 };

@@ -6,7 +6,8 @@ import {
     deleteItinerary,
     updateItinerary,
     getAllCreatedByEmail,
-    Itineraryactivation 
+    Itineraryactivation ,
+    calculateItineraryRevenue
 } from '../services/api';
 
 const TourGuideHome = () => {
@@ -39,6 +40,11 @@ const TourGuideHome = () => {
     const [itineraryNamee, setItineraryNamee] = useState('');
     const [accessibilitye, setAccessibilitye] = useState('deactivated'); // Default to 'deactivated'
     const [messageee, setMessageee] = useState('');
+
+    const [itinerary, setItinerary] = useState(''); // Renamed from itineraryName
+    const [isLoading, setIsLoading] = useState(false); // Renamed from loading
+    const [errorr, setErrorr] = useState(''); // Renamed from errorMessage
+    const [revenue, setRevenue] = useState(null);
 
 
     useEffect(() => {
@@ -179,6 +185,27 @@ const TourGuideHome = () => {
             setMessageee('Error updating itinerary');
         }
     };
+
+    const handleCalculateRevenue = async () => {
+        if (!itinerary.trim()) {
+            setErrorr('Itinerary Name is required.');
+            return;
+        }
+
+        setIsLoading(true);
+        setErrorr('');
+        setRevenue(null);
+
+        try {
+            const result = await calculateItineraryRevenue(itinerary);
+            setRevenue(result.revenue);
+        } catch (err) {
+            setErrorr(err.message || 'An error occurred.');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
 
     return (
         <div>
@@ -658,6 +685,31 @@ const TourGuideHome = () => {
             </form>
 
             {messageee && <p>{messageee}</p>} {/* Display success/error message */}
+        </div>
+        <div style={{ margin: '20px' }}>
+            <h2>Calculate Itinerary Revenue</h2>
+            <div>
+                <label>
+                    <strong>Itinerary Name:</strong>
+                </label>
+                <input
+                    type="text"
+                    value={itinerary}
+                    onChange={(e) => setItinerary(e.target.value)}
+                    placeholder="Enter itinerary name"
+                    style={{ margin: '10px', padding: '5px' }}
+                />
+            </div>
+            <button onClick={handleCalculateRevenue} disabled={isLoading}>
+                {isLoading ? 'Calculating...' : 'Calculate Revenue'}
+            </button>
+            {errorr && <p style={{ color: 'red' }}>{error}</p>}
+            {revenue !== null && (
+                <div>
+                    <h4>Revenue:</h4>
+                    <p>${revenue}</p>
+                </div>
+            )}
         </div>
         </div>
     );

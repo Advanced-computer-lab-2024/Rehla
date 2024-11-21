@@ -1273,3 +1273,16 @@ export const calculateActivityRevenue = async (Activity_Name) => {
     }
 };
 
+// Function to calculate itinerary revenue
+export const calculateItineraryRevenue = async (itineraryName) => {
+    try {
+        const response = await axios.post(`${API_URL}/calculateItineraryRevenue`, {
+            Itinerary_Name: itineraryName,
+        });
+        return response.data; // Return the response data from the server
+    } catch (error) {
+        console.error('Error calculating itinerary revenue:', error);
+        const errorMessage = error.response ? error.response.data : { message: 'Network error' };
+        throw errorMessage;
+    }
+};
