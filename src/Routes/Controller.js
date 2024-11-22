@@ -4522,31 +4522,42 @@ const searchFlights = async (req, res) => {
 // Checkout Order for a Tourist
 const checkoutOrder = async (req, res) => {
     try {
-        const { Tourist_Email } = req.body;
+        const { Tourist_Email, Product_Name } = req.body;
 
-        // Find all products for the tourist
-        const products = await tourist_products.find({ Tourist_Email });
-
-        if (!products.length) {
-            return res.status(404).json({ message: 'No products found for this tourist email.' });
+        // Validate input
+        if (!Tourist_Email || !Product_Name) {
+            return res.status(400).json({ message: "Tourist_Email and Product_Name are required." });
         }
 
-        // Process the checkout (e.g., change status, log data, etc.)
-        const checkedOutProducts = products.map((product) => ({
+        // Find the product matching both email and product name
+        const product = await tourist_products.findOne({ 
+            Tourist_Email, 
+            Product_Name 
+        });
+
+        if (!product) {
+            return res.status(404).json({ 
+                message: 'No product found for the provided email and product name.' 
+            });
+        }
+
+        // Process the checkout (e.g., log data, prepare response, etc.)
+        const checkedOutProduct = {
             Product_Name: product.Product_Name,
             Review: product.Review,
             Rating: product.Rating || 'No rating',
-        }));
-
-        // If there’s more logic to complete the checkout (like clearing the cart, marking the order as completed, etc.), it can be added here.
+        };
 
         res.status(200).json({
             message: 'Order checked out successfully.',
-            data: checkedOutProducts,
+            data: checkedOutProduct,
         });
     } catch (error) {
         console.error('Error checking out order:', error.message);
-        res.status(500).json({ error: 'Error checking out order', details: error.message });
+        res.status(500).json({ 
+            error: 'Error checking out order', 
+            details: error.message 
+        });
     }
 };
 
