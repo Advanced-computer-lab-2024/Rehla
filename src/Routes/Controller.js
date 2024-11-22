@@ -4519,6 +4519,39 @@ const searchFlights = async (req, res) => {
     }
 };
 
+// Checkout Order for a Tourist
+const checkoutOrder = async (req, res) => {
+    try {
+        const { Tourist_Email } = req.body;
+
+        // Find all products for the tourist
+        const products = await tourist_products.find({ Tourist_Email });
+
+        if (!products.length) {
+            return res.status(404).json({ message: 'No products found for this tourist email.' });
+        }
+
+        // Process the checkout (e.g., change status, log data, etc.)
+        const checkedOutProducts = products.map((product) => ({
+            Product_Name: product.Product_Name,
+            Review: product.Review,
+            Rating: product.Rating || 'No rating',
+        }));
+
+        // If there’s more logic to complete the checkout (like clearing the cart, marking the order as completed, etc.), it can be added here.
+
+        res.status(200).json({
+            message: 'Order checked out successfully.',
+            data: checkedOutProducts,
+        });
+    } catch (error) {
+        console.error('Error checking out order:', error.message);
+        res.status(500).json({ error: 'Error checking out order', details: error.message });
+    }
+};
+
+
+
 // view my purchased products
 const viewMyPurchasedProducts = async (req, res) => {
     try {
@@ -4869,6 +4902,38 @@ const createCartItem = async (req, res) => {
     }
 }
 
+const viewTouristOrders = async (req, res) => {
+    try {
+        const { Tourist_Email } = req.params;
+
+        // Validate request
+        if (!Tourist_Email) {
+            return res.status(400).json({ message: "Tourist email is required." });
+        }
+
+        // Find orders for the tourist
+        const orders = await Tourist_Products.find({ Tourist_Email });
+
+        if (!orders.length) {
+            return res.status(404).json({ message: "No orders found for this tourist." });
+        }
+
+        // Group orders into current and past
+        const currentOrders = orders.filter(order => !order.Review && !order.Rating);
+        const pastOrders = orders.filter(order => order.Review || order.Rating);
+
+        res.status(200).json({
+            message: "Orders retrieved successfully.",
+            currentOrders,
+            pastOrders
+        });
+    } catch (error) {
+        console.error('Error retrieving tourist orders:', error.message);
+        res.status(500).json({ error: "Error retrieving orders", details: error.message });
+    }
+};
+
+
 const calculateActivityRevenue = async (req, res) => {
     try {
         const { Activity_Name } = req.body;
@@ -5083,4 +5148,6 @@ module.exports = { getPurchasedProducts,
     createCartItem,
     calculateActivityRevenue,
     calculateItineraryRevenue,
+    viewTouristOrders,
+    checkoutOrder,
 };
