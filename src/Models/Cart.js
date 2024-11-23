@@ -4,6 +4,10 @@ const Schema = mongoose.Schema;
 
 // Define the cart schema
 const cartSchema = new Schema({
+  Cart_Num:{
+    type: Number, 
+    
+  },
   Email: { 
     type: String, 
     required: true, 
