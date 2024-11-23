@@ -57,6 +57,10 @@ const touristsSchema = new Schema({
     Profile_Pic: {
         type: String
     },
+    Cart_Num: {
+        type: Number,
+        default: 1,
+    },
 
 }, { versionKey: false });
 
