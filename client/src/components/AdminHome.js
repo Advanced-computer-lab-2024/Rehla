@@ -23,7 +23,8 @@ import {
     flagActivity , flagItinerary 
     ,getDeleteRequests,
     deleteRequest,
-    updateComplaintStatus
+    updateComplaintStatus,
+    createPromoCode
     
 } from '../services/api'; // Import all API functions
 import '../css/Home.css';
@@ -461,6 +462,29 @@ const toggleUserModal = () => {
     setUserModalOpen(!isUserModalOpen);
   };
 
+  const [promoCode, setPromoCode] = useState('');
+const [discount, setDiscount] = useState('');
+const [expiry, setExpiry] = useState('');
+const [createdby,setCreatedBy]= useState('');
+const [promoType, setPromoType] = useState('');
+const [promoMessage, setPromoMessage] = useState('');
+
+useEffect(() => {
+    const adminemail = localStorage.getItem('email');
+    setCreatedBy(adminemail);
+}, []);
+
+const handleCreatePromoCode = async (e) => {
+    e.preventDefault();
+    setPromoMessage('');
+    try {
+        const response = await createPromoCode(promoCode, discount, expiry, createdby , promoType);
+
+        setPromoMessage(`Promo code ${response.Code} created successfully!`);
+    } catch (error) {
+        setPromoMessage(error.message);
+    }
+};
 
   
 
@@ -1051,6 +1075,48 @@ const toggleUserModal = () => {
             )}
         </div>
            <br />
+           <div>
+
+<h1 className="text-3xl font-extrabold text-center mb-8 mt-8 text-brandBlue">Create Promo Code</h1>
+<form onSubmit={handleCreatePromoCode} className="mb-4">
+    <label className="block mb-2">Promo Code:</label>
+    <input
+        type="text"
+        value={promoCode}
+        onChange={(e) => setPromoCode(e.target.value)}
+        required
+        className="border border-gray-300 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
+    />
+    <label className="block mb-2">Discount:</label>
+    <input
+        type="text"
+        value={discount}
+        onChange={(e) => setDiscount(e.target.value)}
+        required
+        className="border border-gray-300 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
+    />
+    <label className="block mb-2">Expiry Date:</label>
+    <input
+        type="date"
+        value={expiry}
+        onChange={(e) => setExpiry(e.target.value)}
+        required
+        className="border border-gray-300 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
+    />
+    <label className="block mb-2">Type:</label>
+    <input
+        type="text"
+        value={promoType}
+        onChange={(e) => setPromoType(e.target.value)}
+        required
+        className="border border-gray-300 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
+    />
+    <button type="submit" className="bg-brandBlue text-white rounded-md px-4 py-2 transition duration-200">
+        Create Promo Code
+    </button>
+</form>
+{promoMessage && <p className="text-green-500">{promoMessage}</p>}
+</div>
 
         <footer className="bg-brandBlue shadow dark:bg-brandBlue m-0">
                 <div className="w-full mx-auto md:py-8">
