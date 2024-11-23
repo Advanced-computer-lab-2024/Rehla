@@ -1104,13 +1104,18 @@ const handleCreatePromoCode = async (e) => {
         className="border border-gray-300 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
     />
     <label className="block mb-2">Type:</label>
-    <input
-        type="text"
+    <select
         value={promoType}
         onChange={(e) => setPromoType(e.target.value)}
         required
         className="border border-gray-300 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
-    />
+    >
+        <option value="">Select Promo Type</option>
+        <option value="Product">Product</option>
+        <option value="Itinrary">Itinrary</option>
+        <option value="Activity">Activity</option>
+        <option value="All">All</option>
+</select>
     <button type="submit" className="bg-brandBlue text-white rounded-md px-4 py-2 transition duration-200">
         Create Promo Code
     </button>
