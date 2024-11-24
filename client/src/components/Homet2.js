@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { getAllUpcomingEventsAndPlaces, sortActivities, sortItineraries, filterActivities, filterItineraries , filterPlacesAndMuseums} from '../services/api';
-import logo from '../images/logo.png';
 import img1 from '../images/img10.jpg';
 import img2 from '../images/img4.jpg';
 import img3 from '../images/img3.jpg';
