@@ -1286,3 +1286,14 @@ export const calculateItineraryRevenue = async (itineraryName) => {
         throw errorMessage;
     }
 };
+
+// function to create new promo code
+export const createPromoCode = async (Code, Discount, Expiry,CreatedBy ,type) => {
+    try {
+        const response = await axios.post(`${API_URL}/createPromoCode`, {Code, Discount, Expiry,CreatedBy ,type});
+        return response.data;
+    } catch (error) {
+        console.error('Error creating promo code:', error);
+        throw error.response ? error.response.data : { message: 'Network error' };
+    }
+};

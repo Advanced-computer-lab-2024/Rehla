@@ -135,6 +135,7 @@ const {createUserAdmin,
   calculateActivityRevenue,
   calculateItineraryRevenue,
   checkoutOrder,
+  createPromoCode,
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -310,4 +311,4 @@ app.post('/createCartItem', createCartItem);
 app.post('/calculateActivityRevenue', calculateActivityRevenue);
 app.post('/calculateItineraryRevenue', calculateItineraryRevenue);
 app.post('/Tourist/CheckoutOrder', checkoutOrder);
-
+app.post('/createPromoCode', createPromoCode);
