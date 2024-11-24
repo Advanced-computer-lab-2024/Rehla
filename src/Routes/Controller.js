@@ -43,7 +43,7 @@ const wishlist = require ('../Models/wishlist.js');
 
 // Define all models where the user could exist
 const models = [Admin, tourism_governers, Tourist, tour_guidem, AdvertisersModel, Seller]; // Add all the models here
-
+const nodemailer = require('nodemailer');
 const multer = require('multer');
 const path = require('path');
 require('dotenv').config();
