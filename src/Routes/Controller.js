@@ -39,6 +39,7 @@ const advertiserfiles = require('../Models/filesadvertiser.js');
 const cartm = require('../Models/Cart.js');
 const promocodem = require('../Models/promocodes.js');
 const tourist_addreessiesm = require('../Models/Tourist_addreessies.js');
+const wishlist = require ('../Models/wishlist.js');
 
 const multer = require('multer');
 const path = require('path');
@@ -67,6 +68,13 @@ const createUserAdmin = async (req, res) => {
         if (Type !== 'Admin' && Type !== 'Tourism Governor') {
             return res.status(400).json({ error: 'Invalid type. Only "Admin" or "Tourism Governor" are allowed.' });
         }
+
+        await Promise.all(models.map(async (Model) => {
+            const user = await Model.findOne({ Email: Email });
+            if(user){
+                return res.status(400).json({ error: 'Email is already in use.' });
+            }
+        }));
 
         const existingGoverner = await tourism_governers.findOne({ Email });
         if (existingGoverner) {
@@ -549,10 +557,12 @@ const registerTourist = async (req, res) => {
         }
 
         // Check if email already exists
-        const existingRequest = await Tourist.findOne({ Email });
-        if (existingRequest) {
-            return res.status(400).json({ error: 'Email is already in use.' });
-        }
+        await Promise.all(models.map(async (Model) => {
+            const user = await Model.findOne({ Email: Email });
+            if(user){
+                return res.status(400).json({ error: 'Email is already in use.' });
+            }
+        }));
 
         // Create a new tourist object without password hashing
         const newTourist = new Tourist({
@@ -633,11 +643,14 @@ const registerRequest = async (req, res) => {
             return res.status(400).json({ error: 'Invalid registration type. Must be Tour Guide, Advertiser, or Seller.' });
         }
 
-        // Check if email already exists
-        const existingRequest = await Request.findOne({ Email });
-        if (existingRequest) {
-            return res.status(400).json({ error: 'Email is already in use.' });
-        }
+        // Check if email already exists in all collections
+        await Promise.all(models.map(async (Model) => {
+            const user = await Model.findOne({ Email: Email });
+            if(user){
+                return res.status(400).json({ error: 'Email is already in use.' });
+            }
+        }));
+
 
         // Create a new request object
         const newRequest = new Request({
@@ -672,7 +685,7 @@ const createActivityCategory = async (req, res) => {
     } catch (error) {
         console.error('Error details:', error); // Add detailed logging
         res.status(500).json({ error: 'Error creating  category', details: error.message || error });
-      }
+    }
 };
   
 const readActivityCategories = async (req, res) => {
