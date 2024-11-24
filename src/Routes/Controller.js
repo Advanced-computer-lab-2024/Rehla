@@ -4474,7 +4474,6 @@ const checkoutOrder = async (req, res) => {
 };
 
 
-
 // view my purchased products
 const viewMyPurchasedProducts = async (req, res) => {
     try {
@@ -4786,7 +4785,7 @@ const createCartItem = async (req, res) => {
         const {Email, Productname } = req.body;
 
         // Validate input
-        if (!Tourist_Email || !Productname ) {
+        if (!Email || !Productname ) {
             return res.status(400).json({ error: 'All fields are required.' });
         }
 
@@ -4824,6 +4823,51 @@ const createCartItem = async (req, res) => {
         return res.status(500).json({ error: 'Failed to create cart item.' });
     }
 }
+
+//create a wish list for the tourist
+const createwishlistItem = async (req, res) => {
+    try{
+        const {Email, Productname } = req.body;
+
+        // Validate input
+        if (!Email || !Productname ) {
+            return res.status(400).json({ error: 'All fields are required.' });
+        }
+
+        // Check if the tourist exists
+        const tourist = await Tourist.findOne({ Email });
+        if (!tourist) {
+            return res.status(404).json({ error: 'Tourist not found.' });
+        }
+
+        // Check if the product exists
+        const product = await Product.findOne({ Product_Name : Productname });
+        if (!product) {
+            return res.status(404).json({ error: 'Product not found.' });
+        }
+
+        // Check if the product is already in the wish list
+        const existingwishlistItem = await wishlist.findOne({ Email, Productname });
+        if (existingwishlistItem) {
+            return res.status(409).json({ error: 'Product already in wish list.' });
+        }
+
+        // Create a new cart item
+        const newwishlistItem = new wishlist({
+            Email,
+            Productname
+        });
+
+        // Save the cart item to the database
+        await newwishlistItem.save();
+
+        // Send a success response
+        return res.status(201).json({ message: 'Wish List item created successfully.', newwishlistItem });
+    } catch (error) {
+        console.error('Error creating wish list item:', error);
+        return res.status(500).json({ error: 'Failed to create wish list item.' });
+    }
+};
 
 const viewTouristOrders = async (req, res) => {
     try {
@@ -5111,4 +5155,5 @@ module.exports = { getPurchasedProducts,
     viewTouristOrders,
     checkoutOrder,
     createPromoCode,
+    createwishlistItem
 };
