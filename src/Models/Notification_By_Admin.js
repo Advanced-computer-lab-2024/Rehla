@@ -10,15 +10,13 @@ const Notification_ASchema = new Schema({
     required: true, 
     unique: true 
   },
-  Type: {         //activity aw itenerary
+  E_Type: {         //EVENT TYPE activity aw itenerary
     type: String, 
     required: true, 
-    unique: true 
   },
-  Name: {          //esm el activity ae itinerary
+  E_Name: {          //esm el activity ae itinerary
     type: String, 
     required: true, 
-    unique: true 
   },
   Description : {   
     type: String, 

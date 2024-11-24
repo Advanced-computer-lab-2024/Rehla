@@ -5,6 +5,8 @@ const Saved_EventSchema = new Schema({
     Tourist_Email: {
         type: String,
         required: true,
+        unique: true,
+
     },
     TYPE: {         // activity wala itinerary
         type: String,

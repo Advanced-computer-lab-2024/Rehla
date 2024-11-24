@@ -10,6 +10,15 @@ const Notification_TSchema = new Schema({
     required: true, 
     unique: true 
   },
+  E_Type: {          // event type activity aw itenerary
+
+    type: String, 
+    required: true, 
+  },
+  E_Name: {        // event name
+    type: String, 
+    required: true, 
+  },
   Description : {   
     type: String, 
     required: true 

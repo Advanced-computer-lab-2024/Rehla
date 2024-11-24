@@ -5,6 +5,8 @@ const WishlistSchema = new Schema({
     Tourist_Email: {
         type: String,
         required: true,
+        unique: true,
+
     },
      
     Product_Name: {      //esm el product 
