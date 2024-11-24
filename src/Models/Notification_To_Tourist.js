@@ -3,28 +3,21 @@ const Schema = mongoose.Schema;
 
 
 // Define the cart schema
-const CartSchema = new Schema({
-  Cart_Num:{
-    type: Number, 
-    
-  },
+const Notification_TSchema = new Schema({
+ 
   Email: { 
     type: String, 
     required: true, 
     unique: true 
   },
-  Productname: { 
+  Description : {   
     type: String, 
     required: true 
   },
-  Quantity: { 
-    type: Number, 
-    required: true ,
-    default: 1
-  }
+
 },{ versionKey: false });
 
 // Create the model
-const Cart = mongoose.model("Cart", CartSchema);
+const  Notification_T = mongoose.model("Notification_T",  Notification_TSchema);
 
-module.exports = Cart;
+module.exports = Notification_T;
