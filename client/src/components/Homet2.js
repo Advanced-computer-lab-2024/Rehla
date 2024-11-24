@@ -151,6 +151,10 @@ const Home = () => {
         navigate(`/activity-details/${encodeURIComponent(activity.Name)}`); // Encode to make the URL safe
     };
 
+    const handleItineraryClick = (itinerary) => {
+        navigate(`/itinerary-details/${encodeURIComponent(itinerary.Itinerary_Name)}`); // Encode to make the URL safe
+    };
+
     // Close the modal
     const handleCloseModal = () => {
         setIsModalOpen(false);
@@ -421,7 +425,7 @@ const Home = () => {
                         <div
                         key={itinerary._id}
                         className="gallery-item flex-none flex flex-col items-center w-80"
-                        onClick={() => handleActivityClick(itinerary)}
+                        onClick={() => handleItineraryClick(itinerary)}
                         >
                         <img
                             src={itinerary.Picture}
