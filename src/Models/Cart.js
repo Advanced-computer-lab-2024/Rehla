@@ -3,7 +3,11 @@ const Schema = mongoose.Schema;
 
 
 // Define the cart schema
-const cartSchema = new Schema({
+const CartSchema = new Schema({
+  Cart_Num:{
+    type: Number, 
+    
+  },
   Email: { 
     type: String, 
     required: true, 
@@ -21,6 +25,6 @@ const cartSchema = new Schema({
 },{ versionKey: false });
 
 // Create the model
-const Cart = mongoose.model("Cart", cartSchema);
+const Cart = mongoose.model("Cart", CartSchema);
 
 module.exports = Cart;

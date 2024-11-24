@@ -37,6 +37,8 @@ const tourguidefiles = require('../Models/filesTourguide.js');
 const sellerfiles = require('../Models/filesseller.js');
 const advertiserfiles = require('../Models/filesadvertiser.js');
 const cartm = require('../Models/Cart.js');
+const promocodem = require('../Models/promocodes.js');
+const tourist_addreessiesm = require('../Models/Tourist_addreessies.js');
 
 const multer = require('multer');
 const path = require('path');
@@ -2863,55 +2865,10 @@ const creatTouristItenrary= async(req,res)=>{
             { $inc: { Booked: 1, Empty_Spots: -1 } } // Increment Booked and decrement Empty_Spots
         );
 
-        //pay for the itinrary
-        const itinerary = await itinerarym.findOne({ Itinerary_Name });
-
-        //check that the tourist has enough money in their wallet
-        if (touristExists.Wallet < itinerary.Tour_Price) {
-            return res.status(400).json({ error: 'Insufficient funds in your wallet to book this itinerary.' });
-        }
-
-        // Deduct the itinerary price from the tourist's wallet balance
-        touristExists.Wallet -= itinerary.Tour_Price;
-
-         // Calculate points based on the level
-         let points = 0;
-         switch (touristExists.Badge) {
-             case 'Level 1':
-                 points = itinerary.Tour_Price * 0.5;
-                 break;
-             case 'Level 2':
-                 points = itinerary.Tour_Price * 1;
-                 break;
-             case 'Level 3':
-                 points = itinerary.Tour_Price * 1.5;
-                 break;
-             default:
-                 points = 0;
-         }
- 
-         // Add points to the tourist's account
-         touristExists.Points += points;
-         await touristExists.save();
- 
-         // Update the tourist's badge based on the new points
-         if (touristExists.Points <= 100000) {
-            touristExists.Badge = 'Level 1';
-         } else if (touristExists.Points <= 500000) {
-            touristExists.Badge = 'Level 2';
-         } else {
-            touristExists.Badge = 'Level 3';
-         }
- 
-         await touristExists.save(); 
-
-         //mark the itinerary as paid
-            savedTouristItenrary.Paid = true;
-            await savedTouristItenrary.save();
+        await savedTouristItenrary.save();
 
         res.status(201).json({ message: 'Tourist itinerary created successfully', Tourist_Itinerary: savedTouristItenrary });
-
-
+        
     } catch (error) {
         console.error("Error details:", error.message, error.stack); // Log full error details
         res.status(500).json({ error: 'Error creating tourist itinerary', details: error.message });
@@ -3243,53 +3200,7 @@ const createTouristActivity = async (req, res) => {
             { Booking_Available: false }
         );
 
-        //PAY FOR THE ACTIVITY
-        const activityy = await activity.findOne({ Name: Activity_Name });
-
-        // Check if the tourist has enough money in their wallet
-        if (touristExists.Wallet < activityy.Price) {
-            return res.status(400).json({ error: 'Insufficient funds in your wallet to book this activity.' });
-        }
-
-        // Deduct the activity price from the tourist's wallet balance
-        touristExists.Wallet -= activityy.Price;
-
-        // Calculate points based on the level
-        let points = 0;
-        switch (touristExists.Badge) {
-            case 'Level 1':
-                points = activityy.Price * 0.5;
-                break;
-            case 'Level 2':
-                points = activityy.Price * 1;
-                break;
-            case 'Level 3':
-                points = activityy.Price * 1.5;
-                break;
-            default:
-                points = 0;
-        }
-
-        // Add points to the tourist's account
-        touristExists.Points += points;
-        await touristExists.save();
-
-        // Update the tourist's badge based on the new points
-        if (touristExists.Points <= 100000) {
-            touristExists.Badge = 'Level 1';
-        } else if (touristExists.Points <= 500000) {
-            touristExists.Badge = 'Level 2';
-        } else {
-            touristExists.Badge = 'Level 3';
-        }
-
-        await touristExists.save();
-
-        // Mark the tourist activity as paid
-        savedTouristActivity.Paid = true;
         await savedTouristActivity.save();
-
-        
 
         // Send a response
         res.status(201).json({ message: 'Tourist activity created successfully', tourist_activity: savedTouristActivity });
@@ -5023,6 +4934,43 @@ const calculateItineraryRevenue = async (req, res) => {
     }
 };
 
+//function to create new promocode
+const createPromoCode = async (req, res) => {
+    try {
+        const { Code, Discount, Expiry,CreatedBy ,type} = req.body;
+        // Validate input
+        if (!Code || !Discount || !Expiry || !type || !CreatedBy) {
+            return res.status(400).json({ error: 'All fields are required.' });
+        }
+        // Check if the promo code already exists
+        const existingPromoCode = await promocodem.findOne({ Code });
+        if (existingPromoCode) {
+            return res.status(409).json({ error: 'Promo code already exists.' });
+        }
+
+        //check that the date is valid
+        const expiryDate = new Date(Expiry);
+        if (expiryDate < new Date()) {
+            return res.status(400).json({ error: 'Expiry date must be in the future.' });
+        }
+
+        // check CreatedBy table admin
+        const admin = await Admin.findOne({Email : CreatedBy  });
+        if(!admin){
+            return res.status(404).json({ error: 'Admin not found.' });
+        }
+
+        // Create a new promo code
+        const newPromoCode = new promocodem({ Code, Discount, Expiry,CreatedBy,type});
+        // Save the promo code to the database
+        await newPromoCode.save();
+        // Send a success response
+        return res.status(201).json({ message: 'Promo code created successfully.', promoCode: newPromoCode });
+    } catch (error) {
+        console.error('Error creating promo code:', error);
+        return res.status(500).json({ error: 'Failed to create promo code.' });
+    }
+}
 
 // ----------------- Activity Category CRUD -------------------
 
@@ -5161,4 +5109,5 @@ module.exports = { getPurchasedProducts,
     calculateItineraryRevenue,
     viewTouristOrders,
     checkoutOrder,
+    createPromoCode,
 };
