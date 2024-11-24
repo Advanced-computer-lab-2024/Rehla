@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { readActivity, getItineraryByName, rateActivity, rateItinerary } from "../services/api";
+import {
+  readActivity,
+  getItineraryByName,
+  rateActivity,
+  rateItinerary,
+  commentOnEvent,
+  commentOnItinerary,
+} from "../services/api";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../images/logo.png";
 
@@ -7,8 +14,9 @@ const EventDetails = () => {
   const [name, setName] = useState("");
   const [type, setType] = useState("");
   const [details, setDetails] = useState(null);
-  const [rating, setRating] = useState(0); // Store the current selected rating
-  const [email, setEmail] = useState(""); // Email of the user (assumed to be stored in localStorage)
+  const [rating, setRating] = useState(0);
+  const [email, setEmail] = useState("");
+  const [comment, setComment] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -42,60 +50,59 @@ const EventDetails = () => {
   }, []);
 
   const handleRatingChange = (ratingValue) => {
-    setRating(ratingValue); // Update the rating when a star is clicked
+    setRating(ratingValue);
   };
 
   const handleSubmitRating = async () => {
-    if (rating) {
+    if (rating > 0) {
       try {
-        // Submit the rating based on whether it's an activity or itinerary
         if (type === "activity") {
-          await rateActivity(email, name, rating); // For activity
+          await rateActivity(email, name, rating);
         } else if (type === "itinerary") {
-          await rateItinerary(email, name, rating); // For itinerary
+          await rateItinerary(email, name, rating);
         }
         alert("Rating submitted successfully!");
       } catch (error) {
         console.error("Error submitting rating:", error);
+        //alert("Failed to submit rating. Please try again.");
       }
     } else {
       alert("Please select a rating before submitting.");
     }
   };
 
-  // Render stars for rating
+  const handleSubmitComment = async () => {
+    if (!comment.trim()) {
+      alert("Please enter a comment.");
+      return;
+    }
+
+    try {
+      if (type === "activity") {
+        await commentOnEvent(email, name, comment);
+      } else if (type === "itinerary") {
+        await commentOnItinerary(email, name, comment);
+      }
+      alert("Comment submitted successfully!");
+      setComment("");
+    } catch (error) {
+      console.error("Error submitting comment:", error);
+      alert("Failed to submit comment. Please try again.");
+    }
+  };
+
   const renderStars = () => {
     const maxRating = 5;
-    const fullStars = Math.floor(rating);
-    const halfStars = rating % 1 >= 0.5 ? 1 : 0;
-    const emptyStars = maxRating - fullStars - halfStars;
 
     return (
       <div className="flex items-center">
-        {Array(fullStars).fill("★").map((_, index) => (
+        {[...Array(maxRating)].map((_, index) => (
           <span
-            key={`full-${index}`}
-            className="text-yellow-500 text-3xl cursor-pointer"
+            key={index}
+            className={`text-3xl cursor-pointer ${index < rating ? "text-yellow-500" : "text-gray-300"}`}
             onClick={() => handleRatingChange(index + 1)}
           >
             ★
-          </span>
-        ))}
-        {halfStars === 1 && (
-          <span
-            className="text-yellow-500 text-3xl cursor-pointer"
-            onClick={() => handleRatingChange(fullStars + 0.5)}
-          >
-            ☆
-          </span>
-        )}
-        {Array(emptyStars).fill("☆").map((_, index) => (
-          <span
-            key={`empty-${index}`}
-            className="text-gray-300 text-3xl cursor-pointer"
-            onClick={() => handleRatingChange(fullStars + halfStars + 1 + index)}
-          >
-            ☆
           </span>
         ))}
       </div>
@@ -117,23 +124,20 @@ const EventDetails = () => {
           </ul>
         </nav>
         <nav className="signing">
-          <Link
-            to="/TourGuideHome/TourGuideProfile"
-            className="text-white font-medium hover:underline"
-          >
+          <Link to="/TourGuideHome/TourGuideProfile" className="text-white font-medium hover:underline">
             My Profile
           </Link>
         </nav>
       </header>
 
       {/* Main Content */}
-      <main className="flex-grow flex items-center justify-center mt-10 w-3/4">
+      <main className="flex-grow flex items-center justify-center mt-32 w-3/4">
         <div className="p-6 bg-white shadow-lg rounded-lg w-3/4 flex flex-col lg:flex-row">
           <div className="lg:w-1/3 flex-shrink-0">
             <img
               src={details.Picture}
               alt={details.Name || "Image"}
-              className="w-full h-full object-cover rounded" // Ensure the image covers the container height
+              className="w-full h-full object-cover rounded"
             />
           </div>
           <div className="lg:w-2/3 lg:pl-6">
@@ -152,12 +156,27 @@ const EventDetails = () => {
               </p>
               <div className="mt-6">
                 <p className="text-xl font-bold text-gray-800">Rate this Event:</p>
-                {renderStars()} {/* Display the stars */}
+                {renderStars()}
                 <button
                   onClick={handleSubmitRating}
                   className="mt-4 bg-brandBlue text-white py-2 px-4 rounded hover:bg-logoOrange"
                 >
                   Submit Rating
+                </button>
+              </div>
+              <div className="mt-6">
+                <h2 className="text-xl font-bold text-gray-800">Leave a Comment:</h2>
+                <textarea
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  className="w-full p-2 border border-gray-300 rounded-md mt-2"
+                  placeholder="Write your comment here..."
+                />
+                <button
+                  onClick={handleSubmitComment}
+                  className="mt-4 bg-logoOrange text-white py-2 px-4 rounded hover:bg-green-600"
+                >
+                  Submit Comment
                 </button>
               </div>
             </div>
