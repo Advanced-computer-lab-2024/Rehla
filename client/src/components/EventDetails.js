@@ -1,166 +1,203 @@
-import React, { useEffect, useState } from 'react';
-import { readActivity, getItineraryByName } from '../services/api'; // Adjust the import path as needed
-import { Link } from 'react-router-dom';
-import logo from '../images/logo.png';
+import React, { useEffect, useState } from "react";
+import { readActivity, getItineraryByName, rateActivity, rateItinerary } from "../services/api";
+import { Link, useNavigate } from "react-router-dom";
+import logo from "../images/logo.png";
 
 const EventDetails = () => {
-    const [name, setName] = useState('');
-    const [type, setType] = useState('');
-    const [details, setDetails] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+  const [name, setName] = useState("");
+  const [type, setType] = useState("");
+  const [details, setDetails] = useState(null);
+  const [rating, setRating] = useState(0); // Store the current selected rating
+  const [email, setEmail] = useState(""); // Email of the user (assumed to be stored in localStorage)
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        const fetchDetails = async () => {
-            try {
-                const selectedName = localStorage.getItem('selectedName');
-                const selectedType = localStorage.getItem('selectedType');
-                setName(selectedName);
-                setType(selectedType);
-
-                console.log('Selected Name:', selectedName);
-                console.log('Selected Type:', selectedType);
-
-                if (selectedType === 'activity') {
-                    const response = await readActivity(selectedName);
-                    console.log('Activity Response:', response);
-                    if (response && response.data) {
-                        setDetails(response.data);
-                    } else {
-                        throw new Error('Invalid response structure for activity');
-                    }
-                } else if (selectedType === 'itinerary') {
-                    const response = await getItineraryByName(selectedName);
-                    console.log('Itinerary Response:', response);
-
-                    if (response && response.data) {
-                        setDetails(response.data);
-                    } else if (response && response.itinerary) {
-                        setDetails(response.itinerary);
-                    } else if (response) {
-                        setDetails(response);
-                    } else {
-                        throw new Error('Invalid response structure for itinerary');
-                    }
-                }
-            } catch (err) {
-                console.error('Error fetching details:', err);
-                setError(err.message || 'Failed to fetch details');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchDetails();
-    }, []);
-
-    if (loading) {
-        return <div className="p-6">Loading...</div>;
+  useEffect(() => {
+    const storedEmail = localStorage.getItem("email");
+    if (storedEmail) {
+      setEmail(storedEmail);
     }
 
-    if (error) {
-        return <div className="p-6 text-red-600">{error}</div>;
+    const fetchDetails = async () => {
+      try {
+        const selectedName = localStorage.getItem("selectedName");
+        const selectedType = localStorage.getItem("selectedType");
+        setName(selectedName);
+        setType(selectedType);
+
+        if (selectedType === "activity") {
+          const response = await readActivity(selectedName);
+          setDetails(response?.data || {});
+        } else if (selectedType === "itinerary") {
+          const response = await getItineraryByName(selectedName);
+          setDetails(response?.data || response?.itinerary || response || {});
+        } else {
+          throw new Error("Invalid type provided");
+        }
+      } catch (err) {
+        console.error("Error fetching details:", err);
+      }
+    };
+
+    fetchDetails();
+  }, []);
+
+  const handleRatingChange = (ratingValue) => {
+    setRating(ratingValue); // Update the rating when a star is clicked
+  };
+
+  const handleSubmitRating = async () => {
+    if (rating) {
+      try {
+        // Submit the rating based on whether it's an activity or itinerary
+        if (type === "activity") {
+          await rateActivity(email, name, rating); // For activity
+        } else if (type === "itinerary") {
+          await rateItinerary(email, name, rating); // For itinerary
+        }
+        alert("Rating submitted successfully!");
+      } catch (error) {
+        console.error("Error submitting rating:", error);
+      }
+    } else {
+      alert("Please select a rating before submitting.");
     }
+  };
+
+  // Render stars for rating
+  const renderStars = () => {
+    const maxRating = 5;
+    const fullStars = Math.floor(rating);
+    const halfStars = rating % 1 >= 0.5 ? 1 : 0;
+    const emptyStars = maxRating - fullStars - halfStars;
 
     return (
-        <div>
-            {/* Header Section */}
-            <div className="NavBar flex items-center justify-between p-4 bg-brandBlue shadow-md">
-                <img src={logo} alt="Logo" className="h-12" />
-                <nav className="main-nav">
-                    <ul className="nav-links flex space-x-6">
-                        <Link to="/TouristHome" className="text-white font-medium hover:underline">Home</Link>
-                    </ul>
-                </nav>
-                <nav className="signing">
-                    <Link to="/TourGuideHome/TourGuideProfile" className="text-white font-medium hover:underline">
-                        My Profile
-                    </Link>
-                </nav>
-            </div>
-
-            {/* Main Content */}
-            <div className="p-6 mt-16"> {/* Added margin below the header */}
-              <h1 className="text-2xl font-bold mb-4 text-center">Event Details</h1>
-                {details && (
-                    <div className="mt-4">
-                        {details.Picture && (
-                            <div className="flex justify-center mb-6">
-                                <img
-                                    src={details.Picture}
-                                    alt={type === 'activity' ? details.Name || 'Activity' : details.Itinerary_Name || 'Itinerary'}
-                                    className="rounded-lg shadow-lg w-3/4 h-64 object-cover" // Adjusted image height
-                                />
-                            </div>
-                        )}
-                       
-                        {type === 'activity' ? (
-                            <div className="grid grid-cols-2 gap-4 text-center">
-                                <p><strong>Name:</strong> {details.Name || 'N/A'}</p>
-                                <p><strong>Location:</strong> {details.Location || 'N/A'}</p>
-                                <p><strong>Time:</strong> {details.Time || 'N/A'}</p>
-                                <p><strong>Duration:</strong> {details.Duration || 'N/A'}</p>
-                                <p><strong>Price:</strong> ${details.Price || 'N/A'}</p>
-                                <p><strong>Date:</strong> {details.Date ? new Date(details.Date).toLocaleDateString() : 'N/A'}</p>
-                                <p><strong>Rating:</strong> {details.Rating || 'N/A'}</p>
-                                <p><strong>Created By:</strong> {details.Created_By || 'N/A'}</p>
-                                <p><strong>Available Spots:</strong> {details.Available_Spots || 'N/A'}</p>
-                                <p><strong>Booked Spots:</strong> {details.Booked_Spots || 'N/A'}</p>
-                                <p><strong>Flagged:</strong> {details.Flagged ? 'Yes' : 'No'}</p>
-                            </div>
-                        ) : (
-                            <div className="grid grid-cols-2 gap-4 text-center">
-                                <p><strong>Itinerary Name:</strong> {details.Itinerary_Name || 'N/A'}</p>
-                                <p><strong>Timeline:</strong> {details.Timeline || 'N/A'}</p>
-                                <p><strong>Duration:</strong> {details.Duration || 'N/A'}</p>
-                                <p><strong>Language:</strong> {details.Language || 'N/A'}</p>
-                                <p><strong>Tour Price:</strong> ${details.Tour_Price || 'N/A'}</p>
-                                <p><strong>Available Date & Time:</strong> {details.Available_Date_Time ? new Date(details.Available_Date_Time).toLocaleString() : 'N/A'}</p>
-                                <p><strong>Accessibility:</strong> {details.Accessibility ? 'Yes' : 'No'}</p>
-                                <p><strong>Pick-Up Point:</strong> {details.Pick_Up_Point || 'N/A'}</p>
-                                <p><strong>Drop-Off Point:</strong> {details.Drop_Of_Point || 'N/A'}</p>
-                                <p><strong>Booked:</strong> {details.Booked || 'N/A'}</p>
-                                <p><strong>Country:</strong> {details.Country || 'N/A'}</p>
-                                <p><strong>Rating:</strong> {details.Rating || 'N/A'}</p>
-                                <p><strong>P_Tag:</strong> {details.P_Tag || 'N/A'}</p>
-                                <p><strong>Created By:</strong> {details.Created_By || 'N/A'}</p>
-                                <p><strong>Flagged:</strong> {details.Flagged ? 'Yes' : 'No'}</p>
-                            </div>
-                        )}
-                    </div>
-                )}
-            </div>
-
-            {/* Footer Section */}
-            <footer className="bg-brandBlue shadow dark:bg-brandBlue m-0">
-                <div className="w-full mx-auto md:py-8">
-                    <div className="sm:flex sm:items-center sm:justify-between">
-                        <a href="/" className="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
-                            <img src={logo} className="w-12" alt="Flowbite Logo" />
-                        </a>
-                        <div className="flex justify-center w-full">
-                            <ul className="flex flex-wrap items-center mb-6 text-sm font-medium text-gray-500 sm:mb-0 dark:text-gray-400 -ml-14">
-                                <li>
-                                    <a href="/" className="hover:underline me-4 md:me-6">About</a>
-                                </li>
-                                <li>
-                                    <a href="/" className="hover:underline me-4 md:me-6">Privacy Policy</a>
-                                </li>
-                                <li>
-                                    <a href="/" className="hover:underline me-4 md:me-6">Licensing</a>
-                                </li>
-                                <li>
-                                    <a href="/" className="hover:underline">Contact</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <hr className="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
-                    <span className="block text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2023 <a href="/" className="hover:underline">Rehla™</a>. All Rights Reserved.</span>
-                </div>
-            </footer>
-        </div>
+      <div className="flex items-center">
+        {Array(fullStars).fill("★").map((_, index) => (
+          <span
+            key={`full-${index}`}
+            className="text-yellow-500 text-3xl cursor-pointer"
+            onClick={() => handleRatingChange(index + 1)}
+          >
+            ★
+          </span>
+        ))}
+        {halfStars === 1 && (
+          <span
+            className="text-yellow-500 text-3xl cursor-pointer"
+            onClick={() => handleRatingChange(fullStars + 0.5)}
+          >
+            ☆
+          </span>
+        )}
+        {Array(emptyStars).fill("☆").map((_, index) => (
+          <span
+            key={`empty-${index}`}
+            className="text-gray-300 text-3xl cursor-pointer"
+            onClick={() => handleRatingChange(fullStars + halfStars + 1 + index)}
+          >
+            ☆
+          </span>
+        ))}
+      </div>
     );
+  };
+
+  if (!details) return <div>Loading...</div>;
+
+  return (
+    <div className="min-h-screen flex flex-col items-center">
+      {/* Header Section */}
+      <header className="NavBar flex items-center justify-between p-4 bg-brandBlue shadow-md w-full">
+        <img src={logo} alt="Logo" className="h-12" />
+        <nav className="main-nav">
+          <ul className="nav-links flex space-x-6">
+            <Link to="/TouristHome" className="text-white font-medium hover:underline">
+              Home
+            </Link>
+          </ul>
+        </nav>
+        <nav className="signing">
+          <Link
+            to="/TourGuideHome/TourGuideProfile"
+            className="text-white font-medium hover:underline"
+          >
+            My Profile
+          </Link>
+        </nav>
+      </header>
+
+      {/* Main Content */}
+      <main className="flex-grow flex items-center justify-center mt-10 w-3/4">
+        <div className="p-6 bg-white shadow-lg rounded-lg w-3/4 flex flex-col lg:flex-row">
+          <div className="lg:w-1/3 flex-shrink-0">
+            <img
+              src={details.Picture}
+              alt={details.Name || "Image"}
+              className="w-full h-full object-cover rounded" // Ensure the image covers the container height
+            />
+          </div>
+          <div className="lg:w-2/3 lg:pl-6">
+            <h1 className="text-4xl font-bold mb-6 text-left text-gray-800">
+              {type === "activity" ? details.Name : details.Itinerary_Name}
+            </h1>
+            <p className="text-gray-700 mb-4 text-lg">
+              <span className="font-semibold">Duration:</span> {details.Duration || "N/A"}
+            </p>
+            <p className="text-gray-700 mb-4 text-lg">
+              <span className="font-semibold">Created By:</span> {details.Created_By || "N/A"}
+            </p>
+            <div className="mt-6">
+              <p className="text-xl font-bold text-gray-800">
+                Price: {details.Price || details.Tour_Price || "N/A"} {details.Currency || "USD"}
+              </p>
+              <div className="mt-6">
+                <p className="text-xl font-bold text-gray-800">Rate this Event:</p>
+                {renderStars()} {/* Display the stars */}
+                <button
+                  onClick={handleSubmitRating}
+                  className="mt-4 bg-brandBlue text-white py-2 px-4 rounded hover:bg-logoOrange"
+                >
+                  Submit Rating
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      {/* Footer Section */}
+      <footer className="bg-brandBlue shadow py-6 w-full">
+        <div className="w-full mx-auto flex flex-col items-center space-y-6">
+          <a href="/" className="flex items-center space-x-3">
+            <img src={logo} className="w-12" alt="Logo" />
+          </a>
+          <ul className="flex flex-wrap justify-center space-x-6 text-sm text-gray-500">
+            <li>
+              <a href="/" className="hover:underline">
+                About
+              </a>
+            </li>
+            <li>
+              <a href="/" className="hover:underline">
+                Privacy Policy
+              </a>
+            </li>
+            <li>
+              <a href="/" className="hover:underline">
+                Licensing
+              </a>
+            </li>
+            <li>
+              <a href="/" className="hover:underline">
+                Contact
+              </a>
+            </li>
+          </ul>
+          <p className="text-sm text-gray-500">© 2023 Rehla™. All Rights Reserved.</p>
+        </div>
+      </footer>
+    </div>
+  );
 };
 
 export default EventDetails;
