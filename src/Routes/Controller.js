@@ -39,6 +39,7 @@ const advertiserfiles = require('../Models/filesadvertiser.js');
 const cartm = require('../Models/Cart.js');
 const promocodem = require('../Models/promocodes.js');
 const tourist_addreessiesm = require('../Models/Tourist_addreessies.js');
+const wishlist = require ('../Models/wishlist.js');
 
 const multer = require('multer');
 const path = require('path');
@@ -1802,7 +1803,7 @@ const readAdvertiser = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: 'Error retrieving advertiser profile', error: error.message });
     }
-  };
+};
 
 //Updating advertiser using email
 const updateUserAdvertiser = async (req, res) => {
@@ -2036,7 +2037,7 @@ const updateTourism_Governer= async (req, res) => {
         // Handle errors
         res.status(500).json({ message: 'Error updating Tourism Governer profile', error: error.message });
     }
-  };
+};
 
  const deleteUserTourism_Governer = async (req, res) => {
     try {
@@ -4120,7 +4121,7 @@ const acceptTerms = async (req, res) => {
       console.error("Error accepting terms:", error.message);
       return res.status(500).json({ error: 'Error accepting terms', details: error.message });
     }
-  };
+};
   
 const checkTermsAccepted = async (req, res) => {
     try {
@@ -4317,7 +4318,7 @@ const getHotelPrice = async (hotelId, checkInDate, checkOutDate, numberOfGuests,
         return 'Error fetching price: ' + error.message;
       }
     }
-  };
+};
   
 
 const searchHotel = async (req, res) => {
@@ -4394,7 +4395,7 @@ const searchHotel = async (req, res) => {
         details: error.message, // Optional: Include error details for debugging
       });
     }
-  };
+};
  
 const searchFlights = async (req, res) => {
     try {

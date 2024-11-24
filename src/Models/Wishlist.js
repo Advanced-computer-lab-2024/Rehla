@@ -1,20 +1,22 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const WishlistSchema = new Schema({
-    Tourist_Email: {
-        type: String,
-        required: true,
-        unique: true,
 
-    },
-     
-    Product_Name: {      //esm el product 
-        type: String,
-    },
-   
-
+// Define the cart schema
+const wishlistSchema = new Schema({
+  Email: { 
+    type: String, 
+    required: true, 
+    unique: true 
+  },
+  Productname: { 
+    type: String, 
+    required: true 
+  },
+  
 },{ versionKey: false });
 
-const Wishlist = mongoose.model('Wishlist', WishlistSchema);
-module.exports = Wishlist;
+// Create the model
+const wishlist = mongoose.model("wishlist", wishlistSchema);
+
+module.exports = wishlist;
