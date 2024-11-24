@@ -41,6 +41,9 @@ const promocodem = require('../Models/promocodes.js');
 const tourist_addreessiesm = require('../Models/Tourist_addreessies.js');
 const wishlist = require ('../Models/wishlist.js');
 
+// Define all models where the user could exist
+const models = [Admin, tourism_governers, Tourist, tour_guidem, AdvertisersModel, Seller]; // Add all the models here
+
 const multer = require('multer');
 const path = require('path');
 require('dotenv').config();
@@ -123,9 +126,6 @@ const createUserAdmin = async (req, res) => {
 const deleteUserAdmin = async (req, res) => {
     try {
         const { email } = req.params; // Get the email from URL parameters
-  
-        // Define all models where the user could exist
-        const models = [Admin, tourism_governers, Tourist, tour_guidem, AdvertisersModel, Seller]; // Add all the models here
         
         // Initialize an empty variable to store the deleted user
         let deletedUser = null;
@@ -650,7 +650,6 @@ const registerRequest = async (req, res) => {
                 return res.status(400).json({ error: 'Email is already in use.' });
             }
         }));
-
 
         // Create a new request object
         const newRequest = new Request({
