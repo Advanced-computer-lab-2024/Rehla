@@ -57,6 +57,32 @@ const amadeus = new Amadeus({
   clientSecret: "9j75tRpG4ts0dw6f"
 });
 
+// Create a transporter object using the default SMTP transport
+const transporter = nodemailer.createTransport({
+    service: 'gmail', // Use your email service provider
+    auth: {
+        user: 'rehlanotification@gmail.com', // Your email address
+        pass: 'yqvgndnuszemwnck'   // Your email password
+    }
+});
+
+// Function to send an email
+const sendEmail = async (to, subject, text) => {
+    const mailOptions = {
+        from: 'rehlanotification@gmail.com', // Sender address
+        to: to,                       // List of receivers
+        subject: subject,             // Subject line
+        text: text                    // Plain text body
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log('Email sent successfully');
+    } catch (error) {
+        console.error('Error sending email:', error);
+    }
+};
+
 // Creating a new Admin user or Tourism Governor
 const createUserAdmin = async (req, res) => {
     try {
@@ -5166,5 +5192,6 @@ module.exports = { getPurchasedProducts,
     viewTouristOrders,
     checkoutOrder,
     createPromoCode,
-    createwishlistItem
+    createwishlistItem,
+    sendEmail,
 };

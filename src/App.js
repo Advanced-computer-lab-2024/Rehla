@@ -136,7 +136,8 @@ const {createUserAdmin,
   calculateItineraryRevenue,
   checkoutOrder,
   createPromoCode,
-  createwishlistItem
+  createwishlistItem,
+  sendEmail,
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -314,3 +315,16 @@ app.post('/calculateItineraryRevenue', calculateItineraryRevenue);
 app.post('/Tourist/CheckoutOrder', checkoutOrder);
 app.post('/createPromoCode', createPromoCode);
 app.post('/createwishlistItem', createwishlistItem);
+
+app.post('/send-email', async (req, res) => {
+  const { to, subject, text } = req.body;
+  if (!to) {
+      return res.status(400).json({ error: 'Recipient email address is required' });
+  }
+  try {
+      await sendEmail(to, subject, text);
+      res.status(200).json({ message: 'Email sent successfully' });
+  } catch (error) {
+      res.status(500).json({ error: 'Error sending email', details: error.message });
+  }
+});
