@@ -70,22 +70,28 @@ const ActivityDetails = () => {
                     </nav>
                 </div>
 
-                {/* Add space to push details down */}
                 <div className="mt-10 flex justify-center">
-                    {activityDetails ? (
-                        <div className="p-6 bg-white shadow-lg rounded-lg w-full max-w-3xl">
-                            <h1 className="text-4xl font-bold mb-6 text-center text-gray-800">
-                                {activityDetails.Name}
-                            </h1>
+                {activityDetails ? (
+                    <div className="p-6 bg-white rounded-lg w-full max-w-none flex flex-col lg:flex-row relative">
+                        {/* Image Section */}
+                        <div className="lg:w-1/2 flex-shrink-0 relative">
                             <img
                                 src={activityDetails.Picture}
                                 alt={activityDetails.Name}
-                                className="w-full h-96 object-cover rounded mb-6"
+                                className="w-full h-96 object-cover rounded mb-6 lg:mb-0"
                             />
-                            <p className="text-gray-700 mb-4 text-lg">
-                                <span className="font-semibold">Price: </span>
-                                {activityDetails.Price} {activityDetails.Currency}
+                            {/* Created By Section */}
+                            <p className="text-gray-700 mt-4 text-lg text-center">
+                                <span className="font-semibold">Created By: </span>
+                                {activityDetails.Created_By}
                             </p>
+                        </div>
+
+                        {/* Details Section */}
+                        <div className="lg:w-1/2 lg:pl-6">
+                            <h1 className="text-4xl font-bold mb-6 text-center lg:text-left text-gray-800">
+                                {activityDetails.Name}
+                            </h1>
                             <p className="text-gray-700 mb-4 text-lg">
                                 <span className="font-semibold">Rating: </span>
                                 {activityDetails.Rating}
@@ -94,10 +100,35 @@ const ActivityDetails = () => {
                                 <span className="font-semibold">Available Spots: </span>
                                 {activityDetails.Available_Spots}
                             </p>
+                            <p className="text-gray-700 mb-4 text-lg">
+                                <span className="font-semibold">Location: </span>
+                                {activityDetails.Location}
+                            </p>
+                            <p className="text-gray-700 mb-4 text-lg">
+                                <span className="font-semibold">Time: </span>
+                                {activityDetails.Time}
+                            </p>
+                            <p className="text-gray-700 mb-4 text-lg">
+                                <span className="font-semibold">Duration: </span>
+                                {activityDetails.Duration}
+                            </p>
+                            <p className="text-gray-700 mb-4 text-lg">
+                                <span className="font-semibold">Date: </span>
+                                {new Date(activityDetails.Date).toISOString().split("T")[0]}
+                            </p>
+                            <p className="text-gray-700 mb-4 text-lg">
+                                <span className="font-semibold">Discount Percent: </span>
+                                {activityDetails.Discount_Percent}%
+                            </p>
+
+                            {/* Price in Bottom Right */}
+                            <p className="absolute bottom-4 right-4 bg-white bg-opacity-80 text-lg lg:text-2xl font-bold text-gray-800 px-4 py-2 rounded-lg">
+                                {activityDetails.Price} {activityDetails.Currency}
+                            </p>
 
                             <button
                                 onClick={handleJoinActivity}
-                                className="bg-green-500 text-white px-6 py-3 rounded hover:bg-green-600"
+                                className="bg-logoOrange text-white px-6 py-3 ml-32 rounded hover:bg-green-600"
                             >
                                 Join Activity
                             </button>
@@ -109,10 +140,12 @@ const ActivityDetails = () => {
                                 <p className="text-green-500 mt-4">{joinSuccess}</p>
                             )}
                         </div>
-                    ) : (
-                        <p className="text-red-500">Activity details not found.</p>
-                    )}
-                </div>
+                    </div>
+                ) : (
+                    <p className="text-red-500">Activity details not found.</p>
+                )}
+            </div>
+
             </div>
 
             <footer className="bg-brandBlue shadow dark:bg-brandBlue m-0">
