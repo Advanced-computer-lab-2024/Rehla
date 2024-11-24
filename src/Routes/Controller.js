@@ -69,6 +69,13 @@ const createUserAdmin = async (req, res) => {
             return res.status(400).json({ error: 'Invalid type. Only "Admin" or "Tourism Governor" are allowed.' });
         }
 
+        await Promise.all(models.map(async (Model) => {
+            const user = await Model.findOne({ Email: Email });
+            if(user){
+                return res.status(400).json({ error: 'Email is already in use.' });
+            }
+        }));
+
         const existingGoverner = await tourism_governers.findOne({ Email });
         if (existingGoverner) {
             return res.status(400).json({ error: 'Email is already in use.' });
@@ -550,10 +557,12 @@ const registerTourist = async (req, res) => {
         }
 
         // Check if email already exists
-        const existingRequest = await Tourist.findOne({ Email });
-        if (existingRequest) {
-            return res.status(400).json({ error: 'Email is already in use.' });
-        }
+        await Promise.all(models.map(async (Model) => {
+            const user = await Model.findOne({ Email: Email });
+            if(user){
+                return res.status(400).json({ error: 'Email is already in use.' });
+            }
+        }));
 
         // Create a new tourist object without password hashing
         const newTourist = new Tourist({
@@ -634,11 +643,14 @@ const registerRequest = async (req, res) => {
             return res.status(400).json({ error: 'Invalid registration type. Must be Tour Guide, Advertiser, or Seller.' });
         }
 
-        // Check if email already exists
-        const existingRequest = await Request.findOne({ Email });
-        if (existingRequest) {
-            return res.status(400).json({ error: 'Email is already in use.' });
-        }
+        // Check if email already exists in all collections
+        await Promise.all(models.map(async (Model) => {
+            const user = await Model.findOne({ Email: Email });
+            if(user){
+                return res.status(400).json({ error: 'Email is already in use.' });
+            }
+        }));
+
 
         // Create a new request object
         const newRequest = new Request({
@@ -673,7 +685,7 @@ const createActivityCategory = async (req, res) => {
     } catch (error) {
         console.error('Error details:', error); // Add detailed logging
         res.status(500).json({ error: 'Error creating  category', details: error.message || error });
-      }
+    }
 };
   
 const readActivityCategories = async (req, res) => {
@@ -1803,7 +1815,7 @@ const readAdvertiser = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: 'Error retrieving advertiser profile', error: error.message });
     }
-};
+  };
 
 //Updating advertiser using email
 const updateUserAdvertiser = async (req, res) => {
@@ -2037,7 +2049,7 @@ const updateTourism_Governer= async (req, res) => {
         // Handle errors
         res.status(500).json({ message: 'Error updating Tourism Governer profile', error: error.message });
     }
-};
+  };
 
  const deleteUserTourism_Governer = async (req, res) => {
     try {
@@ -4121,7 +4133,7 @@ const acceptTerms = async (req, res) => {
       console.error("Error accepting terms:", error.message);
       return res.status(500).json({ error: 'Error accepting terms', details: error.message });
     }
-};
+  };
   
 const checkTermsAccepted = async (req, res) => {
     try {
@@ -4318,7 +4330,7 @@ const getHotelPrice = async (hotelId, checkInDate, checkOutDate, numberOfGuests,
         return 'Error fetching price: ' + error.message;
       }
     }
-};
+  };
   
 
 const searchHotel = async (req, res) => {
@@ -4395,7 +4407,7 @@ const searchHotel = async (req, res) => {
         details: error.message, // Optional: Include error details for debugging
       });
     }
-};
+  };
  
 const searchFlights = async (req, res) => {
     try {
