@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../images/logo.png';
-import { searchEventsPlaces , rateTourGuide,commentTourGuide,viewComplaintByEmail
-        ,createTouristItinerary,createTouristActivity,
+import { searchEventsPlaces , rateTourGuide,commentTourGuide,viewComplaintByEmail,
         deleteTouristItenrary,deleteTouristActivity, createComplaint,redeemPoints,
         createPreference ,getAllTransportation,bookTransportation} from '../services/api'; // Import the commentOnEvent function
 import Homet2 from '../components/Homet2.js';
@@ -30,8 +29,6 @@ const TouristHome = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState(null);
     const [showComplaints, setShowComplaints] = useState(false); // State to control showing complaints
-    const [bookingItineraryName, setBookingItineraryName] = useState(''); // State for itinerary name to book
-    const [bookingActivityName, setBookingActivityName] = useState(''); // State for activity name to book
     const [cancelbookingItineraryName, setcancelBookingItineraryName] = useState(''); // State for itinerary name  
     const [cancelbookingActivityName, setcancelBookingActivityName] = useState(''); // State for activity name  
 
@@ -165,33 +162,6 @@ const TouristHome = () => {
             setIsLoading(false);
         }
     };
-
-    const handleItineraryBooking = async (e) => {
-        e.preventDefault();
-        try {
-            const result = await createTouristItinerary(email, bookingItineraryName);
-            console.log('Itinerary booked:', result);
-            alert('Itinerary booked successfully!');
-            setBookingItineraryName(''); // Reset input
-        } catch (error) {
-            console.error('Error booking itinerary:', error);
-            alert(error.message);
-        }
-    };
-
-    const handleActivityBooking = async (e) => {
-        e.preventDefault();
-        try {
-            const result = await createTouristActivity(email, bookingActivityName);
-            console.log('Activity booked:', result);
-            alert('Activity booked successfully!');
-            setBookingActivityName(''); // Reset input
-        } catch (error) {
-            console.error('Error booking Activity:', error);
-            alert(error.message);
-        }
-    };
-
     const handleItineraryCancelBooking = async (e) => {
         e.preventDefault();
         try {
@@ -592,48 +562,6 @@ const TouristHome = () => {
                     </tbody>
                 </table>
             )}
-        </div>
-         {/* Booking Section for Itineraries */}
-         <div className="booking-form max-w-md mx-auto p-6 bg-gray-50 rounded-lg shadow-md mt-8">
-            <h2 className="text-xl font-semibold mb-4 text-gray-800">Book an Itinerary</h2>
-            <form onSubmit={handleItineraryBooking}>
-                
-                <div className="mb-4">
-                    <label htmlFor="booking-itinerary-name" className="block text-gray-700 font-medium mb-2">Itinerary Name:</label>
-                    <input
-                        id="booking-itinerary-name"
-                        type="text"
-                        value={bookingItineraryName}
-                        onChange={(e) => setBookingItineraryName(e.target.value)}
-                        required
-                        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    />
-                </div>
-                <button type="submit" className="w-full bg-indigo-500 text-white py-2 px-4 rounded-md hover:bg-indigo-600">
-                    Book Itinerary
-                </button>
-            </form>
-        </div>
-           {/* Booking Section for Activities */}
-           <div className="booking-form max-w-md mx-auto p-6 bg-gray-50 rounded-lg shadow-md mt-8">
-            <h2 className="text-xl font-semibold mb-4 text-gray-800">Book an Activity</h2>
-            <form onSubmit={handleActivityBooking}>
-                
-                <div className="mb-4">
-                    <label htmlFor="booking-Activity-name" className="block text-gray-700 font-medium mb-2">Activity Name:</label>
-                    <input
-                        id="booking-Activity-name"
-                        type="text"
-                        value={bookingActivityName}
-                        onChange={(e) => setBookingActivityName(e.target.value)}
-                        required
-                        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    />
-                </div>
-                <button type="submit" className="w-full bg-indigo-500 text-white py-2 px-4 rounded-md hover:bg-indigo-600">
-                    Book Activity
-                </button>
-            </form>
         </div>
           {/* canceling Booking Section for Itineraries */}
           <div className="booking-form max-w-md mx-auto p-6 bg-gray-50 rounded-lg shadow-md mt-8">
