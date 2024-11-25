@@ -138,6 +138,7 @@ const {createUserAdmin,
   createPromoCode,
   createwishlistItem,
   sendEmail,
+  viewOrderDetails,
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -315,6 +316,8 @@ app.post('/calculateItineraryRevenue', calculateItineraryRevenue);
 app.post('/Tourist/CheckoutOrder', checkoutOrder);
 app.post('/createPromoCode', createPromoCode);
 app.post('/createwishlistItem', createwishlistItem);
+app.post('/Tourist/ViewOrderDetails', viewOrderDetails);
+
 
 app.post('/send-email', async (req, res) => {
   const { to, subject, text } = req.body;

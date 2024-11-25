@@ -40,6 +40,9 @@ const cartm = require('../Models/Cart.js');
 const promocodem = require('../Models/promocodes.js');
 const tourist_addreessiesm = require('../Models/Tourist_addreessies.js');
 const wishlist = require ('../Models/wishlist.js');
+const order = require('../Models/Order.js');
+
+
 
 // Define all models where the user could exist
 const models = [Admin, tourism_governers, Tourist, tour_guidem, AdvertisersModel, Seller]; // Add all the models here
@@ -4589,6 +4592,50 @@ const deleteRequest = async (req, res) => {
     }
 };
 
+// Tourist View Order Details and Status
+const viewOrderDetails = async (req, res) => {
+    try {
+        // Extract Email and Cart_Num from the request body
+        const { Email, Cart_Num } = req.body;
+
+        // Validate input: Check if Email and Cart_Num are provided
+        if (!Email || !Cart_Num) {
+            return res.status(400).json({ message: "Email and Cart_Num are required." });
+        }
+
+        // Fetch the order using Email and Cart_Num
+        const orderm = await order.findOne({ Email, Cart_Num });
+
+        // If no order is found for the provided Email and Cart_Num
+        if (!orderm) {
+            return res.status(404).json({
+                message: "No order found for the provided Email and Cart_Num."
+            });
+        }
+
+        // Respond with the order details
+        res.status(200).json({
+            message: "Order details fetched successfully.",
+            orderDetails: {
+                Email: orderm.Email,
+                Cart_Num: orderm.Cart_Num,
+                Status: orderm.Status,
+                Address: orderm.Address,
+                Payment_Method: orderm.Payment_Method,
+            }
+        });
+    } catch (error) {
+        console.error('Error fetching order details:', error.message);
+        res.status(500).json({
+            error: "Error fetching order details",
+            details: error.message
+        });
+    }
+};
+
+
+
+
 // Function to create new transportation
 const createTransportation = async (req, res) => {
     try {
@@ -5194,4 +5241,5 @@ module.exports = { getPurchasedProducts,
     createPromoCode,
     createwishlistItem,
     sendEmail,
+    viewOrderDetails,
 };
