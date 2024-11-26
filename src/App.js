@@ -139,6 +139,11 @@ const {createUserAdmin,
   createwishlistItem,
   sendEmail,
   viewOrderDetails,
+  cancelOrder,
+  addTouristAddress,
+  saveEvent,
+  viewSavedEvents
+
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -331,3 +336,8 @@ app.post('/send-email', async (req, res) => {
       res.status(500).json({ error: 'Error sending email', details: error.message });
   }
 });
+
+app.put('/cancelOrder',cancelOrder);
+app.post('/addTouristAddress',addTouristAddress);
+app.post('/saveEvent', saveEvent);
+app.post('/viewSavedEvents', viewSavedEvents);
