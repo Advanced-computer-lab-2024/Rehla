@@ -3948,7 +3948,7 @@ const getAttendedItineraries = async (req, res) => {
             return {
                 Itinerary_Name: itinerary.Itinerary_Name,
                 Attended: itinerary.Attended,
-                //Picture : details.Picture
+                Picture : details.Picture
                 //...details // Spread the details of the itinerary
             };
         });
