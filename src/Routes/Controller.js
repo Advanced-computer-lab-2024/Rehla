@@ -2610,7 +2610,7 @@ const rateTourGuide = async (req, res) => {
         const { Tourist_Email, TourGuide_Email, Rating } = req.body;
 
         // Check if rating is provided and is between 1 and 5
-        if (!Rating || Rating < 1 || Rating > 5) {  
+        if (!Rating || Rating < 1 || Rating > 5) {
             return res.status(400).json({ message: "Rating must be between 1 and 5." });
         }
 
@@ -2619,7 +2619,14 @@ const rateTourGuide = async (req, res) => {
             return res.status(400).json({ message: "Tourist email and tour guide email are required." });
         }
 
-
+        //check if the tourist has already rated the tour guide and if yes update it 
+        const existingReview = await TouristGuideReview.findOne({ Tourist_Email, TourGuide_Email });
+        if (existingReview) {
+            // Update the existing review
+            existingReview.Rating = Rating;
+            await existingReview.save();
+            return res.status(200).json({ message: "Rating updated successfully." });
+        }
 
         // Create a new review using the provided data
         const newReview = new TouristGuideReview({
@@ -2651,6 +2658,15 @@ const commentTourGuide = async (req, res) => {
         // Ensure the tourist and tour guide emails are provided
         if (!Tourist_Email || !TourGuide_Email) {
             return res.status(400).json({ message: "Tourist email and tour guide email are required." });
+        }
+
+        //check if the tourist has already rated the tour guide and if yes update it
+        const existingReview = await TouristGuideReview.findOne({ Tourist_Email, TourGuide_Email });
+        if (existingReview) {
+            // Update the existing review
+            existingReview.Comment = Comment;
+            await existingReview.save();
+            return res.status(200).json({ message: "Comment updated successfully." });
         }
 
         // Create a new review using the provided data
@@ -4985,16 +5001,24 @@ const viewMyWishlist = async (req, res) =>{
 // remove a product from my wish list
 const deleteProductFromMyWishList = async (req, res) => {
     try{
-        const { mail } = req.body;
+        const { mail, productname } = req.body;
+
         // Validate request
-        if (!mail) {
-            return res.status(400).json({ message: "Email is required." });
+        if (!mail || !productname) {
+            return res.status(400).json({ message: "Email and Product ID are required." });
         }
-        // Retrieve all products in the wishlist for the given email
-        const wishlistProducts = await wishlist.find({ Email: mail });
 
-    }catch{
+        // Delete the product from the wishlist
+        const result = await wishlist.deleteOne({ Email: mail, _id: productId });
 
+        if (result.deletedCount === 0) {
+            return res.status(404).json({ message: "Product not found in wishlist." });
+        }
+
+        res.status(200).json({ message: "Product deleted successfully." });
+    } catch (error) {
+        console.error('Error deleting product from wishlist:', error.message);
+        res.status(500).json({ error: "Error deleting product from wishlist", details: error.message });
     }
 };
 
