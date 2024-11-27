@@ -143,8 +143,10 @@ const {createUserAdmin,
   addTouristAddress,
   saveEvent,
   viewSavedEvents,
-  viewMyWishlist
-
+  viewMyWishlist,
+  deleteProductFromMyWishList,
+  addProductFromWishListToCart,
+  sendPaymentReceipt,
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -343,3 +345,17 @@ app.post('/addTouristAddress',addTouristAddress);
 app.post('/saveEvent', saveEvent);
 app.post('/viewSavedEvents', viewSavedEvents);
 app.get('/viewMyWishlist/:mail', viewMyWishlist);
+app.delete('/deleteProductFromMyWishList/:mail/:productname', deleteProductFromMyWishList);
+// Endpoint to handle payment and send receipt
+app.post('/send-payment-receipt', async (req, res) => {
+  const { to, amount, eventName } = req.body;
+  if (!to || !amount || !eventName) {
+      return res.status(400).json({ error: 'Recipient email address, payment amount, and event/itinerary name are required' });
+  }
+  try {
+      await sendPaymentReceipt(to, amount, eventName);
+      res.status(200).json({ message: 'Payment receipt email sent successfully' });
+  } catch (error) {
+      res.status(500).json({ error: 'Error sending payment receipt email', details: error.message });
+  }
+});

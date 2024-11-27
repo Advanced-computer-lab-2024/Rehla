@@ -65,7 +65,7 @@ const transporter = nodemailer.createTransport({
     service: 'gmail', // Use your email service provider
     auth: {
         user: 'rehlanotification@gmail.com', // Your email address
-        pass: 'yqvgndnuszemwnck'   // Your email password
+        pass: 'qpivaqxvfdwiparb'   // Your email password
     }
 });
 
@@ -83,6 +83,24 @@ const sendEmail = async (to, subject, text) => {
         console.log('Email sent successfully');
     } catch (error) {
         console.error('Error sending email:', error);
+    }
+};
+
+// Function to send a payment receipt email
+const sendPaymentReceipt = async (to, amount, eventName) => {
+    const mailOptions = {
+        from: 'rehlanotification@gmail.com', // Sender address
+        to: to,                       // List of receivers
+        subject: `Payment Receipt for ${eventName}`,   // Subject line
+        text: `Thank you for your payment of ${amount} for ${eventName}. Your transaction was successful.` // Plain text body
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log('Payment receipt email sent successfully');
+    } catch (error) {
+        console.error('Error sending payment receipt email:', error);
+        throw error; // Rethrow the error to handle it in the route
     }
 };
 
@@ -3009,6 +3027,8 @@ const payForItinerary = async (req, res) => {
         booking.Paid = true;
         await booking.save();
 
+        await sendPaymentReceipt(Tourist_Email, itinerary.Tour_Price, Itinerary_Name); 
+
         // Send a response
         res.status(200).json({ message: 'Payment successful. Itinerary booked and paid.', booking });
 
@@ -3341,6 +3361,8 @@ const payForTouristActivity = async (req, res) => {
         // Mark the tourist activity as paid
         touristActivityExists.Paid = true;
         await touristActivityExists.save();
+
+        await sendPaymentReceipt(Tourist_Email, activityExists.Price, Activity_Name); 
 
         // Send a response
         res.status(200).json({ message: 'Payment successful. Activity booked.', tourist: touristExists });
@@ -5001,15 +5023,15 @@ const viewMyWishlist = async (req, res) =>{
 // remove a product from my wish list
 const deleteProductFromMyWishList = async (req, res) => {
     try{
-        const { mail, productname } = req.body;
+        const { mail, productname } = req.params;
 
         // Validate request
         if (!mail || !productname) {
-            return res.status(400).json({ message: "Email and Product ID are required." });
+            return res.status(400).json({ message: "Email and Product Name are required." });
         }
 
         // Delete the product from the wishlist
-        const result = await wishlist.deleteOne({ Email: mail, _id: productId });
+        const result = await wishlist.deleteOne({ Email: mail, Productname: productname });
 
         if (result.deletedCount === 0) {
             return res.status(404).json({ message: "Product not found in wishlist." });
@@ -5019,6 +5041,48 @@ const deleteProductFromMyWishList = async (req, res) => {
     } catch (error) {
         console.error('Error deleting product from wishlist:', error.message);
         res.status(500).json({ error: "Error deleting product from wishlist", details: error.message });
+    }
+};
+
+// add an item from my wish list to my cart
+const addProductFromWishListToCart = async (req, res) => {
+    try{
+        const { mail, productName } = req.params;
+
+        // Validate request
+        if (!mail || !productName) {
+            return res.status(400).json({ message: "Email and Product Name are required." });
+        }
+
+        // Find the product in the wishlist
+        const wishlistItem = await wishlist.findOne({ Email: mail, Productname: productName });
+
+        if (!wishlistItem) {
+            return res.status(404).json({ message: "Product not found in wishlist." });
+        }
+        // Check if the product already exists in the cart
+        const existingCartItem = await cartm.findOne({ Email: mail, Productname: productName });
+
+        if (existingCartItem) {
+            // If it exists, update the quantity
+            existingCartItem.Quantity += 1; // Increase quantity by 1
+            await existingCartItem.save();
+            return res.status(200).json({ message: "Product quantity updated in cart.", cartItem: existingCartItem });
+        } else {
+            // If it doesn't exist, create a new cart item
+            const newCartItem = new cartm({
+                Email: mail,
+                Productname: productName,
+                Quantity: 1 // Default quantity
+            });
+
+            await newCartItem.save();
+            return res.status(201).json({ message: "Product added to cart successfully.", cartItem: newCartItem });
+        }
+
+    } catch (error) {
+        console.error('Error adding product to cart:', error.message);
+        res.status(500).json({ error: "Error adding product to cart", details: error.message });
     }
 };
 
@@ -5436,5 +5500,8 @@ module.exports = { getPurchasedProducts,
     addTouristAddress,
     saveEvent,
     viewSavedEvents,
-    viewMyWishlist
+    viewMyWishlist,
+    deleteProductFromMyWishList,
+    addProductFromWishListToCart,
+    sendPaymentReceipt,
 };
