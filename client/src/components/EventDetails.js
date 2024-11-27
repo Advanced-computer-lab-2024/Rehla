@@ -167,7 +167,7 @@ const EventDetails = () => {
         </nav>
       </header>
 
-      <main className="flex-grow flex items-center justify-center mt-32 w-3/4">
+      <main className="flex-grow flex items-center justify-center mt-32 w-full">
         <div className="p-6 bg-white shadow-lg rounded-lg w-3/4 flex flex-col lg:flex-row">
           <div className="lg:w-1/3 flex-shrink-0">
             <img
@@ -195,7 +195,7 @@ const EventDetails = () => {
                 {renderStars(rating, handleRatingChange)}
                 <button
                   onClick={handleSubmitRating}
-                  className="mt-4 bg-brandBlue text-white py-2 px-4 rounded hover:bg-logoOrange"
+                  className="mt-4 bg-brandBlue text-white py-2 px-6 rounded-lg hover:bg-logoOrange transition duration-200"
                 >
                   Submit Rating
                 </button>
@@ -210,7 +210,7 @@ const EventDetails = () => {
                 />
                 <button
                   onClick={handleSubmitComment}
-                  className="mt-4 bg-logoOrange text-white py-2 px-4 rounded hover:bg-green-600"
+                  className="mt-4 bg-brandBlue text-white py-2 px-6 rounded-lg hover:bg-logoOrange transition duration-200"
                 >
                   Submit Comment
                 </button>
@@ -221,16 +221,16 @@ const EventDetails = () => {
                   <input
                     type="email"
                     placeholder="Tour Guide Email"
-                    value={tourGuideEmail}
+                    value={details.Created_By}
                     onChange={(e) => setTourGuideEmail(e.target.value)}
                     className="w-full p-2 border border-gray-300 rounded-md mt-2"
                   />
                   {renderStars(tourGuideRating, setTourGuideRating)}
                   <button
                     onClick={handleTourGuideRatingSubmit}
-                    className="mt-4 bg-logoOrange text-white py-2 px-4 rounded hover:bg-green-600"
+                    className="mt-4 bg-brandBlue text-white py-2 px-6 rounded-lg hover:bg-logoOrange transition duration-200"
                   >
-                    Submit Tour Guide Rating
+                    Submit Rating
                   </button>
                   <h2 className="text-xl font-bold text-gray-800 mt-6">Comment on the Tour Guide:</h2>
                   <textarea
@@ -241,9 +241,9 @@ const EventDetails = () => {
                   />
                   <button
                     onClick={handleTourGuideCommentSubmit}
-                    className="mt-4 bg-logoOrange text-white py-2 px-4 rounded hover:bg-green-600"
+                    className="mt-4 bg-brandBlue text-white py-2 px-6 rounded-lg hover:bg-logoOrange transition duration-200"
                   >
-                    Submit Tour Guide Comment
+                    Submit Comment
                   </button>
                   {errorTourGuide && <p className="text-red-500">{errorTourGuide}</p>}
                 </div>
@@ -253,7 +253,7 @@ const EventDetails = () => {
         </div>
       </main>
 
-      <footer className="bg-brandBlue shadow py-6 w-full">
+      <footer className="bg-brandBlue shadow py-6 w-full mt-20">
         <div className="w-full mx-auto flex flex-col items-center space-y-6">
           <a href="/" className="flex items-center space-x-3">
             <img src={logo} className="w-12" alt="Logo" />
