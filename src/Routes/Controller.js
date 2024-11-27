@@ -3027,6 +3027,8 @@ const payForItinerary = async (req, res) => {
         booking.Paid = true;
         await booking.save();
 
+        await sendPaymentReceipt(Tourist_Email, itinerary.Tour_Price, Itinerary_Name); 
+
         // Send a response
         res.status(200).json({ message: 'Payment successful. Itinerary booked and paid.', booking });
 
@@ -3359,6 +3361,8 @@ const payForTouristActivity = async (req, res) => {
         // Mark the tourist activity as paid
         touristActivityExists.Paid = true;
         await touristActivityExists.save();
+
+        await sendPaymentReceipt(Tourist_Email, activityExists.Price, Activity_Name); 
 
         // Send a response
         res.status(200).json({ message: 'Payment successful. Activity booked.', tourist: touristExists });
