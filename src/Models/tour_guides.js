@@ -47,7 +47,7 @@ const tour_guidesSchema = new Schema({
         required: true
     }
 
-},{ versionKey: false });
+},{ versionKey: false, timestamps: true });
 
 
 const tour_guide = mongoose.model('tour_guides', tour_guidesSchema);

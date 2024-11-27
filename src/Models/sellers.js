@@ -50,7 +50,7 @@ const sellersSchema = new Schema({
         required: true
     }
 
-}, { versionKey: false });
+}, { versionKey: false , timestamps: true });
 
 const seller = mongoose.model('sellers' , sellersSchema);
 module.exports= seller;

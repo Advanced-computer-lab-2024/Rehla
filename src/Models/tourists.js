@@ -62,7 +62,7 @@ const touristsSchema = new Schema({
         default: 1,
     },
 
-}, { versionKey: false });
+}, { versionKey: false , timestamps: true });
 
 const Tourist = mongoose.model('Tourist', touristsSchema);
 module.exports = Tourist;
