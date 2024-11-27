@@ -86,6 +86,24 @@ const sendEmail = async (to, subject, text) => {
     }
 };
 
+// Function to send a payment receipt email
+const sendPaymentReceipt = async (to, amount, eventName) => {
+    const mailOptions = {
+        from: 'rehlanotification@gmail.com', // Sender address
+        to: to,                       // List of receivers
+        subject: `Payment Receipt for ${eventName}`,   // Subject line
+        text: `Thank you for your payment of ${amount} for ${eventName}. Your transaction was successful.` // Plain text body
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log('Payment receipt email sent successfully');
+    } catch (error) {
+        console.error('Error sending payment receipt email:', error);
+        throw error; // Rethrow the error to handle it in the route
+    }
+};
+
 // Creating a new Admin user or Tourism Governor
 const createUserAdmin = async (req, res) => {
     try {
@@ -5480,5 +5498,6 @@ module.exports = { getPurchasedProducts,
     viewSavedEvents,
     viewMyWishlist,
     deleteProductFromMyWishList,
-    addProductFromWishListToCart
+    addProductFromWishListToCart,
+    sendPaymentReceipt,
 };
