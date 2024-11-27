@@ -2610,7 +2610,7 @@ const rateTourGuide = async (req, res) => {
         const { Tourist_Email, TourGuide_Email, Rating } = req.body;
 
         // Check if rating is provided and is between 1 and 5
-        if (!Rating || Rating < 1 || Rating > 5) {
+        if (!Rating || Rating < 1 || Rating > 5) {  
             return res.status(400).json({ message: "Rating must be between 1 and 5." });
         }
 
@@ -2618,6 +2618,8 @@ const rateTourGuide = async (req, res) => {
         if (!Tourist_Email || !TourGuide_Email) {
             return res.status(400).json({ message: "Tourist email and tour guide email are required." });
         }
+
+
 
         // Create a new review using the provided data
         const newReview = new TouristGuideReview({
@@ -4977,6 +4979,22 @@ const viewMyWishlist = async (req, res) =>{
     } catch (error) {
         console.error('Error retrieving wish list:', error.message);
         res.status(500).json({ error: "Error retrieving wish list", details: error.message });
+    }
+};
+
+// remove a product from my wish list
+const deleteProductFromMyWishList = async (req, res) => {
+    try{
+        const { mail } = req.body;
+        // Validate request
+        if (!mail) {
+            return res.status(400).json({ message: "Email is required." });
+        }
+        // Retrieve all products in the wishlist for the given email
+        const wishlistProducts = await wishlist.find({ Email: mail });
+
+    }catch{
+
     }
 };
 
