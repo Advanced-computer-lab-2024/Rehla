@@ -40,6 +40,9 @@ const cartm = require('../Models/Cart.js');
 const promocodem = require('../Models/promocodes.js');
 const tourist_addreessiesm = require('../Models/Tourist_addreessies.js');
 const wishlist = require ('../Models/wishlist.js');
+const order = require('../Models/Order.js');
+const saved_eventm =require ('../Models/Saved_Events.js');
+
 
 // Define all models where the user could exist
 const models = [Admin, tourism_governers, Tourist, tour_guidem, AdvertisersModel, Seller]; // Add all the models here
@@ -4589,6 +4592,50 @@ const deleteRequest = async (req, res) => {
     }
 };
 
+// Tourist View Order Details and Status
+const viewOrderDetails = async (req, res) => {
+    try {
+        // Extract Email and Cart_Num from the request body
+        const { Email, Cart_Num } = req.body;
+
+        // Validate input: Check if Email and Cart_Num are provided
+        if (!Email || !Cart_Num) {
+            return res.status(400).json({ message: "Email and Cart_Num are required." });
+        }
+
+        // Fetch the order using Email and Cart_Num
+        const orderm = await order.findOne({ Email, Cart_Num });
+
+        // If no order is found for the provided Email and Cart_Num
+        if (!orderm) {
+            return res.status(404).json({
+                message: "No order found for the provided Email and Cart_Num."
+            });
+        }
+
+        // Respond with the order details
+        res.status(200).json({
+            message: "Order details fetched successfully.",
+            orderDetails: {
+                Email: orderm.Email,
+                Cart_Num: orderm.Cart_Num,
+                Status: orderm.Status,
+                Address: orderm.Address,
+                Payment_Method: orderm.Payment_Method,
+            }
+        });
+    } catch (error) {
+        console.error('Error fetching order details:', error.message);
+        res.status(500).json({
+            error: "Error fetching order details",
+            details: error.message
+        });
+    }
+};
+
+
+
+
 // Function to create new transportation
 const createTransportation = async (req, res) => {
     try {
@@ -5053,6 +5100,127 @@ const createPromoCode = async (req, res) => {
         return res.status(500).json({ error: 'Failed to create promo code.' });
     }
 }
+const cancelOrder = async (req, res) => {
+    try {
+        const { email, cartNum } = req.body;
+      // Validate inputs
+        if (!email) {
+            return res.status(400).json({ message: "Email is required" });
+        }
+        if (!cartNum) {
+            return res.status(400).json({ message: "Cart number is required" });
+        }
+        // Check if the order exists and its current status
+        const existingOrder = await order.findOne({ Email: email, Cart_Num: cartNum });
+        if (!existingOrder) {
+            return res.status(404).json({ message: "Order not found" });
+        }
+        if (existingOrder.Status === "Cancelled") {
+            return res.status(400).json({ message: "Order is already cancelled" });
+        }
+      // Update the order's status to "Cancelled"
+        existingOrder.Status = "Cancelled";
+        await existingOrder.save();
+        return res.status(200).json({ 
+            message: "Order cancelled successfully", 
+            order: existingOrder 
+        });
+        } 
+    catch (error) {
+            console.error(`Error cancelling order for email: ${email}, cartNum: ${cartNum}`, error);
+            return res.status(500).json({ message: "Server error" });
+    }
+};  
+const addTouristAddress = async (req, res) => {
+    try {
+        const { email, address } = req.body;
+        // Validate inputs
+        if (!email || !address) {
+            return res.status(400).json({
+            message: "Email and at least one address are required.",
+            });
+        }
+        const addressList = typeof address === "string" ? address.split(",") : [address];
+        const addressDocuments = addressList.map((addr) => ({
+            Email: email,
+            Address: addr.trim(),
+        }));
+        const addedAddresses = await tourist_addreessiesm.insertMany(addressDocuments);
+        return res.status(201).json({
+            message: "Address(es) added successfully.",
+            addresses: addedAddresses,
+        });
+    } 
+    catch (error) {
+        console.error("Error adding tourist address(es):", error);
+        return res.status(500).json({
+            message: "An error occurred while adding address(es).",
+        });
+    }
+};
+const saveEvent = async (req, res) => {
+    try {
+        const { email, type, name } = req.body;
+        // Validate inputs
+        if (!email || !type || !name) {
+            return res.status(400).json({
+            message: "Tourist'email, Type, and Name are required.",
+            });
+        }
+        const newSavedEvent = new saved_eventm({
+            Tourist_Email: email,
+            TYPE: type,            
+            Name: name,
+        });
+        await newSavedEvent.save();
+        return res.status(201).json({
+            message: "Event saved successfully.",
+            saved_event: newSavedEvent,
+        });
+    } 
+    catch (error) {
+        // Handle duplicate errors
+        if (error.code === 11000) {
+            return res.status(409).json({
+            message: "Event already saved for this tourist.",
+            });
+        }
+        console.error("Error saving event:", error);
+        return res.status(500).json({
+            message: "An error occurred while saving the event.",
+        });
+    }
+};
+
+const viewSavedEvents = async (req, res) => {
+    try {
+        const { email } = req.body;
+        // Validate input
+        if (!email) {
+            return res.status(400).json({
+            message: "Tourist email is required to view saved events.",
+            });
+        }
+      // Find saved events for the given email
+        const savedEvents = await saved_eventm.find({ Tourist_Email: email });
+        if (savedEvents.length === 0) {
+            return res.status(404).json({
+            message: "No saved events found for this tourist.",
+            });
+        }
+        return res.status(200).json({
+            message: "Saved events retrieved successfully.",
+            savedEvents,
+        });
+    } 
+    catch (error) {
+        console.error("Error retrieving saved events:", error);
+        return res.status(500).json({
+            message: "An error occurred while retrieving saved events.",
+        });
+    }
+};
+
 
 // ----------------- Activity Category CRUD -------------------
 
@@ -5194,4 +5362,10 @@ module.exports = { getPurchasedProducts,
     createPromoCode,
     createwishlistItem,
     sendEmail,
+    viewOrderDetails,
+    cancelOrder,
+    addTouristAddress,
+    saveEvent,
+    viewSavedEvents
+
 };
