@@ -4953,6 +4953,33 @@ const createwishlistItem = async (req, res) => {
     }
 };
 
+//view my wish list of product
+const viewMyWishlist = async (req, res) =>{
+    try {
+        const { mail } = req.params;
+
+        // Validate request
+        if (!mail) {
+            return res.status(400).json({ message: "Email is required." });
+        }
+ 
+        // Retrieve all products in the wishlist for the given email
+        const wishlistProducts = await wishlist.find({ Email: mail });
+
+        if (wishlistProducts.length === 0) {
+            return res.status(404).json({ message: "No products found for this tourist." });
+        }
+
+        res.status(200).json({
+            message: "Products retrieved successfully.",
+            wishlistProducts
+        });
+    } catch (error) {
+        console.error('Error retrieving wish list:', error.message);
+        res.status(500).json({ error: "Error retrieving wish list", details: error.message });
+    }
+};
+
 const viewTouristOrders = async (req, res) => {
     try {
         const { Tourist_Email } = req.params;
@@ -5366,6 +5393,6 @@ module.exports = { getPurchasedProducts,
     cancelOrder,
     addTouristAddress,
     saveEvent,
-    viewSavedEvents
-
+    viewSavedEvents,
+    viewMyWishlist
 };

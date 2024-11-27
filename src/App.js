@@ -142,7 +142,8 @@ const {createUserAdmin,
   cancelOrder,
   addTouristAddress,
   saveEvent,
-  viewSavedEvents
+  viewSavedEvents,
+  viewMyWishlist
 
 } = require("./Routes/Controller");
 
@@ -341,3 +342,4 @@ app.put('/cancelOrder',cancelOrder);
 app.post('/addTouristAddress',addTouristAddress);
 app.post('/saveEvent', saveEvent);
 app.post('/viewSavedEvents', viewSavedEvents);
+app.get('/viewMyWishlist/:mail', viewMyWishlist);
