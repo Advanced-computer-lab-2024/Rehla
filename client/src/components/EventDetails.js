@@ -6,6 +6,8 @@ import {
   rateItinerary,
   commentOnEvent,
   commentOnItinerary,
+  rateTourGuide,
+  commentTourGuide,
 } from "../services/api";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../images/logo.png";
@@ -17,13 +19,17 @@ const EventDetails = () => {
   const [rating, setRating] = useState(0);
   const [email, setEmail] = useState("");
   const [comment, setComment] = useState("");
+
+  const [tourGuideEmail, setTourGuideEmail] = useState("");
+  const [tourGuideRating, setTourGuideRating] = useState(0);
+  const [tourGuideComment, setTourGuideComment] = useState("");
+  const [errorTourGuide, setErrorTourGuide] = useState("");
+
   const navigate = useNavigate();
 
   useEffect(() => {
     const storedEmail = localStorage.getItem("email");
-    if (storedEmail) {
-      setEmail(storedEmail);
-    }
+    if (storedEmail) setEmail(storedEmail);
 
     const fetchDetails = async () => {
       try {
@@ -64,10 +70,41 @@ const EventDetails = () => {
         alert("Rating submitted successfully!");
       } catch (error) {
         console.error("Error submitting rating:", error);
-        //alert("Failed to submit rating. Please try again.");
       }
     } else {
       alert("Please select a rating before submitting.");
+    }
+  };
+
+  const handleTourGuideRatingSubmit = async () => {
+    if (tourGuideRating <= 0) {
+      alert("Please select a rating for the tour guide.");
+      return;
+    }
+
+    try {
+      await rateTourGuide(email, tourGuideEmail, tourGuideRating);
+      alert("Tour guide rating submitted successfully!");
+      setTourGuideRating(0);
+    } catch (error) {
+      console.error("Error submitting tour guide rating:", error);
+      setErrorTourGuide("Failed to submit tour guide rating. Please try again.");
+    }
+  };
+
+  const handleTourGuideCommentSubmit = async () => {
+    if (!tourGuideComment.trim()) {
+      alert("Please enter a comment for the tour guide.");
+      return;
+    }
+
+    try {
+      await commentTourGuide(email, tourGuideEmail, tourGuideComment);
+      alert("Tour guide comment submitted successfully!");
+      setTourGuideComment("");
+    } catch (error) {
+      console.error("Error submitting tour guide comment:", error);
+      setErrorTourGuide("Failed to submit tour guide comment. Please try again.");
     }
   };
 
@@ -87,11 +124,10 @@ const EventDetails = () => {
       setComment("");
     } catch (error) {
       console.error("Error submitting comment:", error);
-      alert("Failed to submit comment. Please try again.");
     }
   };
 
-  const renderStars = () => {
+  const renderStars = (currentRating, onClickHandler) => {
     const maxRating = 5;
 
     return (
@@ -99,8 +135,10 @@ const EventDetails = () => {
         {[...Array(maxRating)].map((_, index) => (
           <span
             key={index}
-            className={`text-3xl cursor-pointer ${index < rating ? "text-yellow-500" : "text-gray-300"}`}
-            onClick={() => handleRatingChange(index + 1)}
+            className={`text-3xl cursor-pointer ${
+              index < currentRating ? "text-yellow-500" : "text-gray-300"
+            }`}
+            onClick={() => onClickHandler(index + 1)}
           >
             ★
           </span>
@@ -113,7 +151,6 @@ const EventDetails = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center">
-      {/* Header Section */}
       <header className="NavBar flex items-center justify-between p-4 bg-brandBlue shadow-md w-full">
         <img src={logo} alt="Logo" className="h-12" />
         <nav className="main-nav">
@@ -130,8 +167,7 @@ const EventDetails = () => {
         </nav>
       </header>
 
-      {/* Main Content */}
-      <main className="flex-grow flex items-center justify-center mt-32 w-3/4">
+      <main className="flex-grow flex items-center justify-center mt-32 w-full">
         <div className="p-6 bg-white shadow-lg rounded-lg w-3/4 flex flex-col lg:flex-row">
           <div className="lg:w-1/3 flex-shrink-0">
             <img
@@ -156,10 +192,10 @@ const EventDetails = () => {
               </p>
               <div className="mt-6">
                 <p className="text-xl font-bold text-gray-800">Rate this Event:</p>
-                {renderStars()}
+                {renderStars(rating, handleRatingChange)}
                 <button
                   onClick={handleSubmitRating}
-                  className="mt-4 bg-brandBlue text-white py-2 px-4 rounded hover:bg-logoOrange"
+                  className="mt-4 bg-brandBlue text-white py-2 px-6 rounded-lg hover:bg-logoOrange transition duration-200"
                 >
                   Submit Rating
                 </button>
@@ -174,18 +210,50 @@ const EventDetails = () => {
                 />
                 <button
                   onClick={handleSubmitComment}
-                  className="mt-4 bg-logoOrange text-white py-2 px-4 rounded hover:bg-green-600"
+                  className="mt-4 bg-brandBlue text-white py-2 px-6 rounded-lg hover:bg-logoOrange transition duration-200"
                 >
                   Submit Comment
                 </button>
               </div>
+              {type === "itinerary" && (
+                <div className="mt-6">
+                  <h2 className="text-xl font-bold text-gray-800">Rate the Tour Guide:</h2>
+                  <input
+                    type="email"
+                    placeholder="Tour Guide Email"
+                    value={details.Created_By}
+                    onChange={(e) => setTourGuideEmail(e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded-md mt-2"
+                  />
+                  {renderStars(tourGuideRating, setTourGuideRating)}
+                  <button
+                    onClick={handleTourGuideRatingSubmit}
+                    className="mt-4 bg-brandBlue text-white py-2 px-6 rounded-lg hover:bg-logoOrange transition duration-200"
+                  >
+                    Submit Rating
+                  </button>
+                  <h2 className="text-xl font-bold text-gray-800 mt-6">Comment on the Tour Guide:</h2>
+                  <textarea
+                    value={tourGuideComment}
+                    onChange={(e) => setTourGuideComment(e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded-md mt-2"
+                    placeholder="Write your comment for the tour guide..."
+                  />
+                  <button
+                    onClick={handleTourGuideCommentSubmit}
+                    className="mt-4 bg-brandBlue text-white py-2 px-6 rounded-lg hover:bg-logoOrange transition duration-200"
+                  >
+                    Submit Comment
+                  </button>
+                  {errorTourGuide && <p className="text-red-500">{errorTourGuide}</p>}
+                </div>
+              )}
             </div>
           </div>
         </div>
       </main>
 
-      {/* Footer Section */}
-      <footer className="bg-brandBlue shadow py-6 w-full">
+      <footer className="bg-brandBlue shadow py-6 w-full mt-20">
         <div className="w-full mx-auto flex flex-col items-center space-y-6">
           <a href="/" className="flex items-center space-x-3">
             <img src={logo} className="w-12" alt="Logo" />
