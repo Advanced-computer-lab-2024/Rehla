@@ -359,3 +359,4 @@ app.post('/send-payment-receipt', async (req, res) => {
       res.status(500).json({ error: 'Error sending payment receipt email', details: error.message });
   }
 });
+app.post('/addProductFromWishListToCart/:mail/:productName', addProductFromWishListToCart); // Route for adding an item to the cart
