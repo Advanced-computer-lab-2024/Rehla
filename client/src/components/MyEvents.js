@@ -37,7 +37,7 @@ const MyEvents = () => {
         localStorage.setItem('selectedName', name); 
         localStorage.setItem('selectedType', type); 
         localStorage.setItem('attendedStatus', attendedStatus); // Save attended status
-        navigate(`/event-details/${type}/${name}`); // Redirect to the event details page
+        navigate(`/event-details/${type}/${name}?attendedStatus=${attendedStatus}`);// Redirect to the event details page
     };
 
     return (
