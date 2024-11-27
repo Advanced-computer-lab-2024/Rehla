@@ -143,8 +143,9 @@ const {createUserAdmin,
   addTouristAddress,
   saveEvent,
   viewSavedEvents,
-  viewMyWishlist
-
+  viewMyWishlist,
+  deleteProductFromMyWishList,
+  addProductFromWishListToCart
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -343,3 +344,5 @@ app.post('/addTouristAddress',addTouristAddress);
 app.post('/saveEvent', saveEvent);
 app.post('/viewSavedEvents', viewSavedEvents);
 app.get('/viewMyWishlist/:mail', viewMyWishlist);
+app.delete('/deleteProductFromMyWishList/:mail/:productname', deleteProductFromMyWishList);
+
