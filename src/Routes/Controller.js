@@ -5376,6 +5376,67 @@ const viewSavedEvents = async (req, res) => {
     }
 };
 
+const viewUserStats = async (req, res) => {
+    try {
+        // Schemas for all user types
+        const schemas = [Admin, AdvertisersModel, Seller, Tourist, tour_guidem];
+        // Helper function to get user statistics for each schema
+        const getUserStats = async (Model) => {
+            const total = await Model.countDocuments(); // Total count of users in the schema
+            const byMonth = await Model.aggregate([
+                {
+                    $group: {
+                        _id: {
+                            year: { $year: "$createdAt" },
+                            month: { $month: "$createdAt" },
+                        },
+                        count: { $sum: 1 },
+                    },
+                },
+                { $sort: { "_id.year": 1, "_id.month": 1 } }, // Sort by year and month
+            ]);
+            return { total, byMonth };
+        };
+
+        let totalUsers = 0;
+        const monthlyStats = {};
+
+        // Loop through schemas to calculate stats
+        for (const schema of schemas) {
+            const { total, byMonth } = await getUserStats(schema);
+            totalUsers += total; // Aggregate total users
+
+            // Aggregate monthly stats
+            byMonth.forEach((entry) => {
+                const key = `${entry._id.year}-${entry._id.month}`;
+                if (!monthlyStats[key]) {
+                    monthlyStats[key] = 0;
+                }
+                monthlyStats[key] += entry.count;
+            });
+        }
+
+        // Format monthly stats for output
+        const formattedMonthlyStats = Object.entries(monthlyStats).map(([key, count]) => {
+            const [year, month] = key.split("-");
+            return {
+                year: parseInt(year),
+                month: parseInt(month),
+                userCount: count,
+            };
+        });
+
+        // Respond with stats
+        return res.status(200).json({
+            message: "User statistics retrieved successfully",
+            totalUsers,
+            monthlyStats: formattedMonthlyStats,
+        });
+    } catch (error) {
+        console.error("Error retrieving user statistics:", error);
+        return res.status(500).json({ message: "Server error" });
+    }
+};
 
 // ----------------- Activity Category CRUD -------------------
 
@@ -5526,4 +5587,5 @@ module.exports = { getPurchasedProducts,
     deleteProductFromMyWishList,
     addProductFromWishListToCart,
     sendPaymentReceipt,
+    viewUserStats
 };

@@ -147,6 +147,7 @@ const {createUserAdmin,
   deleteProductFromMyWishList,
   addProductFromWishListToCart,
   sendPaymentReceipt,
+  viewUserStats
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -360,3 +361,4 @@ app.post('/send-payment-receipt', async (req, res) => {
   }
 });
 app.post('/addProductFromWishListToCart/:mail/:productName', addProductFromWishListToCart); // Route for adding an item to the cart
+app.get ('/viewUserStats',viewUserStats)
