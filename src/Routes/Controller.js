@@ -104,6 +104,23 @@ const sendPaymentReceipt = async (to, amount, eventName) => {
     }
 };
 
+const sendyoureventitineraryisflagged = async (to, eventName) => {
+    const mailOptions = {
+        from: 'rehlanotification@gmail.com', // Sender address
+        to: to,                       // List of receivers  
+        subject: `Your ${eventName} is inapproriate now`,   // Subject line
+        text: `Your ${eventName} is inapproriate now. Please review and make necessary changes.` // Plain text body
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log('Flagged event email sent successfully');
+    } catch (error) {
+        console.error('Error sending flagged event email:', error);
+        throw error; // Rethrow the error to handle it in the route
+    }
+};
+
 // Creating a new Admin user or Tourism Governor
 const createUserAdmin = async (req, res) => {
     try {
@@ -1077,13 +1094,18 @@ const flagItinerary = async (req, res) => {
 
         const flaggedItinerary = await itinerarym.findOneAndUpdate(
             {Itinerary_Name:name}, 
-            { Flagged: true },   
+            { Flagged: true },  
             { new: true }        
         );
+
 
         if (!flaggedItinerary) {
             return res.status(404).json({ message: 'Itinerary not found' });
         }
+
+        //get the createdby of this itinrary and use sendyoureventitineraryisflagged to send him a message
+        const createdby = flaggedItinerary.Created_By;
+        await sendyoureventitineraryisflagged(createdby, name);     
 
         res.status(200).json({ message: 'Itinerary flagged as inappropriate successfully', data: flaggedItinerary });
     } catch (error) {
