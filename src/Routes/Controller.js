@@ -5460,15 +5460,19 @@ const sendEventReminder = async (to, eventName, eventDate) => {
 const checkAndSendReminders = async () => {
     try {
         const now = new Date();
-        const upcomingEvents = await Event.find({
-            eventDate: {
+        const upcomingItineraries = await itinerarym.find({
+            Available_Date_Time: {
                 $gte: now,
-                $lte: new Date(now.getTime() + 24 * 60 * 60 * 1000) // Events within the next 24 hours
+                $lte: new Date(now.getTime() + 24 * 60 * 60 * 1000) // Itineraries within the next 24 hours
             }
         });
 
-        for (const event of upcomingEvents) {
-            await sendEventReminder(event.userEmail, event.name, event.eventDate);
+        for (const itinerary of upcomingItineraries) {
+            const bookedTourists = await touristIteneraries.find({ Itinerary_Name: itinerary.name });
+
+            for (const tourist of bookedTourists) {
+                await sendEventReminder(tourist.Tourist_Email, itinerary.name, itinerary.Available_Date_Time);
+            }
         }
     } catch (error) {
         console.error('Error checking and sending reminders:', error);
