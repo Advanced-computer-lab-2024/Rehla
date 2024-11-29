@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import logo from '../images/logo.png';
 import { searchEventsPlaces , rateTourGuide,commentTourGuide,viewComplaintByEmail,
         deleteTouristItenrary,deleteTouristActivity, createComplaint,redeemPoints,
-        createPreference ,getAllTransportation,bookTransportation} from '../services/api'; // Import the commentOnEvent function
+        createPreference ,getAllTransportation,bookTransportation,addDeliveryAdress,
+        saveEvent,viewSavedEvents,cancelOrder} from '../services/api'; // Import the commentOnEvent function
 import Homet2 from '../components/Homet2.js';
 
 const TouristHome = () => {
@@ -34,7 +35,18 @@ const TouristHome = () => {
 
     const [complaintTitle, setComplaintTitle] = useState('');
     const [complaintBody, setComplaintBody] = useState('');
-
+    const [address,setAddress]=useState('');
+    const [succes,setSuccess]=useState('');
+    const [errornew,setErrornew]=useState('');
+    //bto3 el save event
+    const [eventType, setEventType] = useState('');
+    const [eventName,setEventName]=useState('');
+    const [succesEvent,setSuccessEvent]=useState('');
+    const [errorEvent,setErrorEvent]=useState('');
+    //bto3 el view Event
+    const [succesViewEvent,setSuccessViewEvent]=useState('');
+    const [errorViewEvent,setErrorViewEvent]=useState('');
+    const [events, setEvents] = useState([]);
     const [preferenceData, setPreferenceData] = useState({
         email: '',
         historicAreas: false,
@@ -44,6 +56,72 @@ const TouristHome = () => {
         budgetFriendly: false
     });
     const [messagee, setMessagee] = useState('');
+    const handleViewSavedEvents = async () => {
+        // Clear previous messages and data
+        setSuccessViewEvent('');
+        setErrorViewEvent('');
+        setEvents([]);
+
+        try {
+            const response = await viewSavedEvents(email);
+
+            // On success, set success message and update the events list
+            setSuccessViewEvent(`Successfully retrieved ${response.savedEvents.length} event(s).`);
+            setEvents(response.savedEvents);
+        } catch (error) {
+            // Handle error: use server message if available, otherwise fallback to generic message
+            if (error.response && error.response.data && error.response.data.message) {
+                setErrorViewEvent(error.response.data.message);
+            } else {
+                setErrorViewEvent('An error occurred while retrieving saved events.');
+            }
+        }
+    };
+    const handleSaveEvent = async (e) => {
+        e.preventDefault(); // Prevent default form submission
+    
+        try {
+            // Call the saveEvent API function with the necessary data
+            const response = await saveEvent({ 
+                email, 
+                type: eventType, 
+                name: eventName 
+            });
+    
+            // On success, update the success message
+            setSuccessEvent(`Event added successfully: ${eventName} (${eventType})`);
+            
+            // Clear the form inputs
+            setEmail('');
+            setEventType('');
+            setEventName('');
+        } catch (error) {
+            // Handle errors, log them, and update the error message
+            console.error('Failed to save event:', error);
+    
+            if (error.response && error.response.data && error.response.data.message) {
+                // Use the error message returned from the server, if available
+                setErrorEvent(`Error: ${error.response.data.message}`);
+            } else {
+                // Fallback to a generic error message
+                setErrorEvent('Failed to save event. Please try again.');
+            }
+        }
+    };
+    
+    const handleNewAddress=async(e)=>{
+        e.preventDefault();
+        try{
+            const response = await addDeliveryAdress({email, address})
+            setSuccess(`Addresses added successfully: ${response.addresses.map(addr => addr.Address).join(', ')}`);
+            setEmail('');
+            setAddress('');
+        }
+        catch(error){
+            setErrornew(`Failed to add address`);
+            console.error(error);
+        }
+    }
     
     const handleComplaintSubmit = async (e) => {
         e.preventDefault();
@@ -646,8 +724,107 @@ const TouristHome = () => {
   {messagee && <p className="text-center text-sm text-green-500 mt-4">{messagee}</p>}
 </div>
 
+{/* Adding a new adress */}
+<div>
+    <h2>add new address</h2>
+    <form>
+    <div>
+                    <label>Email:</label>
+                    <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                    />
+                </div>
+                <div>
+                    <label>Address(es):</label>
+                    <input
+                        type="text"
+                        value={address}
+                        onChange={(e) => setAddress(e.target.value)}
+                        placeholder="Separate multiple addresses with commas"
+                        required
+                    />
+                </div> 
+                <button onClick={handleNewAddress}>
+                    add new address
+                </button>
+    </form>
+    {succes && <p style={{ color: 'green' }}>{succes}</p>}
+    {errornew && <p style={{ color: 'red' }}>{errornew}</p>}
+</div>
 
-        
+{/* Bookmarking an event */}
+<div>
+    <h2>Bookmark an event</h2>
+    <form>
+    <div>
+    <label>Email:</label>
+                    <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                    />
+                </div>
+                <div>
+                    <label>Event Type:</label>
+                    <input
+                        type="text"
+                        value={eventType}
+                        onChange={(e) => setEventType(e.target.value)}
+                        required
+                    />
+                </div> 
+                <div>
+                    <label>Event Name:</label>
+                    <input
+                        type="text"
+                        value={eventName}
+                        onChange={(e) => setEventName(e.target.value)}
+                        required
+                    />
+                </div>
+                <button onClick={handleSaveEvent}>
+                    Bookmark an Event
+                </button>
+    </form>
+    {succesEvent && <p style={{ color: 'green' }}>{succesEvent}</p>}
+    {errorEvent && <p style={{ color: 'red' }}>{errorEvent}</p>}
+</div>
+{/* View Bookmarked Events */}
+<div>
+    <h2>View Saved Events</h2>
+    <form onSubmit={(e) => { e.preventDefault(); handleViewSavedEvents(); }}>
+        <div>
+            <label>Email:</label>
+            <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+            />
+        </div>
+        <button type="submit">View Events</button>
+    </form>
+    {succesViewEvent && <p style={{ color: 'green' }}>{succesViewEvent}</p>}
+    {errorViewEvent && <p style={{ color: 'red' }}>{errorViewEvent}</p>}
+    {events.length > 0 && (
+        <div>
+            <h3>Saved Events:</h3>
+            <ul>
+                {events.map((event, index) => (
+                    <li key={index}>
+                        {event.Name} ({event.TYPE})
+                    </li>
+                ))}
+            </ul>
+        </div>
+    )}
+</div>
+
+
 <footer className="bg-brandBlue shadow dark:bg-brandBlue m-0">
                 <div className="w-full mx-auto md:py-8">
                     <div className="sm:flex sm:items-center sm:justify-between">
