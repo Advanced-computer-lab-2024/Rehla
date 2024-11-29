@@ -80,6 +80,9 @@ const {createUserAdmin,
   viewMyCreatedActivities,
   createHistoricalTag,
   viewMyCreatedItenrary,
+  getPaidActivities,
+  getPastPaidActivities,
+  getTouristAddresses,
   viewMyCreatedMuseumsAndHistoricalPlaces, signIn,
   getAllCreatedByEmail,
   updateAdmin,
@@ -261,6 +264,9 @@ app.get("/getBookedItineraries",getBookedItineraries);
 app.get("/viewMyCreatedActivities", viewMyCreatedActivities);
 app.post("/createHistoricalTag", createHistoricalTag);
 app.get("/viewMyCreatedItenrary", viewMyCreatedItenrary);
+app.get('/getPaidActivities/:email', getPaidActivities);
+app.get('/getPastPaidActivities/:email', getPastPaidActivities);
+app.get('/getTouristAddresses/:email', getTouristAddresses);
 app.get("/viewMyCreatedMuseumsAndHistoricalPlaces", viewMyCreatedMuseumsAndHistoricalPlaces);
 app.post("/signIn" , signIn)
 app.get('/getAllCreatedByEmail/:email', getAllCreatedByEmail);

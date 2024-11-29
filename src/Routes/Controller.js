@@ -2487,6 +2487,82 @@ const viewMyCreatedItenrary = async (req, res) => {
         });
     }
 };
+const getPaidActivities = async (req, res) => {
+    try {
+        const { email } = req.params;
+
+        if (!email) {
+            return res.status(400).json({ message: "Tourist email is required" });
+        }
+
+        const today = new Date();
+
+        const upcomingActivities = await tourist_activities.find({
+            Tourist_Email: email,
+            Paid: true,
+            Date: { $gte: today } // Date is today or in the future
+        }, 'Activity_Name Date');
+
+        if (!upcomingActivities.length) {
+            return res.status(404).json({ message: "No upcoming paid activities found." });
+        }
+
+        res.status(200).json({ activities: upcomingActivities });
+    } catch (error) {
+        console.error("Error fetching upcoming paid activities:", error);
+        res.status(500).json({ message: "An error occurred while fetching upcoming paid activities.", error });
+    }
+
+};
+
+const getPastPaidActivities = async (req, res) => {
+    try {
+        const { email } = req.params;
+
+        if (!email) {
+            return res.status(400).json({ message: "Tourist email is required" });
+        }
+
+        const today = new Date();
+
+        const pastActivities = await tourist_activities.find({
+            Tourist_Email: email,
+            Paid: true,
+            Date: { $lt: today } // Date is in the past
+        }, 'Activity_Name Date');
+
+        if (!pastActivities.length) {
+            return res.status(404).json({ message: "No past paid activities found." });
+        }
+
+        res.status(200).json({ activities: pastActivities });
+    } catch (error) {
+        console.error("Error fetching past paid activities:", error);
+        res.status(500).json({ message: "An error occurred while fetching past paid activities.", error });
+    }
+
+};
+
+const getTouristAddresses = async (req, res) => {
+    try {
+        const { email } = req.params; 
+
+        if (!email) {
+            return res.status(400).json({ message: "Tourist email is required" });
+        }
+
+        const addresses = await tourist_addreessiesm.find({ Email: email }, 'Address');
+
+        if (!addresses.length) {
+            return res.status(404).json({ message: "No addresses found for this tourist." });
+        }
+
+        res.status(200).json({ addresses });
+    } catch (error) {
+        console.error("Error fetching tourist addresses:", error);
+        res.status(500).json({ message: "An error occurred while fetching addresses.", error });
+    }
+};
 
 const viewMyCreatedMuseumsAndHistoricalPlaces = async(req, res) =>{
     try{
@@ -5558,6 +5634,9 @@ module.exports = { getPurchasedProducts,
     viewMyCreatedActivities,
     createHistoricalTag,
     viewMyCreatedItenrary,
+    getPaidActivities,
+    getPastPaidActivities,
+    getTouristAddresses,
     viewMyCreatedMuseumsAndHistoricalPlaces,
     signIn,
     getAllCreatedByEmail,
