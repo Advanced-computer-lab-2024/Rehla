@@ -5468,11 +5468,8 @@ const checkAndSendReminders = async () => {
             }
         });
 
-        console.log('Upcoming itineraries:', upcomingItineraries);
-
         for (const itinerary of upcomingItineraries) {
             const bookedTourists = await touristIteneraries.find({ Itinerary_Name: itinerary.Itinerary_Name });
-            console.log('Booked tourists:', bookedTourists);
 
             for (const tourist of bookedTourists) {
                 await sendEventReminder(tourist.Tourist_Email, itinerary.Itinerary_Name, itinerary.Available_Date_Time);
