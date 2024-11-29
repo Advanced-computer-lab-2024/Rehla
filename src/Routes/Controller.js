@@ -5586,6 +5586,70 @@ const checkAndSendRemindersforItinerary = async () => {
     }
 };
 
+const createBirthdayPromoCode = async (Tourist_Email) => {
+    try {
+        // Check if the tourist exists
+        const tourist = await Tourist.findOne({ Email: Tourist_Email });
+        if (!tourist) {
+            return res.status(404).json({ error: 'Tourist not found.' });
+        }
+
+        // create a promo code for the tourist's birthday cotains tourist Username and 50% discount
+        const promoCode = `${tourist.Username}HappyBirthday`;
+
+        // Calculate the expiration date (valid for one month)
+        const now = new Date();
+        const expiryDate = new Date(now.getFullYear(), now.getMonth() + 1, now.getDate());
+
+        const newPromoCode = new promocodem({
+            Code: promoCode,
+            Discount: 50,
+            Expiry: expiryDate,
+            CreatedBy: 'System',
+            type: 'Birthday',
+            Tourist_Email: Tourist_Email
+        });
+
+        await newPromoCode.save();
+
+        return promoCode;
+    }catch (error) {
+        console.error('Error creating birthday promo code:', error);
+        return null;
+    }
+};
+
+const checkandsendBirthdayPromoCode = async () => {
+    try {
+        const today = new Date();
+        const todayMonth = today.getMonth() + 1; // Months are 0-based in JavaScript
+        const todayDay = today.getDate();
+        const tourists = await Tourist.find({
+            $expr: {
+                $and: [
+                    { $eq: [{ $month: "$DOB" }, todayMonth] },
+                    { $eq: [{ $dayOfMonth: "$DOB" }, todayDay] }
+                ]
+            }
+        });        console.log('tourists:', tourists);
+
+        for (const tourist of tourists) {
+            const promoCode = await createBirthdayPromoCode(tourist.Email);
+            if (promoCode) {
+                const mailOptions = {
+                    from: 'rehlanotification@gmail.com', // Sender address
+                    to: tourist.Email,                       // List of receivers
+                    subject: `Happy Birthday, ${tourist.Username}!`,   // Subject line
+                    text: `Happy Birthday, ${tourist.Username}! Use the promo code ${promoCode} to get 50% off on your next purchase.` // Plain text body
+                };
+                await transporter.sendMail(mailOptions);
+            }
+        }
+    }catch (error) {
+        console.error('Error checking and sending birthday promo codes:', error);
+    }
+};
+
 // ----------------- Activity Category CRUD -------------------
 
 module.exports = { getPurchasedProducts,
@@ -5741,5 +5805,6 @@ module.exports = { getPurchasedProducts,
     viewUserStats,
     sendEventReminder, 
     checkAndSendRemindersforEvents,
-    checkAndSendRemindersforItinerary
+    checkAndSendRemindersforItinerary,
+    checkandsendBirthdayPromoCode
 };
