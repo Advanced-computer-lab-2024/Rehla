@@ -5571,10 +5571,10 @@ const checkAndSendRemindersforItinerary = async () => {
 
         for (const itinerary of upcomingItineraries) {
 
-            console.log('itinerary:', itinerary.Itinerary_Name);
+            //console.log('itinerary:', itinerary.Itinerary_Name);
             const bookedTourists = await touristIteneraries.find({ Itinerary_Name: itinerary.Itinerary_Name });
 
-            console.log('bookedTourists:', bookedTourists);
+           // console.log('bookedTourists:', bookedTourists);
 
             for (const tourist of bookedTourists) {
                 await sendEventReminder(tourist.Tourist_Email, itinerary.Itinerary_Name, itinerary.Available_Date_Time);
