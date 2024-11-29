@@ -5438,6 +5438,43 @@ const viewUserStats = async (req, res) => {
     }
 };
 
+// Function to send an event reminder email
+const sendEventReminder = async (to, eventName, eventDate) => {
+    const mailOptions = {
+        from: 'rehlanotification@gmail.com', // Sender address
+        to: to,                       // List of receivers
+        subject: `Reminder: Upcoming Event - ${eventName}`,   // Subject line
+        text: `This is a reminder for your upcoming event: ${eventName} scheduled on ${eventDate}.` // Plain text body
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log('Event reminder email sent successfully');
+    } catch (error) {
+        console.error('Error sending event reminder email:', error);
+        throw error; // Rethrow the error to handle it in the route
+    }
+};
+
+// Function to check for upcoming events and send reminders
+const checkAndSendReminders = async () => {
+    try {
+        const now = new Date();
+        const upcomingEvents = await Event.find({
+            eventDate: {
+                $gte: now,
+                $lte: new Date(now.getTime() + 24 * 60 * 60 * 1000) // Events within the next 24 hours
+            }
+        });
+
+        for (const event of upcomingEvents) {
+            await sendEventReminder(event.userEmail, event.name, event.eventDate);
+        }
+    } catch (error) {
+        console.error('Error checking and sending reminders:', error);
+    }
+};
+
 // ----------------- Activity Category CRUD -------------------
 
 module.exports = { getPurchasedProducts,
@@ -5587,5 +5624,7 @@ module.exports = { getPurchasedProducts,
     deleteProductFromMyWishList,
     addProductFromWishListToCart,
     sendPaymentReceipt,
-    viewUserStats
+    viewUserStats,
+    sendEventReminder, 
+    checkAndSendReminders
 };
