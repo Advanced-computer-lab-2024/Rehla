@@ -1260,9 +1260,7 @@ export const fetchSalesReport = async (sellerName) => {
 
 export const calculateActivityRevenue = async (email) => {
     try {
-        const response = await axios.post(`${API_URL}/calculateActivityRevenue`, {
-            email,
-        });
+        const response = await axios.post(`${API_URL}/calculateActivityRevenue`, { email });
         return response.data; // Return the response data from the server
     } catch (error) {
         console.error('Error calculating activity revenue:', error);
@@ -1272,6 +1270,7 @@ export const calculateActivityRevenue = async (email) => {
         throw errorMessage; // Rethrow the error for handling in the calling component
     }
 };
+
 
 // Function to calculate itinerary revenue
 export const calculateItineraryRevenue = async (itineraryName) => {

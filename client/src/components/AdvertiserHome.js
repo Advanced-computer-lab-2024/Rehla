@@ -38,7 +38,7 @@ const AdvertiserHome = () => {
         Picture: '',
     });
     const [email, setEmail] = useState(null); // State for advertiser email
-    const [revenue, setRevenue] = useState(null); // State to store revenue
+    const [activityDataa, setActivityDataa] = useState(null); // State to store activity details
     const [loadingg, setLoadingg] = useState(false); // State for loading spinner
     const [errorr, setErrorr] = useState(null); // State for error messages
 
@@ -173,9 +173,9 @@ const AdvertiserHome = () => {
 
         try {
             const revenueData = await calculateActivityRevenue(email);
-            setRevenue(revenueData.revenue); // Set the revenue from the response
+            setActivityDataa(revenueData); // Store the detailed response from the server
         } catch (error) {
-            console.errorr('Error calculating revenue:', error.message);
+            console.error('Error calculating revenue:', error.message);
             setErrorr(error.message || 'Failed to calculate revenue.');
         } finally {
             setLoadingg(false); // Hide loading spinner
@@ -589,15 +589,29 @@ const AdvertiserHome = () => {
             {email ? (
                 <div>
                     <p>Signed in as: <strong>{email}</strong></p>
-                    <button onClick={handleCalculateRevenue} disabled={loading}>
-                        {loading ? 'Calculating...' : 'Calculate Revenue'}
+                    <button onClick={handleCalculateRevenue} disabled={loadingg}>
+                        {loadingg ? 'Calculating...' : 'Calculate Revenue'}
                     </button>
-                    {error && <p style={{ color: 'red' }}>{error}</p>}
-                    {revenue !== null && (
+                    {errorr && <p style={{ color: 'red' }}>{errorr}</p>}
+                    {activityDataa && (
                         <div>
-                            <h2>Revenue</h2>
-                            <p>${revenue.toFixed(2)}</p>
+                            <h2>Total Revenue</h2>
+                            <p>${activityDataa.totalRevenue.toFixed(2)}</p>
+                            <h3>Activity Details</h3>
+                            <ul>
+                                {activityDataa.activityDetails.map((activity, index) => (
+                                    <li key={index}>
+                                        <strong>{activity.activityName}</strong> - 
+                                        Price per unit: ${activity.pricePerUnit.toFixed(2)}, 
+                                        Paid bookings: {activity.paidCount}, 
+                                        Revenue: ${activity.revenue.toFixed(2)}
+                                    </li>
+                                ))}
+                            </ul>
                         </div>
+                    )}
+                    {!activityDataa && !loadingg && (
+                        <p>No revenue data available. Click "Calculate Revenue" to fetch data.</p>
                     )}
                 </div>
             ) : (

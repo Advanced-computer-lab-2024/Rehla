@@ -5287,32 +5287,50 @@ const calculateActivityRevenue = async (req, res) => {
             return res.status(400).json({ message: 'Email is required.' });
         }
 
+        // Retrieve all activities created by the given email
+        const activities = await activity.find({ Created_By: email });
 
-        // Retrieve the price of the activity
-        const activitym = await activity.findOne({ Created_By: email });
-        if (!activitym) {
-            return res.status(404).json({ message: 'Email not found.' });
+        if (!activities || activities.length === 0) {
+            return res.status(404).json({ message: 'No activities found for this email.' });
         }
-        // Count the number of paid records for the activity
-        const paidCount = await tourist_activities.countDocuments({
-            Activity_Name: activitym.Name,
-            Paid: true,
-        });
 
-        if (paidCount === 0) {
-            return res.status(200).json({
-                message: `No revenue generated for this email: ${email}`,
-                revenue: 0,
+        let totalRevenue = 0;
+        const activityRevenues = [];
+
+        for (const activitym of activities) {
+            // Count the number of paid records for the current activity
+            const paidCount = await tourist_activities.countDocuments({
+                Activity_Name: activitym.Name,
+                Paid: true,
             });
-        }
 
-        const revenue = (paidCount * (activitym.Price-(activitym.Discount_Percent/100*activitym.Price)))*0.9;
+            if (paidCount > 0) {
+                // Calculate revenue for the current activity
+                const revenue = 
+                    (paidCount * (activitym.Price - (activitym.Discount_Percent / 100 * activitym.Price))) * 0.9;
+
+                totalRevenue += revenue;
+
+                activityRevenues.push({
+                    activityName: activitym.Name,
+                    pricePerUnit: activitym.Price,
+                    paidCount,
+                    revenue,
+                });
+            } else {
+                activityRevenues.push({
+                    activityName: activitym.Name,
+                    pricePerUnit: activitym.Price,
+                    paidCount,
+                    revenue: 0,
+                });
+            }
+        }
 
         return res.status(200).json({
-            activity: email,
-            pricePerUnit: activitym.Price,
-            paidCount,
-            revenue,
+            email,
+            totalRevenue,
+            activityDetails: activityRevenues,
         });
     } catch (error) {
         console.error('Error calculating activity revenue:', error.message);
@@ -5322,6 +5340,7 @@ const calculateActivityRevenue = async (req, res) => {
         });
     }
 };
+
 
 const calculateItineraryRevenue = async (req, res) => {
     try {
