@@ -41,10 +41,11 @@ const TourGuideHome = () => {
     const [accessibilitye, setAccessibilitye] = useState('deactivated'); // Default to 'deactivated'
     const [messageee, setMessageee] = useState('');
 
-    const [itinerary, setItinerary] = useState(''); // Renamed from itineraryName
-    const [isLoading, setIsLoading] = useState(false); // Renamed from loading
-    const [errorr, setErrorr] = useState(''); // Renamed from errorMessage
-    const [revenue, setRevenue] = useState(null);
+    const [email, setEmail] = useState(null); // Advertiser email
+    const [itineraryDataa, setItineraryDataa] = useState(null); // Revenue data
+    const [loadingg, setLoadingg] = useState(false); // Loading indicator
+    const [errorr, setErrorr] = useState(null); // Error messages
+
 
 
     useEffect(() => {
@@ -54,6 +55,14 @@ const TourGuideHome = () => {
         } else {
             setError(new Error('No email found in local storage'));
             setLoading(false);
+        }
+    }, []);
+    useEffect(() => {
+        const storedEmail = localStorage.getItem('email'); // Fetch email from localStorage
+        if (storedEmail) {
+            setEmail(storedEmail);
+        } else {
+            setErrorr('No email found in local storage. Please sign in again.');
         }
     }, []);
 
@@ -187,22 +196,22 @@ const TourGuideHome = () => {
     };
 
     const handleCalculateRevenue = async () => {
-        if (!itinerary.trim()) {
-            setErrorr('Itinerary Name is required.');
+        if (!email) {
+            setErrorr('Email is required to calculate revenue.');
             return;
         }
 
-        setIsLoading(true);
-        setErrorr('');
-        setRevenue(null);
+        setErrorr(null); // Clear previous errors
+        setLoadingg(true); // Show loading spinner
 
         try {
-            const result = await calculateItineraryRevenue(itinerary);
-            setRevenue(result.revenue);
-        } catch (err) {
-            setErrorr(err.message || 'An error occurred.');
+            const revenueDataa = await calculateItineraryRevenue(email);
+            setItineraryDataa(revenueDataa); // Set fetched revenue data
+        } catch (errorr) {
+            console.error('Error calculating itinerary revenue:', errorr.message);
+            setErrorr(errorr.message || 'Failed to calculate revenue.');
         } finally {
-            setIsLoading(false);
+            setLoadingg(false); // Hide loading spinner
         }
     };
 
@@ -686,29 +695,37 @@ const TourGuideHome = () => {
 
             {messageee && <p>{messageee}</p>} {/* Display success/error message */}
         </div>
-        <div style={{ margin: '20px' }}>
-            <h2>Calculate Itinerary Revenue</h2>
-            <div>
-                <label>
-                    <strong>Itinerary Name:</strong>
-                </label>
-                <input
-                    type="text"
-                    value={itinerary}
-                    onChange={(e) => setItinerary(e.target.value)}
-                    placeholder="Enter itinerary name"
-                    style={{ margin: '10px', padding: '5px' }}
-                />
-            </div>
-            <button onClick={handleCalculateRevenue} disabled={isLoading}>
-                {isLoading ? 'Calculating...' : 'Calculate Revenue'}
-            </button>
-            {errorr && <p style={{ color: 'red' }}>{error}</p>}
-            {revenue !== null && (
+        <div>
+            <h1>Advertiser Dashboard</h1>
+            {email ? (
                 <div>
-                    <h4>Revenue:</h4>
-                    <p>${revenue}</p>
+                    <p>Signed in as: <strong>{email}</strong></p>
+                    <button onClick={handleCalculateRevenue} disabled={loadingg}>
+                        {loadingg ? 'Calculating...' : 'Calculate Itinerary Revenue'}
+                    </button>
+                    {errorr && <p style={{ color: 'red' }}>{errorr}</p>}
+                    {itineraryDataa && (
+                        <div>
+                            <h2>Total Revenue: ${itineraryDataa.totalRevenue.toFixed(2)}</h2>
+                            <h3>Itinerary Details</h3>
+                            <ul>
+                                {itineraryDataa.itineraryDetails.map((itinerary, index) => (
+                                    <li key={index}>
+                                        <strong>{itinerary.itineraryName}</strong> - 
+                                        Price per unit: ${itinerary.tourPrice.toFixed(2)}, 
+                                        Paid bookings: {itinerary.paidCount}, 
+                                        Revenue: ${itinerary.revenue.toFixed(2)}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+                    {!itineraryDataa && !loadingg && (
+                        <p>No revenue data available. Click "Calculate Itinerary Revenue" to fetch data.</p>
+                    )}
                 </div>
+            ) : (
+                <p style={{ color: 'red' }}>Please sign in to access this feature.</p>
             )}
         </div>
         </div>

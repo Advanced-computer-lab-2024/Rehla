@@ -5347,34 +5347,50 @@ const calculateItineraryRevenue = async (req, res) => {
         const { email } = req.body;
 
         if (!email) {
-            return res.status(400).json({ message: 'email is required.' });
+            return res.status(400).json({ message: 'Email is required.' });
         }
 
-        // Count all records with Paid = true for the given Itinerary_Name
-        const paidCount = await touristIteneraries.countDocuments({
-            Tourist_Email: email,
-            Paid: true,
+        // Retrieve all itineraries created by the given email
+        const itineraries = await itinerarym.find({ Created_By: email });
+
+        if (itineraries.length === 0) {
+            return res.status(404).json({ message: 'No itineraries found for this email.' });
+        }
+
+        // Calculate revenue for each itinerary
+        let totalRevenue = 0;
+        const itineraryDetails = await Promise.all(
+            itineraries.map(async (itinerarym) => {
+                const paidCount = await touristIteneraries.countDocuments({
+                    Itinerary_Name: itinerarym.Itinerary_Name,
+                    Paid: true,
+                });
+
+                const revenue = paidCount * itinerarym.Tour_Price * 0.9;
+                totalRevenue += revenue;
+
+                return {
+                    itineraryName: itinerarym.Itinerary_Name,
+                    tourPrice: itinerarym.Tour_Price,
+                    paidCount,
+                    revenue,
+                };
+            })
+        );
+
+        return res.status(200).json({
+            totalRevenue,
+            itineraryDetails,
         });
-
-        if (paidCount === 0) {
-            return res.status(200).json({ itinerary: email, revenue: 0 });
-        }
-
-        // Retrieve the Tour_Price for the given Itinerary_Name
-        const itineraryDetails = await itinerarym.findOne({ Created_By: email });
-
-        if (!itineraryDetails) {
-            return res.status(404).json({ message: 'Itinerary not found.' });
-        }
-
-        const revenue = paidCount * itineraryDetails.Tour_Price*0.9;
-
-        return res.status(200).json({ itinerary: email, revenue });
     } catch (error) {
         console.error("Error calculating itinerary revenue:", error.message);
-        return res.status(500).json({ error: 'Error calculating itinerary revenue', details: error.message });
+        return res.status(500).json({
+            error: 'Error calculating itinerary revenue',
+            details: error.message,
+        });
     }
 };
+
 
 //function to create new promocode
 const createPromoCode = async (req, res) => {

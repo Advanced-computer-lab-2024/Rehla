@@ -1272,19 +1272,21 @@ export const calculateActivityRevenue = async (email) => {
 };
 
 
-// Function to calculate itinerary revenue
-export const calculateItineraryRevenue = async (itineraryName) => {
+
+
+export const calculateItineraryRevenue = async (email) => {
     try {
-        const response = await axios.post(`${API_URL}/calculateItineraryRevenue`, {
-            Itinerary_Name: itineraryName,
-        });
-        return response.data; // Return the response data from the server
+        const response = await axios.post(`${API_URL}/calculateItineraryRevenue`, { email });
+        return response.data; // Return the detailed revenue data
     } catch (error) {
         console.error('Error calculating itinerary revenue:', error);
-        const errorMessage = error.response ? error.response.data : { message: 'Network error' };
-        throw errorMessage;
+        const errorMessage = error.response
+            ? error.response.data
+            : { message: 'Network error' };
+        throw errorMessage; // Throw for front-end handling
     }
 };
+
 
 // function to create new promo code
 export const createPromoCode = async (Code, Discount, Expiry,CreatedBy ,type) => {
