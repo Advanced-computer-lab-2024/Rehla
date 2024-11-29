@@ -29,6 +29,9 @@ const tourist_activiesSchema = new Schema({
         type: Boolean,
         default: false,
     },
+    Date: {
+        type: Date
+    },
 
 },{ versionKey: false });
 
