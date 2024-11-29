@@ -5281,35 +5281,35 @@ const viewTouristOrders = async (req, res) => {
 
 const calculateActivityRevenue = async (req, res) => {
     try {
-        const { Activity_Name } = req.body;
+        const { email } = req.body;
 
-        if (!Activity_Name) {
-            return res.status(400).json({ message: 'Activity_Name is required.' });
+        if (!email) {
+            return res.status(400).json({ message: 'Email is required.' });
         }
 
         // Count the number of paid records for the activity
         const paidCount = await tourist_activities.countDocuments({
-            Activity_Name: Activity_Name,
+            Tourist_Email: email,
             Paid: true,
         });
 
         if (paidCount === 0) {
             return res.status(200).json({
-                message: `No revenue generated for the activity: ${Activity_Name}`,
+                message: `No revenue generated for this email: ${email}`,
                 revenue: 0,
             });
         }
 
         // Retrieve the price of the activity
-        const activitym = await activity.findOne({ Name: Activity_Name });
+        const activitym = await activity.findOne({ Created_By: email });
         if (!activitym) {
-            return res.status(404).json({ message: 'Activity not found.' });
+            return res.status(404).json({ message: 'Email not found.' });
         }
 
         const revenue = (paidCount * (activitym.Price-(activitym.Discount_Percent/100*activitym.Price)))*0.9;
 
         return res.status(200).json({
-            activity: Activity_Name,
+            activity: email,
             pricePerUnit: activitym.Price,
             paidCount,
             revenue,

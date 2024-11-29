@@ -1258,10 +1258,10 @@ export const fetchSalesReport = async (sellerName) => {
     }
 };
 
-export const calculateActivityRevenue = async (Activity_Name) => {
+export const calculateActivityRevenue = async (email) => {
     try {
         const response = await axios.post(`${API_URL}/calculateActivityRevenue`, {
-            Activity_Name,
+            email,
         });
         return response.data; // Return the response data from the server
     } catch (error) {

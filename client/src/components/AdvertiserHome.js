@@ -37,10 +37,10 @@ const AdvertiserHome = () => {
         Created_By: '',
         Picture: '',
     });
-    const [activityName, setActivityName] = useState(""); // State for the input activity name
-    const [revenue, setRevenue] = useState(null); // State to store the calculated revenue
-    const [isCalculating, setIsCalculating] = useState(false); // Renamed state for loading spinner
-    const [errorMessage, setErrorMessage] = useState(""); // Renamed state for error messages
+    const [email, setEmail] = useState(null); // State for advertiser email
+    const [revenue, setRevenue] = useState(null); // State to store revenue
+    const [loadingg, setLoadingg] = useState(false); // State for loading spinner
+    const [errorr, setErrorr] = useState(null); // State for error messages
 
     useEffect(() => {
         const email = localStorage.getItem('email');
@@ -49,6 +49,15 @@ const AdvertiserHome = () => {
         } else {
             setError(new Error('No email found in local storage'));
             setLoading(false);
+        }
+    }, []);
+
+    useEffect(() => {
+        const storedEmail = localStorage.getItem('email'); // Get email from localStorage
+        if (storedEmail) {
+            setEmail(storedEmail);
+        } else {
+            setErrorr('No email found in local storage. Please sign in again.');
         }
     }, []);
 
@@ -154,23 +163,25 @@ const AdvertiserHome = () => {
     };
 
     const handleCalculateRevenue = async () => {
-        if (!activityName) {
-            setErrorMessage("Activity name is required.");
+        if (!email) {
+            setErrorr('Email is required to calculate revenue.');
             return;
         }
-        setErrorMessage(""); // Clear any previous errors
-        setIsCalculating(true); // Show loading spinner
+
+        setErrorr(null); // Clear previous errors
+        setLoadingg(true); // Show loading spinner
 
         try {
-            const revenueData = await calculateActivityRevenue(activityName);
+            const revenueData = await calculateActivityRevenue(email);
             setRevenue(revenueData.revenue); // Set the revenue from the response
         } catch (error) {
-            console.error("Error calculating activity revenue:", error.message);
-            setErrorMessage(error.message || "Failed to calculate revenue.");
+            console.errorr('Error calculating revenue:', error.message);
+            setErrorr(error.message || 'Failed to calculate revenue.');
         } finally {
-            setIsCalculating(false); // Hide loading spinner
+            setLoadingg(false); // Hide loading spinner
         }
     };
+
 
     return (
         <div>
@@ -575,24 +586,22 @@ const AdvertiserHome = () => {
             )}
             <div>
             <h1>Advertiser Dashboard</h1>
-            <div>
-                <label htmlFor="activityName">Activity Name:</label>
-                <input
-                    id="activityName"
-                    type="text"
-                    value={activityName}
-                    onChange={(e) => setActivityName(e.target.value)}
-                />
-                <button onClick={handleCalculateRevenue} disabled={isCalculating}>
-                    {isCalculating ? "Calculating..." : "Calculate Revenue"}
-                </button>
-            </div>
-            {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
-            {revenue !== null && (
+            {email ? (
                 <div>
-                    <h2>Revenue for {activityName}</h2>
-                    <p>${revenue.toFixed(2)}</p>
+                    <p>Signed in as: <strong>{email}</strong></p>
+                    <button onClick={handleCalculateRevenue} disabled={loading}>
+                        {loading ? 'Calculating...' : 'Calculate Revenue'}
+                    </button>
+                    {error && <p style={{ color: 'red' }}>{error}</p>}
+                    {revenue !== null && (
+                        <div>
+                            <h2>Revenue</h2>
+                            <p>${revenue.toFixed(2)}</p>
+                        </div>
+                    )}
                 </div>
+            ) : (
+                <p style={{ color: 'red' }}>Please sign in to access this feature.</p>
             )}
         </div>
 
