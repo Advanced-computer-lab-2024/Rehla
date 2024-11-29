@@ -17,10 +17,16 @@ const promocodesSchema = new Schema({
     CreatedBy: {
         type: String,
         required: true,
+        default: "Admin",
     },
     type: {
         type: String,
         required: true,
+    },
+    Tourist_Email: {
+        type: String,
+        required: true,
+        default: "All",
     },
 },{ versionKey: false });
 
