@@ -31,7 +31,7 @@ const tourist_activiesSchema = new Schema({
     },
     Date: {
         type: Date
-    },S
+    },
 
 },{ versionKey: false });
 
