@@ -1338,4 +1338,13 @@ export const viewUserStats = async () => {
     }
 };
 
+export const getWishlistProducts = async () => {
+    const response = await fetch('/api/wishlist'); // Adjust the endpoint as needed
+    if (!response.ok) {
+        throw new Error('Failed to fetch wishlist products');
+    }
+    return await response.json();
+};
+
+
 
