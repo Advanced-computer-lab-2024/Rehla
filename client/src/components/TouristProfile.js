@@ -117,14 +117,15 @@ const TouristProfile = () => {
     <div className="min-h-screen flex flex-col justify-between bg-gray-100">
       <div className="w-full bg-brandBlue shadow-md p-4 flex justify-between items-center">
         <img src={logo} alt="Logo" className="w-16" />
-        <ul className="nav-links">
-          <Link to="/TouristHome">Home</Link>
-          <Link to="/products">Products</Link>
-          <Link to="/MyEvents">Events/Places</Link>
-          <Link to="/Flights">Flights</Link>
-          <Link to="/Hotels">Hotels</Link>
+        <ul className="nav-links flex-grow flex justify-center space-x-8">
+          <Link to="/TouristHome" className="text-white">Home</Link>
+          <Link to="/products" className="text-white">Products</Link>
+          <Link to="/MyEvents" className="text-white">Events/Places</Link>
+          <Link to="/Flights" className="text-white">Flights</Link>
+          <Link to="/Hotels" className="text-white">Hotels</Link>
         </ul>
       </div>
+
       
       <div className="w-3/5 ml-6 rounded-lg shadow-lg h-[1000px]">
 
