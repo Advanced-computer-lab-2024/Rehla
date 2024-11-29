@@ -5463,15 +5463,19 @@ const checkAndSendReminders = async () => {
         const upcomingItineraries = await itinerarym.find({
             Available_Date_Time: {
                 $gte: now,
-                $lte: new Date(now.getTime() + 24 * 60 * 60 * 1000) // Itineraries within the next 24 hours
+                // Itineraries within the next 24 hours
+                $lte: new Date(now.getTime() + 48 * 60 * 60 * 1000) 
             }
         });
 
+        console.log('Upcoming itineraries:', upcomingItineraries);
+
         for (const itinerary of upcomingItineraries) {
-            const bookedTourists = await touristIteneraries.find({ Itinerary_Name: itinerary.name });
+            const bookedTourists = await touristIteneraries.find({ Itinerary_Name: itinerary.Itinerary_Name });
+            console.log('Booked tourists:', bookedTourists);
 
             for (const tourist of bookedTourists) {
-                await sendEventReminder(tourist.Tourist_Email, itinerary.name, itinerary.Available_Date_Time);
+                await sendEventReminder(tourist.Tourist_Email, itinerary.Itinerary_Name, itinerary.Available_Date_Time);
             }
         }
     } catch (error) {
