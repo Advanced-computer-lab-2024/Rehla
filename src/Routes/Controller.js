@@ -5046,6 +5046,69 @@ const createCartItem = async (req, res) => {
     }
 }
 
+const addToCart = async (req, res) => {
+    try {
+        const { email, productName } = req.body;
+
+        // Validate input
+        if (!email || !productName) {
+            return res.status(400).json({ message: "Email and Product Name are required." });
+        }
+
+        // Check if the tourist email exists
+        const tourist = await Tourist.findOne({ Email: email });
+        if (!tourist) {
+            return res.status(404).json({ message: "Tourist email not found." });
+        }
+
+        // Check if the product exists
+        const product = await Product.findOne({ Product_Name: productName });
+        if (!product) {
+            return res.status(404).json({ message: "Product not found." });
+        }
+
+        // Find the cart item with the given email and product name
+        const cartItem = await cartm.findOne({ Email: email, Productname: productName });
+
+        if (cartItem) {
+            // If the product exists in the cart, increment the quantity
+            cartItem.Quantity += 1;
+            await cartItem.save();
+
+            return res.status(200).json({ 
+                message: "Product quantity updated in cart.", 
+                cartItem, 
+                cartNumber: cartItem.Cart_Num 
+            });
+        } else {
+            // Create a new cart item
+            const cartCount = await Cart.countDocuments({ Email: email });
+            const newCartItem = new Cart({
+                Cart_Num: cartCount + 1, // Assign a new Cart_Num based on existing cart count
+                Email: email,
+                Productname: productName,
+                Quantity: 1
+            });
+
+            await newCartItem.save();
+
+            return res.status(201).json({ 
+                message: "Product added to cart successfully.", 
+                cartItem: newCartItem, 
+                cartNumber: newCartItem.Cart_Num 
+            });
+        }
+    } catch (error) {
+        console.error("Error adding product to cart:", error.message);
+        res.status(500).json({ 
+            error: "Error adding product to cart", 
+            details: error.message 
+        });
+    }
+};
+
+
+
 //create a wish list for the tourist
 const createwishlistItem = async (req, res) => {
     try{
@@ -5786,6 +5849,7 @@ module.exports = { getPurchasedProducts,
     getSalesReport,
     updateCartItem,
     createCartItem,
+    addToCart,
     calculateActivityRevenue,
     calculateItineraryRevenue,
     viewTouristOrders,
