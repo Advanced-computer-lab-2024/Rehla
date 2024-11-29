@@ -121,30 +121,52 @@ const TouristProfile = () => {
           Home
         </Link>
       </div>
-
-      <div className="flex items-center justify-center flex-grow pt-6">
-        <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-3xl">
-          <div className="flex flex-col items-center mb-8">
-            
-                {formData.Profile_Pic ? (
-                   
-
-                    <img src={formData.Profile_Pic} alt={`${formData.Name}'s profile`} className="mt-2 w-32 h-32 rounded-full object-cover" />
-                   
-                ) :
-              (<div className="w-32 h-32 rounded-full bg-brandBlue text-white text-center flex items-center justify-center mb-4">
-                <span className="text-2xl font-bold">{formData.Username.charAt(0)}</span>
+      
+      <div className="w-3/5  ml-6 rounded-lg shadow-lg">
+  
+          {/* Profile Picture */}
+          <div className="relative w-full flex items-center justify-center">
+              {/* Cover Picture */}
+              <div className="w-full h-48 bg-cover bg-center bg-gray-300" style={{ backgroundImage: `url(${formData.Cover_Pic || 'default-cover.jpg'})` }}>
               </div>
-            )}
-            <h2 className="text-3xl font-bold text-brandBlue mb-2">{formData.Username}</h2>
-            <button
-              className="bg-brandBlue text-white py-2 px-4 rounded-lg hover:bg-opacity-90 transition duration- 300"
-              onClick={handleEdit}
-            >
-              Edit Profile
-            </button>
+
+              {/* Profile Picture */}
+              <div className="absolute top-24 left-6">
+                {formData.Profile_Pic ? (
+                  <img
+                    src={formData.Profile_Pic}
+                    alt={`${formData.Name}'s profile`}
+                    className="w-40 h-40 rounded-full object-cover border-4 border-white"
+                  />
+                ) : (
+                  <div className="w-40 h-40 rounded-full bg-brandBlue text-white text-center flex items-center justify-center border-4 border-white">
+                    <span className="text-4xl font-bold">{formData.Username.charAt(0)}</span>
+                  </div>
+                )}
+              </div>
+           </div>
+           <div className="mt-16 ml-14 flex items-center space-x-4">
+            <h2 className="text-4xl font-bold text-brandBlue">{tourist.Username}</h2>
+            <img
+              src={badgeImage}
+              alt={`${tourist.Username}'s badge`}
+              className="w-12 h-12 rounded-full object-cover"
+            />
+          </div>
+           <div className="flex justify-end mb-4">
+           <button
+            className="bg-brandBlue text-white py-2 px-4 rounded-lg hover:bg-opacity-90 transition duration-300 w-32 h-10 -mt-16"
+            onClick={handleEdit}
+          >
+            Edit Profile
+          </button>
+
           </div>
 
+
+
+    {/* User Details */}
+    <div className="flex flex-col items-start mt-16">
           {isEditing ? (
             <div>
               <form className="space-y-4">
@@ -269,27 +291,58 @@ const TouristProfile = () => {
               </form>
             </div>
           ) : (
-            <div className="space-y-4 text-gray-700">
-              <p><strong>Username:</strong> {tourist.Username}</p>
-              <p><strong>Email:</strong> {tourist.Email}</p>
-              <p><strong>Mobile Number:</strong> {tourist.Mobile_Number}</p>
-              <p><strong>Nationality:</strong> {tourist.Nationality}</p>
-              <p><strong>Job/Student:</strong> {tourist.Job_Student}</p>
-              <p><strong>Points:</strong> {tourist.Points}</p>
-              <p><strong>Badge:</strong> {tourist.Badge}</p>
-              <img src={badgeImage}
-                alt={`${tourist.Username}'s badge`}
-                className="w-32 h-32 rounded-full object-cover"
-              />
+            <div className="space-y-4 text-gray-700 -mt-12 ml-14">
+              <p className="-mt-6"><strong>{tourist.Job_Student}</strong> </p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+                <div>
+                <p><strong>Contact Details:</strong></p>
+                  <p><strong>Email:</strong> {tourist.Email}</p>
+                  <p><strong>Mobile Number:</strong> {tourist.Mobile_Number}</p>
+                </div>
+                <div>
+                  <p><strong>Nationality:</strong> {tourist.Nationality}</p>
+                  <p><strong>Wallet:</strong> {tourist.Wallet}</p>
+                </div>
+                <div>
+                  <p><strong>Points:</strong> {tourist.Points}</p>
+              
+                </div>
+              </div>
             </div>
+
+
           )}
           
-        </div>
+          </div>
         
       </div>
-      <footer className="w-full bg-brandBlue py-4 text-center text-white mt-6">
-        <p>&copy; 2024 Tourist Profile. All rights reserved.</p>
-      </footer>
+      <footer className="bg-brandBlue shadow dark:bg-brandBlue m-0">
+                <div className="w-full mx-auto md:py-8">
+                    <div className="sm:flex sm:items-center sm:justify-between">
+                        <a href="/" className="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
+                            <img src={logo} className="w-12" alt="Flowbite Logo" />
+                        </a>
+                        <div className="flex justify-center w-full">
+                            <ul className="flex flex-wrap items-center mb-6 text-sm font-medium text-gray-500 sm:mb-0 dark:text-gray-400 -ml-14">
+                                <li>
+                                    <a href="/" className="hover:underline me-4 md:me-6">About</a>
+                                </li>
+                                <li>
+                                    <a href="/" className="hover:underline me-4 md:me-6">Privacy Policy</a>
+                                </li>
+                                <li>
+                                    <a href="/" className="hover:underline me-4 md:me-6">Licensing</a>
+                                </li>
+                                <li>
+                                    <a href="/" className="hover:underline">Contact</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <hr className="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
+                    <span className="block text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2023 <a href="/" className="hover:underline">Rehla™</a>. All Rights Reserved.</span>
+                </div>
+            </footer>
     </div>
   );
 };
