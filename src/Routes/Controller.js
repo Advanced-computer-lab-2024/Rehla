@@ -2487,6 +2487,82 @@ const viewMyCreatedItenrary = async (req, res) => {
         });
     }
 };
+const getPaidActivities = async (req, res) => {
+    try {
+        const { email } = req.params;
+
+        if (!email) {
+            return res.status(400).json({ message: "Tourist email is required" });
+        }
+
+        const today = new Date();
+
+        const upcomingActivities = await tourist_activities.find({
+            Tourist_Email: email,
+            Paid: true,
+            Date: { $gte: today } // Date is today or in the future
+        }, 'Activity_Name Date');
+
+        if (!upcomingActivities.length) {
+            return res.status(404).json({ message: "No upcoming paid activities found." });
+        }
+
+        res.status(200).json({ activities: upcomingActivities });
+    } catch (error) {
+        console.error("Error fetching upcoming paid activities:", error);
+        res.status(500).json({ message: "An error occurred while fetching upcoming paid activities.", error });
+    }
+
+};
+
+const getPastPaidActivities = async (req, res) => {
+    try {
+        const { email } = req.params;
+
+        if (!email) {
+            return res.status(400).json({ message: "Tourist email is required" });
+        }
+
+        const today = new Date();
+
+        const pastActivities = await tourist_activities.find({
+            Tourist_Email: email,
+            Paid: true,
+            Date: { $lt: today } // Date is in the past
+        }, 'Activity_Name Date');
+
+        if (!pastActivities.length) {
+            return res.status(404).json({ message: "No past paid activities found." });
+        }
+
+        res.status(200).json({ activities: pastActivities });
+    } catch (error) {
+        console.error("Error fetching past paid activities:", error);
+        res.status(500).json({ message: "An error occurred while fetching past paid activities.", error });
+    }
+
+};
+
+const getTouristAddresses = async (req, res) => {
+    try {
+        const { email } = req.params; 
+
+        if (!email) {
+            return res.status(400).json({ message: "Tourist email is required" });
+        }
+
+        const addresses = await tourist_addreessiesm.find({ Email: email }, 'Address');
+
+        if (!addresses.length) {
+            return res.status(404).json({ message: "No addresses found for this tourist." });
+        }
+
+        res.status(200).json({ addresses });
+    } catch (error) {
+        console.error("Error fetching tourist addresses:", error);
+        res.status(500).json({ message: "An error occurred while fetching addresses.", error });
+    }
+};
 
 const viewMyCreatedMuseumsAndHistoricalPlaces = async(req, res) =>{
     try{
@@ -5438,6 +5514,78 @@ const viewUserStats = async (req, res) => {
     }
 };
 
+// Function to send an event reminder email
+const sendEventReminder = async (to, eventName, eventDate) => {
+    const mailOptions = {
+        from: 'rehlanotification@gmail.com', // Sender address
+        to: to,                       // List of receivers
+        subject: `Reminder: Upcoming Event - ${eventName}`,   // Subject line
+        text: `This is a reminder for your upcoming event: ${eventName} scheduled on ${eventDate}.` // Plain text body
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log('Event reminder email sent successfully');
+    } catch (error) {
+        console.error('Error sending event reminder email:', error);
+        throw error; // Rethrow the error to handle it in the route
+    }
+};
+
+const checkAndSendRemindersforEvents = async () => {
+    try {
+        const now = new Date();
+        const upcomingActivities = await activity.find({
+            Date: {
+                $gte: now,
+                // Activities within the next 24 hours
+                $lte: new Date(now.getTime() + 24 * 60 * 60 * 1000)
+            }
+        });
+
+        for (const activity of upcomingActivities) {
+            const bookedTourists = await tourist_activities.find({ Activity_Name: activity.Name });
+
+            for (const tourist of bookedTourists) {
+                await sendEventReminder(tourist.Tourist_Email, activity.Name, activity.Date);
+            }
+        }
+    
+    } catch (error) {
+        console.error('Error checking and sending reminders:', error);
+    }
+};
+
+const checkAndSendRemindersforItinerary = async () => {
+    try {
+        const now = new Date();
+        const upcomingItineraries = await itinerarym.find({
+            Available_Date_Time: {
+                $gte: now,
+                // Activities within the next 24 hours
+                $lte: new Date(now.getTime() + 24 * 60 * 60 * 1000)
+            }
+        });
+
+        console.log('upcomingItineraries:', upcomingItineraries);
+
+        for (const itinerary of upcomingItineraries) {
+
+            //console.log('itinerary:', itinerary.Itinerary_Name);
+            const bookedTourists = await touristIteneraries.find({ Itinerary_Name: itinerary.Itinerary_Name });
+
+           // console.log('bookedTourists:', bookedTourists);
+
+            for (const tourist of bookedTourists) {
+                await sendEventReminder(tourist.Tourist_Email, itinerary.Itinerary_Name, itinerary.Available_Date_Time);
+            }
+        }
+    
+    } catch (error) {
+        console.error('Error checking and sending reminders:', error);
+    }
+};
+
 // ----------------- Activity Category CRUD -------------------
 
 module.exports = { getPurchasedProducts,
@@ -5516,6 +5664,9 @@ module.exports = { getPurchasedProducts,
     viewMyCreatedActivities,
     createHistoricalTag,
     viewMyCreatedItenrary,
+    getPaidActivities,
+    getPastPaidActivities,
+    getTouristAddresses,
     viewMyCreatedMuseumsAndHistoricalPlaces,
     signIn,
     getAllCreatedByEmail,
@@ -5587,5 +5738,8 @@ module.exports = { getPurchasedProducts,
     deleteProductFromMyWishList,
     addProductFromWishListToCart,
     sendPaymentReceipt,
-    viewUserStats
+    viewUserStats,
+    sendEventReminder, 
+    checkAndSendRemindersforEvents,
+    checkAndSendRemindersforItinerary
 };

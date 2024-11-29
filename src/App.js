@@ -1,5 +1,6 @@
 // External variables
 const express = require("express");
+const cron = require('node-cron');
 const mongoose = require('mongoose');
 mongoose.set('strictQuery', false);
 const cors = require('cors');
@@ -79,6 +80,9 @@ const {createUserAdmin,
   viewMyCreatedActivities,
   createHistoricalTag,
   viewMyCreatedItenrary,
+  getPaidActivities,
+  getPastPaidActivities,
+  getTouristAddresses,
   viewMyCreatedMuseumsAndHistoricalPlaces, signIn,
   getAllCreatedByEmail,
   updateAdmin,
@@ -147,7 +151,9 @@ const {createUserAdmin,
   deleteProductFromMyWishList,
   addProductFromWishListToCart,
   sendPaymentReceipt,
-  viewUserStats
+  viewUserStats,
+  checkAndSendRemindersforEvents,
+  checkAndSendRemindersforItinerary,
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -258,6 +264,9 @@ app.get("/getBookedItineraries",getBookedItineraries);
 app.get("/viewMyCreatedActivities", viewMyCreatedActivities);
 app.post("/createHistoricalTag", createHistoricalTag);
 app.get("/viewMyCreatedItenrary", viewMyCreatedItenrary);
+app.get('/getPaidActivities/:email', getPaidActivities);
+app.get('/getPastPaidActivities/:email', getPastPaidActivities);
+app.get('/getTouristAddresses/:email', getTouristAddresses);
 app.get("/viewMyCreatedMuseumsAndHistoricalPlaces", viewMyCreatedMuseumsAndHistoricalPlaces);
 app.post("/signIn" , signIn)
 app.get('/getAllCreatedByEmail/:email', getAllCreatedByEmail);
@@ -361,4 +370,12 @@ app.post('/send-payment-receipt', async (req, res) => {
   }
 });
 app.post('/addProductFromWishListToCart/:mail/:productName', addProductFromWishListToCart); // Route for adding an item to the cart
-app.get ('/viewUserStats',viewUserStats)
+app.get ('/viewUserStats',viewUserStats);
+
+// Schedule the checkAndSendReminders function to run every 30 seconds
+cron.schedule('*/30 * * * * *', async () => {
+  console.log('Running scheduled task to check and send reminders');
+  await checkAndSendRemindersforEvents();
+  await checkAndSendRemindersforItinerary();
+});
+

@@ -31,6 +31,9 @@ const tourist_itenerariesSchema = new Schema({
         default: false,
         required : true,
     },
+    Date: {
+        type:Date
+    }
 
 },{ versionKey: false });
 
