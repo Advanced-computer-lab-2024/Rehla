@@ -5532,25 +5532,55 @@ const sendEventReminder = async (to, eventName, eventDate) => {
     }
 };
 
-// Function to check for upcoming events and send reminders
-const checkAndSendReminders = async () => {
+const checkAndSendRemindersforEvents = async () => {
+    try {
+        const now = new Date();
+        const upcomingActivities = await activity.find({
+            Date: {
+                $gte: now,
+                // Activities within the next 24 hours
+                $lte: new Date(now.getTime() + 24 * 60 * 60 * 1000)
+            }
+        });
+
+        for (const activity of upcomingActivities) {
+            const bookedTourists = await tourist_activities.find({ Activity_Name: activity.Name });
+
+            for (const tourist of bookedTourists) {
+                await sendEventReminder(tourist.Tourist_Email, activity.Name, activity.Date);
+            }
+        }
+    
+    } catch (error) {
+        console.error('Error checking and sending reminders:', error);
+    }
+};
+
+const checkAndSendRemindersforItinerary = async () => {
     try {
         const now = new Date();
         const upcomingItineraries = await itinerarym.find({
             Available_Date_Time: {
                 $gte: now,
-                // Itineraries within the next 24 hours
-                $lte: new Date(now.getTime() + 48 * 60 * 60 * 1000) 
+                // Activities within the next 24 hours
+                $lte: new Date(now.getTime() + 24 * 60 * 60 * 1000)
             }
         });
 
+        console.log('upcomingItineraries:', upcomingItineraries);
+
         for (const itinerary of upcomingItineraries) {
+
+            console.log('itinerary:', itinerary.Itinerary_Name);
             const bookedTourists = await touristIteneraries.find({ Itinerary_Name: itinerary.Itinerary_Name });
+
+            console.log('bookedTourists:', bookedTourists);
 
             for (const tourist of bookedTourists) {
                 await sendEventReminder(tourist.Tourist_Email, itinerary.Itinerary_Name, itinerary.Available_Date_Time);
             }
         }
+    
     } catch (error) {
         console.error('Error checking and sending reminders:', error);
     }
@@ -5710,5 +5740,6 @@ module.exports = { getPurchasedProducts,
     sendPaymentReceipt,
     viewUserStats,
     sendEventReminder, 
-    checkAndSendReminders
+    checkAndSendRemindersforEvents,
+    checkAndSendRemindersforItinerary
 };
