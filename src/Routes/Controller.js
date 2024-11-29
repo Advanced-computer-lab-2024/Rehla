@@ -5287,9 +5287,15 @@ const calculateActivityRevenue = async (req, res) => {
             return res.status(400).json({ message: 'Email is required.' });
         }
 
+
+        // Retrieve the price of the activity
+        const activitym = await activity.findOne({ Created_By: email });
+        if (!activitym) {
+            return res.status(404).json({ message: 'Email not found.' });
+        }
         // Count the number of paid records for the activity
         const paidCount = await tourist_activities.countDocuments({
-            Tourist_Email: email,
+            Activity_Name: activitym.Name,
             Paid: true,
         });
 
@@ -5298,12 +5304,6 @@ const calculateActivityRevenue = async (req, res) => {
                 message: `No revenue generated for this email: ${email}`,
                 revenue: 0,
             });
-        }
-
-        // Retrieve the price of the activity
-        const activitym = await activity.findOne({ Created_By: email });
-        if (!activitym) {
-            return res.status(404).json({ message: 'Email not found.' });
         }
 
         const revenue = (paidCount * (activitym.Price-(activitym.Discount_Percent/100*activitym.Price)))*0.9;
@@ -5325,24 +5325,24 @@ const calculateActivityRevenue = async (req, res) => {
 
 const calculateItineraryRevenue = async (req, res) => {
     try {
-        const { Itinerary_Name } = req.body;
+        const { email } = req.body;
 
-        if (!Itinerary_Name) {
-            return res.status(400).json({ message: 'Itinerary_Name is required.' });
+        if (!email) {
+            return res.status(400).json({ message: 'email is required.' });
         }
 
         // Count all records with Paid = true for the given Itinerary_Name
         const paidCount = await touristIteneraries.countDocuments({
-            Itinerary_Name: Itinerary_Name,
+            Tourist_Email: email,
             Paid: true,
         });
 
         if (paidCount === 0) {
-            return res.status(200).json({ itinerary: Itinerary_Name, revenue: 0 });
+            return res.status(200).json({ itinerary: email, revenue: 0 });
         }
 
         // Retrieve the Tour_Price for the given Itinerary_Name
-        const itineraryDetails = await itinerarym.findOne({ Itinerary_Name: Itinerary_Name });
+        const itineraryDetails = await itinerarym.findOne({ Created_By: email });
 
         if (!itineraryDetails) {
             return res.status(404).json({ message: 'Itinerary not found.' });
@@ -5350,7 +5350,7 @@ const calculateItineraryRevenue = async (req, res) => {
 
         const revenue = paidCount * itineraryDetails.Tour_Price*0.9;
 
-        return res.status(200).json({ itinerary: Itinerary_Name, revenue });
+        return res.status(200).json({ itinerary: email, revenue });
     } catch (error) {
         console.error("Error calculating itinerary revenue:", error.message);
         return res.status(500).json({ error: 'Error calculating itinerary revenue', details: error.message });

@@ -133,7 +133,9 @@ const SellerProfile = () => {
                   
                ) :
              (<div className="w-32 h-32 rounded-full bg-brandBlue text-white text-center flex items-center justify-center mb-4">
-               <span className="text-2xl font-bold">{formData.Shop_Name.charAt(0)}</span>
+              <span className="text-2xl font-bold">
+                    {formData.Shop_Name && formData.Shop_Name.charAt(0)}
+                </span>
              </div>
            )}
                         <h2 className="text-3xl font-bold text-brandBlue mb-1">{seller.Shop_Name}</h2>
