@@ -1,5 +1,6 @@
 // External variables
 const express = require("express");
+const cron = require('node-cron');
 const mongoose = require('mongoose');
 mongoose.set('strictQuery', false);
 const cors = require('cors');
@@ -147,7 +148,9 @@ const {createUserAdmin,
   deleteProductFromMyWishList,
   addProductFromWishListToCart,
   sendPaymentReceipt,
-  viewUserStats
+  viewUserStats,
+  sendEventReminder, 
+  checkAndSendReminders,
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -361,4 +364,10 @@ app.post('/send-payment-receipt', async (req, res) => {
   }
 });
 app.post('/addProductFromWishListToCart/:mail/:productName', addProductFromWishListToCart); // Route for adding an item to the cart
-app.get ('/viewUserStats',viewUserStats)
+app.get ('/viewUserStats',viewUserStats);
+
+// Schedule the checkAndSendReminders function to run every 30 seconds
+cron.schedule('*/30 * * * * *', () => {
+  console.log('Running scheduled task to check and send reminders');
+  checkAndSendReminders();
+});
