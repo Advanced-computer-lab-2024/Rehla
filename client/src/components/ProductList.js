@@ -9,6 +9,7 @@ const Header = () => (
         <ul className="nav-links">
             <Link to="/TouristHome">Home</Link>
             <Link to="/MyEvents">Events/Places</Link>
+            <Link to="/Wishlist">Wishlist</Link> {/* New Wishlist link */}
         </ul>
     </nav>
 

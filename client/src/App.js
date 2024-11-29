@@ -34,6 +34,7 @@ import Hotels from './components/Hotels.js';
 import EventDetails from './components/EventDetails';
 import ActivityDetails from './components/ActivityDetails.js';
 import ItineraryDetails from './components/ItineraryDetails.js';
+import Wishlist from './components/Wishlist'; // Import the Wishlist component
 
 
 
@@ -58,6 +59,7 @@ function App() {
                 <Route path="/seller" element={<Seller />} />
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/TouristHome" element={<TouristHome />} />
+                <Route path="/Wishlist" component={Wishlist} /> {/* Add the route for Wishlist */}
                 <Route path="/TouristHome/TouristProfile" element={<TouristProfile />} />
                 <Route path="/AdminHome" element={<AdminHome />} />
                 <Route path="/SellerHome" element={<SellerHome />} />
