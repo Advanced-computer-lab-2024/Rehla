@@ -24,7 +24,8 @@ import {
     ,getDeleteRequests,
     deleteRequest,
     updateComplaintStatus,
-    createPromoCode
+    createPromoCode,
+    viewUserStats
     
 } from '../services/api'; // Import all API functions
 import '../css/Home.css';
@@ -97,6 +98,12 @@ const AdminHome = () => {
 
     const [activityName, setActivityName] = useState(''); // State for activity name input
     const [flagMessage, setFlagMessage] = useState(''); // State to display success/error message
+    //bto3 el user number
+    const [totalUsers, setTotalUsers] = useState(0);
+    const [monthlyStats, setMonthlyStats] = useState([]);
+    const [errorFetchingStats, setErrorFetchingStats] = useState(''); // Renamed error state
+    const [isStatsFetched, setIsStatsFetched] = useState(false); // New state to track stats fetch status
+
 
     const [itineraryName, setItineraryName] = useState('');
     const [itineraryFlagMessage, setItineraryFlagMessage] = useState('');
@@ -129,8 +136,23 @@ const AdminHome = () => {
         fetchCategories();
         fetchTags(); // Fetch preference tags on component mount
     }, []);
+    
+    const handleFetchStats = async () => {
+        // Clear previous error message
+        setErrorFetchingStats('');
+        setIsStatsFetched(false); // Reset the state before fetching
 
-
+        try {
+            const data = await viewUserStats();
+            setTotalUsers(data.totalUsers);
+            setMonthlyStats(data.monthlyStats);
+            setIsStatsFetched(true); // Mark stats as fetched successfully
+        } catch (error) {
+            setErrorFetchingStats('Error retrieving user statistics');
+            console.error('Error fetching user stats:', error);
+        }
+    };
+    
     const fetchDeleteRequests = async () => {
         setLoadingdelete(true);
         try {
@@ -1122,7 +1144,26 @@ const handleCreatePromoCode = async (e) => {
 </form>
 {promoMessage && <p className="text-green-500">{promoMessage}</p>}
 </div>
-
+<div>
+            <h2>User Statistics</h2>
+            <button onClick={handleFetchStats}>Fetch Stats</button> {/* Button to fetch stats */}
+            
+            {errorFetchingStats && <p style={{ color: 'red' }}>{errorFetchingStats}</p>} {/* Error message */}
+            
+            {isStatsFetched && ( // Only show stats if they have been fetched
+                <>
+                    <p>Total Users: {totalUsers}</p>
+                    <h3>Monthly User Statistics</h3>
+                    <ul>
+                        {monthlyStats.map((stat) => (
+                            <li key={`${stat.year}-${stat.month}`}>
+                                {stat.year}-{stat.month}: {stat.userCount} users
+                            </li>
+                        ))}
+                    </ul>
+                </>
+            )}
+        </div>
         <footer className="bg-brandBlue shadow dark:bg-brandBlue m-0">
                 <div className="w-full mx-auto md:py-8">
                     <div className="sm:flex sm:items-center sm:justify-between">

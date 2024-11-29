@@ -1328,3 +1328,14 @@ export const viewSavedEvents = async (email) => {
     }
 };
 
+export const viewUserStats = async () => {
+    try {
+        const response = await axios.get(`${API_URL}/viewUserStats`);
+        return response.data; // Return the response data containing stats
+    } catch (error) {
+        console.error('Error retrieving user statistics:', error);
+        throw error; // Propagate the error for handling in the calling component
+    }
+};
+
+
