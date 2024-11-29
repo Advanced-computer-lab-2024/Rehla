@@ -154,6 +154,7 @@ const {createUserAdmin,
   viewUserStats,
   checkAndSendRemindersforEvents,
   checkAndSendRemindersforItinerary,
+  checkandsendBirthdayPromoCode,
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -378,4 +379,5 @@ cron.schedule('*/30 * * * * *', async () => {
   console.log('Running scheduled task to check and send reminders');
   //await checkAndSendRemindersforEvents();
   //await checkAndSendRemindersforItinerary();
+  await checkandsendBirthdayPromoCode();
 });
