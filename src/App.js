@@ -151,6 +151,7 @@ const {createUserAdmin,
   viewUserStats,
   sendEventReminder, 
   checkAndSendReminders,
+  checkAndSendRemindersforEvents,
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -367,7 +368,9 @@ app.post('/addProductFromWishListToCart/:mail/:productName', addProductFromWishL
 app.get ('/viewUserStats',viewUserStats);
 
 // Schedule the checkAndSendReminders function to run every 30 seconds
-cron.schedule('*/30 * * * * *', () => {
+cron.schedule('*/30 * * * * *', async () => {
   console.log('Running scheduled task to check and send reminders');
-  checkAndSendReminders();
+  await checkAndSendReminders();
+ // await checkAndSendRemindersforEvents();
 });
+
