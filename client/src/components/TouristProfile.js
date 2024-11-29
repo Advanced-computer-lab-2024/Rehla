@@ -117,12 +117,17 @@ const TouristProfile = () => {
     <div className="min-h-screen flex flex-col justify-between bg-gray-100">
       <div className="w-full bg-brandBlue shadow-md p-4 flex justify-between items-center">
         <img src={logo} alt="Logo" className="w-16" />
-        <Link to="/TouristHome" className="text-lg font-medium text-white hover:text-blue-500">
-          Home
-        </Link>
+        <ul className="nav-links">
+          <Link to="/TouristHome">Home</Link>
+          <Link to="/products">Products</Link>
+          <Link to="/MyEvents">Events/Places</Link>
+          <Link to="/Flights">Flights</Link>
+          <Link to="/Hotels">Hotels</Link>
+        </ul>
       </div>
       
-      <div className="w-3/5  ml-6 rounded-lg shadow-lg">
+      <div className="w-3/5 ml-6 rounded-lg shadow-lg h-[1000px]">
+
   
           {/* Profile Picture */}
           <div className="relative w-full flex items-center justify-center">
@@ -153,7 +158,7 @@ const TouristProfile = () => {
               className="w-12 h-12 rounded-full object-cover"
             />
           </div>
-           <div className="flex justify-end mb-4">
+           <div className="flex justify-end mb-4 mr-6">
            <button
             className="bg-brandBlue text-white py-2 px-4 rounded-lg hover:bg-opacity-90 transition duration-300 w-32 h-10 -mt-16"
             onClick={handleEdit}
@@ -295,18 +300,19 @@ const TouristProfile = () => {
               <p className="-mt-6"><strong>{tourist.Job_Student}</strong> </p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
                 <div>
-                <p><strong>Contact Details:</strong></p>
-                  <p><strong>Email:</strong> {tourist.Email}</p>
-                  <p><strong>Mobile Number:</strong> {tourist.Mobile_Number}</p>
-                </div>
-                <div>
                   <p><strong>Nationality:</strong> {tourist.Nationality}</p>
+                  <p><strong>DOB: </strong>{new Date(tourist.DOB).toLocaleDateString()}</p>
                   <p><strong>Wallet:</strong> {tourist.Wallet}</p>
                 </div>
                 <div>
                   <p><strong>Points:</strong> {tourist.Points}</p>
-              
                 </div>
+                <div>
+                <p><strong>Contact Details:</strong></p>
+                  <p><strong>Email:</strong> {tourist.Email}</p>
+                  <p><strong>Mobile Number:</strong> {tourist.Mobile_Number}</p>
+                </div>
+                
               </div>
             </div>
 
