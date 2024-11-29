@@ -124,8 +124,8 @@ const TouristProfile = () => {
           <Link to="/Flights" className="text-white">Flights</Link>
           <Link to="/Hotels" className="text-white">Hotels</Link>
         </ul>
+        <Link to="/" className="text-white">signout</Link>
       </div>
-
       
       <div className="w-3/5 ml-6 rounded-lg shadow-lg h-[1000px]">
 
