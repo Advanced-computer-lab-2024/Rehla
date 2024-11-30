@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../images/logo.png';
@@ -561,49 +562,6 @@ const TouristHome = () => {
                 </table>
             )}
         </div>
-          {/* canceling Booking Section for Itineraries */}
-          <div className="booking-form max-w-md mx-auto p-6 bg-gray-50 rounded-lg shadow-md mt-8">
-            <h2 className="text-xl font-semibold mb-4 text-gray-800">Cancel Booking Itinerary</h2>
-            <form onSubmit={handleItineraryCancelBooking}>
-                
-                <div className="mb-4">
-                    <label htmlFor="Cancelbooking-itinerary-name" className="block text-gray-700 font-medium mb-2">Itinerary Name:</label>
-                    <input
-                        id="Cancelbooking-itinerary-name"
-                        type="text"
-                        value={cancelbookingItineraryName}
-                        onChange={(e) => setcancelBookingItineraryName(e.target.value)}
-                        required
-                        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    />
-                </div>
-                <button type="submit" className="w-full bg-indigo-500 text-white py-2 px-4 rounded-md hover:bg-indigo-600">
-                   Cancel Booking Itinerary
-                </button>
-            </form>
-        </div>
-
-          {/* canceling Booking Section for Activities */}
-          <div className="booking-form max-w-md mx-auto p-6 bg-gray-50 rounded-lg shadow-md mt-8">
-            <h2 className="text-xl font-semibold mb-4 text-gray-800">Cancel Booking Activity</h2>
-            <form onSubmit={handleActivityCancelBooking}>
-                
-                <div className="mb-4">
-                    <label htmlFor="Cancelbooking-Activity-name" className="block text-gray-700 font-medium mb-2">Activity Name:</label>
-                    <input
-                        id="Cancelbooking-Activity-name"
-                        type="text"
-                        value={cancelbookingActivityName}
-                        onChange={(e) => setcancelBookingActivityName(e.target.value)}
-                        required
-                        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    />
-                </div>
-                <button type="submit" className="w-full bg-indigo-500 text-white py-2 px-4 rounded-md hover:bg-indigo-600">
-                   Cancel Booking Activity
-                </button>
-            </form>
-        </div>
 
         <div className="max-w-md mx-auto p-6 bg-gray-50 rounded-lg shadow-md mt-8">
             <h2 className="text-xl font-semibold mb-4 text-gray-800">Redeem Points</h2>
@@ -822,7 +780,11 @@ const TouristHome = () => {
             </ul>
         </div>
     )}
+    
 </div>
+
+
+
 
 
 <footer className="bg-brandBlue shadow dark:bg-brandBlue m-0">

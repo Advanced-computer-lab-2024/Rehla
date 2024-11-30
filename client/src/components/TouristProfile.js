@@ -1,5 +1,8 @@
+
 import React, { useState, useEffect } from 'react';
-import { getTouristProfile, updateTouristProfile, uploadProfilePicture , requestDeleteProfile} from '../services/api'; // Import your new upload function
+import { getTouristProfile, updateTouristProfile, uploadProfilePicture , requestDeleteProfile
+  ,viewSavedEvents
+} from '../services/api'; // Import your new upload function
 import { Link } from 'react-router-dom';
 import logo from '../images/logo.png';
 import Level1 from '../images/Level1.jpg';
@@ -37,6 +40,10 @@ const TouristProfile = () => {
   const badgeImage = getBadgeImage(formData.Badge);
   const [message, setMessage] = useState('');
 
+    const [succesViewEvent,setSuccessViewEvent]=useState('');
+    const [errorViewEvent,setErrorViewEvent]=useState('');
+    const [events, setEvents] = useState([]);
+
   const handleDeleteRequest = async () => {
     try {
         // Call the requestDeleteProfile function from api.js
@@ -65,6 +72,30 @@ const TouristProfile = () => {
     };
     fetchProfile();
   }, []);
+
+  useEffect(() => {
+    const handleViewSavedEvents = async () => {
+      // Clear previous messages and data
+      setSuccessViewEvent('');
+      setErrorViewEvent('');
+      setEvents([]);
+  
+      try {
+          const response = await viewSavedEvents(localStorage.getItem('email'));
+  
+          // On success, set success message and update the events list
+          setSuccessViewEvent(`Successfully retrieved ${response.savedEvents.length} event(s).`);
+          setEvents(response.savedEvents); // Ensure `savedEvents` contains the Picture field
+      } catch (error) {
+          // Handle error: use server message if available, otherwise fallback to generic message
+          if (error.response && error.response.data && error.response.data.message) {
+              setErrorViewEvent(error.response.data.message);
+          } else {
+              setErrorViewEvent('An error occurred while retrieving saved events.');
+          }
+      }
+  }; handleViewSavedEvents();
+  },[]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -126,203 +157,230 @@ const TouristProfile = () => {
         </ul>
         <Link to="/" className="text-white">signout</Link>
       </div>
-      
-      <div className="w-3/5 ml-6 rounded-lg shadow-lg h-[1000px]">
+      <div className="flex">
+  {/* First Division (Profile Section) */}
+  <div className="w-3/5 ml-6 rounded-lg shadow-lg h-[1000px]">
+    {/* Profile Picture */}
+    <div className="relative w-full flex items-center justify-center">
+      {/* Cover Picture */}
+      <div
+        className="w-full h-48 bg-cover bg-center bg-gray-300"
+        style={{ backgroundImage: `url(${formData.Cover_Pic || 'default-cover.jpg'})` }}
+      ></div>
 
-  
-          {/* Profile Picture */}
-          <div className="relative w-full flex items-center justify-center">
-              {/* Cover Picture */}
-              <div className="w-full h-48 bg-cover bg-center bg-gray-300" style={{ backgroundImage: `url(${formData.Cover_Pic || 'default-cover.jpg'})` }}>
-              </div>
-
-              {/* Profile Picture */}
-              <div className="absolute top-24 left-6">
-                {formData.Profile_Pic ? (
-                  <img
-                    src={formData.Profile_Pic}
-                    alt={`${formData.Name}'s profile`}
-                    className="w-40 h-40 rounded-full object-cover border-4 border-white"
-                  />
-                ) : (
-                  <div className="w-40 h-40 rounded-full bg-brandBlue text-white text-center flex items-center justify-center border-4 border-white">
-                    <span className="text-4xl font-bold">{formData.Username.charAt(0)}</span>
-                  </div>
-                )}
-              </div>
-           </div>
-           <div className="mt-16 ml-14 flex items-center space-x-4">
-            <h2 className="text-4xl font-bold text-brandBlue">{tourist.Username}</h2>
-            <img
-              src={badgeImage}
-              alt={`${tourist.Username}'s badge`}
-              className="w-12 h-12 rounded-full object-cover"
-            />
+      {/* Profile Picture */}
+      <div className="absolute top-24 left-6">
+        {formData.Profile_Pic ? (
+          <img
+            src={formData.Profile_Pic}
+            alt={`${formData.Name}'s profile`}
+            className="w-40 h-40 rounded-full object-cover border-4 border-white"
+          />
+        ) : (
+          <div className="w-40 h-40 rounded-full bg-brandBlue text-white text-center flex items-center justify-center border-4 border-white">
+            <span className="text-4xl font-bold">{formData.Username.charAt(0)}</span>
           </div>
-           <div className="flex justify-end mb-4 mr-6">
-           <button
-            className="bg-brandBlue text-white py-2 px-4 rounded-lg hover:bg-opacity-90 transition duration-300 w-32 h-10 -mt-16"
-            onClick={handleEdit}
-          >
-            Edit Profile
-          </button>
-
-          </div>
-
-
+        )}
+      </div>
+    </div>
+    <div className="mt-16 ml-14 flex items-center space-x-4">
+      <h2 className="text-4xl font-bold text-brandBlue">{tourist.Username}</h2>
+      <img
+        src={badgeImage}
+        alt={`${tourist.Username}'s badge`}
+        className="w-12 h-12 rounded-full object-cover"
+      />
+    </div>
+    <div className="flex justify-end mb-4 mr-6">
+      <button
+        className="bg-logoOrange text-white py-2 px-4 rounded-lg hover:bg-opacity-90 transition duration-300 w-32 h-10 -mt-16"
+        onClick={handleEdit}
+      >
+        Edit Profile
+      </button>
+    </div>
 
     {/* User Details */}
-    <div className="flex flex-col items-start mt-16">
-          {isEditing ? (
-            <div>
-              <form className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-gray-700 text-sm font-bold mb-2">Username:</label>
-                    <input
-                      type="text"
-                      name="Username"
-                      value={formData.Username}
-                      onChange={handleChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-gray-700 text-sm font-bold mb-2">Email:</label>
-                    <input
-                      type="email"
-                      name="Email"
-                      value={formData.Email}
-                      onChange={handleChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
-                    />
-                  </div>
-                </div>
+    <div className="flex flex-col items-center mt-16">
+      {isEditing ? (
+        <div>
+          <form className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-gray-700 text-sm font-bold mb-2">Username:</label>
+                <input
+                  type="text"
+                  name="Username"
+                  value={formData.Username}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 text-sm font-bold mb-2">Email:</label>
+                <input
+                  type="email"
+                  name="Email"
+                  value={formData.Email}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                />
+              </div>
+            </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-gray-700 text-sm font-bold mb-2">Password:</label>
-                    <input
-                      type="password"
-                      name="Password"
-                      value={formData.Password}
-                      onChange={handleChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-gray-700 text-sm font-bold mb-2">Mobile Number:</label>
-                    <input
-                      type="text"
-                      name="Mobile_Number"
-                      value={formData.Mobile_Number}
-                      onChange={handleChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
-                    />
-                  </div>
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-gray-700 text-sm font-bold mb-2">Password:</label>
+                <input
+                  type="password"
+                  name="Password"
+                  value={formData.Password}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 text-sm font-bold mb-2">Mobile Number:</label>
+                <input
+                  type="text"
+                  name="Mobile_Number"
+                  value={formData.Mobile_Number}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                />
+              </div>
+            </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-gray-700 text-sm font-bold mb-2">Nationality:</label>
-                    <input
-                      type="text"
-                      name="Nationality"
-                      value={formData.Nationality}
-                      onChange={handleChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-gray-700 text-sm font-bold mb-2">Job/Student:</label>
-                    <input
-                      type="text"
-                      name="Job_Student"
-                      value={formData.Job_Student}
-                      onChange={handleChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
-                    />
-                  </div>
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-gray-700 text-sm font-bold mb-2">Nationality:</label>
+                <input
+                  type="text"
+                  name="Nationality"
+                  value={formData.Nationality}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 text-sm font-bold mb-2">Job/Student:</label>
+                <input
+                  type="text"
+                  name="Job_Student"
+                  value={formData.Job_Student}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                />
+              </div>
+            </div>
 
-                {/* New File Input for Profile Picture */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-gray-700 text-sm font-bold mb-2">Upload Profile Picture:</label>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleFileChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
-                    />
-                    {preview && (
-                      <img src={preview} alt="Preview" className="mt-2 w-32 h-32 rounded-full object-cover" />
-                    )}
-                  </div>
-                </div>
-
+            {/* New File Input for Profile Picture */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+              <div>
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Upload Profile Picture:
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                />
+                {preview && (
+                  <img
+                    src={preview}
+                    alt="Preview"
+                    className="mt-2 w-32 h-32 rounded-full object-cover"
+                  />
+                )}
+              </div>
+              <div className="flex justify-start md:justify-center">
                 <button
                   type="button"
                   onClick={handleUploadProfilePicture}
-                  className="w-full bg-brandBlue text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300 mt-2"
+                  className="bg-brandBlue text-white py-2 px-4 rounded-lg hover:bg-opacity-90 transition duration-300 mt-6"
                 >
                   Upload Profile Picture
                 </button>
-
-                <button
-                  type="button"
-                  onClick={() => window.location.reload()}
-                  className="w-full bg-brandBlue text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300 mt-2"
-                >
-                  Cancel
-                </button>
-
-                <button
-                  type="button"
-                  onClick={handleSave}
-                  className="w-full bg-brandBlue text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300 mt-2"
-                >
-                  Save Profile
-                </button>
-                <button 
-          type="button"
-                    class="w-full py-2 px-4 bg-red-600 text-white font-semibold rounded-md hover:bg-red-700 transition duration-200"
-                    onClick={handleDeleteRequest}
-                >
-                    Delete Profile
-                </button>
-            
-
-              {message && <p class="mt-4 text-center text-red-600">{message}</p>}
-              </form>
-            </div>
-          ) : (
-            <div className="space-y-4 text-gray-700 -mt-12 ml-14">
-              <p className="-mt-6"><strong>{tourist.Job_Student}</strong> </p>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-                <div>
-                  <p><strong>Nationality:</strong> {tourist.Nationality}</p>
-                  <p><strong>DOB: </strong>{new Date(tourist.DOB).toLocaleDateString()}</p>
-                  <p><strong>Wallet:</strong> {tourist.Wallet}</p>
-                </div>
-                <div>
-                  <p><strong>Points:</strong> {tourist.Points}</p>
-                </div>
-                <div>
-                <p><strong>Contact Details:</strong></p>
-                  <p><strong>Email:</strong> {tourist.Email}</p>
-                  <p><strong>Mobile Number:</strong> {tourist.Mobile_Number}</p>
-                </div>
-                
               </div>
             </div>
 
+            <button
+              type="button"
+              onClick={() => window.location.reload()}
+              className="w-full bg-brandBlue text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300 mt-2"
+            >
+              Cancel
+            </button>
 
-          )}
-          
+            <button
+              type="button"
+              onClick={handleSave}
+              className="w-full bg-brandBlue text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300 mt-2"
+            >
+              Save Profile
+            </button>
+            <button
+              type="button"
+              class="w-full py-2 px-4 bg-logoOrange text-white font-semibold rounded-md hover:bg-red-700 transition duration-200"
+              onClick={handleDeleteRequest}
+            >
+              Delete Profile
+            </button>
+
+            {message && <p class="mt-4 text-center text-red-600">{message}</p>}
+          </form>
+        </div>
+      ) : (
+        <div className="space-y-4 text-gray-700 -mt-12 ml-14">
+          <p className="-mt-6"><strong>{tourist.Job_Student}</strong> </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            <div>
+              <p><strong>Nationality:</strong> {tourist.Nationality}</p>
+              <p><strong>DOB: </strong>{new Date(tourist.DOB).toLocaleDateString()}</p>
+              <p><strong>Wallet:</strong> {tourist.Wallet}</p>
+            </div>
+            <div>
+              <p><strong>Points:</strong> {tourist.Points}</p>
+            </div>
+            <div>
+              <p><strong>Contact Details:</strong></p>
+              <p><strong>Email:</strong> {tourist.Email}</p>
+              <p><strong>Mobile Number:</strong> {tourist.Mobile_Number}</p>
+            </div>
           </div>
-        
-      </div>
+        </div>
+      )}
+    </div>
+  </div>
+
+  {/* Second Division (Saved Events Section) */}
+                <div className="w-2/5 p-4 bg-white rounded-lg shadow-md">
+                <h3 className="text-lg font-bold text-center mb-4">Saved Events</h3>
+                {events.length > 0 && (
+                  <div className="mt-8 w-full">
+                    <ul className="list-inside space-y-4 text-sm ">
+                      {events.map((event, index) => (
+                        <li key={index} className="text-center">
+                          <div className="w-full h-40 mx-auto bg-gray-200 border border-gray-300 rounded-lg overflow-hidden">
+                            {/* Render the Picture field */}
+                            <img
+                              src={event.Picture || 'default-event.jpg'} // Use event.Picture for the image
+                              alt={event.Name}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <p className="mt-2 text-gray-700 font-semibold">{event.Name}</p>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+              </div>
+
+
+
       <footer className="bg-brandBlue shadow dark:bg-brandBlue m-0">
                 <div className="w-full mx-auto md:py-8">
                     <div className="sm:flex sm:items-center sm:justify-between">

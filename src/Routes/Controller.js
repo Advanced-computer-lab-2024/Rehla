@@ -5582,19 +5582,37 @@ const viewSavedEvents = async (req, res) => {
         // Validate input
         if (!email) {
             return res.status(400).json({
-            message: "Tourist email is required to view saved events.",
+                message: "Tourist email is required to view saved events.",
             });
         }
-      // Find saved events for the given email
+
+        // Find saved events for the given email
         const savedEvents = await saved_eventm.find({ Tourist_Email: email });
         if (savedEvents.length === 0) {
             return res.status(404).json({
-            message: "No saved events found for this tourist.",
+                message: "No saved events found for this tourist.",
             });
         }
+
+        // Extract event names from the saved events
+        const eventNames = savedEvents.map(event => event.Name);
+
+        // Retrieve event data from both activities and itineraries collections
+        const activities = await activity.find({ Name: { $in: eventNames } });
+        const itineraries = await itinerarym.find({ Name: { $in: eventNames } });
+
+        // Combine the results from both collections
+        const eventData = [...activities, ...itineraries];
+
+        if (eventData.length === 0) {
+            return res.status(404).json({
+                message: "No matching events found in activities or itineraries.",
+            });
+        }
+
         return res.status(200).json({
             message: "Saved events retrieved successfully.",
-            savedEvents,
+            savedEvents: eventData,  // Sending back the combined event data
         });
     } 
     catch (error) {
@@ -5604,6 +5622,7 @@ const viewSavedEvents = async (req, res) => {
         });
     }
 };
+
 
 const viewUserStats = async (req, res) => {
     try {
