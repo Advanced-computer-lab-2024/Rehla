@@ -23,6 +23,11 @@ const tourguide_salesreportSchema = new Schema({
     type: Number, 
     required: true, 
   },
+  Price:{
+    type: Number,
+    required:true,
+    default: null
+  },
   Report_no: {
     type: Number, 
     required: true, 
