@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getAttendedItineraries, getAttendedActivities } from '../services/api'; // Adjust the import based on your file structure
+import { getAttendedItineraries, getAttendedActivities, getPaidActivities, getPastPaidActivities } from '../services/api'; // Adjust the import based on your file structure
 import logo from '../images/logo.png';
 
 const MyEvents = () => {
     const [attendedItineraries, setAttendedItineraries] = useState([]);
     const [attendedActivities, setAttendedActivities] = useState([]);
-    const [email, setEmail] = useState(''); 
+    const [paidActivities, setPaidActivities] = useState([]);
+    const [pastPaidActivities, setPastPaidActivities] = useState([]);
+    const [email, setEmail] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -29,15 +31,32 @@ const MyEvents = () => {
             }
         };
 
-        fetchData();
+        if (email) fetchData();
     }, [email]);
 
+    const handlePaidActivitiesFetch = async () => {
+        try {
+            const response = await getPaidActivities(email);
+            setPaidActivities(response.activities);
+        } catch (error) {
+            console.error('Error fetching paid activities:', error);
+        }
+    };
+
+    const handlePastPaidActivitiesFetch = async () => {
+        try {
+            const response = await getPastPaidActivities(email);
+            setPastPaidActivities(response.activities);
+        } catch (error) {
+            console.error('Error fetching past paid activities:', error);
+        }
+    };
+
     const handleEventClick = (name, type, attendedStatus) => {
-        // Save the name, type, and attended status in local storage
-        localStorage.setItem('selectedName', name); 
-        localStorage.setItem('selectedType', type); 
-        localStorage.setItem('attendedStatus', attendedStatus); // Save attended status
-        navigate(`/event-details/${type}/${name}?attendedStatus=${attendedStatus}`);// Redirect to the event details page
+        localStorage.setItem('selectedName', name);
+        localStorage.setItem('selectedType', type);
+        localStorage.setItem('attendedStatus', attendedStatus);
+        navigate(`/event-details/${type}/${name}?attendedStatus=${attendedStatus}`);
     };
 
     return (
@@ -58,7 +77,7 @@ const MyEvents = () => {
             <div className="px-6 py-4">
                 <h2 className="text-xl font-semibold mb-4">Itineraries</h2>
                 <ul className="flex flex-wrap list-none">
-                    {attendedItineraries.map(itinerary => (
+                    {attendedItineraries.map((itinerary) => (
                         <li
                             key={itinerary.Itinerary_Name}
                             className="flex items-start mb-4 w-1/2 p-2 cursor-pointer"
@@ -71,7 +90,7 @@ const MyEvents = () => {
                                     className="w-32 h-32 object-cover mr-4 rounded"
                                 />
                                 <div className="flex-1">
-                                    <span className="font-medium text-lg">{itinerary.Itinerary_Name}</span> - 
+                                    <span className="font-medium text-lg">{itinerary.Itinerary_Name}</span> -{' '}
                                     <span className={`font-medium ${itinerary.Attended ? 'text-green-500' : 'text-red-500'}`}>
                                         {itinerary.Attended ? ' Attended' : ' Not Attended'}
                                     </span>
@@ -86,7 +105,7 @@ const MyEvents = () => {
             <div className="px-6 py-4">
                 <h2 className="text-xl font-semibold mb-4">Activities</h2>
                 <ul className="flex flex-wrap list-none">
-                    {attendedActivities.map(activity => (
+                    {attendedActivities.map((activity) => (
                         <li
                             key={activity.Activity_Name}
                             className="flex items-start mb-4 w-1/2 p-2 cursor-pointer"
@@ -99,7 +118,7 @@ const MyEvents = () => {
                                     className="w-32 h-32 object-cover mr-4 rounded"
                                 />
                                 <div className="flex-1">
-                                    <span className="font-medium text-lg">{activity.Activity_Name}</span> - 
+                                    <span className="font-medium text-lg">{activity.Activity_Name}</span> -{' '}
                                     <span className={`font-medium ${activity.Attended ? 'text-green-500' : 'text-red-500'}`}>
                                         {activity.Attended ? ' Attended' : ' Not Attended'}
                                     </span>
@@ -109,6 +128,60 @@ const MyEvents = () => {
                     ))}
                 </ul>
             </div>
+
+            {/* Buttons to Fetch Activities */}
+            <div className="px-6 py-4">
+                <button
+                    onClick={handlePaidActivitiesFetch}
+                    className="bg-brandBlue text-white px-4 py-2 rounded hover:bg-blue-600 mr-2"
+                >
+                    Show Paid Activities
+                </button>
+                <button
+                    onClick={handlePastPaidActivitiesFetch}
+                    className="bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-900"
+                >
+                    Show Past Paid Activities
+                </button>
+            </div>
+
+            {/* Display Paid Activities */}
+            {paidActivities.length > 0 && (
+                <div className="px-6 py-4">
+                    <h2 className="text-xl font-semibold mb-4">Paid Activities</h2>
+                    <ul className="flex flex-wrap list-none">
+                        {paidActivities.map((activity) => (
+                            <li key={activity.Activity_Name} className="flex items-start mb-4 w-1/2 p-2">
+                                <div className="flex items-start bg-gray-100 p-4 rounded-lg shadow-md w-full">
+                                    <div className="flex-1">
+                                        <span className="font-medium text-lg">{activity.Activity_Name}</span> -{' '}
+                                        <span className="font-medium">{new Date(activity.Date).toLocaleDateString()}</span>
+                                    </div>
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
+
+            {/* Display Past Paid Activities */}
+            {pastPaidActivities.length > 0 && (
+                <div className="px-6 py-4">
+                    <h2 className="text-xl font-semibold mb-4">Past Paid Activities</h2>
+                    <ul className="flex flex-wrap list-none">
+                        {pastPaidActivities.map((activity) => (
+                            <li key={activity.Activity_Name} className="flex items-start mb-4 w-1/2 p-2">
+                                <div className="flex items-start bg-gray-100 p-4 rounded-lg shadow-md w-full">
+                                    <div className="flex-1">
+                                        <span className="font-medium text-lg">{activity.Activity_Name}</span> -{' '}
+                                        <span className="font-medium">{new Date(activity.Date).toLocaleDateString()}</span>
+                                    </div>
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
         </div>
     );
 };

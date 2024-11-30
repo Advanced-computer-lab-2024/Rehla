@@ -1346,6 +1346,31 @@ export const getWishlistProducts = async () => {
     }
     return await response.json();
 };
+export const getPaidActivities = async (email) => {
+    try {
+        if (!email) {
+            throw new Error('Email is required to fetch paid activities.');
+        }
 
+        const response = await axios.get(`${API_URL}/getPaidActivities/${email}`);
+        return response.data; // Return the activities from the server response
+    } catch (error) {
+        console.error('Error fetching paid activities:', error.response?.data || error.message);
+        throw error.response?.data || { message: 'An error occurred while fetching paid activities.' };
+    }
+};
+export const getPastPaidActivities = async (email) => {
+    try {
+        if (!email) {
+            throw new Error('Email is required to fetch past paid activities.');
+        }
+
+        const response = await axios.get(`${API_URL}/getPastPaidActivities/${email}`);
+        return response.data; // Return the activities from the server response
+    } catch (error) {
+        console.error('Error fetching past paid activities:', error.response?.data || error.message);
+        throw error.response?.data || { message: 'An error occurred while fetching past paid activities.' };
+    }
+};
 
 

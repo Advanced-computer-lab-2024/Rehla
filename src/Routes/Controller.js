@@ -2542,6 +2542,61 @@ const getPastPaidActivities = async (req, res) => {
     }
 
 };
+const getPaidItineraries = async (req, res) => {
+    try {
+        const { email } = req.params;
+
+        if (!email) {
+            return res.status(400).json({ message: "Tourist email is required" });
+        }
+
+        const today = new Date();
+
+        const upcomingitineraries = await touristIteneraries.find({
+            Tourist_Email: email,
+            Paid: true,
+            Date: { $gte: today } // Date is today or in the future
+        }, 'itineraries Date');
+
+        if (!upcomingitineraries.length) {
+            return res.status(404).json({ message: "No upcoming paid itineraries found." });
+        }
+
+        res.status(200).json({ itineraries: upcomingitineraries });
+    } catch (error) {
+        console.error("Error fetching upcoming paid itineraries:", error);
+        res.status(500).json({ message: "An error occurred while fetching upcoming paid itineraries.", error });
+    }
+
+};
+
+const getPastPaidItineraries = async (req, res) => {
+    try {
+        const { email } = req.params;
+
+        if (!email) {
+            return res.status(400).json({ message: "Tourist email is required" });
+        }
+
+        const today = new Date();
+
+        const pastitineraries = await touristIteneraries.find({
+            Tourist_Email: email,
+            Paid: true,
+            Date: { $lt: today } // Date is in the past
+        }, 'itineraries Date');
+
+        if (!pastitineraries.length) {
+            return res.status(404).json({ message: "No past paid itineraries found." });
+        }
+
+        res.status(200).json({ itineraries: pastitineraries });
+    } catch (error) {
+        console.error("Error fetching past paid itineraries:", error);
+        res.status(500).json({ message: "An error occurred while fetching past paid itineraries.", error });
+    }
+
+};
 
 const getTouristAddresses = async (req, res) => {
     try {
@@ -5828,6 +5883,8 @@ module.exports = { getPurchasedProducts,
     viewMyCreatedItenrary,
     getPaidActivities,
     getPastPaidActivities,
+    getPaidItineraries,
+    getPastPaidItineraries,
     getTouristAddresses,
     viewMyCreatedMuseumsAndHistoricalPlaces,
     signIn,
