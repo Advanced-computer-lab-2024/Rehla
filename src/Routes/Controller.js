@@ -2556,7 +2556,7 @@ const getPaidItineraries = async (req, res) => {
             Tourist_Email: email,
             Paid: true,
             Date: { $gte: today } // Date is today or in the future
-        }, 'itineraries Date');
+        }, 'Itinerary_Name Date');
 
         if (!upcomingitineraries.length) {
             return res.status(404).json({ message: "No upcoming paid itineraries found." });
@@ -2584,7 +2584,7 @@ const getPastPaidItineraries = async (req, res) => {
             Tourist_Email: email,
             Paid: true,
             Date: { $lt: today } // Date is in the past
-        }, 'itineraries Date');
+        }, 'Itinerary_Name Date');
 
         if (!pastitineraries.length) {
             return res.status(404).json({ message: "No past paid itineraries found." });

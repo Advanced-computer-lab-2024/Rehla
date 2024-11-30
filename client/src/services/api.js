@@ -1372,5 +1372,31 @@ export const getPastPaidActivities = async (email) => {
         throw error.response?.data || { message: 'An error occurred while fetching past paid activities.' };
     }
 };
+export const getPaidItineraries = async (email) => {
+    try {
+        if (!email) {
+            throw new Error('Email is required to fetch paid itineraries.');
+        }
+
+        const response = await axios.get(`${API_URL}/getPaidItineraries/${email}`);
+        return response.data; // Return the itineraries from the server response
+    } catch (error) {
+        console.error('Error fetching paid itineraries:', error.response?.data || error.message);
+        throw error.response?.data || { message: 'An error occurred while fetching paid itineraries.' };
+    }
+};
+export const getPastPaidItineraries = async (email) => {
+    try {
+        if (!email) {
+            throw new Error('Email is required to fetch past paid itineraries.');
+        }
+
+        const response = await axios.get(`${API_URL}/getPastPaidItineraries/${email}`);
+        return response.data; // Return the itineraries from the server response
+    } catch (error) {
+        console.error('Error fetching past paid itineraries:', error.response?.data || error.message);
+        throw error.response?.data || { message: 'An error occurred while fetching past paid itineraries.' };
+    }
+};
 
 

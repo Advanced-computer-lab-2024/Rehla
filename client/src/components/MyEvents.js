@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getAttendedItineraries, getAttendedActivities, getPaidActivities, getPastPaidActivities } from '../services/api'; // Adjust the import based on your file structure
+import { getAttendedItineraries, getAttendedActivities, getPaidActivities, getPastPaidActivities,getPaidItineraries, getPastPaidItineraries } from '../services/api'; // Adjust the import based on your file structure
 import logo from '../images/logo.png';
 
 const MyEvents = () => {
@@ -8,6 +8,8 @@ const MyEvents = () => {
     const [attendedActivities, setAttendedActivities] = useState([]);
     const [paidActivities, setPaidActivities] = useState([]);
     const [pastPaidActivities, setPastPaidActivities] = useState([]);
+    const [paidItineraries, setPaidItineraries] = useState([]);
+    const [pastPaidItineraries, setPastPaidItineraries] = useState([]);
     const [email, setEmail] = useState('');
     const navigate = useNavigate();
 
@@ -49,6 +51,23 @@ const MyEvents = () => {
             setPastPaidActivities(response.activities);
         } catch (error) {
             console.error('Error fetching past paid activities:', error);
+        }
+    };
+    const handlePaidItinerariesFetch = async () => {
+        try {
+            const response = await getPaidItineraries(email);
+            setPaidItineraries(response.itineraries);
+        } catch (error) {
+            console.error('Error fetching paid itineraries:', error);
+        }
+    };
+
+    const handlePastPaidItinerariesFetch = async () => {
+        try {
+            const response = await getPastPaidItineraries(email);
+            setPastPaidItineraries(response.itineraries);
+        } catch (error) {
+            console.error('Error fetching past paid itineraries:', error);
         }
     };
 
@@ -143,6 +162,18 @@ const MyEvents = () => {
                 >
                     Show Past Paid Activities
                 </button>
+                <button
+                    onClick={handlePaidItinerariesFetch}
+                    className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-800 mr-2"
+                >
+                    Show Paid Itineraries
+                </button>
+                <button
+                    onClick={handlePastPaidItinerariesFetch}
+                    className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-800"
+                >
+                    Show Past Paid Itineraries
+                </button>
             </div>
 
             {/* Display Paid Activities */}
@@ -175,6 +206,43 @@ const MyEvents = () => {
                                     <div className="flex-1">
                                         <span className="font-medium text-lg">{activity.Activity_Name}</span> -{' '}
                                         <span className="font-medium">{new Date(activity.Date).toLocaleDateString()}</span>
+                                    </div>
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
+                        {/* Display Paid Itineraries */}
+                        {paidItineraries.length > 0 && (
+                <div className="px-6 py-4">
+                    <h2 className="text-xl font-semibold mb-4">Paid Itineraries</h2>
+                    <ul className="flex flex-wrap list-none">
+                        {paidItineraries.map((itinerary) => (
+                            <li key={itinerary.Itinerary_Name} className="flex items-start mb-4 w-1/2 p-2">
+                                <div className="flex items-start bg-gray-100 p-4 rounded-lg shadow-md w-full">
+                                    <div className="flex-1">
+                                        <span className="font-medium text-lg">{itinerary.Itinerary_Name}</span> -{' '}
+                                        <span className="font-medium">{new Date(itinerary.Date).toLocaleDateString()}</span>
+                                    </div>
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
+
+            {/* Display Past Paid Itineraries */}
+            {pastPaidItineraries.length > 0 && (
+                <div className="px-6 py-4">
+                    <h2 className="text-xl font-semibold mb-4">Past Paid Itineraries</h2>
+                    <ul className="flex flex-wrap list-none">
+                        {pastPaidItineraries.map((itinerary) => (
+                            <li key={itinerary.Itinerary_Name} className="flex items-start mb-4 w-1/2 p-2">
+                                <div className="flex items-start bg-gray-100 p-4 rounded-lg shadow-md w-full">
+                                    <div className="flex-1">
+                                        <span className="font-medium text-lg">{itinerary.Itinerary_Name}</span> -{' '}
+                                        <span className="font-medium">{new Date(itinerary.Date).toLocaleDateString()}</span>
                                     </div>
                                 </div>
                             </li>
