@@ -5398,6 +5398,27 @@ const calculateActivityRevenue = async (req, res) => {
     }
 };
 
+const getAllSalesReports = async (req, res) => {
+    try {
+        // Fetch all the sales reports from the database
+        const salesReports = await advertiser_salesreport.find();
+
+        // If no reports are found, return a 404 status
+        if (!salesReports || salesReports.length === 0) {
+            return res.status(404).json({ message: 'No sales reports found.' });
+        }
+
+        // Return the list of sales reports with a 200 status
+        return res.status(200).json(salesReports);
+    } catch (error) {
+        // If an error occurs, catch it and return a 500 status with the error message
+        console.error('Error fetching sales reports:', error.message);
+        return res.status(500).json({
+            error: 'Error fetching sales reports',
+            details: error.message,
+        });
+    }
+};
 
 
 
@@ -5985,5 +6006,6 @@ module.exports = { getPurchasedProducts,
     sendEventReminder, 
     checkAndSendRemindersforEvents,
     checkAndSendRemindersforItinerary,
-    checkandsendBirthdayPromoCode
+    checkandsendBirthdayPromoCode,
+    getAllSalesReports
 };

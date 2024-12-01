@@ -140,6 +140,7 @@ const {createUserAdmin,
   createCartItem,
   addToCart,
   calculateActivityRevenue,
+  getAllSalesReports,
   calculateItineraryRevenue,
   checkoutOrder,
   createPromoCode,
@@ -337,6 +338,7 @@ app.put('/updateCartItem', updateCartItem);
 app.post('/createCartItem', createCartItem);
 app.post('/addToCart', addToCart);
 app.post('/calculateActivityRevenue', calculateActivityRevenue);
+app.get('/advertiser_salesreport', getAllSalesReports);
 app.post('/calculateItineraryRevenue', calculateItineraryRevenue);
 app.post('/Tourist/CheckoutOrder', checkoutOrder);
 app.post('/createPromoCode', createPromoCode);
