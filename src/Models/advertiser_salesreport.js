@@ -30,9 +30,6 @@ const advertiser_salesreportSchema = new Schema({
     }
 }, { timestamps: true });
 
-// Create a composite unique index on Email and Activity
-//advertiser_salesreportSchema.index({ Email: 1, Activity: 1 }, { unique: true });
-
 // Create the model
 const advertiser_salesreport = mongoose.model("advertiser_salesreport", advertiser_salesreportSchema);
 
