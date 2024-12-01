@@ -1258,14 +1258,17 @@ export const fetchSalesReport = async (sellerName) => {
     }
 };
 
-export const calculateActivityRevenue = async (activityName) => {
+export const calculateActivityRevenue = async (email) => {
     try {
-        const response = await axios.post(`${API_URL}/calculateActivityRevenue`, { activityName });
-        console.log('Revenue response:', response.data);  // Add this line for debugging
-        return response.data;
+        // Send a POST request with the email
+        const response = await axios.post(`${API_URL}/calculateActivityRevenue`, { email });
+        console.log('Revenue response:', response.data); // Log the response for debugging
+        
+        // Return the list of reports generated
+        return response.data.reports;
     } catch (error) {
-        console.error('Error calculating revenue:', error);
-        throw error;
+        console.error('Error calculating activity revenue:', error.message);
+        throw new Error('Failed to calculate activity revenue');
     }
 };
 

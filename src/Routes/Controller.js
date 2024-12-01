@@ -5337,57 +5337,52 @@ const viewTouristOrders = async (req, res) => {
 
 const calculateActivityRevenue = async (req, res) => {
     try {
-        const { activityName } = req.body;
+        const { email } = req.body;
 
-        if (!activityName) {
-            return res.status(400).json({ message: 'Activity name is required.' });
+        if (!email) {
+            return res.status(400).json({ message: 'Email is required.' });
         }
 
-        // Retrieve the activity by its name
-        const activitym = await activity.findOne({ Name: activityName });
+        // Retrieve all activities for the given email
+        const activities = await activity.find({ Created_By: email });
 
-        if (!activitym) {
-            return res.status(404).json({ message: `Activity '${activityName}' not found.` });
+        if (activities.length === 0) {
+            return res.status(404).json({ message: `No activities found for email '${email}'` });
         }
 
-        // Check if the activity is already added to advertiser_salesreport
-        const existingReport = await advertiser_salesreport.findOne({ Activity: activityName });
+        // Loop through all activities to calculate revenue and add to advertiser_salesreport
+        const reports = [];
+        for (const activitym of activities) {
+            // Count the number of paid records for this activity
+            const paidCount = await tourist_activities.countDocuments({
+                Activity_Name: activitym.Name,
+                Paid: true,
+            });
 
-        if (existingReport) {
-            return res.status(200).json({ message: `Activity '${activityName}' is already added to advertiser_salesreport.` });
+            // Calculate revenue for the activity
+            const revenue =
+                paidCount > 0
+                    ? (paidCount * (activitym.Price - (activitym.Discount_Percent / 100 * activitym.Price))) * 0.9
+                    : 0;
+
+            // Create the sales report for the activity
+            const report = await advertiser_salesreport.create({
+                Email: email,
+                Activity: activitym.Name,
+                Revenue: revenue,
+                Sales: paidCount,
+                Price: activitym.Price,
+                Report_no: Math.floor(Math.random() * 1000000), // Generate a random report number
+            });
+
+            // Push the report to the array
+            reports.push(report);
         }
-
-        // Get the email of the activity creator
-        const email = activitym.Created_By;
-
-        // Count the number of paid records for this activity
-        const paidCount = await tourist_activities.countDocuments({
-            Activity_Name: activitym.Name,
-            Paid: true,
-        });
-
-        // Calculate revenue for the activity
-        const revenue =
-            paidCount > 0
-                ? (paidCount * (activitym.Price - (activitym.Discount_Percent / 100 * activitym.Price))) * 0.9
-                : 0;
-
-        // Add the result to advertiser_salesreport
-        await advertiser_salesreport.create({
-            Email: email,
-            Activity: activitym.Name,
-            Revenue: revenue,
-            Sales: paidCount,
-            Price: activitym.Price,
-            Report_no: Math.floor(Math.random() * 1000000), // Generate a random report number
-        });
 
         // Return the results
         return res.status(200).json({
-            email,
-            activityName: activitym.Name,
-            revenue,
-            sales: paidCount,
+            message: 'All activities processed and reports added.',
+            reports,
         });
     } catch (error) {
         console.error('Error calculating activity revenue:', error.message);
@@ -5397,6 +5392,7 @@ const calculateActivityRevenue = async (req, res) => {
         });
     }
 };
+
 
 const getAllSalesReports = async (req, res) => {
     try {
