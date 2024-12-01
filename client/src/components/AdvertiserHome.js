@@ -46,6 +46,8 @@ const AdvertiserHome = () => {
     const [revenues, setRevenues] = useState({}); // Store activity revenues
     const [loadingg, setLoadingg] = useState(false);
     const [errorr, setErrorr] = useState(null);
+    const [reports, setReports] = useState([]);
+
 
     useEffect(() => {
         const email = localStorage.getItem('email');
@@ -71,42 +73,28 @@ const AdvertiserHome = () => {
 
     
 
+    
+
     useEffect(() => {
-        const calculateRevenues = async () => {
-          if (data.activities.length > 0) {
-            const newRevenues = {};
-    
-            // Loop through all activities to calculate revenue
-            for (let i = 0; i < data.activities.length; i++) {
-              const activity = data.activities[i];
-              try {
-                const revenue = await calculateActivityRevenue(activity.Name);
-    
-                // Check if the revenue is a valid number or string
-                if (typeof revenue === 'number' || typeof revenue === 'string') {
-                  newRevenues[activity._id] = revenue; // Valid revenue value
-                } else {
-                  console.warn(`Unexpected revenue format for ${activity.Name}:`, revenue);
-                  newRevenues[activity._id] = 'Already added'; // Fallback message
-                }
-    
-                // Delay for 500ms before processing the next activity
-                await delay(200);
-    
-              } catch (err) {
-                console.error(`Error calculating revenue for ${activity.Name}:`, err);
-                newRevenues[activity._id] = 'Error'; // Fallback error message
-              }
+        const email = localStorage.getItem('email');
+
+        const fetchActivityRevenue = async () => {
+            try {
+                setLoading(true);
+                const reportsData = await calculateActivityRevenue(email);
+                setReports(reportsData);
+                setError(null); // Clear any previous errors
+            } catch (err) {
+                console.error(err);
+                setError('Failed to fetch activity revenue. Please try again later.');
+            } finally {
+                setLoading(false);
             }
-    
-            // Update the state with the calculated revenues after all activities are processed
-            setRevenues(newRevenues);
-          }
         };
-    
-        // Only run calculation when activities change
-        calculateRevenues();
-      }, [data.activities]); // Dependency on `data.activities`
+
+        fetchActivityRevenue();
+    }, []);
+
     
     
     const handleCalculateRevenue = async (activityName) => {
@@ -647,20 +635,28 @@ const AdvertiserHome = () => {
         </div>
         <div>
             <h1>Advertiser Home</h1>
-            {loading && <p>Loading activities...</p>}
-            {error && <p>Error: {error.message}</p>}
 
-            <div>
-                <h2>My Created Activities</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    {data.activities.map((activity) => (
-                        <div key={activity._id} className="bg-blue-50 p-4 rounded-lg shadow-md">
-                            <h3 className="text-lg font-semibold">{activity.Name}</h3>
-                            <p><strong>Revenue:</strong> ${revenues[activity._id] || "Calculating..."}</p>
-                        </div>
-                    ))}
+            {loading && <p>Loading activity revenue...</p>}
+            {error && <p style={{ color: 'red' }}>{error}</p>}
+
+            {!loading && !error && reports.length > 0 && (
+                <div>
+                    <h2>Activity Revenue Reports</h2>
+                    <ul>
+                        {reports.map((report, index) => (
+                            <li key={index}>
+                                <strong>Activity:</strong> {report.Activity} <br />
+                                <strong>Revenue:</strong> ${report.Revenue.toFixed(2)} <br />
+                                <strong>Sales:</strong> {report.Sales} <br />
+                                <strong>Price:</strong> ${report.Price.toFixed(2)} <br />
+                                <strong>Report No:</strong> {report.Report_no}
+                            </li>
+                        ))}
+                    </ul>
                 </div>
-            </div>
+            )}
+
+            {!loading && !error && reports.length === 0 && <p>No reports found.</p>}
         </div>
 
         </div>
