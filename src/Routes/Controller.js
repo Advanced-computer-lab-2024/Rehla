@@ -5520,35 +5520,39 @@ const createPromoCode = async (req, res) => {
 }
 const cancelOrder = async (req, res) => {
     try {
-        const { email, cartNum } = req.body;
-      // Validate inputs
+        const { email, cartNum } = req.body;  // Destructure email and cartNum from the request body
+        // Log the incoming data for debugging
+        console.log('Received email:', email);
+        console.log('Received cartNum:', cartNum);
+        // Validate inputs
         if (!email) {
             return res.status(400).json({ message: "Email is required" });
         }
         if (!cartNum) {
             return res.status(400).json({ message: "Cart number is required" });
         }
-        // Check if the order exists and its current status
+        // Check if the order exists in the database
         const existingOrder = await order.findOne({ Email: email, Cart_Num: cartNum });
+        // Log the result of the database query for debugging
+        console.log('Found Order:', existingOrder);
         if (!existingOrder) {
+            // Return 404 if the order doesn't exist
             return res.status(404).json({ message: "Order not found" });
         }
-        if (existingOrder.Status === "Cancelled") {
-            return res.status(400).json({ message: "Order is already cancelled" });
-        }
-      // Update the order's status to "Cancelled"
-        existingOrder.Status = "Cancelled";
-        await existingOrder.save();
-        return res.status(200).json({ 
-            message: "Order cancelled successfully", 
-            order: existingOrder 
+        // Delete the order from the database
+        await order.deleteOne({ Email: email, Cart_Num: cartNum });
+        // Return a success response with the deleted order details
+        return res.status(200).json({
+            message: "Order deleted successfully",
+            deletedOrder: existingOrder
         });
-        } 
-    catch (error) {
-            console.error(`Error cancelling order for email: ${email}, cartNum: ${cartNum}`, error);
-            return res.status(500).json({ message: "Server error" });
+    } catch (error) {
+        // Log the error and return a 500 response if something goes wrong
+        console.error(`Error canceling order:`, error);
+        return res.status(500).json({ message: "Server error" });
     }
-};  
+};
+
 const addTouristAddress = async (req, res) => {
     try {
         const { email, address } = req.body;

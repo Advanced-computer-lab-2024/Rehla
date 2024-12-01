@@ -1421,5 +1421,13 @@ export const getPastPaidItineraries = async (email) => {
         throw error.response?.data || { message: 'An error occurred while fetching past paid itineraries.' };
     }
 };
-
-
+export const cancelOrder = async (cancelData) => {
+    try {
+        // Sending the cancel data (email and cart number) via DELETE request
+        const response = await axios.delete(`${API_URL}/cancelOrder`, { data: cancelData });
+        return response.data;  // Return the server's response
+    } catch (error) {
+        console.error('Error canceling order:', error);  // Log the error if it occurs
+        throw error;  // Propagate the error so that it can be handled in the calling code
+    }
+};

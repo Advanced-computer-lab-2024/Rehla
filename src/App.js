@@ -359,7 +359,7 @@ app.post('/send-email', async (req, res) => {
   }
 });
 
-app.put('/cancelOrder',cancelOrder);
+app.delete('/cancelOrder',cancelOrder);
 app.post('/addTouristAddress',addTouristAddress);
 app.post('/saveEvent', saveEvent);
 app.post('/viewSavedEvents', viewSavedEvents);
