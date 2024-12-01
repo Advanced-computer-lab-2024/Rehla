@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import logo from '../images/logo.png';
 import { searchEventsPlaces , rateTourGuide,commentTourGuide,viewComplaintByEmail,
         deleteTouristItenrary,deleteTouristActivity, createComplaint,redeemPoints,
-        createPreference ,getAllTransportation,bookTransportation,addDeliveryAdress,
+        createPreference ,getAllTransportation,bookTransportation,addDeliveryAddress,
         saveEvent,viewSavedEvents,cancelOrder} from '../services/api'; // Import the commentOnEvent function
 import Homet2 from '../components/Homet2.js';
 
@@ -113,7 +113,7 @@ const TouristHome = () => {
     const handleNewAddress=async(e)=>{
         e.preventDefault();
         try{
-            const response = await addDeliveryAdress({email, address})
+            const response = await addDeliveryAddress({email, address})
             setSuccess(`Addresses added successfully: ${response.addresses.map(addr => addr.Address).join(', ')}`);
             setEmail('');
             setAddress('');

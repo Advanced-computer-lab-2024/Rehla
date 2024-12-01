@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { getTouristProfile, updateTouristProfile, uploadProfilePicture , requestDeleteProfile
-  ,viewSavedEvents
+  ,viewSavedEvents,addDeliveryAddress
 } from '../services/api'; // Import your new upload function
 import { Link } from 'react-router-dom';
 import logo from '../images/logo.png';
@@ -43,6 +43,11 @@ const TouristProfile = () => {
     const [succesViewEvent,setSuccessViewEvent]=useState('');
     const [errorViewEvent,setErrorViewEvent]=useState('');
     const [events, setEvents] = useState([]);
+
+    const [address,setAddress]=useState('');
+    const [succes,setSuccess]=useState('');
+    const [errornew,setErrornew]=useState('');
+    const [email, setEmail] = useState('');
 
   const handleDeleteRequest = async () => {
     try {
@@ -96,6 +101,20 @@ const TouristProfile = () => {
       }
   }; handleViewSavedEvents();
   },[]);
+  const handleNewAddress=async(e)=>{
+    e.preventDefault();
+    try{
+       const email = localStorage.getItem('email');
+        const response = await addDeliveryAddress({email, address})
+        setSuccess(`Addresses added successfully`);
+        setEmail('');
+        setAddress('');
+    }
+    catch(error){
+        setErrornew(`Failed to add address`);
+        console.error(error);
+    }
+}
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -352,7 +371,37 @@ const TouristProfile = () => {
         </div>
       )}
     </div>
-  </div>
+          {!isEditing && (
+              <div className="bg-white shadow-md rounded-lg p-6 mt-6">
+                <h2 className="text-2xl font-semibold text-brandBlue mb-4">Add New Address</h2>
+                <form className="space-y-4">
+              
+                  <div>
+                    <label className="block text-gray-700 text-sm font-medium mb-1">Address(es):</label>
+                    <input
+                      type="text"
+                      value={address}
+                      onChange={(e) => setAddress(e.target.value)}
+                      placeholder="Separate multiple addresses with commas"
+                      required
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                    />
+                  </div>
+                  <div className="flex justify-end">
+                    <button
+                      onClick={handleNewAddress}
+                      className="bg-logoOrange text-white font-medium py-2 px-6 rounded-lg hover:bg-opacity-90 transition duration-300"
+                    >
+                      Add New Address
+                    </button>
+                  </div>
+                </form>
+                {succes && <p className="mt-4 text-green-600 font-medium">{succes}</p>}
+                {errornew && <p className="mt-4 text-red-600 font-medium">{errornew}</p>}
+              </div>
+            )}
+
+          </div>
 
   {/* Second Division (Saved Events Section) */}
                 <div className="w-2/5 p-4 bg-white rounded-lg shadow-md">

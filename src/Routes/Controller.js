@@ -5549,12 +5549,12 @@ const addTouristAddress = async (req, res) => {
             message: "Email and at least one address are required.",
             });
         }
-        const addressList = typeof address === "string" ? address.split(",") : [address];
-        const addressDocuments = addressList.map((addr) => ({
+        
+        const addressDocument = {
             Email: email,
-            Address: addr.trim(),
-        }));
-        const addedAddresses = await tourist_addreessiesm.insertMany(addressDocuments);
+            Address: address.trim(),
+          };
+        const addedAddresses = await tourist_addreessiesm.create(addressDocument);
         return res.status(201).json({
             message: "Address(es) added successfully.",
             addresses: addedAddresses,
