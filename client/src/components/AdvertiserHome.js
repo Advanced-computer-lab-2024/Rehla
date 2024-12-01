@@ -7,14 +7,15 @@ import {
     deleteActivityByAdvertiser,
     updateActivityByAdvertiser,
     getAllCreatedByEmail,
-    calculateActivityRevenue, // Import the new function
+    calculateActivityRevenue, fetchAllSalesReports
 } from '../services/api';
+
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 const AdvertiserHome = () => {
     const [data, setData] = useState({
         activities: [],
     });
-    const [revenueData, setRevenueData] = useState([]);
     const [selectedActivity, setSelectedActivity] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -38,6 +39,13 @@ const AdvertiserHome = () => {
         Created_By: '',
         Picture: '',
     });
+    
+    const [salesReports, setSalesReports] = useState([]);
+    const [messagee, setMessagee] = useState('');
+    const [dataa, setDataa] = useState({ activities: [] });
+    const [revenues, setRevenues] = useState({}); // Store activity revenues
+    const [loadingg, setLoadingg] = useState(false);
+    const [errorr, setErrorr] = useState(null);
 
     useEffect(() => {
         const email = localStorage.getItem('email');
@@ -48,20 +56,12 @@ const AdvertiserHome = () => {
             setLoading(false);
         }
     }, []);
-    useEffect(() => {
-        // Ensure revenue data is calculated and updated whenever activities change
-        if (data.activities.length > 0) {
-            calculateRevenues(data.activities);  // Call calculateRevenues when activities are available
-        }
-    }, [data.activities]);  // This effect will run whenever data.activities changes
 
     const fetchActivities = async (email) => {
         setLoading(true);
         try {
             const result = await getAllCreatedByEmail(email);
             setData(result.data);
-            // Now calculate revenue for each activity
-            calculateRevenues(result.data);
         } catch (err) {
             setError(err);
         } finally {
@@ -69,24 +69,66 @@ const AdvertiserHome = () => {
         }
     };
 
-    const calculateRevenues = async (activities) => {
-        try {
-            const revenuePromises = activities.map(async (activity) => {
-                const revenueResponse = await calculateActivityRevenue(activity.Name);
-                return {
-                    activityName: activity.Name,
-                    revenue: revenueResponse.revenue, // Make sure `revenueResponse` contains this field
-                    sales: revenueResponse.sales,     // Same with `sales`
-                };
-            });
     
-            const revenues = await Promise.all(revenuePromises);
-            setRevenueData(revenues);
+
+    useEffect(() => {
+        const calculateRevenues = async () => {
+          if (data.activities.length > 0) {
+            const newRevenues = {};
+    
+            // Loop through all activities to calculate revenue
+            for (let i = 0; i < data.activities.length; i++) {
+              const activity = data.activities[i];
+              try {
+                const revenue = await calculateActivityRevenue(activity.Name);
+    
+                // Check if the revenue is a valid number or string
+                if (typeof revenue === 'number' || typeof revenue === 'string') {
+                  newRevenues[activity._id] = revenue; // Valid revenue value
+                } else {
+                  console.warn(`Unexpected revenue format for ${activity.Name}:`, revenue);
+                  newRevenues[activity._id] = 'Already added'; // Fallback message
+                }
+    
+                // Delay for 500ms before processing the next activity
+                await delay(200);
+    
+              } catch (err) {
+                console.error(`Error calculating revenue for ${activity.Name}:`, err);
+                newRevenues[activity._id] = 'Error'; // Fallback error message
+              }
+            }
+    
+            // Update the state with the calculated revenues after all activities are processed
+            setRevenues(newRevenues);
+          }
+        };
+    
+        // Only run calculation when activities change
+        calculateRevenues();
+      }, [data.activities]); // Dependency on `data.activities`
+    
+    
+    const handleCalculateRevenue = async (activityName) => {
+        try {
+            const result = await calculateActivityRevenue(activityName);
+            setMessagee(`Revenue for '${activityName}' calculated successfully.`);
+            console.log(result);
         } catch (err) {
-            console.error("Error calculating revenue for activities:", err);
+            setMessagee(`Error calculating revenue for '${activityName}'.`);
+            console.error(err);
         }
     };
-    
+
+    const handleFetchSalesReports = async () => {
+        try {
+            const reports = await fetchAllSalesReports();
+            setSalesReports(reports);
+        } catch (err) {
+            setMessagee('Error fetching sales reports.');
+            console.error(err);
+        }
+    };
 
     const handleActivityClick = (activity) => {
         setSelectedActivity(activity);
@@ -149,6 +191,7 @@ const AdvertiserHome = () => {
             Tag: '',
             Created_By: localStorage.getItem('email') || '' // Assuming Created_By is the email of the advertiser
         });
+        //setLocationData(''); // Reset location data
         setCreateModalOpen(true);
     };
 
@@ -206,7 +249,7 @@ const AdvertiserHome = () => {
                                 <div
                                 key={activity._id}
                                 className="bg-blue-50 rounded-lg shadow-md overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-lg"
-                                onClick={() => handleActivityClick(activity)}
+                                
                             >
                                 <img
                                     src={activity.Picture}
@@ -578,23 +621,48 @@ const AdvertiserHome = () => {
                     </div>
                 </div>
             )}
-            <div>
-            {/* Render your activity list with calculated revenue here */}
+                    <div>
             <h1>Advertiser Home</h1>
-            {loading ? <p>Loading activities...</p> : (
-                <div>
-                    {data.activities.map((activity) => (
-    <div key={activity.Name}>
-        <h3>{activity.Name}</h3>
-        {/* Check if revenue data exists */}
-        <p>Revenue: {revenueData.find(rev => rev.activityName === activity.Name)?.revenue || 'Calculating...'}</p>
-        
-    </div>
-))}
-
-                </div>
-            )}
+            {loading && <p>Loading activities...</p>}
+            {error && <p>Error: {error.message}</p>}
+            {messagee && <p>{messagee}</p>}
+            
+            <div>
+                <h2>Sales Reports</h2>
+                <button onClick={handleFetchSalesReports}>Fetch All Sales Reports</button>
+                {salesReports.length > 0 ? (
+                    <ul>
+                        {salesReports.map((report) => (
+                            <li key={report.Report_no}>
+                                <p>Activity: {report.Activity}</p>
+                                <p>Revenue: ${report.Revenue}</p>
+                                <p>Sales: {report.Sales}</p>
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p>No sales reports available.</p>
+                )}
+            </div>
         </div>
+        <div>
+            <h1>Advertiser Home</h1>
+            {loading && <p>Loading activities...</p>}
+            {error && <p>Error: {error.message}</p>}
+
+            <div>
+                <h2>My Created Activities</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    {data.activities.map((activity) => (
+                        <div key={activity._id} className="bg-blue-50 p-4 rounded-lg shadow-md">
+                            <h3 className="text-lg font-semibold">{activity.Name}</h3>
+                            <p><strong>Revenue:</strong> ${revenues[activity._id] || "Calculating..."}</p>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
+
         </div>
     );
 };
