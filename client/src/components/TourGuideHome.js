@@ -270,37 +270,101 @@ const TourGuideHome = () => {
                         </section>
 
                             {/*openCreateModal*/}
-                        {selectedItinerary && (
-                            <div className="mt-8 border rounded-lg p-4">
-                                <h3 className="text-xl font-semibold">{selectedItinerary.Itinerary_Name}</h3>
-                                <p><strong>Time:</strong> {selectedItinerary.Timeline}</p>
-                                <p><strong>Duration:</strong> {selectedItinerary.Duration}</p>
-                                <p><strong>Language:</strong> {selectedItinerary.Language}</p>
-                                <p><strong>Tour Price:</strong> ${selectedItinerary.Tour_Price}</p>
-                                <p><strong>Date:</strong> {selectedItinerary.Available_Date_Time}</p>
-                                <p><strong>Accessibility:</strong> {selectedItinerary.Accessibility ? 'Yes' : 'No'}</p>
-                                <p><strong>Pick Up Point:</strong> {selectedItinerary.Pick_Up_Point}</p>
-                                <p><strong>Drop Of Point:</strong> {selectedItinerary.Drop_Of_Point}</p>
-                                <p><strong>Available Spots:</strong> {selectedItinerary.Empty_Spots}</p>
-                                <p><strong>Booked Spots:</strong> {selectedItinerary.Booked}</p>
-                                <p><strong>Country:</strong> {selectedItinerary.Country}</p>
-                                <p><strong>Rating:</strong> {selectedItinerary.Rating}</p>
-                                <p><strong>Flagged:</strong> {selectedItinerary.Flagged ? 'Yes' : 'No'}</p>
-                                <p><strong>Tag:</strong> {selectedItinerary.P_Tag}</p>
-                                <button
-                                    onClick={() => openEditModal(selectedItinerary)}
-                                    className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
-                                >
-                                    Edit Itinerary
-                                </button>
-                                <button
-                                    onClick={handleDeleteItinerary}
-                                    className="mt-4 ml-2 bg-red-500 text-white px-4 py-2 rounded"
-                                >
-                                    Delete Itinerary
-                                </button>
-                            </div>
-                        )}
+                            {selectedItinerary && (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+        <div className="bg-white p-6 mt-20 rounded-lg shadow-lg w-full max-w-7xl overflow-auto relative">
+            {/* Close Button */}
+            <button
+                onClick={() => setSelectedItinerary(null)}
+                className="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
+            >
+                ✖
+            </button>
+
+            {/* Modal Content */}
+            <h3 className="text-2xl font-semibold mb-4 text-center">
+                {selectedItinerary.Itinerary_Name}
+            </h3>
+
+            {/* Styled Image */}
+            <div className="flex justify-center mb-6">
+                <img
+                    src={selectedItinerary.Picture}
+                    alt={selectedItinerary.Itinerary_Name}
+                    className="w-full max-w-3xl h-56 object-cover rounded-md shadow"
+                />
+            </div>
+
+            {/* Data in Columns */}
+            <div className="grid grid-cols-2 gap-6">
+                <div>
+                    <p>
+                        <strong>Time:</strong> {selectedItinerary.Timeline}
+                    </p>
+                    <p>
+                        <strong>Duration:</strong> {selectedItinerary.Duration}
+                    </p>
+                    <p>
+                        <strong>Language:</strong> {selectedItinerary.Language}
+                    </p>
+                    <p>
+                        <strong>Tour Price:</strong> ${selectedItinerary.Tour_Price}
+                    </p>
+                    <p>
+                        <strong>Date:</strong> {selectedItinerary.Available_Date_Time}
+                    </p>
+                    <p>
+                        <strong>Accessibility:</strong> {selectedItinerary.Accessibility ? 'Yes' : 'No'}
+                    </p>
+                </div>
+                <div>
+                    <p>
+                        <strong>Pick Up Point:</strong> {selectedItinerary.Pick_Up_Point}
+                    </p>
+                    <p>
+                        <strong>Drop Off Point:</strong> {selectedItinerary.Drop_Of_Point}
+                    </p>
+                    <p>
+                        <strong>Available Spots:</strong> {selectedItinerary.Empty_Spots}
+                    </p>
+                    <p>
+                        <strong>Booked Spots:</strong> {selectedItinerary.Booked}
+                    </p>
+                    <p>
+                        <strong>Country:</strong> {selectedItinerary.Country}
+                    </p>
+                    <p>
+                        <strong>Rating:</strong> {selectedItinerary.Rating}
+                    </p>
+                </div>
+            </div>
+
+            {/* Footer Actions */}
+            <div className="flex justify-end mt-6 gap-4">
+                <button
+                    onClick={() => openEditModal(selectedItinerary)}
+                    className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded"
+                >
+                    Edit Itinerary
+                </button>
+                <button
+                    onClick={handleDeleteItinerary}
+                    className="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded"
+                >
+                    Delete Itinerary
+                </button>
+                <button
+                    onClick={() => setSelectedItinerary(null)}
+                    className="bg-gray-500 hover:bg-gray-700 text-white px-4 py-2 rounded"
+                >
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+)}
+
+
                     </>
                 )}
             </div>
@@ -308,22 +372,21 @@ const TourGuideHome = () => {
             {/* Edit Itinerary Modal */}
             {isEditModalOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 mt-24">
-                    <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md h-5/6 overflow-auto">
-                        <h2 className="text-xl font-bold mb-4">Edit Itinerary</h2>
-                        <form onSubmit={handleUpdateItinerary}>
-                        <label className="block mb-2">
-                            Itinerary Name:
+                <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-5xl overflow-auto">
+                    <h2 className="text-xl font-bold mb-4">Edit Itinerary</h2>
+                    <form onSubmit={handleUpdateItinerary}>
+                        <div className="grid grid-cols-3 gap-4">
+                            <label className="block">
+                                Itinerary Name:
                                 <input
                                     type="text"
                                     name="Itinerary_Name"
                                     value={itineraryData.Itinerary_Name}
                                     onChange={handleEditItineraryChange}
                                     className="border rounded w-full px-2 py-1"
-                                    
                                 />
                             </label>
-                           
-                            <label className="block mb-2">
+                            <label className="block">
                                 Time:
                                 <input
                                     type="text"
@@ -331,10 +394,9 @@ const TourGuideHome = () => {
                                     value={itineraryData.Timeline}
                                     onChange={handleEditItineraryChange}
                                     className="border rounded w-full px-2 py-1"
-                                    
                                 />
                             </label>
-                            <label className="block mb-2">
+                            <label className="block">
                                 Duration:
                                 <input
                                     type="text"
@@ -342,10 +404,9 @@ const TourGuideHome = () => {
                                     value={itineraryData.Duration}
                                     onChange={handleEditItineraryChange}
                                     className="border rounded w-full px-2 py-1"
-                                    
                                 />
                             </label>
-                            <label className="block mb-2">
+                            <label className="block">
                                 Language:
                                 <input
                                     type="text"
@@ -353,10 +414,9 @@ const TourGuideHome = () => {
                                     value={itineraryData.Language}
                                     onChange={handleEditItineraryChange}
                                     className="border rounded w-full px-2 py-1"
-                                    
                                 />
                             </label>
-                            <label className="block mb-2">
+                            <label className="block">
                                 Price:
                                 <input
                                     type="number"
@@ -364,10 +424,9 @@ const TourGuideHome = () => {
                                     value={itineraryData.Tour_Price}
                                     onChange={handleEditItineraryChange}
                                     className="border rounded w-full px-2 py-1"
-                                    
                                 />
                             </label>
-                            <label className="block mb-2">
+                            <label className="block">
                                 Date:
                                 <input
                                     type="date"
@@ -375,10 +434,9 @@ const TourGuideHome = () => {
                                     value={itineraryData.Available_Date_Time}
                                     onChange={handleEditItineraryChange}
                                     className="border rounded w-full px-2 py-1"
-                                    
                                 />
                             </label>
-                            <label className="block mb-2">
+                            <label className="block">
                                 Accessibility:
                                 <input
                                     type="number"
@@ -388,29 +446,27 @@ const TourGuideHome = () => {
                                     className="border rounded w-full px-2 py-1"
                                 />
                             </label>
-                            <label className="block mb-2">
-                                Pick_Up_Point:
+                            <label className="block">
+                                Pick-Up Point:
                                 <input
                                     type="text"
                                     name="Pick_Up_Point"
                                     value={itineraryData.Pick_Up_Point}
                                     onChange={handleEditItineraryChange}
                                     className="border rounded w-full px-2 py-1"
-                                    
                                 />
                             </label>
-                            <label className="block mb-2">
-                                Drop_Of_Point:
+                            <label className="block">
+                                Drop-Off Point:
                                 <input
                                     type="text"
                                     name="Drop_Of_Point"
                                     value={itineraryData.Drop_Of_Point}
                                     onChange={handleEditItineraryChange}
                                     className="border rounded w-full px-2 py-1"
-                                    
                                 />
                             </label>
-                            <label className="block mb-2">
+                            <label className="block">
                                 Booked Spots:
                                 <input
                                     type="number"
@@ -418,11 +474,10 @@ const TourGuideHome = () => {
                                     value={itineraryData.Booked}
                                     onChange={handleEditItineraryChange}
                                     className="border rounded w-full px-2 py-1"
-                                    
                                 />
                             </label>
-                            <label className="block mb-2">
-                                Empty_Spots:
+                            <label className="block">
+                                Empty Spots:
                                 <input
                                     type="number"
                                     name="Empty_Spots"
@@ -431,18 +486,17 @@ const TourGuideHome = () => {
                                     className="border rounded w-full px-2 py-1"
                                 />
                             </label>
-                            <label className="block mb-2">
-                            Country:
+                            <label className="block">
+                                Country:
                                 <input
                                     type="text"
                                     name="Country"
                                     value={itineraryData.Country}
                                     onChange={handleEditItineraryChange}
                                     className="border rounded w-full px-2 py-1"
-                                    
                                 />
                             </label>
-                            <label className="block mb-2">
+                            <label className="block">
                                 Rating:
                                 <input
                                     type="text"
@@ -452,7 +506,7 @@ const TourGuideHome = () => {
                                     className="border rounded w-full px-2 py-1"
                                 />
                             </label>
-                            <label className="block mb-2">
+                            <label className="block">
                                 P_Tag:
                                 <input
                                     type="text"
@@ -460,46 +514,49 @@ const TourGuideHome = () => {
                                     value={itineraryData.P_Tag}
                                     onChange={handleEditItineraryChange}
                                     className="border rounded w-full px-2 py-1"
-                                
                                 />
                             </label>
-                            <label className="block mb-2">
-                                Created_By:
+                            <label className="block">
+                                Created By:
                                 <input
                                     type="text"
-                                    name="Picture"
+                                    name="Created_By"
                                     value={itineraryData.Created_By}
                                     onChange={handleEditItineraryChange}
                                     className="border rounded w-full px-2 py-1"
-                                    
                                 />
                             </label>
+                        </div>
+                        <div className="flex justify-end gap-2 mt-4">
                             <button
                                 type="submit"
-                                className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
+                                className="bg-brandBlue text-white px-4 py-2 rounded"
                             >
                                 Update Itinerary
                             </button>
                             <button
                                 onClick={closeEditModal}
-                                className="mt-4 ml-2 bg-gray-500 text-white px-4 py-2 rounded"
+                                className="bg-logoOrange text-white px-4 py-2 rounded"
                                 type="button"
                             >
                                 Close
                             </button>
-                        </form>
-                    </div>
+                        </div>
+                    </form>
                 </div>
+            </div>
+            
             )}
 
             {/* Create Activity Modal */}
             {isCreateModalOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 mt-24">
-                    <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md h-5/6 overflow-auto">
-                        <h2 className="text-xl font-bold mb-4">Create Itinerary</h2>
-                        <form onSubmit={handleCreateItinerary}>
-                            <label className="block mb-2">
-                            Itinerary Name:
+                <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-5xl">
+                    <h2 className="text-xl font-bold mb-4">Create Itinerary</h2>
+                    <form onSubmit={handleCreateItinerary}>
+                        <div className="grid grid-cols-3 gap-4">
+                            <label className="block">
+                                Itinerary Name:
                                 <input
                                     type="text"
                                     name="Itinerary_Name"
@@ -509,7 +566,7 @@ const TourGuideHome = () => {
                                     required
                                 />
                             </label>
-                            <label className="block mb-2">
+                            <label className="block">
                                 Timeline:
                                 <input
                                     type="text"
@@ -520,7 +577,7 @@ const TourGuideHome = () => {
                                     required
                                 />
                             </label>
-                            <label className="block mb-2">
+                            <label className="block">
                                 Duration:
                                 <input
                                     type="text"
@@ -531,7 +588,7 @@ const TourGuideHome = () => {
                                     required
                                 />
                             </label>
-                            <label className="block mb-2">
+                            <label className="block">
                                 Language:
                                 <input
                                     type="text"
@@ -542,7 +599,7 @@ const TourGuideHome = () => {
                                     required
                                 />
                             </label>
-                            <label className="block mb-2">
+                            <label className="block">
                                 Price:
                                 <input
                                     type="number"
@@ -553,7 +610,7 @@ const TourGuideHome = () => {
                                     required
                                 />
                             </label>
-                            <label className="block mb-2">
+                            <label className="block">
                                 Date:
                                 <input
                                     type="date"
@@ -564,18 +621,18 @@ const TourGuideHome = () => {
                                     required
                                 />
                             </label>
-                            <label className="block mb-2">
+                            <label className="block">
                                 Accessibility:
                                 <input
                                     type="checkbox"
                                     name="Accessibility"
                                     checked={newItineraryData.Accessibility}
                                     onChange={handleNewItineraryChange}
-                                    className="border rounded w-full px-2 py-1"
+                                    className="border rounded w-6 h-6"
                                 />
                             </label>
-                            <label className="block mb-2">
-                                Pick_Up_Point:
+                            <label className="block">
+                                Pick-Up Point:
                                 <input
                                     type="text"
                                     name="Pick_Up_Point"
@@ -585,8 +642,8 @@ const TourGuideHome = () => {
                                     required
                                 />
                             </label>
-                            <label className="block mb-2">
-                                Drop_Of_Point:
+                            <label className="block">
+                                Drop-Off Point:
                                 <input
                                     type="text"
                                     name="Drop_Of_Point"
@@ -596,9 +653,8 @@ const TourGuideHome = () => {
                                     required
                                 />
                             </label>
-                            
-                            <label className="block mb-2">
-                                Empty_Spots:
+                            <label className="block">
+                                Empty Spots:
                                 <input
                                     type="number"
                                     name="Empty_Spots"
@@ -607,8 +663,8 @@ const TourGuideHome = () => {
                                     className="border rounded w-full px-2 py-1"
                                 />
                             </label>
-                            <label className="block mb-2">
-                            Country:
+                            <label className="block">
+                                Country:
                                 <input
                                     type="text"
                                     name="Country"
@@ -618,7 +674,7 @@ const TourGuideHome = () => {
                                     required
                                 />
                             </label>
-                            <label className="block mb-2">
+                            <label className="block">
                                 P_Tag:
                                 <input
                                     type="text"
@@ -629,19 +685,17 @@ const TourGuideHome = () => {
                                     required
                                 />
                             </label>
-                            <label className="block mb-2">
-                                Created_By:
+                            <label className="block">
+                                Created By:
                                 <input
                                     type="text"
                                     name="Created_By"
                                     value={newItineraryData.Created_By}
                                     onChange={handleNewItineraryChange}
                                     className="border rounded w-full px-2 py-1"
-                                    
                                 />
                             </label>
-                            
-                            <label className="block mb-2">
+                            <label className="block">
                                 Picture:
                                 <input
                                     type="text"
@@ -649,27 +703,31 @@ const TourGuideHome = () => {
                                     value={newItineraryData.Picture}
                                     onChange={handleNewItineraryChange}
                                     className="border rounded w-full px-2 py-1"
-                                    
                                 />
                             </label>
+                        </div>
+                        <div className="flex justify-end gap-2 mt-4">
                             <button
                                 type="submit"
-                                className="mt-4 bg-green-500 text-white px-4 py-2 rounded"
+                                className="bg-green-500 text-white px-4 py-2 rounded"
                             >
                                 Create Itinerary
                             </button>
                             <button
                                 onClick={closeCreateModal}
-                                className="mt-4 ml-2 bg-gray-500 text-white px-4 py-2 rounded"
+                                className="bg-gray-500 text-white px-4 py-2 rounded"
                                 type="button"
                             >
                                 Close
                             </button>
-                        </form>
-                    </div>
+                        </div>
+                    </form>
                 </div>
+            </div>
+            
+            
             )}
-<div>
+        <div>
             <h2>Activate or Deactivate Itinerary Accessibility</h2>
             <form onSubmit={handleSubmit}>
                 <label>

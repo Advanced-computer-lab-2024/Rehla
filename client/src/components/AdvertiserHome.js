@@ -206,7 +206,7 @@ const AdvertiserHome = () => {
                                 <div
                                 key={activity._id}
                                 className="bg-blue-50 rounded-lg shadow-md overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-lg"
-                                
+                                onClick={() => handleActivityClick(activity)}
                             >
                                 <img
                                     src={activity.Picture}
