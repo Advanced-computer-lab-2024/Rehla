@@ -1308,16 +1308,27 @@ export const createPromoCode = async (Code, Discount, Expiry,CreatedBy ,type) =>
     }
 };
 
-export const addDeliveryAdress=async(addressdata)=>{
-    try{
-        const response = await axios.post(`${API_URL}/addTouristAddress`,addressdata);
-        return response.data;
+export const addDeliveryAddress = async (addressData) => {
+    try {
+      const response = await axios.post(`${API_URL}/addTouristAddress`, addressData);
+      return response.data;
+    } catch (error) {
+      console.error('Error adding address:', error);
+      
+      // Provide more detailed error handling
+      if (error.response) {
+        // Server responded with a status other than 2xx
+        throw new Error(error.response.data.message || 'Failed to add address. Please try again.');
+      } else if (error.request) {
+        // Request was made but no response received
+        throw new Error('No response from server. Please check your internet connection.');
+      } else {
+        // Something else happened during request setup
+        throw new Error('An unexpected error occurred. Please try again.');
+      }
     }
-    catch(error){
-        console.error('Error adding address:', error);
-        throw error;
-    }
-};
+  };
+  
 export const saveEvent = async (eventData) => {
     try {
         const response = await axios.post(`${API_URL}/saveEvent`, eventData);
