@@ -490,78 +490,7 @@ const TouristHome = () => {
             </div>
         </div>
 
-    <div className="container mx-auto p-4">
-            <h2 className="text-xl font-semibold mb-4 text-gray-800">Submit a Complaint</h2>
-            <form onSubmit={handleComplaintSubmit}>
-                <div className="mb-4">
-                    <label htmlFor="complaint-title" className="block text-gray-700 font-medium mb-2">Title:</label>
-                    <input
-                        id="complaint-title"
-                        type="text"
-                        value={complaintTitle}
-                        onChange={(e) => setComplaintTitle(e.target.value)}
-                        required
-                        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    />
-                </div>
-                <div className="mb-4">
-                    <label htmlFor="complaint-body" className="block text-gray-700 font-medium mb-2">Body:</label>
-                    <textarea
-                        id="complaint-body"
-                        value={complaintBody}
-                        onChange={(e) => setComplaintBody(e.target.value)}
-                        required
-                        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                        rows="4"
-                    ></textarea>
-                </div>
-                <button
-                    type="submit"
-                    className="w-full bg-indigo-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-indigo-500 transition-all duration-300"
-                >
-                    Submit Complaint
-                </button>
-            </form>
-            <button
-                type="submit"
-                className="w-full bg-indigo-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-indigo-500 transition-all duration-300"
-                onClick={handleFetchComplaintByEmail}
-            >
-                My Complaint
-            </button>
-
-            {/* Loading indicator */}
-            {isLoading && <p>Loading complaints...</p>}
-
-            {/* Error handling */}
-            {errorMessage && <p>Error: {errorMessage}</p>}
-
-            {/* No complaints found message */}
-            {showComplaints && complaintsList.length === 0 && !isLoading && <p>No complaints found.</p>}
-
-            {/* Display complaints in a table */}
-            {showComplaints && complaintsList.length > 0 && (
-                <table className="min-w-full border border-gray-200 mt-4">
-                    <thead>
-                        <tr>
-                            <th className="border px-4 py-2">Title</th>
-                            <th className="border px-4 py-2">Body</th>
-                            <th className="border px-4 py-2">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {complaintsList.map((complaint) => (
-                            <tr key={complaint._id}>
-                                <td className="border px-4 py-2">{complaint.Title}</td>
-                                <td className="border px-4 py-2">{complaint.Body}</td>
-                                <td className="border px-4 py-2">{complaint.Status}</td>
-                               
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            )}
-        </div>
+    
 
         <div className="max-w-md mx-auto p-6 bg-gray-50 rounded-lg shadow-md mt-8">
             <h2 className="text-xl font-semibold mb-4 text-gray-800">Redeem Points</h2>
@@ -680,37 +609,6 @@ const TouristHome = () => {
 
   {/* Message Display */}
   {messagee && <p className="text-center text-sm text-green-500 mt-4">{messagee}</p>}
-</div>
-
-{/* Adding a new adress */}
-<div>
-    <h2>add new address</h2>
-    <form>
-    <div>
-                    <label>Email:</label>
-                    <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
-                </div>
-                <div>
-                    <label>Address(es):</label>
-                    <input
-                        type="text"
-                        value={address}
-                        onChange={(e) => setAddress(e.target.value)}
-                        placeholder="Separate multiple addresses with commas"
-                        required
-                    />
-                </div> 
-                <button onClick={handleNewAddress}>
-                    add new address
-                </button>
-    </form>
-    {succes && <p style={{ color: 'green' }}>{succes}</p>}
-    {errornew && <p style={{ color: 'red' }}>{errornew}</p>}
 </div>
 
 {/* Bookmarking an event */}

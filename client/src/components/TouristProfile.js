@@ -1,7 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getTouristProfile, updateTouristProfile, uploadProfilePicture , requestDeleteProfile
-  ,viewSavedEvents,addDeliveryAddress
+  ,viewSavedEvents,addDeliveryAddress,viewComplaintByEmail,createComplaint
 } from '../services/api'; // Import your new upload function
 import { Link } from 'react-router-dom';
 import logo from '../images/logo.png';
@@ -22,6 +23,7 @@ const getBadgeImage = (Badge) => {
 
 
 const TouristProfile = () => {
+  const navigate = useNavigate();
   const [tourist, setTourist] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
@@ -48,6 +50,31 @@ const TouristProfile = () => {
     const [succes,setSuccess]=useState('');
     const [errornew,setErrornew]=useState('');
     const [email, setEmail] = useState('');
+
+    const[addresssection , setaddresssection] = useState('');
+    const[complaintsection , setcomplaintsection] = useState('');
+
+    const [complaintsList, setComplaintsList] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(null);
+    const [showComplaints, setShowComplaints] = useState(false); 
+    const [complaintTitle, setComplaintTitle] = useState('');
+    const [complaintBody, setComplaintBody] = useState('');
+    const [error, setError] = useState(null);
+
+    const handleaddress = async ()=>{
+        setaddresssection(true);
+        setcomplaintsection(false);
+    }
+
+    const handlecomplaints = async ()=>{
+      setaddresssection(false);
+      setcomplaintsection(true);
+  }
+
+  const handleActivityClick = (activity) => {
+    navigate(`/activity-details/${encodeURIComponent(activity.Name)}`); // Encode to make the URL safe
+  };
 
   const handleDeleteRequest = async () => {
     try {
@@ -121,6 +148,44 @@ const TouristProfile = () => {
     setFormData({ ...formData, [name]: value });
   };
 
+  
+
+  const handleComplaintSubmit = async (e) => {
+    e.preventDefault();
+    try {
+        const email = localStorage.getItem('email');
+        const result = await createComplaint(email, complaintTitle, complaintBody);
+        console.log('Complaint submitted:', result);
+        setComplaintTitle('');
+        setComplaintBody('');
+        alert('Complaint submitted successfully!');
+    } catch (error) {
+        console.error('Error submitting complaint:', error);
+        setError('Failed to submit the complaint. Please try again later.');
+    }
+};
+const handleFetchComplaintByEmail = async () => {
+  setIsLoading(true);
+  setErrorMessage(null);
+  setShowComplaints(false); // Hide previous complaints list before fetching new data
+
+  try {
+      const storedEmail = localStorage.getItem('email');
+      const complaintData = await viewComplaintByEmail(storedEmail);
+
+      if (complaintData.length === 0) {
+          alert('No complaints found for this email.');
+      } else {
+          setComplaintsList(complaintData); // Set complaints list state
+          setShowComplaints(true); // Show complaints table
+      }
+  } catch (err) {
+      setErrorMessage('Error fetching complaint by email.');
+  } finally {
+      setIsLoading(false);
+  }
+};
+
   const handleSave = async () => {
     try {
       await updateTouristProfile(formData);
@@ -164,7 +229,7 @@ const TouristProfile = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col justify-between bg-gray-100">
+    <div className="min-h-screen flex flex-col justify-between">
       <div className="w-full bg-brandBlue shadow-md p-4 flex justify-between items-center">
         <img src={logo} alt="Logo" className="w-16" />
         <ul className="nav-links flex-grow flex justify-center space-x-8">
@@ -178,7 +243,7 @@ const TouristProfile = () => {
       </div>
       <div className="flex">
   {/* First Division (Profile Section) */}
-  <div className="w-3/5 ml-6 rounded-lg shadow-lg h-[1000px]">
+  <div className="w-3/5 rounded-lg shadow-lg">
     {/* Profile Picture */}
     <div className="relative w-full flex items-center justify-center">
       {/* Cover Picture */}
@@ -371,42 +436,183 @@ const TouristProfile = () => {
         </div>
       )}
     </div>
-          {!isEditing && (
-            <div>
-            <div className="border-t-4 border-brandBlue w-full mx-auto my-6 rounded-lg items-center"></div>
-              <div className="bg-white w-3/4 shadow-md rounded-lg p-6 mt-6 ">
-                <h2 className="text-2xl font-semibold text-brandBlue mb-4">Add a New Address</h2>
-                <form className="space-y-4">
-              
-                  <div>
-                    <label className="block text-gray-700 text-sm font-medium mb-1">Address:</label>
-                    <input
-                      type="text"
-                      value={address}
-                      onChange={(e) => setAddress(e.target.value)}
-                      placeholder="Enter a new address"
-                      required
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
-                    />
-                  </div>
-                  <div className="flex justify-end">
-                    <button
-                      onClick={handleNewAddress}
-                      className="bg-logoOrange text-white font-medium py-2 px-6 rounded-lg hover:bg-opacity-90 transition duration-300"
-                    >
-                      Add New Address
-                    </button>
-                  </div>
-                </form>
-                {succes && <p className="mt-4 text-green-600 font-medium">{succes}</p>}
-                {errornew && <p className="mt-4 text-red-600 font-medium">{errornew}</p>}
-              </div>
-              </div>
-            )}
+    {!isEditing && (
+   <div>
+    
+
+    {/* Divider */}
+    <div className="border-t border-brandBlue w-full mx-auto rounded-lg items-center mt-4"></div>
+    {/* Navbar */}
+    <nav className="bg-gray-100 text-white px-6 py-4 flex justify-between items-center shadow-md">
+      <div className="flex space-x-4">
+        <a
+          href="#addresss"
+          className=" text-brandBlue hover:text-logoOrange transition duration-300"
+          onClick={handleaddress}
+        >
+          Address
+        </a>
+        <a
+          href="#complaints"
+          className=" text-brandBlue hover:text-logoOrange transition duration-300"
+          onClick={handlecomplaints}
+        >
+          Complaints
+        </a>
+      </div>
+    </nav>
+    {addresssection && (
+      <div className="flex items-center justify-center bg-gray-100">
+      <div className="bg-white w-3/4 shadow-md rounded-lg p-6 mb-6">
+        <h2 className="text-2xl font-semibold text-brandBlue mb-4">Add a New Address</h2>
+        <form className="space-y-4">
+          <div>
+            <label className="block text-gray-700 text-sm font-medium mb-1">Address:</label>
+            <input
+              type="text"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              placeholder="Enter a new address"
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+            />
+          </div>
+          <div className="flex justify-center">
+            <button
+              onClick={handleNewAddress}
+              className="bg-logoOrange text-white font-medium py-2 px-6 rounded-lg hover:bg-opacity-90 transition duration-300"
+            >
+              Add New Address
+            </button>
+          </div>
+        </form>
+        {succes && <p className="mt-4 text-green-600 font-medium">{succes}</p>}
+        {errornew && <p className="mt-4 text-red-600 font-medium">{errornew}</p>}
+      </div>
+    </div>
+    )}
+
+{complaintsection && (
+  <div className="flex items-center justify-center bg-gray-100">
+    <div className="bg-white w-3/4 shadow-md rounded-lg p-6 mb-6">
+      <h2 className="text-2xl font-semibold text-brandBlue mb-4">Submit a Complaint</h2>
+      <form onSubmit={handleComplaintSubmit} className="space-y-4">
+        <div>
+          <label
+            htmlFor="complaint-title"
+            className="block text-gray-700 text-sm font-medium mb-1"
+          >
+            Title:
+          </label>
+          <input
+            id="complaint-title"
+            type="text"
+            value={complaintTitle}
+            onChange={(e) => setComplaintTitle(e.target.value)}
+            required
+            placeholder="Enter complaint title"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+          />
+        </div>
+        <div>
+          <label
+            htmlFor="complaint-body"
+            className="block text-gray-700 text-sm font-medium mb-1"
+          >
+            Body:
+          </label>
+          <textarea
+            id="complaint-body"
+            value={complaintBody}
+            onChange={(e) => setComplaintBody(e.target.value)}
+            required
+            placeholder="Enter complaint details"
+            rows="4"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+          ></textarea>
+        </div>
+        <button
+          type="submit"
+          className="w-full bg-logoOrange text-white font-medium py-2 px-6 rounded-lg hover:bg-opacity-90 transition duration-300"
+        >
+          Submit Complaint
+        </button>
+      </form>
+      <button
+        type="button"
+        className="w-full mt-4 bg-brandBlue text-white font-medium py-2 px-6 rounded-lg hover:bg-opacity-90 transition duration-300"
+        onClick={handleFetchComplaintByEmail}
+      >
+        My Complaint
+      </button>
+
+      {/* Loading indicator */}
+      {isLoading && <p className="mt-4 text-gray-500">Loading complaints...</p>}
+
+      {/* Error handling */}
+      {errorMessage && (
+        <p className="mt-4 text-red-600 font-medium">Error: {errorMessage}</p>
+      )}
+
+      {/* No complaints found message */}
+      {showComplaints && complaintsList.length === 0 && !isLoading && (
+        <p className="mt-4 text-gray-700 font-medium">No complaints found.</p>
+      )}
+
+      {/* Display complaints in a table */}
+      {showComplaints && complaintsList.length > 0 && (
+        <div className="mt-6 overflow-x-auto">
+          <table className="min-w-full border border-gray-200">
+            <thead>
+              <tr className="bg-gray-100">
+                <th className="border px-4 py-2 text-left text-gray-700 font-medium">
+                  Title
+                </th>
+                <th className="border px-4 py-2 text-left text-gray-700 font-medium">
+                  Body
+                </th>
+                <th className="border px-4 py-2 text-left text-gray-700 font-medium">
+                  Status
+                </th>
+                <th className="border px-4 py-2 text-left text-gray-700 font-medium">
+                  Reply
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {complaintsList.map((complaint) => (
+                <tr key={complaint._id}>
+                  <td className="border px-4 py-2">{complaint.Title}</td>
+                  <td className="border px-4 py-2">{complaint.Body}</td>
+                  <td
+                    className={`border px-4 py-2 ${
+                      complaint.Status === "resolved"
+                        ? "text-green-600"
+                        : "text-red-600"
+                    }`}
+                  >
+                    {complaint.Status}
+                  </td>
+                  <td className="border px-4 py-2">{complaint.Reply}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  </div>
+)}
+
+    
+  </div>
+)}
+
           
           </div>
+          <div className="border-l border-brandBlue "></div>
 
-  {/* Second Division (Saved Events Section) */}
+            {/* Second Division (Saved Events Section) */}
                 <div className="w-2/5 p-4 bg-white rounded-lg shadow-md">
                 <h3 className="text-lg font-bold text-center mb-4">Saved Events</h3>
                 {events.length > 0 && (
@@ -414,12 +620,13 @@ const TouristProfile = () => {
                     <ul className="list-inside space-y-4 text-sm ">
                       {events.map((event, index) => (
                         <li key={index} className="text-center">
-                          <div className="w-full h-40 mx-auto bg-gray-200 border border-gray-300 rounded-lg overflow-hidden">
+                          <div className="w-full h-40 mx-auto bg-gray-200 border border-gray-300 rounded-lg overflow-hidden duration-300 ease-in-out hover:scale-105"
+                          onClick={() =>handleActivityClick(event)}>
                             {/* Render the Picture field */}
                             <img
                               src={event.Picture || 'default-event.jpg'} // Use event.Picture for the image
                               alt={event.Name}
-                              className="w-full h-full object-cover"
+                              className="w-full h-full object-cover duration-300 ease-in-out hover:scale-105"
                             />
                           </div>
                           <p className="mt-2 text-gray-700 font-semibold">{event.Name}</p>
