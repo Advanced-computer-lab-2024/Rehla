@@ -75,11 +75,12 @@ const AdvertiserHome = () => {
 
     
 
-    useEffect(() => {
-        const email = localStorage.getItem('email');
+    
+        
 
         const fetchActivityRevenue = async () => {
             try {
+                const email = localStorage.getItem('email');
                 setLoading(true);
                 const reportsData = await calculateActivityRevenue(email);
                 setReports(reportsData);
@@ -92,8 +93,7 @@ const AdvertiserHome = () => {
             }
         };
 
-        fetchActivityRevenue();
-    }, []);
+     
 
     
     
@@ -635,6 +635,7 @@ const AdvertiserHome = () => {
         </div>
         <div>
             <h1>Advertiser Home</h1>
+            <button onClick={fetchActivityRevenue}>report</button>
 
             {loading && <p>Loading activity revenue...</p>}
             {error && <p style={{ color: 'red' }}>{error}</p>}

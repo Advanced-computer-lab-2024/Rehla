@@ -5365,6 +5365,18 @@ const calculateActivityRevenue = async (req, res) => {
                     ? (paidCount * (activitym.Price - (activitym.Discount_Percent / 100 * activitym.Price))) * 0.9
                     : 0;
 
+            // Check if a report for this activity already exists
+            const existingReport = await advertiser_salesreport.findOne({
+                Activity: activitym.Name,
+                Email: email,
+                createdAt: { $gte: new Date(new Date().setHours(0, 0, 0, 0)) }, // Same day constraint
+            });
+
+            if (existingReport) {
+                console.log(`Skipping activity ${activitym.Name}: report already exists.`);
+                continue; // Skip this activity if a report already exists
+            }
+
             // Create the sales report for the activity
             const report = await advertiser_salesreport.create({
                 Email: email,
@@ -5392,6 +5404,7 @@ const calculateActivityRevenue = async (req, res) => {
         });
     }
 };
+
 
 
 const getAllSalesReports = async (req, res) => {
