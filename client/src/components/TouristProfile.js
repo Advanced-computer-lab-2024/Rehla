@@ -372,17 +372,19 @@ const TouristProfile = () => {
       )}
     </div>
           {!isEditing && (
-              <div className="bg-white shadow-md rounded-lg p-6 mt-6">
-                <h2 className="text-2xl font-semibold text-brandBlue mb-4">Add New Address</h2>
+            <div>
+            <div className="border-t-4 border-brandBlue w-full mx-auto my-6 rounded-lg items-center"></div>
+              <div className="bg-white w-3/4 shadow-md rounded-lg p-6 mt-6 ">
+                <h2 className="text-2xl font-semibold text-brandBlue mb-4">Add a New Address</h2>
                 <form className="space-y-4">
               
                   <div>
-                    <label className="block text-gray-700 text-sm font-medium mb-1">Address(es):</label>
+                    <label className="block text-gray-700 text-sm font-medium mb-1">Address:</label>
                     <input
                       type="text"
                       value={address}
                       onChange={(e) => setAddress(e.target.value)}
-                      placeholder="Separate multiple addresses with commas"
+                      placeholder="Enter a new address"
                       required
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
                     />
@@ -399,8 +401,9 @@ const TouristProfile = () => {
                 {succes && <p className="mt-4 text-green-600 font-medium">{succes}</p>}
                 {errornew && <p className="mt-4 text-red-600 font-medium">{errornew}</p>}
               </div>
+              </div>
             )}
-
+          
           </div>
 
   {/* Second Division (Saved Events Section) */}
