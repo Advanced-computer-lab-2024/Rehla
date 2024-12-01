@@ -7,13 +7,14 @@ import {
     deleteActivityByAdvertiser,
     updateActivityByAdvertiser,
     getAllCreatedByEmail,
-    calculateActivityRevenue
+    calculateActivityRevenue, // Import the new function
 } from '../services/api';
 
 const AdvertiserHome = () => {
     const [data, setData] = useState({
         activities: [],
     });
+    const [revenueData, setRevenueData] = useState([]);
     const [selectedActivity, setSelectedActivity] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -37,10 +38,6 @@ const AdvertiserHome = () => {
         Created_By: '',
         Picture: '',
     });
-    const [email, setEmail] = useState(null); // State for advertiser email
-    const [activityDataa, setActivityDataa] = useState(null); // State to store activity details
-    const [loadingg, setLoadingg] = useState(false); // State for loading spinner
-    const [errorr, setErrorr] = useState(null); // State for error messages
 
     useEffect(() => {
         const email = localStorage.getItem('email');
@@ -51,27 +48,45 @@ const AdvertiserHome = () => {
             setLoading(false);
         }
     }, []);
-
     useEffect(() => {
-        const storedEmail = localStorage.getItem('email'); // Get email from localStorage
-        if (storedEmail) {
-            setEmail(storedEmail);
-        } else {
-            setErrorr('No email found in local storage. Please sign in again.');
+        // Ensure revenue data is calculated and updated whenever activities change
+        if (data.activities.length > 0) {
+            calculateRevenues(data.activities);  // Call calculateRevenues when activities are available
         }
-    }, []);
+    }, [data.activities]);  // This effect will run whenever data.activities changes
 
     const fetchActivities = async (email) => {
         setLoading(true);
         try {
             const result = await getAllCreatedByEmail(email);
             setData(result.data);
+            // Now calculate revenue for each activity
+            calculateRevenues(result.data);
         } catch (err) {
             setError(err);
         } finally {
             setLoading(false);
         }
     };
+
+    const calculateRevenues = async (activities) => {
+        try {
+            const revenuePromises = activities.map(async (activity) => {
+                const revenueResponse = await calculateActivityRevenue(activity.Name);
+                return {
+                    activityName: activity.Name,
+                    revenue: revenueResponse.revenue, // Make sure `revenueResponse` contains this field
+                    sales: revenueResponse.sales,     // Same with `sales`
+                };
+            });
+    
+            const revenues = await Promise.all(revenuePromises);
+            setRevenueData(revenues);
+        } catch (err) {
+            console.error("Error calculating revenue for activities:", err);
+        }
+    };
+    
 
     const handleActivityClick = (activity) => {
         setSelectedActivity(activity);
@@ -134,7 +149,6 @@ const AdvertiserHome = () => {
             Tag: '',
             Created_By: localStorage.getItem('email') || '' // Assuming Created_By is the email of the advertiser
         });
-        //setLocationData(''); // Reset location data
         setCreateModalOpen(true);
     };
 
@@ -159,26 +173,6 @@ const AdvertiserHome = () => {
             closeCreateModal();
         } catch (error) {
             console.error('Error creating activity:', error);
-        }
-    };
-
-    const handleCalculateRevenue = async () => {
-        if (!email) {
-            setErrorr('Email is required to calculate revenue.');
-            return;
-        }
-
-        setErrorr(null); // Clear previous errors
-        setLoadingg(true); // Show loading spinner
-
-        try {
-            const revenueData = await calculateActivityRevenue(email);
-            setActivityDataa(revenueData); // Store the detailed response from the server
-        } catch (error) {
-            console.error('Error calculating revenue:', error.message);
-            setErrorr(error.message || 'Failed to calculate revenue.');
-        } finally {
-            setLoadingg(false); // Hide loading spinner
         }
     };
 
@@ -585,40 +579,22 @@ const AdvertiserHome = () => {
                 </div>
             )}
             <div>
-            <h1>Advertiser Dashboard</h1>
-            {email ? (
+            {/* Render your activity list with calculated revenue here */}
+            <h1>Advertiser Home</h1>
+            {loading ? <p>Loading activities...</p> : (
                 <div>
-                    <p>Signed in as: <strong>{email}</strong></p>
-                    <button onClick={handleCalculateRevenue} disabled={loadingg}>
-                        {loadingg ? 'Calculating...' : 'Calculate Revenue'}
-                    </button>
-                    {errorr && <p style={{ color: 'red' }}>{errorr}</p>}
-                    {activityDataa && (
-                        <div>
-                            <h2>Total Revenue</h2>
-                            <p>${activityDataa.totalRevenue.toFixed(2)}</p>
-                            <h3>Activity Details</h3>
-                            <ul>
-                                {activityDataa.activityDetails.map((activity, index) => (
-                                    <li key={index}>
-                                        <strong>{activity.activityName}</strong> - 
-                                        Price per unit: ${activity.pricePerUnit.toFixed(2)}, 
-                                        Paid bookings: {activity.paidCount}, 
-                                        Revenue: ${activity.revenue.toFixed(2)}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    )}
-                    {!activityDataa && !loadingg && (
-                        <p>No revenue data available. Click "Calculate Revenue" to fetch data.</p>
-                    )}
+                    {data.activities.map((activity) => (
+    <div key={activity.Name}>
+        <h3>{activity.Name}</h3>
+        {/* Check if revenue data exists */}
+        <p>Revenue: {revenueData.find(rev => rev.activityName === activity.Name)?.revenue || 'Calculating...'}</p>
+        
+    </div>
+))}
+
                 </div>
-            ) : (
-                <p style={{ color: 'red' }}>Please sign in to access this feature.</p>
             )}
         </div>
-
         </div>
     );
 };

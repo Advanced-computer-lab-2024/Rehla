@@ -1258,18 +1258,18 @@ export const fetchSalesReport = async (sellerName) => {
     }
 };
 
-export const calculateActivityRevenue = async (email) => {
+export const calculateActivityRevenue = async (activityName) => {
     try {
-        const response = await axios.post(`${API_URL}/calculateActivityRevenue`, { email });
-        return response.data; // Return the response data from the server
+        const response = await axios.post(`${API_URL}/calculateActivityRevenue`, { activityName });
+        console.log('Revenue response:', response.data);  // Add this line for debugging
+        return response.data;
     } catch (error) {
-        console.error('Error calculating activity revenue:', error);
-        const errorMessage = error.response
-            ? error.response.data
-            : { message: 'Network error' };
-        throw errorMessage; // Rethrow the error for handling in the calling component
+        console.error('Error calculating revenue:', error);
+        throw error;
     }
 };
+
+
 
 
 
