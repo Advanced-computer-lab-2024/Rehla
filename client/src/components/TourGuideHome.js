@@ -8,7 +8,8 @@ import {
     getAllCreatedByEmail,
     Itineraryactivation ,
     calculateItineraryRevenue,
-    fetchAllSalesReportsitinemail
+    fetchAllSalesReportsitinemail,
+    fetchFilteredTourGuideSalesReport
 } from '../services/api';
 
 const TourGuideHome = () => {
@@ -50,6 +51,10 @@ const TourGuideHome = () => {
     const [salesReports, setSalesReports] = useState([]);
     const [messagee, setMessagee] = useState('');
     const [reports, setReports] = useState([]);
+    const [itineraryFilter, setItineraryFilter] = useState("");
+    const [startDate, setStartDate] = useState("");
+    const [endDate, setEndDate] = useState("");
+    const [month, setMonth] = useState("");
 
 
 
@@ -249,6 +254,20 @@ const TourGuideHome = () => {
             setErrorr(errorr.message || 'Failed to calculate revenue.');
         } finally {
             setLoadingg(false); // Hide loading spinner
+        }
+    };
+
+    const handleFilterFetchSalesReports = async () => {
+        try {
+            setLoading(true);
+            const email = localStorage.getItem('email');
+            const reports = await fetchFilteredTourGuideSalesReport(email, itineraryFilter, startDate, endDate, month); // Send filters to API
+            setSalesReports(reports);
+            setLoading(false);
+        } catch (err) {
+            setMessagee("Error fetching filtered sales reports.");
+            setError(err);
+            setLoading(false);
         }
     };
 
@@ -821,59 +840,129 @@ const TourGuideHome = () => {
         </div>
         
         <div>
-                <h2>Sales Reports - Itineraries</h2>
-                <button
-                    onClick={handleFetchSalesReports}
-                    style={{
-                        marginBottom: "10px",
-                        padding: "10px 15px",
-                        backgroundColor: "#007bff",
-                        color: "white",
-                        border: "none",
-                        cursor: "pointer",
-                    }}
-                >
-                    Fetch All Itinerary Reports
-                </button>
-                {salesReports.length > 0 ? (
-                    <table
-                        style={{
-                            width: "100%",
-                            borderCollapse: "collapse",
-                            margin: "20px 0",
-                            fontSize: "1rem",
-                            textAlign: "left",
-                        }}
-                    >
-                        <thead>
-                            <tr>
-                                <th style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f4f4f4" }}>Itinerary</th>
-                                <th style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f4f4f4" }}>Revenue</th>
-                                <th style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f4f4f4" }}>Sales</th>
-                                <th style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f4f4f4" }}>Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {salesReports.map((report) => (
-                                <tr
-                                    key={report.Report_no}
-                                    style={{
-                                        border: "1px solid #ddd",
-                                        backgroundColor: report.Report_no % 2 === 0 ? "#f9f9f9" : "white",
-                                    }}
-                                >
-                                    <td style={{ border: "1px solid #ddd", padding: "8px" }}>{report.Itinerary}</td>
-                                    <td style={{ border: "1px solid #ddd", padding: "8px" }}>${report.Revenue}</td>
-                                    <td style={{ border: "1px solid #ddd", padding: "8px" }}>{report.Sales}</td>
-                                    <td style={{ border: "1px solid #ddd", padding: "8px" }}>{new Date(report.createdAt).toLocaleDateString()}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                ) : (
-                    <p>No sales reports available.</p>
-                )}
-            </div>
+    <h1>Tour Guide Home</h1>
+    {loading && <p>Loading itineraries...</p>}
+    {error && <p>Error: {error.message}</p>}
+    {messagee && <p>{messagee}</p>}
+
+    {/* Filter Section */}
+    <div>
+        <h2>Filter Sales Reports</h2>
+        <div>
+            <label htmlFor="itineraryFilter">Itinerary:</label>
+            <input
+                type="text"
+                id="itineraryFilter"
+                value={itineraryFilter}
+                onChange={(e) => setItineraryFilter(e.target.value)}
+                placeholder="Enter itinerary name"
+                style={{ margin: "5px", padding: "5px" }}
+            />
+        </div>
+        <div>
+            <label htmlFor="startDate">Start Date:</label>
+            <input
+                type="date"
+                id="startDate"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                style={{ margin: "5px", padding: "5px" }}
+            />
+        </div>
+        <div>
+            <label htmlFor="endDate">End Date:</label>
+            <input
+                type="date"
+                id="endDate"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                style={{ margin: "5px", padding: "5px" }}
+            />
+        </div>
+        <div>
+            <label htmlFor="month">Month:</label>
+            <input
+                type="month"
+                id="month"
+                value={month}
+                onChange={(e) => setMonth(e.target.value)}
+                style={{ margin: "5px", padding: "5px" }}
+            />
+        </div>
+        <button
+            onClick={handleFilterFetchSalesReports}
+            style={{
+                marginTop: "10px",
+                padding: "10px 15px",
+                backgroundColor: "#007bff",
+                color: "white",
+                border: "none",
+                cursor: "pointer",
+            }}
+        >
+            Apply Filters
+        </button>
+    </div>
+
+    {/* Itineraries Section */}
+    <div>
+        <h2>Sales Reports - Itineraries</h2>
+        <button
+            onClick={handleFetchSalesReports}
+            style={{
+                marginBottom: "10px",
+                padding: "10px 15px",
+                backgroundColor: "#007bff",
+                color: "white",
+                border: "none",
+                cursor: "pointer",
+            }}
+        >
+            Fetch All Itinerary Reports
+        </button>
+        {salesReports.length > 0 ? (
+            <table
+                style={{
+                    width: "100%",
+                    borderCollapse: "collapse",
+                    margin: "20px 0",
+                    fontSize: "1rem",
+                    textAlign: "left",
+                }}
+            >
+                <thead>
+                    <tr>
+                        <th style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f4f4f4" }}>Itinerary</th>
+                        <th style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f4f4f4" }}>Revenue</th>
+                        <th style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f4f4f4" }}>Sales</th>
+                        <th style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f4f4f4" }}>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {salesReports.map((report) => (
+                        <tr
+                            key={report.Report_no}
+                            style={{
+                                border: "1px solid #ddd",
+                                backgroundColor: report.Report_no % 2 === 0 ? "#f9f9f9" : "white",
+                            }}
+                        >
+                            <td style={{ border: "1px solid #ddd", padding: "8px" }}>{report.Itinerary}</td>
+                            <td style={{ border: "1px solid #ddd", padding: "8px" }}>${report.Revenue}</td>
+                            <td style={{ border: "1px solid #ddd", padding: "8px" }}>{report.Sales}</td>
+                            <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+                                {new Date(report.createdAt).toLocaleDateString()}
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        ) : (
+            <p>No sales reports available.</p>
+        )}
+    </div>
+</div>
+
             <div>
             
             <button onClick={fetchitinRevenue}>report</button>
