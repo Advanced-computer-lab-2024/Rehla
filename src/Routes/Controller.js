@@ -662,30 +662,29 @@ const registerTourist = async (req, res) => {
 
 const redeemPoints = async (req, res) => {
     try {
-        const { Email } = req.body;
+        const { Email, pointsToRedeem } = req.body;
 
-        if (!Email) {
-            return res.status(400).json({ error: 'Email is required.' });
+        if (!Email || pointsToRedeem === undefined) {
+            return res.status(400).json({ error: 'Email and points to redeem are required.' });
         }
 
+        // Find the tourist by email
         const tourist = await Tourist.findOne({ Email });
 
         if (!tourist) {
             return res.status(400).json({ error: 'Email not found.' });
         }
 
-        const pointsToRedeem = tourist.Points;
-
-        // Check if there are no points to redeem
-        if (pointsToRedeem === 0) {
-            return res.status(200).json({ message: 'No points available to redeem.' });
+        // Check if the pointsToRedeem is greater than the available points
+        if (pointsToRedeem > tourist.Points) {
+            return res.status(400).json({ error: 'Not enough points to redeem.' });
         }
 
-        const pointsToWallet = pointsToRedeem / 100;
+        // Calculate the equivalent wallet amount
+        const walletAmount = pointsToRedeem / 100; // Assuming 1 point = 1/100th of a wallet unit
 
-        // Reset points to 0 and add points to wallet
-        await tourist.updateOne({ $set: { Points: 0 } });
-        await tourist.updateOne({ $inc: { Wallet: pointsToWallet } });
+        // Update the tourist's points and wallet
+        await tourist.updateOne({ $inc: { Points: -pointsToRedeem, Wallet: walletAmount } });
 
         return res.status(201).json({ message: 'Points redeemed successfully' });
     } catch (error) {

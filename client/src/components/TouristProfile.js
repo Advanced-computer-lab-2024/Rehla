@@ -1,8 +1,8 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getTouristProfile, updateTouristProfile, uploadProfilePicture , requestDeleteProfile
-  ,addDeliveryAddress,viewComplaintByEmail,createComplaint,viewSavedActivities,viewSavedItineraries,createPreference 
+  ,addDeliveryAddress,viewComplaintByEmail,createComplaint,viewSavedActivities,viewSavedItineraries,createPreference,
+  redeemPoints
 } from '../services/api'; // Import your new upload function
 import { Link } from 'react-router-dom';
 import logo from '../images/logo.png';
@@ -50,6 +50,7 @@ const TouristProfile = () => {
   const[addresssection , setaddresssection] = useState('');
   const[complaintsection , setcomplaintsection] = useState('');
   const[prefsection , setprefsection] = useState('');
+  const[pointssection , setpointssection] = useState('');
 
   const [complaintsList, setComplaintsList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -77,6 +78,7 @@ const TouristProfile = () => {
   budgetFriendly: false
 });
 const [messagee, setMessagee] = useState('');
+const [pointsToRedeem, setPointsToRedeem] = useState('');
 
    // Handle form submission to create preference
 const handleSubmit = async (e) => {
@@ -161,18 +163,29 @@ const handleaddress = async ()=>{
         setaddresssection(true);
         setcomplaintsection(false);
         setprefsection(false);
+        setpointssection(false);
 }
 
 const handlecomplaints = async ()=>{
       setcomplaintsection(true);
       setaddresssection(false);
       setprefsection(false);
+      setpointssection(false);
 }
 
 const handlepreference = async ()=>{
     setprefsection(true);
     setaddresssection(false);
     setcomplaintsection(false);
+    setpointssection(false);
+}
+
+const handlepoints =async()=>{
+  setprefsection(false);
+  setaddresssection(false);
+  setcomplaintsection(false);
+  setpointssection(true);
+
 }
 
 const handleActivityClick = (activity) => {
@@ -310,6 +323,28 @@ const handleUploadProfilePicture = async () => {
       console.error('Error uploading profile picture:', error);
       alert('Failed to upload profile picture.');
     }
+};
+
+const handleRedeemPoints = async () => {
+  try {
+    const email = localStorage.getItem('email');
+      if (!email || !pointsToRedeem) {
+          setMessage('Please enter a valid email and points to redeem.');
+          return;
+      }
+
+      // Ensure pointsToRedeem is a valid number and greater than 0
+      if (isNaN(pointsToRedeem) || pointsToRedeem <= 0) {
+          setMessage('Please enter a valid amount of points to redeem.');
+          return;
+      }
+
+      const data = await redeemPoints(email, pointsToRedeem);
+      setMessage(data.message || 'Points redeemed successfully!');
+  } catch (error) {
+      console.error('Error redeeming points:', error);
+      setMessage(error.message || 'Failed to redeem points.');
+  }
 };
 
 if (!tourist) {
@@ -554,6 +589,14 @@ if (!tourist) {
           onClick={handlepreference}
         >
           Preference Tags
+        </a>
+        
+        <a
+          href="#points"
+          className=" text-brandBlue hover:text-logoOrange transition duration-300"
+          onClick={handlepoints}
+        >
+          My Points
         </a> 
       </div>
     </nav>
@@ -576,7 +619,7 @@ if (!tourist) {
           <div className="flex justify-center">
             <button
               onClick={handleNewAddress}
-              className="bg-logoOrange text-white font-medium py-2 px-6 rounded-lg hover:bg-opacity-90 transition duration-300"
+              className="w-full py-2 px-6 rounded-lg text-white font-medium transition duration-300 bg-logoOrange hover:bg-opacity-90"
             >
               Add New Address
             </button>
@@ -736,7 +779,7 @@ if (!tourist) {
             <div className="flex justify-center">
               <button
                 type="submit"
-                className="bg-logoOrange text-white font-medium py-2 px-6 rounded-lg hover:bg-opacity-90 transition duration-300"
+                className="w-full py-2 px-6 rounded-lg text-white font-medium transition duration-300 bg-logoOrange hover:bg-opacity-90"
               >
                 Create Preference
               </button>
@@ -748,6 +791,62 @@ if (!tourist) {
         </div>
       </div>
     )}
+
+    {pointssection && (
+        <div className="flex items-center justify-center bg-gray-100">
+            <div className="bg-white w-3/4 shadow-md rounded-lg p-6 mb-6">
+                <h2 className="text-2xl font-semibold text-brandBlue text-center mb-4">
+                    Redeem Points
+                </h2>
+
+                <div className="space-y-4">
+                    <div>
+                        <label
+                            htmlFor="pointsToRedeem"
+                            className="block text-gray-700 text-sm font-medium mb-1"
+                        >
+                            Points to Redeem:
+                        </label>
+                        <input
+                            type="number"
+                            id="pointsToRedeem"
+                            placeholder="Enter points to redeem"
+                            value={pointsToRedeem}
+                            onChange={(e) => setPointsToRedeem(e.target.value)}
+                            required
+                            min="1"
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                        />
+                    </div>
+
+                    {/* Redeem Button */}
+                    <div className="flex justify-center">
+                        <button
+                            onClick={handleRedeemPoints}
+                            className= "w-full py-2 px-6 rounded-lg text-white font-medium transition duration-300 bg-logoOrange hover:bg-opacity-90"
+                        >
+                            Redeem Points
+                        </button>
+                    </div>
+                </div>
+
+                {/* Message Display */}
+                {message && (
+                    <p
+                        className={`text-center mt-4 text-sm font-medium ${
+                            message.includes("successfully")
+                                ? "text-green-600"
+                                : "text-red-600"
+                        }`}
+                    >
+                        {message}
+                    </p>
+                )}
+            </div>
+        </div>
+    )}
+
+
 
 
    </div>

@@ -1071,10 +1071,11 @@ export const createComplaint = async (email, complaintTitle, complaintBody) => {
     }
 };
 
-export const redeemPoints = async (email) => {
+export const redeemPoints = async (email, pointsToRedeem) => {
     try {
         const response = await axios.put(`${API_URL}/redeemPoints`, {
-            Email: email, // Match backend capitalization
+            Email: email,          // Match backend capitalization
+            pointsToRedeem: pointsToRedeem,  // Send the points to redeem
         });
         return response.data;
     } catch (error) {
@@ -1083,7 +1084,6 @@ export const redeemPoints = async (email) => {
         throw errorMessage;
     }
 };
-//test//
 
 export const createPreference = async (email, historicAreas, beaches, familyFriendly, shopping, budgetFriendly) => {
     try {
