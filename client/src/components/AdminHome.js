@@ -25,7 +25,8 @@ import {
     deleteRequest,
     updateComplaintStatus,
     createPromoCode,
-    viewUserStats
+    viewUserStats,
+    fetchAllSalesReports,fetchAllSalesReportsitin
     
 } from '../services/api'; // Import all API functions
 import '../css/Home.css';
@@ -114,6 +115,14 @@ const AdminHome = () => {
     //user Modal
     const [isUserModalOpen, setUserModalOpen] = useState(false);
     // Fetch activity categories and preference tags on component mount
+    const [messagee, setMessagee] = useState('');
+    const [salesReportss, setSalesReportss] = useState([]);
+    const [salesReports, setSalesReports] = useState([]);
+
+
+
+
+
     useEffect(() => {
         const fetchCategories = async () => {
             try {
@@ -136,6 +145,34 @@ const AdminHome = () => {
         fetchCategories();
         fetchTags(); // Fetch preference tags on component mount
     }, []);
+
+
+
+    const handleFetchSalesReportsact = async () => {
+        try {
+            const reportss = await fetchAllSalesReports();
+            setSalesReportss(reportss);
+        } catch (err) {
+            setMessagee('Error fetching sales reports.');
+            console.error(err);
+        }
+    };
+
+    const handleFetchSalesReportsitin = async () => {
+        try {
+            const reports = await fetchAllSalesReportsitin();
+            setSalesReports(reports);
+        } catch (err) {
+            setMessagee('Error fetching sales reports.');
+            console.error(err);
+        }
+    };
+
+
+
+
+
+
     
     const handleFetchStats = async () => {
         // Clear previous error message
@@ -1163,6 +1200,47 @@ const handleCreatePromoCode = async (e) => {
                     </ul>
                 </>
             )}
+        </div>
+        <div>
+            <h1>Advertiser Home</h1>
+            {loading && <p>Loading activities...</p>}
+            {error && <p>Error: {error.message}</p>}
+            {messagee && <p>{messagee}</p>}
+            
+            <div>
+                <h2>Sales Reports</h2>
+                <button onClick={handleFetchSalesReportsact}>Fetch All Activity Reports</button>
+                {salesReportss.length > 0 ? (
+                    <ul>
+                        {salesReportss.map((report) => (
+                            <li key={report.Report_no}>
+                                <p>Activity: {report.Activity}</p>
+                                <p>Revenue: ${report.Revenue}</p>
+                                <p>Sales: {report.Sales}</p>
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p>No sales reports available.</p>
+                )}
+            </div>
+            <div>
+                <h2>Sales Reports</h2>
+                <button onClick={handleFetchSalesReportsitin}>Fetch All Itinerary Reports</button>
+                {salesReports.length > 0 ? (
+                    <ul>
+                        {salesReports.map((report) => (
+                            <li key={report.Report_no}>
+                                <p>Itinerary: {report.Itinerary}</p>
+                                <p>Revenue: ${report.Revenue}</p>
+                                <p>Sales: {report.Sales}</p>
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p>No sales reports available.</p>
+                )}
+            </div>
         </div>
         <footer className="bg-brandBlue shadow dark:bg-brandBlue m-0">
                 <div className="w-full mx-auto md:py-8">
