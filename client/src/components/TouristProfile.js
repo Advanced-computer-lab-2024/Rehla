@@ -42,48 +42,44 @@ const TouristProfile = () => {
   const badgeImage = getBadgeImage(formData.Badge);
   const [message, setMessage] = useState('');
 
-    const [succesViewEvent,setSuccessViewEvent]=useState('');
-    const [errorViewEvent,setErrorViewEvent]=useState('');
-    const [events, setEvents] = useState([]);
+  const [address,setAddress]=useState('');
+  const [succes,setSuccess]=useState('');
+  const [errornew,setErrornew]=useState('');
+  const [email, setEmail] = useState('');
 
-    const [address,setAddress]=useState('');
-    const [succes,setSuccess]=useState('');
-    const [errornew,setErrornew]=useState('');
-    const [email, setEmail] = useState('');
+  const[addresssection , setaddresssection] = useState('');
+  const[complaintsection , setcomplaintsection] = useState('');
+  const[prefsection , setprefsection] = useState('');
 
-    const[addresssection , setaddresssection] = useState('');
-    const[complaintsection , setcomplaintsection] = useState('');
-    const[prefsection , setprefsection] = useState('');
-
-    const [complaintsList, setComplaintsList] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
-    const [errorMessage, setErrorMessage] = useState(null);
-    const [showComplaints, setShowComplaints] = useState(false); 
-    const [complaintTitle, setComplaintTitle] = useState('');
-    const [complaintBody, setComplaintBody] = useState('');
-    const [error, setError] = useState(null);
+  const [complaintsList, setComplaintsList] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [showComplaints, setShowComplaints] = useState(false); 
+  const [complaintTitle, setComplaintTitle] = useState('');
+  const [complaintBody, setComplaintBody] = useState('');
+  const [error, setError] = useState(null);
 
      // bto3 el view activity
-     const [succesViewActivity,setSuccessViewActivity]=useState('');
-     const [errorViewActivity,setErrorViewActivity]=useState('');
-     const [activity, setActivity] = useState([]);
+ const [succesViewActivity,setSuccessViewActivity]=useState('');
+ const [errorViewActivity,setErrorViewActivity]=useState('');
+ const [activity, setActivity] = useState([]);
         // bto3 el view itinerary
-     const [succesViewItinerary,setSuccessViewItinerary]=useState('');
-     const [errorViewItinerary,setErrorViewItinerary]=useState('');
-     const [itinerary, setItinerary] = useState([]);
+ const [succesViewItinerary,setSuccessViewItinerary]=useState('');
+ const [errorViewItinerary,setErrorViewItinerary]=useState('');
+ const [itinerary, setItinerary] = useState([]);
 
-     const [preferenceData, setPreferenceData] = useState({
-      email: '',
-      historicAreas: false,
-      beaches: false,
-      familyFriendly: false,
-      shopping: false,
-      budgetFriendly: false
-  });
-  const [messagee, setMessagee] = useState('');
+ const [preferenceData, setPreferenceData] = useState({
+  email: '',
+  historicAreas: false,
+  beaches: false,
+  familyFriendly: false,
+  shopping: false,
+  budgetFriendly: false
+});
+const [messagee, setMessagee] = useState('');
 
    // Handle form submission to create preference
-   const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
     e.preventDefault();
     try {
        const email = localStorage.getItem('email');
@@ -104,7 +100,7 @@ const TouristProfile = () => {
 };
 
 
-     useEffect(()=>{
+useEffect(()=>{
      const handleViewSavedActivities = async (e) => {
      // e.preventDefault(); // Prevent default form submission
   
@@ -161,33 +157,33 @@ useEffect(()=> {
   }; handleViewSavedItineraries();
 },[]);
 
-    const handleaddress = async ()=>{
+const handleaddress = async ()=>{
         setaddresssection(true);
         setcomplaintsection(false);
         setprefsection(false);
-    }
+}
 
-    const handlecomplaints = async ()=>{
+const handlecomplaints = async ()=>{
       setcomplaintsection(true);
       setaddresssection(false);
       setprefsection(false);
-  }
+}
 
-  const handlepreference = async ()=>{
+const handlepreference = async ()=>{
     setprefsection(true);
     setaddresssection(false);
     setcomplaintsection(false);
 }
 
-  const handleActivityClick = (activity) => {
+const handleActivityClick = (activity) => {
     navigate(`/activity-details/${encodeURIComponent(activity.Name)}`); // Encode to make the URL safe
-  };
+};
 
-  const handleItineraryClick = (itinerary) => {
+const handleItineraryClick = (itinerary) => {
     navigate(`/itinerary-details/${encodeURIComponent(itinerary.Itinerary_Name)}`); // Encode to make the URL safe
-  };
+};
 
-  const handleDeleteRequest = async () => {
+const handleDeleteRequest = async () => {
     try {
         // Call the requestDeleteProfile function from api.js
         const email = localStorage.getItem('email');
@@ -202,7 +198,7 @@ useEffect(()=> {
 };
 
 
-  useEffect(() => {
+useEffect(() => {
     const fetchProfile = async () => {
       try {
         const email = localStorage.getItem('email');
@@ -214,10 +210,10 @@ useEffect(()=> {
       }
     };
     fetchProfile();
-  }, []);
+}, []);
 
 
-  const handleNewAddress=async(e)=>{
+const handleNewAddress=async(e)=>{
     e.preventDefault();
     try{
       const email = localStorage.getItem('email');
@@ -242,7 +238,7 @@ const handleChange = (e) => {
 
   
 
-  const handleComplaintSubmit = async (e) => {
+const handleComplaintSubmit = async (e) => {
     e.preventDefault();
     try {
         const email = localStorage.getItem('email');
@@ -278,7 +274,7 @@ const handleFetchComplaintByEmail = async () => {
   }
 };
 
-  const handleSave = async () => {
+const handleSave = async () => {
     try {
       await updateTouristProfile(formData);
       setIsEditing(false);
@@ -286,21 +282,21 @@ const handleFetchComplaintByEmail = async () => {
       console.error("Error updating profile:", error);
     }
     window.location.reload();
-  };
+};
 
-  const handleEdit = () => {
+const handleEdit = () => {
     setIsEditing(true);
-  };
+};
 
-  const handleFileChange = (e) => {
+const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
       setFile(selectedFile);
       setPreview(URL.createObjectURL(selectedFile)); // Create a preview URL
     }
-  };
+};
 
-  const handleUploadProfilePicture = async () => {
+const handleUploadProfilePicture = async () => {
     if (!file) {
       alert('Please select a file to upload.');
       return;
@@ -314,11 +310,11 @@ const handleFetchComplaintByEmail = async () => {
       console.error('Error uploading profile picture:', error);
       alert('Failed to upload profile picture.');
     }
-  };
+};
 
-  if (!tourist) {
-    return <div>Loading...</div>;
-  }
+if (!tourist) {
+  return <div>Loading...</div>;
+}
 
   return (
     <div className="min-h-screen flex flex-col justify-between">
@@ -334,10 +330,10 @@ const handleFetchComplaintByEmail = async () => {
         <Link to="/" className="text-white">signout</Link>
       </div>
       <div className="flex">
-  {/* First Division (Profile Section) */}
-  <div className="w-3/5 rounded-lg shadow-lg">
-    {/* Profile Picture */}
-    <div className="relative w-full flex items-center justify-center">
+      {/* First Division (Profile Section) */}
+      <div className="w-3/5 rounded-lg shadow-lg">
+      {/* Profile Picture */}
+      <div className="relative w-full flex items-center justify-center">
       {/* Cover Picture */}
       <div
         className="w-full h-48 bg-cover bg-center bg-gray-300"
@@ -704,61 +700,59 @@ const handleFetchComplaintByEmail = async () => {
       </div>
     )}
 
-{prefsection && (
-  <div className="flex items-center justify-center bg-gray-100">
-    <div className="bg-white w-3/4 shadow-md rounded-lg p-6 mb-6">
-      <h2 className="text-2xl font-semibold text-brandBlue text-center mb-6">
-        Create User Preference
-      </h2>
+    {prefsection && (
+      <div className="flex items-center justify-center bg-gray-100">
+        <div className="bg-white w-3/4 shadow-md rounded-lg p-6 mb-6">
+          <h2 className="text-2xl font-semibold text-brandBlue text-center mb-6">
+            Create User Preference
+          </h2>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Preferences Checkboxes */}
-        <div className="space-y-2">
-          {[
-            { name: "historicAreas", label: "Historic Areas" },
-            { name: "beaches", label: "Beaches" },
-            { name: "familyFriendly", label: "Family Friendly" },
-            { name: "shopping", label: "Shopping" },
-            { name: "budgetFriendly", label: "Budget Friendly" },
-          ].map((pref) => (
-            <div key={pref.name} className="flex items-center">
-              <input
-                type="checkbox"
-                name={pref.name}
-                checked={preferenceData[pref.name]} // Ensure the checked state reflects the data
-                onChange={handleChange}
-                className="h-5 w-5 text-brandBlue border-gray-300 rounded focus:ring-brandBlue"
-              />
-              <label htmlFor={pref.name} className="ml-2 text-sm text-gray-700">
-                {pref.label}
-              </label>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Preferences Checkboxes */}
+            <div className="space-y-2">
+              {[
+                { name: "historicAreas", label: "Historic Areas" },
+                { name: "beaches", label: "Beaches" },
+                { name: "familyFriendly", label: "Family Friendly" },
+                { name: "shopping", label: "Shopping" },
+                { name: "budgetFriendly", label: "Budget Friendly" },
+              ].map((pref) => (
+                <div key={pref.name} className="flex items-center">
+                  <input
+                    type="checkbox"
+                    name={pref.name}
+                    checked={preferenceData[pref.name]} // Ensure the checked state reflects the data
+                    onChange={handleChange}
+                    className="h-5 w-5 text-brandBlue border-gray-300 rounded focus:ring-brandBlue"
+                  />
+                  <label htmlFor={pref.name} className="ml-2 text-sm text-gray-700">
+                    {pref.label}
+                  </label>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
 
-        {/* Submit Button */}
-        <div className="flex justify-center">
-          <button
-            type="submit"
-            className="bg-logoOrange text-white font-medium py-2 px-6 rounded-lg hover:bg-opacity-90 transition duration-300"
-          >
-            Create Preference
-          </button>
-        </div>
-      </form>
+            {/* Submit Button */}
+            <div className="flex justify-center">
+              <button
+                type="submit"
+                className="bg-logoOrange text-white font-medium py-2 px-6 rounded-lg hover:bg-opacity-90 transition duration-300"
+              >
+                Create Preference
+              </button>
+            </div>
+          </form>
 
-      {/* Message Display */}
-      {messagee && <p className="text-center text-sm text-green-500 mt-4">{messagee}</p>}
+          {/* Message Display */}
+          {messagee && <p className="text-center text-sm text-green-500 mt-4">{messagee}</p>}
+        </div>
+      </div>
+    )}
+
+
+   </div>
+    )}
     </div>
-  </div>
-)}
-
-
-  </div>
-)}
-
-          
-          </div>
           <div className="border-l border-brandBlue "></div>
 
             {/* Second Division (Saved Items Section) */}
@@ -779,7 +773,7 @@ const handleFetchComplaintByEmail = async () => {
                               <img
                                 src={act.Picture || 'default-activity.jpg'}
                                 alt={act.Name}
-                                className="w-full h-full object-cover duration-300 ease-in-out hover:scale-105"
+                                className="w-full h-full object-cover duration-300 ease-in-out"
                               />
                             </div>
                             <p className="mt-2 text-gray-700 font-semibold">{act.Name}</p>
@@ -803,7 +797,7 @@ const handleFetchComplaintByEmail = async () => {
                               <img
                                 src={itin.Picture || 'default-itinerary.jpg'}
                                 alt={itin.Itinerary_Name}
-                                className="w-full h-full object-cover duration-300 ease-in-out hover:scale-105"
+                                className="w-full h-full object-cover duration-300 ease-in-out"
                               />
                             </div>
                             <p className="mt-2 text-gray-700 font-semibold">{itin.Itinerary_Name}</p>
