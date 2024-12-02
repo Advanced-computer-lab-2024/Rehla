@@ -49,6 +49,8 @@ const TourGuideHome = () => {
 
     const [salesReports, setSalesReports] = useState([]);
     const [messagee, setMessagee] = useState('');
+    const [reports, setReports] = useState([]);
+
 
 
 
@@ -77,6 +79,21 @@ const TourGuideHome = () => {
         } catch (err) {
             setMessagee('Error fetching sales reports.');
             console.error(err);
+        }
+    };
+
+    const fetchitinRevenue = async () => {
+        try {
+            const email = localStorage.getItem('email');
+            setLoading(true);
+            const reportsData = await calculateItineraryRevenue(email);
+            setReports(reportsData);
+            setError(null); // Clear any previous errors
+        } catch (err) {
+            console.error(err);
+            setError('Failed to fetch activity revenue. Please try again later.');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -800,6 +817,7 @@ const TourGuideHome = () => {
                 <p style={{ color: 'red' }}>Please sign in to access this feature.</p>
             )}
         </div>
+        
         <div>
                 <h2>Sales Reports</h2>
                 <button onClick={handleFetchSalesReports}>Fetch All Sales Reports</button>
@@ -817,7 +835,35 @@ const TourGuideHome = () => {
                     <p>No sales reports available.</p>
                 )}
             </div>
+            <div>
+            
+            <button onClick={fetchitinRevenue}>report</button>
+
+            {loading && <p>Loading Itinerary revenue...</p>}
+            {error && <p style={{ color: 'red' }}>{error}</p>}
+
+            {!loading && !error && reports.length > 0 && (
+                <div>
+                    <h2>Itinerary Revenue Reports</h2>
+                    <ul>
+                        {reports.map((report, index) => (
+                            <li key={index}>
+                                <strong>Itinerary:</strong> {report.Itinerary} <br />
+                                <strong>Revenue:</strong> ${report.Revenue.toFixed(2)} <br />
+                                <strong>Sales:</strong> {report.Sales} <br />
+                                <strong>Price:</strong> ${report.Price.toFixed(2)} <br />
+                                <strong>Report No:</strong> {report.Report_no}
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
+
+            {!loading && !error && reports.length === 0 && <p>No reports found.</p>}
         </div>
+            
+        </div>
+        
     );
 };
 
