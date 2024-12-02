@@ -315,25 +315,6 @@ const TouristHome = () => {
             </div>
         </div>
 
-    
-
-        <div className="max-w-md mx-auto p-6 bg-gray-50 rounded-lg shadow-md mt-8">
-    <h2 className="text-xl font-semibold mb-4 text-gray-800">Redeem Points</h2>
-
-    <div className="mb-4">
-        <label htmlFor="email" className="block text-gray-700 font-medium mb-2">Email:</label>
-        <input
-            type="email"
-            id="email"
-            placeholder="Enter your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        />
-    </div>
-</div>
-
         
 {/* Bookmarking an event */}
 <div>
