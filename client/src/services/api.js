@@ -1258,6 +1258,17 @@ export const fetchSalesReport = async (sellerName) => {
     }
 };
 
+export const fetchAllSalesReportsSeller = async () => {
+    try {
+        const response = await axios.get(`${API_URL}/getAllSalesReportsseller`);
+        console.log('Sales reports:', response.data); // Debugging line to view the fetched data
+        return response.data;  // Return the fetched sales reports
+    } catch (error) {
+        console.error('Error fetching sales reports:', error); // Error handling
+        throw error;  // Re-throw the error to be handled by the calling function
+    }
+};
+
 export const calculateActivityRevenue = async (email) => {
     try {
         // Send a POST request with the email

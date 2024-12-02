@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link,useNavigate } from 'react-router-dom';
 import logo from '../images/logo.png';
-import { getProducts, getProductsSortedByRating, addProduct, updateProduct,toggleProductArchiveStatus,uploadProductPicture,fetchSalesReport,getSellerProfile  } from '../services/api';
+import { getProducts, getProductsSortedByRating, addProduct, updateProduct,toggleProductArchiveStatus,uploadProductPicture,fetchSalesReport,getSellerProfile,fetchAllSalesReportsSeller  } from '../services/api';
 //import { Link, useNavigate } from 'react-router-dom';
 
 const Header = () => (
@@ -65,6 +65,10 @@ const SellerHome = () => {
     const [fetchError, setFetchError] = useState(""); // Renamed error state
     const [isLoading, setIsLoading] = useState(false); // Renamed loading state
     const [seller, setSeller] = useState({});
+    const [salesReports, setSalesReports] = useState([]);
+    const [messagee, setMessagee] = useState('');
+
+
     const navigate = useNavigate();
     
 
@@ -103,6 +107,16 @@ const SellerHome = () => {
         };
         fetchProducts();
     }, []);
+
+    const handleFetchSalesReports = async () => {
+        try {
+            const reports = await fetchAllSalesReportsSeller();
+            setSalesReports(reports);
+        } catch (err) {
+            setMessagee('Error fetching sales reports.');
+            console.error(err);
+        }
+    };
 
  
     
@@ -662,6 +676,29 @@ const SellerHome = () => {
                     </ul>
                 </div>
             )}
+        </div>
+        <div>
+            {loading && <p>Loading activities...</p>}
+            {error && <p>Error: {error.message}</p>}
+            {messagee && <p>{messagee}</p>}
+            
+            <div>
+                <h2>Sales Reports</h2>
+                <button onClick={handleFetchSalesReports}>Fetch All Sales Reports</button>
+                {salesReports.length > 0 ? (
+                    <ul>
+                        {salesReports.map((report) => (
+                            <li key={report.Report_no}>
+                                <p>Products: {report.Product}</p>
+                                <p>Revenue: ${report.Revenue}</p>
+                                <p>Sales: {report.Sales}</p>
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p>No sales reports available.</p>
+                )}
+            </div>
         </div>
             </div>
             <Footer />
