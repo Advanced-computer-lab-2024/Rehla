@@ -5,7 +5,7 @@ import logo from '../images/logo.png';
 import { searchEventsPlaces , rateTourGuide,commentTourGuide,viewComplaintByEmail,
         deleteTouristItenrary,deleteTouristActivity, createComplaint,redeemPoints,
         createPreference ,getAllTransportation,bookTransportation,addDeliveryAddress,
-        saveEvent,cancelOrder,viewSavedActivities} from '../services/api'; // Import the commentOnEvent function
+        saveEvent,cancelOrder,viewSavedActivities,viewSavedItineraries} from '../services/api'; // Import the commentOnEvent function
 import Homet2 from '../components/Homet2.js';
 
 const TouristHome = () => {
@@ -48,6 +48,10 @@ const TouristHome = () => {
     const [succesViewActivity,setSuccessViewActivity]=useState('');
     const [errorViewActivity,setErrorViewActivity]=useState('');
     const [activity, setActivity] = useState([]);
+       // bto3 el view activity
+    const [succesViewItinerary,setSuccessViewItinerary]=useState('');
+    const [errorViewItinerary,setErrorViewItinerary]=useState('');
+    const [itinerary, setItinerary] = useState([]);
      //bto3 el cancelOrder
     const [cartNum, setCartNum] = useState('');
     const [succesCancelOrder,setSuccessCancelOrder]=useState('');
@@ -89,8 +93,30 @@ const TouristHome = () => {
             }
         }
     };
+    const handleViewSavedItineraries = async (e) => {
+        e.preventDefault(); // Prevent default form submission
     
-
+        try {
+            // Call the viewSavedItineraries API function with the necessary email
+            const response = await viewSavedItineraries(email); 
+            
+            // On success, update the itinerary list and the success message
+            setItinerary(response.itineraries);
+            setSuccessViewItinerary(`Successfully fetched saved itineraries for ${email}`);
+            setErrorViewItinerary('');  // Clear any previous error message
+        } catch (error) {
+            // Handle errors, log them, and update the error message
+            console.error('Failed to fetch saved itineraries:', error);
+    
+            if (error.response && error.response.data && error.response.data.message) {
+                // Use the error message returned from the server, if available
+                setErrorViewItinerary(`Error: ${error.response.data.message}`);
+            } else {
+                // Fallback to a generic error message
+                setErrorViewItinerary('Failed to fetch saved itineraries. Please try again.');
+            }
+        }
+    };
     
     
     
@@ -727,6 +753,40 @@ const TouristHome = () => {
         <p>No saved activities found.</p>
     )}
 </div>
+{/* View Bookmarked Itineraries */}
+<div>
+    <h2>View Saved Itineraries</h2>
+    <form onSubmit={handleViewSavedItineraries}>
+        <div>
+            <label>Email:</label>
+            <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+            />
+        </div>
+        <button type="submit">
+            View 
+        </button>
+    </form>
+    {succesViewItinerary && <p style={{ color: 'green' }}>{succesViewItinerary}</p>}
+    {errorViewItinerary && <p style={{ color: 'red' }}>{errorViewItinerary}</p>}
+
+    {itinerary.length > 0 ? (
+        <div>
+            <h3>Saved Itineraries:</h3>
+            <ul>
+                {itinerary.map((itineraryItem, index) => (
+                    <li key={index}>{itineraryItem.Name}</li>  // Customize based on your itinerary data structure
+                ))}
+            </ul>
+        </div>
+    ) : (
+        <p>No saved itineraries found.</p>
+    )}
+</div>
+
 
 {/*Cancel an order*/}
 
