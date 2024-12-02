@@ -5118,49 +5118,6 @@ const updateCartItem = async (req, res) => {
 }
 
 //create new cart item
-const createCartItem = async (req, res) => {
-    try {
-        const {Email, Productname } = req.body;
-
-        // Validate input
-        if (!Email || !Productname ) {
-            return res.status(400).json({ error: 'All fields are required.' });
-        }
-
-        // Check if the tourist exists
-        const tourist = await Tourist.findOne({ Email });
-        if (!tourist) {
-            return res.status(404).json({ error: 'Tourist not found.' });
-        }
-
-        // Check if the product exists
-        const product = await Product.findOne({ Product_Name : Productname });
-        if (!product) {
-            return res.status(404).json({ error: 'Product not found.' });
-        }
-
-        // Check if the product is already in the cart
-        const existingCartItem = await cartm.findOne({ Email, Productname });
-        if (existingCartItem) {
-            return res.status(409).json({ error: 'Product already in cart.' });
-        }
-
-        // Create a new cart item
-        const newCartItem = new cartm({
-            Email,
-            Productname
-        });
-
-        // Save the cart item to the database
-        await newCartItem.save();
-
-        // Send a success response
-        return res.status(201).json({ message: 'Cart item created successfully.', cartItem: newCartItem });
-    } catch (error) {
-        console.error('Error creating cart item:', error);
-        return res.status(500).json({ error: 'Failed to create cart item.' });
-    }
-}
 
 const addToCart = async (req, res) => {
     try {
