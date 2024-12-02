@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getTouristProfile, updateTouristProfile, uploadProfilePicture , requestDeleteProfile
-  ,viewSavedEvents,addDeliveryAddress,viewComplaintByEmail,createComplaint
+  ,addDeliveryAddress,viewComplaintByEmail,createComplaint
 } from '../services/api'; // Import your new upload function
 import { Link } from 'react-router-dom';
 import logo from '../images/logo.png';
@@ -105,33 +105,33 @@ const TouristProfile = () => {
     fetchProfile();
   }, []);
 
-  useEffect(() => {
-    const handleViewSavedEvents = async () => {
-      // Clear previous messages and data
-      setSuccessViewEvent('');
-      setErrorViewEvent('');
-      setEvents([]);
+  // useEffect(() => {
+  //   const handleViewSavedEvents = async () => {
+  //     // Clear previous messages and data
+  //     setSuccessViewEvent('');
+  //     setErrorViewEvent('');
+  //     setEvents([]);
   
-      try {
-          const response = await viewSavedEvents(localStorage.getItem('email'));
+  //     try {
+  //         const response = await viewSavedEvents(localStorage.getItem('email'));
   
-          // On success, set success message and update the events list
-          setSuccessViewEvent(`Successfully retrieved ${response.savedEvents.length} event(s).`);
-          setEvents(response.savedEvents); // Ensure `savedEvents` contains the Picture field
-      } catch (error) {
-          // Handle error: use server message if available, otherwise fallback to generic message
-          if (error.response && error.response.data && error.response.data.message) {
-              setErrorViewEvent(error.response.data.message);
-          } else {
-              setErrorViewEvent('An error occurred while retrieving saved events.');
-          }
-      }
-  }; handleViewSavedEvents();
-  },[]);
+  //         // On success, set success message and update the events list
+  //         setSuccessViewEvent(`Successfully retrieved ${response.savedEvents.length} event(s).`);
+  //         setEvents(response.savedEvents); // Ensure `savedEvents` contains the Picture field
+  //     } catch (error) {
+  //         // Handle error: use server message if available, otherwise fallback to generic message
+  //         if (error.response && error.response.data && error.response.data.message) {
+  //             setErrorViewEvent(error.response.data.message);
+  //         } else {
+  //             setErrorViewEvent('An error occurred while retrieving saved events.');
+  //         }
+  //     }
+  // }; handleViewSavedEvents();
+  // },[]);
   const handleNewAddress=async(e)=>{
     e.preventDefault();
     try{
-       const email = localStorage.getItem('email');
+      const email = localStorage.getItem('email');
         const response = await addDeliveryAddress({email, address})
         setSuccess(`Addresses added successfully`);
         setEmail('');
