@@ -112,9 +112,11 @@ const Home = () => {
     const handleItineraryFilterChange = (e) => {
         setItineraryFilterType(e.target.value);
     };
+
     const handleFilterPlacesAndMuseums = async (e) => {
         e.preventDefault();
         try {
+            console.log("Filters being used:", placesAndMuseumsFilters);
             const filtered = await filterPlacesAndMuseums(placesAndMuseumsFilters);
     
             // Ensure that filtered data contains the expected structure

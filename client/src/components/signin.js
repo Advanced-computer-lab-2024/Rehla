@@ -45,6 +45,7 @@ const SignIn = () => {
             break;
           case "TOURISIM_GOVERNER":
           case "TOURISIM GOVERNER":
+          case "Tourism Governor":
             navigate("/TourisimGovernerHome");
             break;
           default:

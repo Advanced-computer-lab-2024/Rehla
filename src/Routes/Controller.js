@@ -8,7 +8,7 @@ const Guest = require('../Models/Requests');
 const tour_guidem=require('../Models/tour_guides');
 const AdvertisersModel = require('../Models/Advertisers.js');
 const Request= require('../Models/Requests.js');
-const tourism_governers = require('../Models/tourism_governers');
+const tourism_governers = require('../Models/tourism_governers.js');
 const activity_tagsm = require('../Models/activity_tags.js');
 const activity_categoriesm = require('../Models/activity_categories.js');
 const categoriesm = require('../Models/categories.js');
@@ -449,7 +449,7 @@ const filterPlacesAndMuseums = async (req, res) => {
             const matchingNames = tagDetails.map(detail => detail.Name);
 
             // Step 3: Find historical places that have matching names
-            results = await historical_placesm.find({ Name: { $in: matchingNames } });
+            results = await historical_placesm.find({ Type: value });
         } else if (category === 'museums') {
             // Step 1: Find museums that match the specified tag
             results = await museumsm.find({ Tag: value });
