@@ -4190,10 +4190,8 @@ const getPurchasedProducts = async (req, res) => {
 };
 
 //calculate itinrary rating
-const calculateItineraryRating = async (req, res) => {
+const calculateItineraryRating = async (Itinerary_Name) => {
     try {
-        const { Itinerary_Name } = req.body;
-
         // Validate input
         if (!Itinerary_Name) {
             return res.status(400).json({ error: 'Itinerary name is required.' });
