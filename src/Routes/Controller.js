@@ -5659,53 +5659,117 @@ const saveEvent = async (req, res) => {
     }
 };
 
-const viewSavedEvents = async (req, res) => {
+// const viewSavedEvents = async (req, res) => {
+//     try {
+//         const { email } = req.body;
+//         // Validate input
+//         if (!email) {
+//             return res.status(400).json({
+//                 message: "Tourist email is required to view saved events.",
+//             });
+//         }
+
+//         // Find saved events for the given email
+//         const savedEvents = await saved_eventm.find({ Tourist_Email: email });
+//         if (savedEvents.length === 0) {
+//             return res.status(404).json({
+//                 message: "No saved events found for this tourist.",
+//             });
+//         }
+
+//         // Extract event names from the saved events
+//         const eventNames = savedEvents.map(event => event.Name);
+
+//         // Retrieve event data from both activities and itineraries collections
+//         const activities = await activity.find({ Name: { $in: eventNames } });
+//         const itineraries = await itinerarym.find({ Name: { $in: eventNames } });
+
+//         // Combine the results from both collections
+//         const eventData = [...activities, ...itineraries];
+
+//         if (eventData.length === 0) {
+//             return res.status(404).json({
+//                 message: "No matching events found in activities or itineraries.",
+//             });
+//         }
+
+//         return res.status(200).json({
+//             message: "Saved events retrieved successfully.",
+//             savedEvents: eventData,  // Sending back the combined event data
+//         });
+//     } 
+//     catch (error) {
+//         console.error("Error retrieving saved events:", error);
+//         return res.status(500).json({
+//             message: "An error occurred while retrieving saved events.",
+//         });
+//     }
+// };
+
+
+const viewSavedActivities = async (req, res) => {
+    const { touristEmail } = req.body;  // Extract touristEmail from the request body
+
     try {
-        const { email } = req.body;
-        // Validate input
-        if (!email) {
-            return res.status(400).json({
-                message: "Tourist email is required to view saved events.",
-            });
+        if (!touristEmail) {
+            // Case: No email provided in the body
+            return res.status(400).json({ message: "Tourist email is required." });
         }
 
-        // Find saved events for the given email
-        const savedEvents = await saved_eventm.find({ Tourist_Email: email });
-        if (savedEvents.length === 0) {
-            return res.status(404).json({
-                message: "No saved events found for this tourist.",
-            });
+        // Fetch all events for the tourist
+        const allEvents = await saved_eventm.find({ Tourist_Email: touristEmail });
+        
+        if (allEvents.length === 0) {
+            // Case: No saved events at all
+            return res.status(404).json({ message: 'No saved events found for this user.', activities: [] });
         }
 
-        // Extract event names from the saved events
-        const eventNames = savedEvents.map(event => event.Name);
-
-        // Retrieve event data from both activities and itineraries collections
-        const activities = await activity.find({ Name: { $in: eventNames } });
-        const itineraries = await itinerarym.find({ Name: { $in: eventNames } });
-
-        // Combine the results from both collections
-        const eventData = [...activities, ...itineraries];
-
-        if (eventData.length === 0) {
-            return res.status(404).json({
-                message: "No matching events found in activities or itineraries.",
-            });
+        // Filter activities from all events
+        const activities = allEvents.filter(event => event.TYPE === 'Activity');
+        
+        if (activities.length === 0) {
+            // Case: No saved activities
+            return res.status(404).json({ message: 'No saved activities found for this user.', activities: [] });
         }
 
-        return res.status(200).json({
-            message: "Saved events retrieved successfully.",
-            savedEvents: eventData,  // Sending back the combined event data
-        });
-    } 
-    catch (error) {
-        console.error("Error retrieving saved events:", error);
-        return res.status(500).json({
-            message: "An error occurred while retrieving saved events.",
-        });
+        // Case: Activities found
+        return res.status(200).json({ message: 'Saved activities fetched successfully.', activities });
+    } catch (error) {
+        console.error('Error fetching saved activities:', error);
+        return res.status(500).json({ message: 'Error fetching saved activities.' });
     }
 };
 
+
+const viewSavedItineraries = async (req, res) => {
+    const { touristEmail } = req.body;  // Extract touristEmail from the request body
+
+    try {
+        if (!touristEmail) {
+            // Case: No email provided in the body
+            return res.status(400).json({ message: "Tourist email is required." });
+        }
+        // Fetch all events for the tourist
+        const allEvents = await saved_eventm.find({ Tourist_Email: touristEmail });
+        
+        if (allEvents.length === 0) {
+            // Case: No saved events at all
+            return res.status(404).json({ message: 'No saved events found for this user.', itineraries: [] });
+        }
+        // Filter itineraries from all events
+        const itineraries = allEvents.filter(event => event.TYPE === 'Itinerary');
+        
+        if (itineraries.length === 0) {
+            // Case: No saved itineraries
+            return res.status(404).json({ message: 'No saved itineraries found for this user.', itineraries: [] });
+        }
+        // Case: Itineraries found
+        return res.status(200).json({ message: 'Saved itineraries fetched successfully.', itineraries });
+    } catch (error) {
+        console.error('Error fetching saved itineraries:', error);
+        return res.status(500).json({ message: 'Error fetching saved itineraries.' });
+    }
+};
 
 const viewUserStats = async (req, res) => {
     try {
@@ -6055,7 +6119,9 @@ module.exports = { getPurchasedProducts,
     cancelOrder,
     addTouristAddress,
     saveEvent,
-    viewSavedEvents,
+    // viewSavedEvents,
+    viewSavedActivities,
+    viewSavedItineraries,
     viewMyWishlist,
     deleteProductFromMyWishList,
     addProductFromWishListToCart,

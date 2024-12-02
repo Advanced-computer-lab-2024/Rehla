@@ -151,7 +151,9 @@ const {createUserAdmin,
   cancelOrder,
   addTouristAddress,
   saveEvent,
-  viewSavedEvents,
+  // viewSavedEvents,
+  viewSavedActivities,
+  viewSavedItineraries,
   viewMyWishlist,
   deleteProductFromMyWishList,
   addProductFromWishListToCart,
@@ -364,7 +366,9 @@ app.post('/send-email', async (req, res) => {
 app.delete('/cancelOrder',cancelOrder);
 app.post('/addTouristAddress',addTouristAddress);
 app.post('/saveEvent', saveEvent);
-app.post('/viewSavedEvents', viewSavedEvents);
+// app.post('/viewSavedEvents', viewSavedEvents);
+app.post('/viewSavedActivities', viewSavedActivities);
+app.post('/viewSavedItineraries', viewSavedItineraries);
 app.get('/viewMyWishlist/:mail', viewMyWishlist);
 app.delete('/deleteProductFromMyWishList/:mail/:productname', deleteProductFromMyWishList);
 // Endpoint to handle payment and send receipt
