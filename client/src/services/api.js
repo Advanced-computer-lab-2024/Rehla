@@ -1361,6 +1361,38 @@ export const fetchAllSalesReportsSelleremail = async (email) => {
 };
 
 
+export const fetchFilteredTourGuideSalesReport = async (email, itinerary, startDate, endDate, month) => {
+    try {
+        let url = `${API_URL}/filterTourGuideSalesReport?email=${email}`;
+
+        if (itinerary) url += `&itinerary=${itinerary}`;
+        if (startDate && endDate) url += `&startDate=${startDate}&endDate=${endDate}`;
+        if (month) url += `&month=${month}`;
+
+        const response = await axios.get(url);
+        console.log('Filtered Tour Guide sales reports:', response.data);
+        return response.data;  // Return the filtered sales reports
+    } catch (error) {
+        console.error('Error fetching filtered Tour Guide sales reports:', error);
+        throw error;  // Re-throw the error to be handled by the calling function
+    }
+};
+export const fetchFilteredAdvertiserSalesReport = async (email, activity, startDate, endDate, month) => {
+    try {
+        let url = `${API_URL}/filterAdvertiserSalesReport?email=${email}`;
+
+        if (activity) url += `&activity=${activity}`;
+        if (startDate && endDate) url += `&startDate=${startDate}&endDate=${endDate}`;
+        if (month) url += `&month=${month}`;
+
+        const response = await axios.get(url);
+        console.log('Filtered Advertiser sales reports:', response.data);
+        return response.data;  // Return the filtered sales reports
+    } catch (error) {
+        console.error('Error fetching filtered Advertiser sales reports:', error);
+        throw error;  // Re-throw the error to be handled by the calling function
+    }
+};
 
 
 // function to create new promo code

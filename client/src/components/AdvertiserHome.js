@@ -7,7 +7,8 @@ import {
     deleteActivityByAdvertiser,
     updateActivityByAdvertiser,
     getAllCreatedByEmail,
-    calculateActivityRevenue, fetchAllSalesReportsemail
+    calculateActivityRevenue, fetchAllSalesReportsemail,
+    fetchFilteredAdvertiserSalesReport
 } from '../services/api';
 
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -47,6 +48,10 @@ const AdvertiserHome = () => {
     const [loadingg, setLoadingg] = useState(false);
     const [errorr, setErrorr] = useState(null);
     const [reports, setReports] = useState([]);
+    const [activityFilter, setActivityFilter] = useState('');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const [month, setMonth] = useState('');
 
 
     useEffect(() => {
@@ -214,6 +219,21 @@ const AdvertiserHome = () => {
             console.error('Error creating activity:', error);
         }
     };
+
+    const handleFilterFetchSalesReports = async () => {
+        try {
+            setLoading(true);
+            const email = localStorage.getItem('email');
+            const reports = await fetchFilteredAdvertiserSalesReport(email, activityFilter, startDate, endDate, month);
+            setSalesReports(reports);  // Store the reports in your state
+            setLoading(false);
+        } catch (err) {
+            setLoading(false);
+            setMessagee('Error fetching sales reports.');
+            console.error(err);
+        }
+    };
+    
 
 
     return (
@@ -623,6 +643,65 @@ const AdvertiserHome = () => {
     {error && <p>Error: {error.message}</p>}
     {messagee && <p>{messagee}</p>}
 
+    {/* Filter Section */}
+    <div>
+        <h2>Filter Sales Reports</h2>
+        <div>
+            <label htmlFor="activityFilter">Activity:</label>
+            <input
+                type="text"
+                id="activityFilter"
+                value={activityFilter}
+                onChange={(e) => setActivityFilter(e.target.value)}
+                placeholder="Enter activity name"
+                style={{ margin: "5px", padding: "5px" }}
+            />
+        </div>
+        <div>
+            <label htmlFor="startDate">Start Date:</label>
+            <input
+                type="date"
+                id="startDate"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                style={{ margin: "5px", padding: "5px" }}
+            />
+        </div>
+        <div>
+            <label htmlFor="endDate">End Date:</label>
+            <input
+                type="date"
+                id="endDate"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                style={{ margin: "5px", padding: "5px" }}
+            />
+        </div>
+        <div>
+            <label htmlFor="month">Month:</label>
+            <input
+                type="month"
+                id="month"
+                value={month}
+                onChange={(e) => setMonth(e.target.value)}
+                style={{ margin: "5px", padding: "5px" }}
+            />
+        </div>
+        <button
+            onClick={handleFilterFetchSalesReports}
+            style={{
+                marginTop: "10px",
+                padding: "10px 15px",
+                backgroundColor: "#007bff",
+                color: "white",
+                border: "none",
+                cursor: "pointer",
+            }}
+        >
+            Apply Filters
+        </button>
+    </div>
+
     {/* Activities Section */}
     <div>
         <h2>Sales Reports - Activities</h2>
@@ -669,7 +748,9 @@ const AdvertiserHome = () => {
                             <td style={{ border: "1px solid #ddd", padding: "8px" }}>{report.Activity}</td>
                             <td style={{ border: "1px solid #ddd", padding: "8px" }}>${report.Revenue}</td>
                             <td style={{ border: "1px solid #ddd", padding: "8px" }}>{report.Sales}</td>
-                            <td style={{ border: "1px solid #ddd", padding: "8px" }}>{new Date(report.createdAt).toLocaleDateString()}</td>
+                            <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+                                {new Date(report.createdAt).toLocaleDateString()}
+                            </td>
                         </tr>
                     ))}
                 </tbody>
@@ -678,7 +759,9 @@ const AdvertiserHome = () => {
             <p>No sales reports available.</p>
         )}
     </div>
-        </div>
+</div>
+
+
         <div>
             <h1>Advertiser Home</h1>
             <button onClick={fetchActivityRevenue}>report</button>
