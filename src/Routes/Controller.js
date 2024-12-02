@@ -5995,6 +5995,96 @@ const checkandsendBirthdayPromoCode = async () => {
     }
 };
 
+
+const getAllSalesReportsemail = async (req, res) => {
+    try {
+        const { email } = req.query;
+
+        // Check if email is provided
+        if (!email) {
+            return res.status(400).json({ message: 'Email is required.' });
+        }
+
+        // Fetch sales reports for the given email
+        const salesReports = await advertiser_salesreport.find({ Email: email });
+
+        // If no reports are found, return a 404 status
+        if (!salesReports || salesReports.length === 0) {
+            return res.status(404).json({ message: `No sales reports found for email '${email}'.` });
+        }
+
+        // Return the list of sales reports with a 200 status
+        return res.status(200).json(salesReports);
+    } catch (error) {
+        // If an error occurs, catch it and return a 500 status with the error message
+        console.error('Error fetching sales reports:', error.message);
+        return res.status(500).json({
+            error: 'Error fetching sales reports',
+            details: error.message,
+        });
+    }
+};
+
+const getAllSalesReportsitinemail = async (req, res) => {
+    try {
+        const { email } = req.query;
+
+        // Check if email is provided
+        if (!email) {
+            return res.status(400).json({ message: 'Email is required.' });
+        }
+
+        // Fetch sales reports for the given email
+        const salesReports = await tourguide_salesreport.find({ Email: email });
+
+        // If no reports are found, return a 404 status
+        if (!salesReports || salesReports.length === 0) {
+            return res.status(404).json({ message: `No sales reports found for email '${email}'.` });
+        }
+
+        // Return the list of sales reports with a 200 status
+        return res.status(200).json(salesReports);
+    } catch (error) {
+        // If an error occurs, catch it and return a 500 status with the error message
+        console.error('Error fetching sales reports:', error.message);
+        return res.status(500).json({
+            error: 'Error fetching sales reports',
+            details: error.message,
+        });
+    }
+};
+
+const getAllSalesReportsselleremail = async (req, res) => {
+    try {
+        const { email } = req.query;
+
+        // Check if email is provided
+        if (!email) {
+            return res.status(400).json({ message: 'Email is required.' });
+        }
+
+        // Fetch sales reports for the given email
+        const salesReports = await seller_salesreport.find({ Email: email });
+
+        // If no reports are found, return a 404 status
+        if (!salesReports || salesReports.length === 0) {
+            return res.status(404).json({ message: `No sales reports found for email '${email}'.` });
+        }
+
+        // Return the list of sales reports with a 200 status
+        return res.status(200).json(salesReports);
+    } catch (error) {
+        // If an error occurs, catch it and return a 500 status with the error message
+        console.error('Error fetching sales reports:', error.message);
+        return res.status(500).json({
+            error: 'Error fetching sales reports',
+            details: error.message,
+        });
+    }
+};
+
+
+
 // ----------------- Activity Category CRUD -------------------
 
 module.exports = { getPurchasedProducts,
@@ -6132,7 +6222,7 @@ module.exports = { getPurchasedProducts,
     getAllFiles,
     getSalesReport,
     updateCartItem,
-    createCartItem,
+   // createCartItem,
     addToCart,
     calculateActivityRevenue,
     calculateItineraryRevenue,
@@ -6159,5 +6249,6 @@ module.exports = { getPurchasedProducts,
     checkandsendBirthdayPromoCode,
     getAllSalesReports,
     getAllSalesReportsitin,
-    getAllSalesReportsseller
+    getAllSalesReportsseller,
+    getAllSalesReportsemail,getAllSalesReportsitinemail,getAllSalesReportsselleremail
 };

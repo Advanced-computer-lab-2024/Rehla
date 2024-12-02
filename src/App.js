@@ -138,7 +138,7 @@ const {createUserAdmin,
   getSalesReport,
   getAllSalesReportsseller,
   updateCartItem,
-  createCartItem,
+ // createCartItem,
   addToCart,
   calculateActivityRevenue,
   getAllSalesReports,
@@ -163,6 +163,7 @@ const {createUserAdmin,
   checkAndSendRemindersforEvents,
   checkAndSendRemindersforItinerary,
   checkandsendBirthdayPromoCode,
+  getAllSalesReportsemail,getAllSalesReportsitinemail,getAllSalesReportsselleremail
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -340,7 +341,7 @@ app.get('/getAllFiles', getAllFiles);
 app.post('/salesReport/:sellerName', getSalesReport);
 app.get('/getAllSalesReportsseller', getAllSalesReportsseller)
 app.put('/updateCartItem', updateCartItem);
-app.post('/createCartItem', createCartItem);
+//app.post('/createCartItem', createCartItem);
 app.post('/addToCart', addToCart);
 app.post('/calculateActivityRevenue', calculateActivityRevenue);
 app.get('/advertiser_salesreport', getAllSalesReports);
@@ -350,6 +351,10 @@ app.post('/Tourist/CheckoutOrder', checkoutOrder);
 app.post('/createPromoCode', createPromoCode);
 app.post('/createwishlistItem', createwishlistItem);
 app.post('/Tourist/ViewOrderDetails', viewOrderDetails);
+app.get('/advertiser_salesreportemail', getAllSalesReportsemail); // Takes ?email=<email>
+app.get('/getAllSalesReportsitinemail', getAllSalesReportsitinemail); // Takes ?email=<email>
+app.get('/getAllSalesReportsselleremail', getAllSalesReportsselleremail); // Takes ?email=<email>
+
 
 
 app.post('/send-email', async (req, res) => {
