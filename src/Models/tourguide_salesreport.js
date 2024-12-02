@@ -8,12 +8,10 @@ const tourguide_salesreportSchema = new Schema({
   Email: { 
     type: String, 
     required: true, 
-    unique: true 
   },
   Itinerary: {
     type: String, 
     required: true, 
-    unique: true 
   },
   Revenue:{
     type: Number, 

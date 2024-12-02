@@ -142,6 +142,7 @@ const {createUserAdmin,
   calculateActivityRevenue,
   getAllSalesReports,
   calculateItineraryRevenue,
+  getAllSalesReportsitin,
   checkoutOrder,
   createPromoCode,
   createwishlistItem,
@@ -340,6 +341,7 @@ app.post('/addToCart', addToCart);
 app.post('/calculateActivityRevenue', calculateActivityRevenue);
 app.get('/advertiser_salesreport', getAllSalesReports);
 app.post('/calculateItineraryRevenue', calculateItineraryRevenue);
+app.get('/getAllSalesReportsitin', getAllSalesReportsitin);
 app.post('/Tourist/CheckoutOrder', checkoutOrder);
 app.post('/createPromoCode', createPromoCode);
 app.post('/createwishlistItem', createwishlistItem);

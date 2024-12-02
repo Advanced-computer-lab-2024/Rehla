@@ -43,6 +43,7 @@ const wishlist = require ('../Models/wishlist.js');
 const order = require('../Models/Order.js');
 const saved_eventm =require ('../Models/Saved_Events.js');
 const advertiser_salesreport = require ('../Models/advertiser_salesreport.js');
+const tourguide_salesreport = require ('../Models/tourguide_salesreport.js');
 
 
 // Define all models where the user could exist
@@ -5439,46 +5440,90 @@ const calculateItineraryRevenue = async (req, res) => {
             return res.status(400).json({ message: 'Email is required.' });
         }
 
-        // Retrieve all itineraries created by the given email
+        // Retrieve all itineraries for the given email
         const itineraries = await itinerarym.find({ Created_By: email });
 
         if (itineraries.length === 0) {
-            return res.status(404).json({ message: 'No itineraries found for this email.' });
+            return res.status(404).json({ message: `No itineraries found for email '${email}'` });
         }
 
-        // Calculate revenue for each itinerary
-        let totalRevenue = 0;
-        const itineraryDetails = await Promise.all(
-            itineraries.map(async (itinerarym) => {
-                const paidCount = await touristIteneraries.countDocuments({
-                    Itinerary_Name: itinerarym.Itinerary_Name,
-                    Paid: true,
-                });
+        // Loop through all itineraries to calculate revenue and add to advertiser_salesreport
+        const reports = [];
+        for (const itinerarym of itineraries) {
+            // Count the number of paid records for this itinerary
+            const paidCount = await touristIteneraries.countDocuments({
+                Itinerary_Name: itinerarym.Itinerary_Name,
+                Paid: true,
+            });
 
-                const revenue = paidCount * itinerarym.Tour_Price * 0.9;
-                totalRevenue += revenue;
+            // Calculate revenue for the itinerary
+            const revenue =
+                paidCount > 0
+                    ? (paidCount * itinerarym.Tour_Price * 0.9)
+                    : 0;
 
-                return {
-                    itineraryName: itinerarym.Itinerary_Name,
-                    tourPrice: itinerarym.Tour_Price,
-                    paidCount,
-                    revenue,
-                };
-            })
-        );
+            // Check if a report for this itinerary already exists
+            const existingReport = await tourguide_salesreport.findOne({
+                Itinerary: itinerarym.Itinerary_Name,
+                Email: email,
+                createdAt: { $gte: new Date(new Date().setHours(0, 0, 0, 0)) }, // Same day constraint
+            });
 
+            if (existingReport) {
+                console.log(`Skipping itinerary ${itinerarym.Itinerary_Name}: report already exists.`);
+                continue; // Skip this itinerary if a report already exists
+            }
+
+            // Create the sales report for the itinerary
+            const report = await tourguide_salesreport.create({
+                Email: email,
+                Itinerary: itinerarym.Itinerary_Name, // Store as "Activity" to align with the schema
+                Revenue: revenue,
+                Sales: paidCount,
+                Price: itinerarym.Tour_Price,
+                Report_no: Math.floor(Math.random() * 1000000), // Generate a random report number
+            });
+
+            // Push the report to the array
+            reports.push(report);
+        }
+
+        // Return the results
         return res.status(200).json({
-            totalRevenue,
-            itineraryDetails,
+            message: 'All itineraries processed and reports added.',
+            reports,
         });
     } catch (error) {
-        console.error("Error calculating itinerary revenue:", error.message);
+        console.error('Error calculating itinerary revenue:', error.message);
         return res.status(500).json({
             error: 'Error calculating itinerary revenue',
             details: error.message,
         });
     }
 };
+
+const getAllSalesReportsitin = async (req, res) => {
+    try {
+        // Fetch all the sales reports from the database
+        const salesReports = await tourguide_salesreport.find();
+
+        // If no reports are found, return a 404 status
+        if (!salesReports || salesReports.length === 0) {
+            return res.status(404).json({ message: 'No sales reports found.' });
+        }
+
+        // Return the list of sales reports with a 200 status
+        return res.status(200).json(salesReports);
+    } catch (error) {
+        // If an error occurs, catch it and return a 500 status with the error message
+        console.error('Error fetching sales reports:', error.message);
+        return res.status(500).json({
+            error: 'Error fetching sales reports',
+            details: error.message,
+        });
+    }
+};
+
 
 
 //function to create new promocode
@@ -6016,5 +6061,6 @@ module.exports = { getPurchasedProducts,
     checkAndSendRemindersforEvents,
     checkAndSendRemindersforItinerary,
     checkandsendBirthdayPromoCode,
-    getAllSalesReports
+    getAllSalesReports,
+    getAllSalesReportsitin
 };
