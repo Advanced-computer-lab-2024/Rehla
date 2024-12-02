@@ -2,10 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../images/logo.png';
-import { searchEventsPlaces , rateTourGuide,commentTourGuide,viewComplaintByEmail,
-        deleteTouristItenrary,deleteTouristActivity, createComplaint,redeemPoints,
-        createPreference ,getAllTransportation,bookTransportation,addDeliveryAddress,
-        saveEvent,cancelOrder,viewSavedActivities,viewSavedItineraries} from '../services/api'; // Import the commentOnEvent function
+import { searchEventsPlaces ,redeemPoints,
+        createPreference ,getAllTransportation,bookTransportation,
+        saveEvent,cancelOrder} from '../services/api'; // Import the commentOnEvent function
 import Homet2 from '../components/Homet2.js';
 
 const TouristHome = () => {
@@ -18,20 +17,6 @@ const TouristHome = () => {
     const [transportation, setTransportation] = useState([]);
     const [loadingtransportation, setLoadingtransportation] = useState(false);
     const [errortransportation, setErrortransportation] = useState(null);
-
-    // State variables for rating a tour guide
-    const [tourGuideEmail, setTourGuideEmail] = useState(''); // State for the tour guide email
-    const [tourGuideRating, setTourGuideRating] = useState(''); // State for the tour guide rating
-
-    const [tourGuideEmaill, setTourGuideEmaill] = useState('');
-    const [commentt, setCommentt] = useState('');
-    const [errort, setErrort] = useState('');
-    const [cancelbookingItineraryName, setcancelBookingItineraryName] = useState(''); // State for itinerary name  
-    const [cancelbookingActivityName, setcancelBookingActivityName] = useState(''); // State for activity name  
-
-    const [complaintTitle, setComplaintTitle] = useState('');
-    const [complaintBody, setComplaintBody] = useState('');
-    const [address,setAddress]=useState('');
     
     //bto3 el save event
     const [eventType, setEventType] = useState('');
