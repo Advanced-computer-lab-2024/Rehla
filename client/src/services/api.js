@@ -1298,6 +1298,16 @@ export const calculateItineraryRevenue = async (email) => {
         throw errorMessage; // Throw for front-end handling
     }
 };
+export const fetchAllSalesReportsitin = async () => {
+    try {
+        const response = await axios.get(`${API_URL}/getAllSalesReportsitin`);
+        console.log('Sales reports:', response.data); // Debugging line to view the fetched data
+        return response.data;  // Return the fetched sales reports
+    } catch (error) {
+        console.error('Error fetching sales reports:', error); // Error handling
+        throw error;  // Re-throw the error to be handled by the calling function
+    }
+};
 
 
 // function to create new promo code

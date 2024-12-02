@@ -7,7 +7,8 @@ import {
     updateItinerary,
     getAllCreatedByEmail,
     Itineraryactivation ,
-    calculateItineraryRevenue
+    calculateItineraryRevenue,
+    fetchAllSalesReportsitin
 } from '../services/api';
 
 const TourGuideHome = () => {
@@ -46,6 +47,9 @@ const TourGuideHome = () => {
     const [loadingg, setLoadingg] = useState(false); // Loading indicator
     const [errorr, setErrorr] = useState(null); // Error messages
 
+    const [salesReports, setSalesReports] = useState([]);
+    const [messagee, setMessagee] = useState('');
+
 
 
     useEffect(() => {
@@ -65,6 +69,16 @@ const TourGuideHome = () => {
             setErrorr('No email found in local storage. Please sign in again.');
         }
     }, []);
+
+    const handleFetchSalesReports = async () => {
+        try {
+            const reports = await fetchAllSalesReportsitin();
+            setSalesReports(reports);
+        } catch (err) {
+            setMessagee('Error fetching sales reports.');
+            console.error(err);
+        }
+    };
 
     const fetchActivities = async (email) => {
         setLoading(true);
@@ -786,6 +800,23 @@ const TourGuideHome = () => {
                 <p style={{ color: 'red' }}>Please sign in to access this feature.</p>
             )}
         </div>
+        <div>
+                <h2>Sales Reports</h2>
+                <button onClick={handleFetchSalesReports}>Fetch All Sales Reports</button>
+                {salesReports.length > 0 ? (
+                    <ul>
+                        {salesReports.map((report) => (
+                            <li key={report.Report_no}>
+                                <p>Itinerary: {report.Itinerary}</p>
+                                <p>Revenue: ${report.Revenue}</p>
+                                <p>Sales: {report.Sales}</p>
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p>No sales reports available.</p>
+                )}
+            </div>
         </div>
     );
 };
