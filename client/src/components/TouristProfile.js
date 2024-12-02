@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getTouristProfile, updateTouristProfile, uploadProfilePicture , requestDeleteProfile
-  ,addDeliveryAddress,viewComplaintByEmail,createComplaint
+  ,addDeliveryAddress,viewComplaintByEmail,createComplaint,viewSavedActivities,viewSavedItineraries
 } from '../services/api'; // Import your new upload function
 import { Link } from 'react-router-dom';
 import logo from '../images/logo.png';
@@ -62,6 +62,73 @@ const TouristProfile = () => {
     const [complaintBody, setComplaintBody] = useState('');
     const [error, setError] = useState(null);
 
+     // bto3 el view activity
+     const [succesViewActivity,setSuccessViewActivity]=useState('');
+     const [errorViewActivity,setErrorViewActivity]=useState('');
+     const [activity, setActivity] = useState([]);
+        // bto3 el view itinerary
+     const [succesViewItinerary,setSuccessViewItinerary]=useState('');
+     const [errorViewItinerary,setErrorViewItinerary]=useState('');
+     const [itinerary, setItinerary] = useState([]);
+
+
+     useEffect(()=>{
+     const handleViewSavedActivities = async (e) => {
+     // e.preventDefault(); // Prevent default form submission
+  
+      try {
+          // Call the viewSavedActivities API function with the necessary email
+          const email = localStorage.getItem('email');
+          const response = await viewSavedActivities(email); 
+          
+          // On success, update the activity list and the success message
+          setActivity(response.activities);
+          setSuccessViewActivity(`Successfully fetched saved activities for ${email}`);
+          setErrorViewActivity('');  // Clear any previous error message
+      } catch (error) {
+          // Handle errors, log them, and update the error message
+          console.error('Failed to fetch saved activities:', error);
+  
+          if (error.response && error.response.data && error.response.data.message) {
+              // Use the error message returned from the server, if available
+              setErrorViewActivity(`Error: ${error.response.data.message}`);
+          } else {
+              // Fallback to a generic error message
+              setErrorViewActivity('Failed to fetch saved activities. Please try again.');
+          }
+      }
+  }; handleViewSavedActivities();
+} ,[]);
+
+
+useEffect(()=> {
+  const handleViewSavedItineraries = async (e) => {
+      //e.preventDefault(); // Prevent default form submission
+  
+      try {
+          // Call the viewSavedItineraries API function with the necessary email
+          const email = localStorage.getItem('email');
+          const response = await viewSavedItineraries(email); 
+          
+          // On success, update the itinerary list and the success message
+          setItinerary(response.itineraries);
+          setSuccessViewItinerary(`Successfully fetched saved itineraries for ${email}`);
+          setErrorViewItinerary('');  // Clear any previous error message
+      } catch (error) {
+          // Handle errors, log them, and update the error message
+          console.error('Failed to fetch saved itineraries:', error);
+  
+          if (error.response && error.response.data && error.response.data.message) {
+              // Use the error message returned from the server, if available
+              setErrorViewItinerary(`Error: ${error.response.data.message}`);
+          } else {
+              // Fallback to a generic error message
+              setErrorViewItinerary('Failed to fetch saved itineraries. Please try again.');
+          }
+      }
+  }; handleViewSavedItineraries();
+},[]);
+
     const handleaddress = async ()=>{
         setaddresssection(true);
         setcomplaintsection(false);
@@ -74,6 +141,10 @@ const TouristProfile = () => {
 
   const handleActivityClick = (activity) => {
     navigate(`/activity-details/${encodeURIComponent(activity.Name)}`); // Encode to make the URL safe
+  };
+
+  const handleItineraryClick = (itinerary) => {
+    navigate(`/itinerary-details/${encodeURIComponent(itinerary.Itinerary_Name)}`); // Encode to make the URL safe
   };
 
   const handleDeleteRequest = async () => {
@@ -612,31 +683,66 @@ const handleFetchComplaintByEmail = async () => {
           </div>
           <div className="border-l border-brandBlue "></div>
 
-            {/* Second Division (Saved Events Section) */}
+            {/* Second Division (Saved Items Section) */}
                 <div className="w-2/5 p-4 bg-white rounded-lg shadow-md">
-                <h3 className="text-lg font-bold text-center mb-4">Saved Events</h3>
-                {events.length > 0 && (
-                  <div className="mt-8 w-full">
-                    <ul className="list-inside space-y-4 text-sm ">
-                      {events.map((event, index) => (
-                        <li key={index} className="text-center">
-                          <div className="w-full h-40 mx-auto bg-gray-200 border border-gray-300 rounded-lg overflow-hidden duration-300 ease-in-out hover:scale-105"
-                          onClick={() =>handleActivityClick(event)}>
-                            {/* Render the Picture field */}
-                            <img
-                              src={event.Picture || 'default-event.jpg'} // Use event.Picture for the image
-                              alt={event.Name}
-                              className="w-full h-full object-cover duration-300 ease-in-out hover:scale-105"
-                            />
-                          </div>
-                          <p className="mt-2 text-gray-700 font-semibold">{event.Name}</p>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-              </div>
+                  <h3 className="text-lg font-bold text-center mb-4">Saved Items</h3>
+
+                  {/* Activities Section */}
+                  {activity.length > 0 && (
+                    <div className="mt-8 w-full">
+                      <h4 className="text-md font-semibold mb-2">Activities</h4>
+                      <ul className="list-inside space-y-4 text-sm">
+                        {activity.map((act, index) => (
+                          <li key={index} className="text-center">
+                            <div 
+                              className="w-full h-40 mx-auto bg-gray-200 border border-gray-300 rounded-lg overflow-hidden duration-300 ease-in-out hover:scale-105"
+                              onClick={() => handleActivityClick(act)}
+                            >
+                              <img
+                                src={act.Picture || 'default-activity.jpg'}
+                                alt={act.Name}
+                                className="w-full h-full object-cover duration-300 ease-in-out hover:scale-105"
+                              />
+                            </div>
+                            <p className="mt-2 text-gray-700 font-semibold">{act.Name}</p>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* Itineraries Section */}
+                  {itinerary.length > 0 && (
+                    <div className="mt-8 w-full">
+                      <h4 className="text-md font-semibold mb-2">Itineraries</h4>
+                      <ul className="list-inside space-y-4 text-sm">
+                        {itinerary.map((itin, index) => (
+                          <li key={index} className="text-center">
+                            <div 
+                              className="w-full h-40 mx-auto bg-gray-200 border border-gray-300 rounded-lg overflow-hidden duration-300 ease-in-out hover:scale-105"
+                              onClick={() => handleItineraryClick(itin)}
+                            >
+                              <img
+                                src={itin.Picture || 'default-itinerary.jpg'}
+                                alt={itin.Itinerary_Name}
+                                className="w-full h-full object-cover duration-300 ease-in-out hover:scale-105"
+                              />
+                            </div>
+                            <p className="mt-2 text-gray-700 font-semibold">{itin.Itinerary_Name}</p>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* No Saved Items Message */}
+                  {activity.length === 0 && itinerary.length === 0 && (
+                    <p className="text-center text-gray-600">No saved activities or itineraries.</p>
+                  )}
+                </div>
+
+            </div>
+
 
 
 
