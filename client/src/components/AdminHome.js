@@ -26,7 +26,7 @@ import {
     updateComplaintStatus,
     createPromoCode,
     viewUserStats,
-    fetchAllSalesReports,fetchAllSalesReportsitin
+    fetchAllSalesReports,fetchAllSalesReportsitin,fetchAllSalesReportsSeller
     
 } from '../services/api'; // Import all API functions
 import '../css/Home.css';
@@ -118,6 +118,8 @@ const AdminHome = () => {
     const [messagee, setMessagee] = useState('');
     const [salesReportss, setSalesReportss] = useState([]);
     const [salesReports, setSalesReports] = useState([]);
+    const [salesReportsss, setSalesReportsss] = useState([]);
+
 
 
 
@@ -162,6 +164,16 @@ const AdminHome = () => {
         try {
             const reports = await fetchAllSalesReportsitin();
             setSalesReports(reports);
+        } catch (err) {
+            setMessagee('Error fetching sales reports.');
+            console.error(err);
+        }
+    };
+
+    const handleFetchSalesReports = async () => {
+        try {
+            const reports = await fetchAllSalesReportsSeller();
+            setSalesReportsss(reports);
         } catch (err) {
             setMessagee('Error fetching sales reports.');
             console.error(err);
@@ -1241,6 +1253,29 @@ const handleCreatePromoCode = async (e) => {
                     <p>No sales reports available.</p>
                 )}
             </div>
+            <div>
+            {loading && <p>Loading activities...</p>}
+            {error && <p>Error: {error.message}</p>}
+            {messagee && <p>{messagee}</p>}
+            
+            <div>
+                <h2>Sales Reports</h2>
+                <button onClick={handleFetchSalesReports}>Fetch All Sales Reports</button>
+                {salesReportsss.length > 0 ? (
+                    <ul>
+                        {salesReportsss.map((report) => (
+                            <li key={report.Report_no}>
+                                <p>Products: {report.Product}</p>
+                                <p>Revenue: ${report.Revenue}</p>
+                                <p>Sales: {report.Sales}</p>
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p>No sales reports available.</p>
+                )}
+            </div>
+        </div>
         </div>
         <footer className="bg-brandBlue shadow dark:bg-brandBlue m-0">
                 <div className="w-full mx-auto md:py-8">
