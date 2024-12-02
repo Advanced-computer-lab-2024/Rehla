@@ -957,14 +957,22 @@ const createPreference = async (req, res) => {
     const { email, historicAreas, beaches, familyFriendly, shopping, budgetFriendly } = req.body;
   
     try {
-      const newPreference = new Preference({
+        // check if the user has already set preferences
+        const existingPreference = await Preference.findOne({ email });
+        if (existingPreference) {
+            // If preferences already exist, update them here
+            const updatedPreference = await Preference.findOneAndUpdate({ email }, { historicAreas, beaches, familyFriendly, shopping, budgetFriendly }, { new: true });
+            return res.status(200).json(updatedPreference);
+        }
+
+        const newPreference = new Preference({
         email,
         historicAreas,
         beaches,
         familyFriendly,
         shopping,
         budgetFriendly // Include budgetFriendly in the new preference
-      });
+        });
       
       await newPreference.save();
       return res.status(201).json(newPreference);
