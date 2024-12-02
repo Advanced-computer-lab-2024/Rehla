@@ -600,251 +600,176 @@ if (!tourist) {
         </a> 
       </div>
     </nav>
-    {addresssection && (
-      <div className="flex items-center justify-center bg-gray-100">
-      <div className="bg-white w-3/4 shadow-md rounded-lg p-6 mb-6">
-        <h2 className="text-2xl font-semibold text-brandBlue text-center mb-4">Add a New Address</h2>
-        <form className="space-y-4">
-          <div>
-            <label className="block text-gray-700 text-sm font-medium mb-1">Address:</label>
-            <input
-              type="text"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              placeholder="Enter a new address"
-              required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
-            />
-          </div>
-          <div className="flex justify-center">
-            <button
-              onClick={handleNewAddress}
-              className="w-full py-2 px-6 rounded-lg text-white font-medium transition duration-300 bg-logoOrange hover:bg-opacity-90"
-            >
-              Add New Address
-            </button>
-          </div>
-        </form>
-        {succes && <p className="mt-4 text-green-600 font-medium">{succes}</p>}
-        {errornew && <p className="mt-4 text-red-600 font-medium">{errornew}</p>}
-      </div>
-    </div>
-    )}
-
-    {complaintsection && (
-      <div className="flex items-center justify-center bg-gray-100">
-        <div className="bg-white w-3/4 shadow-md rounded-lg p-6 mb-6">
-          <h2 className="text-2xl font-semibold text-brandBlue text-center mb-4">Submit a Complaint</h2>
-          <form onSubmit={handleComplaintSubmit} className="space-y-4">
-            <div>
-              <label
-                htmlFor="complaint-title"
-                className="block text-gray-700 text-sm font-medium mb-1"
-              >
-                Title:
-              </label>
-              <input
-                id="complaint-title"
-                type="text"
-                value={complaintTitle}
-                onChange={(e) => setComplaintTitle(e.target.value)}
-                required
-                placeholder="Enter complaint title"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="complaint-body"
-                className="block text-gray-700 text-sm font-medium mb-1"
-              >
-                Body:
-              </label>
-              <textarea
-                id="complaint-body"
-                value={complaintBody}
-                onChange={(e) => setComplaintBody(e.target.value)}
-                required
-                placeholder="Enter complaint details"
-                rows="4"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
-              ></textarea>
-            </div>
-            <button
-              type="submit"
-              className="w-full bg-logoOrange text-white font-medium py-2 px-6 rounded-lg hover:bg-opacity-90 transition duration-300"
-            >
-              Submit Complaint
-            </button>
-          </form>
+{addresssection && (
+  <div className="flex items-center justify-center bg-gray-100 min-h-screen">
+    <div className="bg-white w-3/4 shadow-md rounded-lg p-6 mt-0 -translate-y-52">
+      <h2 className="text-2xl font-semibold text-brandBlue text-center mb-4">Add a New Address</h2>
+      <form className="space-y-4">
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-1">Address:</label>
+          <input
+            type="text"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            placeholder="Enter a new address"
+            required
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+          />
+        </div>
+        <div className="flex justify-center">
           <button
-            type="button"
-            className="w-full mt-4 bg-brandBlue text-white font-medium py-2 px-6 rounded-lg hover:bg-opacity-90 transition duration-300"
-            onClick={handleFetchComplaintByEmail}
+            onClick={handleNewAddress}
+            className="w-full py-2 px-6 rounded-lg text-white font-medium transition duration-300 bg-logoOrange hover:bg-opacity-90"
           >
-            My Complaint
+            Add New Address
           </button>
-
-          {/* Loading indicator */}
-          {isLoading && <p className="mt-4 text-gray-500">Loading complaints...</p>}
-
-          {/* Error handling */}
-          {errorMessage && (
-            <p className="mt-4 text-red-600 font-medium">Error: {errorMessage}</p>
-          )}
-
-          {/* No complaints found message */}
-          {showComplaints && complaintsList.length === 0 && !isLoading && (
-            <p className="mt-4 text-gray-700 font-medium">No complaints found.</p>
-          )}
-
-          {/* Display complaints in a table */}
-          {showComplaints && complaintsList.length > 0 && (
-            <div className="mt-6 overflow-x-auto">
-              <table className="min-w-full border border-gray-200">
-                <thead>
-                  <tr className="bg-gray-100">
-                    <th className="border px-4 py-2 text-left text-gray-700 font-medium">
-                      Title
-                    </th>
-                    <th className="border px-4 py-2 text-left text-gray-700 font-medium">
-                      Body
-                    </th>
-                    <th className="border px-4 py-2 text-left text-gray-700 font-medium">
-                      Status
-                    </th>
-                    <th className="border px-4 py-2 text-left text-gray-700 font-medium">
-                      Reply
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {complaintsList.map((complaint) => (
-                    <tr key={complaint._id}>
-                      <td className="border px-4 py-2">{complaint.Title}</td>
-                      <td className="border px-4 py-2">{complaint.Body}</td>
-                      <td
-                        className={`border px-4 py-2 ${
-                          complaint.Status === "resolved"
-                            ? "text-green-600"
-                            : "text-red-600"
-                        }`}
-                      >
-                        {complaint.Status}
-                      </td>
-                      <td className="border px-4 py-2">{complaint.Reply}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
         </div>
-      </div>
-    )}
+      </form>
+      {succes && <p className="mt-4 text-green-600 font-medium">{succes}</p>}
+      {errornew && <p className="mt-4 text-red-600 font-medium">{errornew}</p>}
+    </div>
+  </div>
+)}
 
-    {prefsection && (
-      <div className="flex items-center justify-center bg-gray-100">
-        <div className="bg-white w-3/4 shadow-md rounded-lg p-6 mb-6">
-          <h2 className="text-2xl font-semibold text-brandBlue text-center mb-6">
-            Create User Preference
-          </h2>
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Preferences Checkboxes */}
-            <div className="space-y-2">
-              {[
-                { name: "historicAreas", label: "Historic Areas" },
-                { name: "beaches", label: "Beaches" },
-                { name: "familyFriendly", label: "Family Friendly" },
-                { name: "shopping", label: "Shopping" },
-                { name: "budgetFriendly", label: "Budget Friendly" },
-              ].map((pref) => (
-                <div key={pref.name} className="flex items-center">
-                  <input
-                    type="checkbox"
-                    name={pref.name}
-                    checked={preferenceData[pref.name]} // Ensure the checked state reflects the data
-                    onChange={handleChange}
-                    className="h-5 w-5 text-brandBlue border-gray-300 rounded focus:ring-brandBlue"
-                  />
-                  <label htmlFor={pref.name} className="ml-2 text-sm text-gray-700">
-                    {pref.label}
-                  </label>
-                </div>
+{complaintsection && (
+  <div className="flex items-center justify-center bg-gray-100 min-h-screen">
+    <div className="bg-white w-3/4 shadow-md rounded-lg p-6 mt-0 -translate-y-24">
+      <h2 className="text-2xl font-semibold text-brandBlue text-center mb-4">Submit a Complaint</h2>
+      <form onSubmit={handleComplaintSubmit} className="space-y-4">
+        <div>
+          <label htmlFor="complaint-title" className="block text-gray-700 text-sm font-medium mb-1">Title:</label>
+          <input
+            id="complaint-title"
+            type="text"
+            value={complaintTitle}
+            onChange={(e) => setComplaintTitle(e.target.value)}
+            required
+            placeholder="Enter complaint title"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+          />
+        </div>
+        <div>
+          <label htmlFor="complaint-body" className="block text-gray-700 text-sm font-medium mb-1">Body:</label>
+          <textarea
+            id="complaint-body"
+            value={complaintBody}
+            onChange={(e) => setComplaintBody(e.target.value)}
+            required
+            placeholder="Enter complaint details"
+            rows="4"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+          ></textarea>
+        </div>
+        <button
+          type="submit"
+          className="w-full bg-logoOrange text-white font-medium py-2 px-6 rounded-lg hover:bg-opacity-90 transition duration-300"
+        >
+          Submit Complaint
+        </button>
+      </form>
+      <button
+        type="button"
+        className="w-full mt-4 bg-brandBlue text-white font-medium py-2 px-6 rounded-lg hover:bg-opacity-90 transition duration-300"
+        onClick={handleFetchComplaintByEmail}
+      >
+        My Complaint
+      </button>
+      {isLoading && <p className="mt-4 text-gray-500">Loading complaints...</p>}
+      {errorMessage && <p className="mt-4 text-red-600 font-medium">Error: {errorMessage}</p>}
+      {showComplaints && complaintsList.length === 0 && !isLoading && <p className="mt-4 text-gray-700 font-medium">No complaints found.</p>}
+      {showComplaints && complaintsList.length > 0 && (
+        <div className="mt-6 overflow-x-auto">
+          <table className="min-w-full border border-gray-200">
+            <thead>
+              <tr className="bg-gray-100">
+                <th className="border px-4 py-2 text-left text-gray-700 font-medium">Title</th>
+                <th className="border px-4 py-2 text-left text-gray-700 font-medium">Body</th>
+                <th className="border px-4 py-2 text-left text-gray-700 font-medium">Status</th>
+                <th className="border px-4 py-2 text-left text-gray-700 font-medium">Reply</th>
+              </tr>
+            </thead>
+            <tbody>
+              {complaintsList.map((complaint) => (
+                <tr key={complaint._id}>
+                  <td className="border px-4 py-2">{complaint.Title}</td>
+                  <td className="border px-4 py-2">{complaint.Body}</td>
+                  <td className={`border px-4 py-2 ${complaint.Status === "resolved" ? "text-green-600" : "text-red-600"}`}>{complaint.Status}</td>
+                  <td className="border px-4 py-2">{complaint.Reply}</td>
+                </tr>
               ))}
-            </div>
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  </div>
+)}
 
-            {/* Submit Button */}
-            <div className="flex justify-center">
-              <button
-                type="submit"
-                className="w-full py-2 px-6 rounded-lg text-white font-medium transition duration-300 bg-logoOrange hover:bg-opacity-90"
-              >
-                Create Preference
-              </button>
+{prefsection && (
+  <div className="flex items-center justify-center bg-gray-100 min-h-screen">
+    <div className="bg-white w-3/4 shadow-md rounded-lg p-6 mt-0 -translate-y-44">
+      <h2 className="text-2xl font-semibold text-brandBlue text-center mb-6">Create User Preference</h2>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="space-y-2">
+          {[{ name: "historicAreas", label: "Historic Areas" }, { name: "beaches", label: "Beaches" }, { name: "familyFriendly", label: "Family Friendly" }, { name: "shopping", label: "Shopping" }, { name: "budgetFriendly", label: "Budget Friendly" }].map((pref) => (
+            <div key={pref.name} className="flex items-center">
+              <input
+                type="checkbox"
+                name={pref.name}
+                checked={preferenceData[pref.name]}
+                onChange={handleChange}
+                className="h-5 w-5 text-brandBlue border-gray-300 rounded focus:ring-brandBlue"
+              />
+              <label htmlFor={pref.name} className="ml-2 text-sm text-gray-700">{pref.label}</label>
             </div>
-          </form>
+          ))}
+        </div>
+        <div className="flex justify-center">
+          <button
+            type="submit"
+            className="w-full py-2 px-6 rounded-lg text-white font-medium transition duration-300 bg-logoOrange hover:bg-opacity-90"
+          >
+            Create Preference
+          </button>
+        </div>
+      </form>
+      {messagee && <p className="text-center text-sm text-green-500 mt-4">{messagee}</p>}
+    </div>
+  </div>
+)}
 
-          {/* Message Display */}
-          {messagee && <p className="text-center text-sm text-green-500 mt-4">{messagee}</p>}
+{pointssection && (
+  <div className="flex items-center justify-center bg-gray-100 min-h-screen">
+    <div className="bg-white w-3/4 shadow-md rounded-lg p-6 mt-0 -translate-y-52">
+      <h2 className="text-2xl font-semibold text-brandBlue text-center mb-4">Redeem Points</h2>
+      <div className="space-y-4">
+        <div>
+          <label htmlFor="pointsToRedeem" className="block text-gray-700 text-sm font-medium mb-1">Points to Redeem:</label>
+          <input
+            type="number"
+            id="pointsToRedeem"
+            placeholder="Enter points to redeem"
+            value={pointsToRedeem}
+            onChange={(e) => setPointsToRedeem(e.target.value)}
+            required
+            min="1"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+          />
+        </div>
+        <div className="flex justify-center">
+          <button
+            onClick={handleRedeemPoints}
+            className="w-full py-2 px-6 rounded-lg text-white font-medium transition duration-300 bg-logoOrange hover:bg-opacity-90"
+          >
+            Redeem Points
+          </button>
         </div>
       </div>
-    )}
+      {message && <p className={`text-center mt-4 text-sm font-medium ${message.includes("successfully") ? "text-green-600" : "text-red-600"}`}>{message}</p>}
+    </div>
+  </div>
+)}
 
-    {pointssection && (
-        <div className="flex items-center justify-center bg-gray-100">
-            <div className="bg-white w-3/4 shadow-md rounded-lg p-6 mb-6">
-                <h2 className="text-2xl font-semibold text-brandBlue text-center mb-4">
-                    Redeem Points
-                </h2>
-
-                <div className="space-y-4">
-                    <div>
-                        <label
-                            htmlFor="pointsToRedeem"
-                            className="block text-gray-700 text-sm font-medium mb-1"
-                        >
-                            Points to Redeem:
-                        </label>
-                        <input
-                            type="number"
-                            id="pointsToRedeem"
-                            placeholder="Enter points to redeem"
-                            value={pointsToRedeem}
-                            onChange={(e) => setPointsToRedeem(e.target.value)}
-                            required
-                            min="1"
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
-                        />
-                    </div>
-
-                    {/* Redeem Button */}
-                    <div className="flex justify-center">
-                        <button
-                            onClick={handleRedeemPoints}
-                            className= "w-full py-2 px-6 rounded-lg text-white font-medium transition duration-300 bg-logoOrange hover:bg-opacity-90"
-                        >
-                            Redeem Points
-                        </button>
-                    </div>
-                </div>
-
-                {/* Message Display */}
-                {message && (
-                    <p
-                        className={`text-center mt-4 text-sm font-medium ${
-                            message.includes("successfully")
-                                ? "text-green-600"
-                                : "text-red-600"
-                        }`}
-                    >
-                        {message}
-                    </p>
-                )}
-            </div>
-        </div>
-    )}
 
 
 
