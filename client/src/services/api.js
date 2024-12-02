@@ -1321,6 +1321,48 @@ export const fetchAllSalesReportsitin = async () => {
 };
 
 
+export const fetchAllSalesReportsemail = async (email) => {
+    try {
+        const response = await axios.get(`${API_URL}/advertiser_salesreport`, {
+            params: { email },
+        });
+        console.log('Sales reports (Advertiser):', response.data); // Debugging line to view the fetched data
+        return response.data;  // Return the fetched sales reports
+    } catch (error) {
+        console.error('Error fetching sales reports (Advertiser):', error); // Error handling
+        throw error;  // Re-throw the error to be handled by the calling function
+    }
+};
+
+export const fetchAllSalesReportsitinemail = async (email) => {
+    try {
+        const response = await axios.get(`${API_URL}/getAllSalesReportsitin`, {
+            params: { email },
+        });
+        console.log('Sales reports (Itinerary):', response.data); // Debugging line to view the fetched data
+        return response.data;  // Return the fetched sales reports
+    } catch (error) {
+        console.error('Error fetching sales reports (Itinerary):', error); // Error handling
+        throw error;  // Re-throw the error to be handled by the calling function
+    }
+};
+
+export const fetchAllSalesReportsSelleremail = async (email) => {
+    try {
+        const response = await axios.get(`${API_URL}/getAllSalesReportsseller`, {
+            params: { email },
+        });
+        console.log('Sales reports (Seller):', response.data); // Debugging line to view the fetched data
+        return response.data;  // Return the fetched sales reports
+    } catch (error) {
+        console.error('Error fetching sales reports (Seller):', error); // Error handling
+        throw error;  // Re-throw the error to be handled by the calling function
+    }
+};
+
+
+
+
 // function to create new promo code
 export const createPromoCode = async (Code, Discount, Expiry,CreatedBy ,type) => {
     try {

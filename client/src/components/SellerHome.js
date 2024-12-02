@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link,useNavigate } from 'react-router-dom';
 import logo from '../images/logo.png';
-import { getProducts, getProductsSortedByRating, addProduct, updateProduct,toggleProductArchiveStatus,uploadProductPicture,fetchSalesReport,getSellerProfile,fetchAllSalesReportsSeller  } from '../services/api';
+import { getProducts, getProductsSortedByRating, addProduct, updateProduct,toggleProductArchiveStatus,uploadProductPicture,fetchSalesReport,getSellerProfile,fetchAllSalesReportsSelleremail  } from '../services/api';
 //import { Link, useNavigate } from 'react-router-dom';
 
 const Header = () => (
@@ -112,13 +112,21 @@ const SellerHome = () => {
 
     const handleFetchSalesReports = async () => {
         try {
-            const reports = await fetchAllSalesReportsSeller();
+            const email = localStorage.getItem('email'); // Retrieve email from localStorage
+    
+            if (!email) {
+                setMessagee('No email found. Please sign in again.');
+                return;
+            }
+    
+            const reports = await fetchAllSalesReportsSelleremail(email); // Pass the email to the API function
             setSalesReports(reports);
         } catch (err) {
-            setMessagee('Error fetching sales reports.');
+            setMessagee('Error fetching seller sales reports.');
             console.error(err);
         }
     };
+    
 
  
     

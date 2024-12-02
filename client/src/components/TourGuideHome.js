@@ -8,7 +8,7 @@ import {
     getAllCreatedByEmail,
     Itineraryactivation ,
     calculateItineraryRevenue,
-    fetchAllSalesReportsitin
+    fetchAllSalesReportsitinemail
 } from '../services/api';
 
 const TourGuideHome = () => {
@@ -74,13 +74,21 @@ const TourGuideHome = () => {
 
     const handleFetchSalesReports = async () => {
         try {
-            const reports = await fetchAllSalesReportsitin();
+            const email = localStorage.getItem('email'); // Retrieve email from localStorage
+    
+            if (!email) {
+                setMessagee('No email found. Please sign in again.');
+                return;
+            }
+    
+            const reports = await fetchAllSalesReportsitinemail(email); // Pass the email to the API function
             setSalesReports(reports);
         } catch (err) {
-            setMessagee('Error fetching sales reports.');
+            setMessagee('Error fetching itinerary sales reports.');
             console.error(err);
         }
     };
+    
 
     const fetchitinRevenue = async () => {
         try {

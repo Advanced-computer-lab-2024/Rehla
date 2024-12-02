@@ -7,7 +7,7 @@ import {
     deleteActivityByAdvertiser,
     updateActivityByAdvertiser,
     getAllCreatedByEmail,
-    calculateActivityRevenue, fetchAllSalesReports
+    calculateActivityRevenue, fetchAllSalesReportsemail
 } from '../services/api';
 
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -110,13 +110,21 @@ const AdvertiserHome = () => {
 
     const handleFetchSalesReports = async () => {
         try {
-            const reports = await fetchAllSalesReports();
+            const email = localStorage.getItem('email'); // Retrieve email from localStorage
+    
+            if (!email) {
+                setMessagee('No email found. Please sign in again.');
+                return;
+            }
+    
+            const reports = await fetchAllSalesReportsemail(email); // Pass the email to the API function
             setSalesReports(reports);
         } catch (err) {
             setMessagee('Error fetching sales reports.');
             console.error(err);
         }
     };
+    
 
     const handleActivityClick = (activity) => {
         setSelectedActivity(activity);
