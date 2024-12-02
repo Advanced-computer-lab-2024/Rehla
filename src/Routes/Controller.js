@@ -44,6 +44,7 @@ const order = require('../Models/Order.js');
 const saved_eventm =require ('../Models/Saved_Events.js');
 const advertiser_salesreport = require ('../Models/advertiser_salesreport.js');
 const tourguide_salesreport = require ('../Models/tourguide_salesreport.js');
+const seller_salesreport = require ('../Models/seller_salesreport.js');
 
 
 // Define all models where the user could exist
@@ -5022,18 +5023,69 @@ const getSalesReport = async (req, res) => {
 
         // Fetch products by the seller
         const products = await Product.find({ Seller_Name: sellerName });
+        const seller = await Seller.findOne({ Username: sellerName });
 
         if (!products || products.length === 0) {
             return res.status(404).json({ message: "No products found for this seller." });
         }
 
-        // Calculate total revenue
-        const totalRevenue = products.reduce((sum, product) => (sum + (product.Saled * product.Price))*0.9, 0);
+        if (!seller) {
+            return res.status(404).json({ message: "Seller not found." });
+        }
 
-        res.status(200).json({ sellerName, totalRevenue, products });
+        // Loop through all products to calculate revenue and add to seller_salesreport
+        const reports = [];
+        for (const product of products) {
+            // Calculate revenue for each product
+            const revenue = (product.Saled * product.Price) * 0.9;
+
+            // Create the sales report for the product
+            const report = await seller_salesreport.create({
+                Email: seller.Email,
+                Product: product.Product_Name,
+                Revenue: revenue,
+                Sales: product.Saled,
+                Price: product.Price,
+                Report_no: Math.floor(Math.random() * 1000000), // Generate a random report number
+            });
+
+            // Push the report to the array
+            reports.push(report);
+        }
+
+        // Return the results
+        return res.status(200).json({
+            message: "All products processed and reports added.",
+            reports,
+        });
     } catch (error) {
         console.error("Error fetching sales report:", error);
-        res.status(500).json({ error: "Internal server error." });
+        return res.status(500).json({
+            error: "Internal server error.",
+            details: error.message,
+        });
+    }
+};
+
+const getAllSalesReportsseller = async (req, res) => {
+    try {
+        // Fetch all the sales reports from the database
+        const salesReports = await seller_salesreport.find();
+
+        // If no reports are found, return a 404 status
+        if (!salesReports || salesReports.length === 0) {
+            return res.status(404).json({ message: 'No sales reports found.' });
+        }
+
+        // Return the list of sales reports with a 200 status
+        return res.status(200).json(salesReports);
+    } catch (error) {
+        // If an error occurs, catch it and return a 500 status with the error message
+        console.error('Error fetching sales reports:', error.message);
+        return res.status(500).json({
+            error: 'Error fetching sales reports',
+            details: error.message,
+        });
     }
 };
 
@@ -6149,5 +6201,6 @@ module.exports = { getPurchasedProducts,
     checkAndSendRemindersforItinerary,
     checkandsendBirthdayPromoCode,
     getAllSalesReports,
-    getAllSalesReportsitin
+    getAllSalesReportsitin,
+    getAllSalesReportsseller
 };
