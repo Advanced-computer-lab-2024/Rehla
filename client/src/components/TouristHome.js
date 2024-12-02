@@ -48,6 +48,12 @@ const TouristHome = () => {
     const [succesViewEvent,setSuccessViewEvent]=useState('');
     const [errorViewEvent,setErrorViewEvent]=useState('');
     const [events, setEvents] = useState([]);
+     //bto3 el cancelOrder
+    const [cartNum, setCartNum] = useState('');
+    const [succesCancelOrder,setSuccessCancelOrder]=useState('');
+    const [errorCancelOrder,setErrorCancelOrder]=useState('');
+    
+    
     const [preferenceData, setPreferenceData] = useState({
         email: '',
         historicAreas: false,
@@ -57,6 +63,34 @@ const TouristHome = () => {
         budgetFriendly: false
     });
     const [messagee, setMessagee] = useState('');
+    
+    const handleCancelOrder = async (e) => {
+        e.preventDefault(); // Prevent default form submission
+        // Clear previous success or error messages
+        setSuccessCancelOrder('');
+        setErrorCancelOrder('');
+        try {
+            // Prepare the cancel data (email and cart number)
+            const cancelData = { email, cartNum };
+            // Call the cancelOrder API function with the necessary data
+            const response = await cancelOrder(cancelData);
+            // On success, update the success message
+            if (response.message === 'Order deleted successfully') {
+                setSuccessCancelOrder(`Order with cart number ${cartNum} has been canceled successfully.`);
+                setCartNum('');  // Optionally clear the cart number field
+            }
+        } catch (error) {
+            // Handle errors, log them, and update the error message
+            console.error('Failed to cancel order:', error);
+            // If the error has a response with a message, use it
+            if (error.response && error.response.data && error.response.data.message) {
+                setErrorCancelOrder(`Error: ${error.response.data.message}`);
+            } else {
+                // Fallback to a generic error message
+                setErrorCancelOrder('Failed to cancel order. Please try again.');
+            }
+        }
+    };
     const handleViewSavedEvents = async () => {
         // Clear previous messages and data
         setSuccessViewEvent('');
@@ -680,7 +714,36 @@ const TouristHome = () => {
     )}
     
 </div>
+{/*Cancel an order*/}
 
+<div>
+    <h2>Cancel an Order</h2>
+    <form>
+        <div>
+            <label>Email:</label>
+            <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+            />
+        </div>
+        <div>
+            <label>Cart Number:</label>
+            <input
+                type="text"
+                value={cartNum}
+                onChange={(e) => setCartNum(e.target.value)}
+                required
+            />
+        </div>
+        <button onClick={handleCancelOrder}>
+            Cancel Order
+        </button>
+    </form>
+    {succesCancelOrder && <p style={{ color: 'green' }}>{succesCancelOrder}</p>}
+    {errorCancelOrder && <p style={{ color: 'red' }}>{errorCancelOrder}</p>}
+</div>
 
 
 
