@@ -609,29 +609,67 @@ const AdvertiserHome = () => {
                     </div>
                 </div>
             )}
-                    <div>
-            <h1>Advertiser Home</h1>
-            {loading && <p>Loading activities...</p>}
-            {error && <p>Error: {error.message}</p>}
-            {messagee && <p>{messagee}</p>}
-            
-            <div>
-                <h2>Sales Reports</h2>
-                <button onClick={handleFetchSalesReports}>Fetch All Sales Reports</button>
-                {salesReports.length > 0 ? (
-                    <ul>
-                        {salesReports.map((report) => (
-                            <li key={report.Report_no}>
-                                <p>Activity: {report.Activity}</p>
-                                <p>Revenue: ${report.Revenue}</p>
-                                <p>Sales: {report.Sales}</p>
-                            </li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p>No sales reports available.</p>
-                )}
-            </div>
+ <div>
+    <h1>Advertiser Home</h1>
+    {loading && <p>Loading activities...</p>}
+    {error && <p>Error: {error.message}</p>}
+    {messagee && <p>{messagee}</p>}
+
+    {/* Activities Section */}
+    <div>
+        <h2>Sales Reports - Activities</h2>
+        <button
+            onClick={handleFetchSalesReports}
+            style={{
+                marginBottom: "10px",
+                padding: "10px 15px",
+                backgroundColor: "#007bff",
+                color: "white",
+                border: "none",
+                cursor: "pointer",
+            }}
+        >
+            Fetch All Activity Reports
+        </button>
+        {salesReports.length > 0 ? (
+            <table
+                style={{
+                    width: "100%",
+                    borderCollapse: "collapse",
+                    margin: "20px 0",
+                    fontSize: "1rem",
+                    textAlign: "left",
+                }}
+            >
+                <thead>
+                    <tr>
+                        <th style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f4f4f4" }}>Activity</th>
+                        <th style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f4f4f4" }}>Revenue</th>
+                        <th style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f4f4f4" }}>Sales</th>
+                        <th style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f4f4f4" }}>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {salesReports.map((report) => (
+                        <tr
+                            key={report.Report_no}
+                            style={{
+                                border: "1px solid #ddd",
+                                backgroundColor: report.Report_no % 2 === 0 ? "#f9f9f9" : "white",
+                            }}
+                        >
+                            <td style={{ border: "1px solid #ddd", padding: "8px" }}>{report.Activity}</td>
+                            <td style={{ border: "1px solid #ddd", padding: "8px" }}>${report.Revenue}</td>
+                            <td style={{ border: "1px solid #ddd", padding: "8px" }}>{report.Sales}</td>
+                            <td style={{ border: "1px solid #ddd", padding: "8px" }}>{new Date(report.createdAt).toLocaleDateString()}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        ) : (
+            <p>No sales reports available.</p>
+        )}
+    </div>
         </div>
         <div>
             <h1>Advertiser Home</h1>
