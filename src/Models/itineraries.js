@@ -6,10 +6,6 @@ const itinerarysSchema = new Schema({
         type : String , 
         required : true,
     },
-    // Email : {
-    //     type : String ,
-    //     required : true,
-    // },
 
     Timeline: {
         type : String , 

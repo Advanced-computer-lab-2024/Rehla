@@ -300,102 +300,103 @@ const TourGuideHome = () => {
                             </div>
                         </section>
 
-                            {/*openCreateModal*/}
-                            {selectedItinerary && (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-        <div className="bg-white p-6 mt-20 rounded-lg shadow-lg w-full max-w-7xl overflow-auto relative">
-            {/* Close Button */}
-            <button
-                onClick={() => setSelectedItinerary(null)}
-                className="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
-            >
-                ✖
-            </button>
+                        {/*openCreateModal*/}
+                        {selectedItinerary && (
+                            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+                                <div className="bg-white p-6 mt-20 rounded-lg shadow-lg w-full max-w-5xl relative">
+                                    {/* Close Button */}
+                                    <button
+                                        onClick={() => setSelectedItinerary(null)}
+                                        className="absolute top-4 right-4 text-brandBlue hover:text-blue-700"
+                                    >
+                                        ✖
+                                    </button>
 
-            {/* Modal Content */}
-            <h3 className="text-2xl font-semibold mb-4 text-center">
-                {selectedItinerary.Itinerary_Name}
-            </h3>
+                                    {/* Modal Content */}
+                                    <h3 className="text-2xl font-semibold mb-6 text-center">
+                                        {selectedItinerary.Itinerary_Name}
+                                    </h3>
 
-            {/* Styled Image */}
-            <div className="flex justify-center mb-6">
-                <img
-                    src={selectedItinerary.Picture}
-                    alt={selectedItinerary.Itinerary_Name}
-                    className="w-full max-w-3xl h-56 object-cover rounded-md shadow"
-                />
-            </div>
+                                    {/* Flex Layout for Image and Details */}
+                                    <div className="flex flex-col md:flex-row gap-8">
+                                        {/* Styled Image */}
+                                        <div className="flex-shrink-0 w-full md:w-1/3">
+                                            <img
+                                                src={selectedItinerary.Picture}
+                                                alt={selectedItinerary.Itinerary_Name}
+                                                className="w-full h-72 object-cover rounded-md shadow-md"
+                                            />
+                                        </div>
 
-            {/* Data in Columns */}
-            <div className="grid grid-cols-2 gap-6">
-                <div>
-                    <p>
-                        <strong>Time:</strong> {selectedItinerary.Timeline}
-                    </p>
-                    <p>
-                        <strong>Duration:</strong> {selectedItinerary.Duration}
-                    </p>
-                    <p>
-                        <strong>Language:</strong> {selectedItinerary.Language}
-                    </p>
-                    <p>
-                        <strong>Tour Price:</strong> ${selectedItinerary.Tour_Price}
-                    </p>
-                    <p>
-                        <strong>Date:</strong> {selectedItinerary.Available_Date_Time}
-                    </p>
-                    <p>
-                        <strong>Accessibility:</strong> {selectedItinerary.Accessibility ? 'Yes' : 'No'}
-                    </p>
-                </div>
-                <div>
-                    <p>
-                        <strong>Pick Up Point:</strong> {selectedItinerary.Pick_Up_Point}
-                    </p>
-                    <p>
-                        <strong>Drop Off Point:</strong> {selectedItinerary.Drop_Of_Point}
-                    </p>
-                    <p>
-                        <strong>Available Spots:</strong> {selectedItinerary.Empty_Spots}
-                    </p>
-                    <p>
-                        <strong>Booked Spots:</strong> {selectedItinerary.Booked}
-                    </p>
-                    <p>
-                        <strong>Country:</strong> {selectedItinerary.Country}
-                    </p>
-                    <p>
-                        <strong>Rating:</strong> {selectedItinerary.Rating}
-                    </p>
-                </div>
-            </div>
+                                        {/* Itinerary Details */}
+                                        <div className="flex-grow grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+                                            <div>
+                                                <p>
+                                                    <strong>Time:</strong> {selectedItinerary.Timeline}
+                                                </p>
+                                                <p>
+                                                    <strong>Duration:</strong> {selectedItinerary.Duration}
+                                                </p>
+                                                <p>
+                                                    <strong>Language:</strong> {selectedItinerary.Language}
+                                                </p>
+                                                <p>
+                                                    <strong>Tour Price:</strong> ${selectedItinerary.Tour_Price}
+                                                </p>
+                                                <p>
+                                                    <strong>Date:</strong> {selectedItinerary.Available_Date_Time}
+                                                </p>
+                                                <p>
+                                                    <strong>Accessibility:</strong> {selectedItinerary.Accessibility ? 'Yes' : 'No'}
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <p>
+                                                    <strong>Pick Up Point:</strong> {selectedItinerary.Pick_Up_Point}
+                                                </p>
+                                                <p>
+                                                    <strong>Drop Off Point:</strong> {selectedItinerary.Drop_Of_Point}
+                                                </p>
+                                                <p>
+                                                    <strong>Available Spots:</strong> {selectedItinerary.Empty_Spots}
+                                                </p>
+                                                <p>
+                                                    <strong>Booked Spots:</strong> {selectedItinerary.Booked}
+                                                </p>
+                                                <p>
+                                                    <strong>Country:</strong> {selectedItinerary.Country}
+                                                </p>
+                                                <p>
+                                                    <strong>Rating:</strong> {selectedItinerary.Rating}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
 
-            {/* Footer Actions */}
-            <div className="flex justify-end mt-6 gap-4">
-                <button
-                    onClick={() => openEditModal(selectedItinerary)}
-                    className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded"
-                >
-                    Edit Itinerary
-                </button>
-                <button
-                    onClick={handleDeleteItinerary}
-                    className="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded"
-                >
-                    Delete Itinerary
-                </button>
-                <button
-                    onClick={() => setSelectedItinerary(null)}
-                    className="bg-gray-500 hover:bg-gray-700 text-white px-4 py-2 rounded"
-                >
-                    Close
-                </button>
-            </div>
-        </div>
-    </div>
-)}
-
-
+                                    {/* Footer Actions */}
+                                    <div className="flex justify-end mt-6 gap-4">
+                                        <button
+                                            onClick={() => openEditModal(selectedItinerary)}
+                                            className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded"
+                                        >
+                                            Edit Itinerary
+                                        </button>
+                                        <button
+                                            onClick={handleDeleteItinerary}
+                                            className="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded"
+                                        >
+                                            Delete Itinerary
+                                        </button>
+                                        <button
+                                            onClick={() => setSelectedItinerary(null)}
+                                            className="bg-gray-500 hover:bg-gray-700 text-white px-4 py-2 rounded"
+                                        >
+                                            Close
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </>
                 )}
             </div>
