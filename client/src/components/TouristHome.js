@@ -5,7 +5,7 @@ import logo from '../images/logo.png';
 import { searchEventsPlaces , rateTourGuide,commentTourGuide,viewComplaintByEmail,
         deleteTouristItenrary,deleteTouristActivity, createComplaint,redeemPoints,
         createPreference ,getAllTransportation,bookTransportation,addDeliveryAddress,
-        saveEvent,viewSavedEvents,cancelOrder} from '../services/api'; // Import the commentOnEvent function
+        saveEvent,cancelOrder} from '../services/api'; // Import the commentOnEvent function
 import Homet2 from '../components/Homet2.js';
 
 const TouristHome = () => {
@@ -44,10 +44,10 @@ const TouristHome = () => {
     const [eventName,setEventName]=useState('');
     const [succesEvent,setSuccessEvent]=useState('');
     const [errorEvent,setErrorEvent]=useState('');
-    //bto3 el view Event
-    const [succesViewEvent,setSuccessViewEvent]=useState('');
-    const [errorViewEvent,setErrorViewEvent]=useState('');
-    const [events, setEvents] = useState([]);
+    // bto3 el view Event
+    // const [succesViewEvent,setSuccessViewEvent]=useState('');
+    // const [errorViewEvent,setErrorViewEvent]=useState('');
+    // const [events, setEvents] = useState([]);
      //bto3 el cancelOrder
     const [cartNum, setCartNum] = useState('');
     const [succesCancelOrder,setSuccessCancelOrder]=useState('');
@@ -91,27 +91,7 @@ const TouristHome = () => {
             }
         }
     };
-    const handleViewSavedEvents = async () => {
-        // Clear previous messages and data
-        setSuccessViewEvent('');
-        setErrorViewEvent('');
-        setEvents([]);
 
-        try {
-            const response = await viewSavedEvents(email);
-
-            // On success, set success message and update the events list
-            setSuccessViewEvent(`Successfully retrieved ${response.savedEvents.length} event(s).`);
-            setEvents(response.savedEvents);
-        } catch (error) {
-            // Handle error: use server message if available, otherwise fallback to generic message
-            if (error.response && error.response.data && error.response.data.message) {
-                setErrorViewEvent(error.response.data.message);
-            } else {
-                setErrorViewEvent('An error occurred while retrieving saved events.');
-            }
-        }
-    };
     const handleSaveEvent = async (e) => {
         e.preventDefault(); // Prevent default form submission
     
@@ -684,36 +664,7 @@ const TouristHome = () => {
     {errorEvent && <p style={{ color: 'red' }}>{errorEvent}</p>}
 </div>
 {/* View Bookmarked Events */}
-<div>
-    <h2>View Saved Events</h2>
-    <form onSubmit={(e) => { e.preventDefault(); handleViewSavedEvents(); }}>
-        <div>
-            <label>Email:</label>
-            <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-            />
-        </div>
-        <button type="submit">View Events</button>
-    </form>
-    {succesViewEvent && <p style={{ color: 'green' }}>{succesViewEvent}</p>}
-    {errorViewEvent && <p style={{ color: 'red' }}>{errorViewEvent}</p>}
-    {events.length > 0 && (
-        <div>
-            <h3>Saved Events:</h3>
-            <ul>
-                {events.map((event, index) => (
-                    <li key={index}>
-                        {event.Name} ({event.TYPE})
-                    </li>
-                ))}
-            </ul>
-        </div>
-    )}
-    
-</div>
+
 {/*Cancel an order*/}
 
 <div>

@@ -1342,15 +1342,15 @@ export const saveEvent = async (eventData) => {
     }
 };
 
-export const viewSavedEvents = async (email) => {
-    try {
-        const response = await axios.post(`${API_URL}/viewSavedEvents`, { email });
-        return response.data; // Return the data from the server
-    } catch (error) {
-        console.error('Error retrieving saved events:', error);
-        throw error; // Throw the error to let the caller handle it
-    }
-};
+// export const viewSavedEvents = async (email) => {
+//     try {
+//         const response = await axios.post(`${API_URL}/viewSavedEvents`, { email });
+//         return response.data; // Return the data from the server
+//     } catch (error) {
+//         console.error('Error retrieving saved events:', error);
+//         throw error; // Throw the error to let the caller handle it
+//     }
+// };
 
 export const viewUserStats = async () => {
     try {
