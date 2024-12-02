@@ -6,12 +6,13 @@ const Schema = mongoose.Schema;
 const CartSchema = new Schema({
   Cart_Num:{
     type: Number, 
+    required: true, 
     
   },
   Email: { 
     type: String, 
     required: true, 
-    unique: true 
+     
   },
   Productname: { 
     type: String, 
@@ -23,6 +24,8 @@ const CartSchema = new Schema({
     default: 1
   }
 },{ versionKey: false });
+// Create a compound unique index on Cart_Num and Email
+CartSchema.index({ Cart_Num: 1, Email: 1, Productname: 1 }, { unique: true });
 
 // Create the model
 const Cart = mongoose.model("Cart", CartSchema);

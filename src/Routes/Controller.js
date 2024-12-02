@@ -5088,36 +5088,75 @@ const getAllSalesReportsseller = async (req, res) => {
     }
 };
 
-//make function to update cart quantity by incrementing by 1
+//make function to update cart
 const updateCartItem = async (req, res) => {
     try {
-        const { Email, Productname } = req.body;
+        const { Email, Productname, action } = req.body;
 
         // Validate input
-        if (!Email || !Productname) {
-            return res.status(400).json({ error: 'Email and product name are required.' });
+        if (!Email || !Productname || !action) {
+            return res.status(400).json({ error: 'Email, product name, and action are required.' });
         }
 
-        // get the cart item
-        const cartItem = await cartm.findOne({ Email, Productname });
+        // Find tourist by email
+        const tourist = await Tourist.findOne({ Email: Email });
+        if (!tourist || !tourist.Cart_Num) {
+            return res.status(404).json({ error: 'Tourist or current cart number not found.' });
+        }
+
+        // Log debug information
+       
+        
+
+        // Find cart item
+        const cartItem = await cartm.findOne({
+            Cart_Num: tourist.Cart_Num,
+            Email,
+            Productname
+        });
+
         if (!cartItem) {
             return res.status(404).json({ error: 'Cart item not found.' });
         }
 
-        // Increment the quantity by 1
-        cartItem.Quantity += 1;
-        await cartItem.save();
+        // Action handling
+        if (action === 'increment') {
+            cartItem.Quantity += 1;
+            await cartItem.save();
+            return res.status(200).json({
+                message: 'Product quantity incremented successfully.',
+                cartItem
+            });
 
-        // Send a success response
-        return res.status(200).json({ message: 'Cart item updated successfully.', cartItem });
+        } else if (action === 'decrement') {
+            if (cartItem.Quantity > 1) {
+                cartItem.Quantity -= 1;
+                await cartItem.save();
+                return res.status(200).json({
+                    message: 'Product quantity decremented successfully.',
+                    cartItem
+                });
+            } else {
+                return res.status(400).json({ error: 'Product quantity cannot be less than 1.' });
+            }
+
+        } else if (action === 'delete') {
+            await cartItem.deleteOne();
+            return res.status(200).json({ message: 'Product removed from cart successfully.' });
+        } else {
+            return res.status(400).json({ error: 'Invalid action. Allowed actions are increment, decrement, or delete.' });
+        }
     } catch (error) {
-        console.error('Error updating cart item:', error);
-        return res.status(500).json({ error: 'Failed to update cart item.' });
+        console.error('Error updating cart item:', error.message);
+        return res.status(500).json({
+            error: 'Failed to update cart item.',
+            details: error.message
+        });
     }
-}
+};
 
-//create new cart item
 
+//cadd a product to my cart
 const addToCart = async (req, res) => {
     try {
         const { email, productName } = req.body;
@@ -5133,14 +5172,21 @@ const addToCart = async (req, res) => {
             return res.status(404).json({ message: "Tourist email not found." });
         }
 
+        // Retrieve the current Cart_Num from the tourist
+        const currentCartNum = tourist.Cart_Num;
+
         // Check if the product exists
         const product = await Product.findOne({ Product_Name: productName });
         if (!product) {
             return res.status(404).json({ message: "Product not found." });
         }
 
-        // Find the cart item with the given email and product name
-        const cartItem = await cartm.findOne({ Email: email, Productname: productName });
+        // Search for the cart item with the given Cart_Num, email, and product name
+        const cartItem = await cartm.findOne({ 
+            Email: email, 
+            Productname: productName, 
+            Cart_Num: currentCartNum 
+        });
 
         if (cartItem) {
             // If the product exists in the cart, increment the quantity
@@ -5153,10 +5199,9 @@ const addToCart = async (req, res) => {
                 cartNumber: cartItem.Cart_Num 
             });
         } else {
-            // Create a new cart item
-            const cartCount = await Cart.countDocuments({ Email: email });
-            const newCartItem = new Cart({
-                Cart_Num: cartCount + 1, // Assign a new Cart_Num based on existing cart count
+            // Create a new cart item using the current Cart_Num
+            const newCartItem = new cartm({
+                Cart_Num: currentCartNum, // Use the tourist's current Cart_Num
                 Email: email,
                 Productname: productName,
                 Quantity: 1
@@ -5178,6 +5223,7 @@ const addToCart = async (req, res) => {
         });
     }
 };
+
 
 
 
