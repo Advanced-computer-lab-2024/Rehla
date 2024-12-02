@@ -2,18 +2,16 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 
-// Define the cart schema
+// Define the cart schema/
 const seller_salesreportSchema = new Schema({
  
   Email: { 
     type: String, 
     required: true, 
-    unique: true 
   },
   Product: {
     type: String, 
     required: true, 
-    unique: true 
   },
   Revenue:{
     type: Number, 

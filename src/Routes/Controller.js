@@ -44,6 +44,7 @@ const order = require('../Models/Order.js');
 const saved_eventm =require ('../Models/Saved_Events.js');
 const advertiser_salesreport = require ('../Models/advertiser_salesreport.js');
 const tourguide_salesreport = require ('../Models/tourguide_salesreport.js');
+const seller_salesreport = require ('../Models/seller_salesreport.js');
 
 
 // Define all models where the user could exist
@@ -957,14 +958,22 @@ const createPreference = async (req, res) => {
     const { email, historicAreas, beaches, familyFriendly, shopping, budgetFriendly } = req.body;
   
     try {
-      const newPreference = new Preference({
+        // check if the user has already set preferences
+        const existingPreference = await Preference.findOne({ email });
+        if (existingPreference) {
+            // If preferences already exist, update them here
+            const updatedPreference = await Preference.findOneAndUpdate({ email }, { historicAreas, beaches, familyFriendly, shopping, budgetFriendly }, { new: true });
+            return res.status(200).json(updatedPreference);
+        }
+
+        const newPreference = new Preference({
         email,
         historicAreas,
         beaches,
         familyFriendly,
         shopping,
         budgetFriendly // Include budgetFriendly in the new preference
-      });
+        });
       
       await newPreference.save();
       return res.status(201).json(newPreference);
@@ -4182,10 +4191,8 @@ const getPurchasedProducts = async (req, res) => {
 };
 
 //calculate itinrary rating
-const calculateItineraryRating = async (req, res) => {
+const calculateItineraryRating = async (Itinerary_Name) => {
     try {
-        const { Itinerary_Name } = req.body;
-
         // Validate input
         if (!Itinerary_Name) {
             return res.status(400).json({ error: 'Itinerary name is required.' });
@@ -5016,18 +5023,69 @@ const getSalesReport = async (req, res) => {
 
         // Fetch products by the seller
         const products = await Product.find({ Seller_Name: sellerName });
+        const seller = await Seller.findOne({ Username: sellerName });
 
         if (!products || products.length === 0) {
             return res.status(404).json({ message: "No products found for this seller." });
         }
 
-        // Calculate total revenue
-        const totalRevenue = products.reduce((sum, product) => (sum + (product.Saled * product.Price))*0.9, 0);
+        if (!seller) {
+            return res.status(404).json({ message: "Seller not found." });
+        }
 
-        res.status(200).json({ sellerName, totalRevenue, products });
+        // Loop through all products to calculate revenue and add to seller_salesreport
+        const reports = [];
+        for (const product of products) {
+            // Calculate revenue for each product
+            const revenue = (product.Saled * product.Price) * 0.9;
+
+            // Create the sales report for the product
+            const report = await seller_salesreport.create({
+                Email: seller.Email,
+                Product: product.Product_Name,
+                Revenue: revenue,
+                Sales: product.Saled,
+                Price: product.Price,
+                Report_no: Math.floor(Math.random() * 1000000), // Generate a random report number
+            });
+
+            // Push the report to the array
+            reports.push(report);
+        }
+
+        // Return the results
+        return res.status(200).json({
+            message: "All products processed and reports added.",
+            reports,
+        });
     } catch (error) {
         console.error("Error fetching sales report:", error);
-        res.status(500).json({ error: "Internal server error." });
+        return res.status(500).json({
+            error: "Internal server error.",
+            details: error.message,
+        });
+    }
+};
+
+const getAllSalesReportsseller = async (req, res) => {
+    try {
+        // Fetch all the sales reports from the database
+        const salesReports = await seller_salesreport.find();
+
+        // If no reports are found, return a 404 status
+        if (!salesReports || salesReports.length === 0) {
+            return res.status(404).json({ message: 'No sales reports found.' });
+        }
+
+        // Return the list of sales reports with a 200 status
+        return res.status(200).json(salesReports);
+    } catch (error) {
+        // If an error occurs, catch it and return a 500 status with the error message
+        console.error('Error fetching sales reports:', error.message);
+        return res.status(500).json({
+            error: 'Error fetching sales reports',
+            details: error.message,
+        });
     }
 };
 
@@ -5367,17 +5425,7 @@ const calculateActivityRevenue = async (req, res) => {
                     ? (paidCount * (activitym.Price - (activitym.Discount_Percent / 100 * activitym.Price))) * 0.9
                     : 0;
 
-            // Check if a report for this activity already exists
-            const existingReport = await advertiser_salesreport.findOne({
-                Activity: activitym.Name,
-                Email: email,
-                createdAt: { $gte: new Date(new Date().setHours(0, 0, 0, 0)) }, // Same day constraint
-            });
-
-            if (existingReport) {
-                console.log(`Skipping activity ${activitym.Name}: report already exists.`);
-                continue; // Skip this activity if a report already exists
-            }
+            
 
             // Create the sales report for the activity
             const report = await advertiser_salesreport.create({
@@ -5463,17 +5511,7 @@ const calculateItineraryRevenue = async (req, res) => {
                     ? (paidCount * itinerarym.Tour_Price * 0.9)
                     : 0;
 
-            // Check if a report for this itinerary already exists
-            const existingReport = await tourguide_salesreport.findOne({
-                Itinerary: itinerarym.Itinerary_Name,
-                Email: email,
-                createdAt: { $gte: new Date(new Date().setHours(0, 0, 0, 0)) }, // Same day constraint
-            });
-
-            if (existingReport) {
-                console.log(`Skipping itinerary ${itinerarym.Itinerary_Name}: report already exists.`);
-                continue; // Skip this itinerary if a report already exists
-            }
+            
 
             // Create the sales report for the itinerary
             const report = await tourguide_salesreport.create({
@@ -5709,68 +5747,98 @@ const saveEvent = async (req, res) => {
 
 
 const viewSavedActivities = async (req, res) => {
-    const { touristEmail } = req.body;  // Extract touristEmail from the request body
-
     try {
+        const { touristEmail } = req.body;
+
+        // Validate input
         if (!touristEmail) {
-            // Case: No email provided in the body
-            return res.status(400).json({ message: "Tourist email is required." });
+            return res.status(400).json({
+                message: "Tourist email is required to view saved activities.",
+            });
         }
 
-        // Fetch all events for the tourist
-        const allEvents = await saved_eventm.find({ Tourist_Email: touristEmail });
-        
-        if (allEvents.length === 0) {
-            // Case: No saved events at all
-            return res.status(404).json({ message: 'No saved events found for this user.', activities: [] });
+        // Find saved events for the given email
+        const savedEvents = await saved_eventm.find({ Tourist_Email: touristEmail, TYPE: 'Activity' });
+
+        if (savedEvents.length === 0) {
+            return res.status(404).json({
+                message: "No saved activities found for this tourist.",
+            });
         }
 
-        // Filter activities from all events
-        const activities = allEvents.filter(event => event.TYPE === 'Activity');
-        
-        if (activities.length === 0) {
-            // Case: No saved activities
-            return res.status(404).json({ message: 'No saved activities found for this user.', activities: [] });
+        // Extract activity names from the saved events
+        const activityNames = savedEvents.map(event => event.Name);
+
+        // Retrieve activity data from the activitiesamodel
+        const activityDetails = await activity.find({ Name: { $in: activityNames } });
+
+        if (activityDetails.length === 0) {
+            return res.status(404).json({
+                message: "No matching activities found in the database.",
+            });
         }
 
-        // Case: Activities found
-        return res.status(200).json({ message: 'Saved activities fetched successfully.', activities });
+        // Return the retrieved activity details
+        return res.status(200).json({
+            message: "Saved activities retrieved successfully.",
+            activities: activityDetails,
+        });
     } catch (error) {
-        console.error('Error fetching saved activities:', error);
-        return res.status(500).json({ message: 'Error fetching saved activities.' });
+        console.error("Error retrieving saved activities:", error);
+        return res.status(500).json({
+            message: "An error occurred while retrieving saved activities.",
+        });
     }
 };
+
 
 
 const viewSavedItineraries = async (req, res) => {
-    const { touristEmail } = req.body;  // Extract touristEmail from the request body
-
     try {
+        const { touristEmail } = req.body;
+
+        // Validate input
         if (!touristEmail) {
-            // Case: No email provided in the body
-            return res.status(400).json({ message: "Tourist email is required." });
+            return res.status(400).json({
+                message: "Tourist email is required to view saved itineraries.",
+            });
         }
-        // Fetch all events for the tourist
-        const allEvents = await saved_eventm.find({ Tourist_Email: touristEmail });
-        
-        if (allEvents.length === 0) {
-            // Case: No saved events at all
-            return res.status(404).json({ message: 'No saved events found for this user.', itineraries: [] });
+
+        // Find saved events for the given email where TYPE is 'Itinerary'
+        const savedEvents = await saved_eventm.find({ Tourist_Email: touristEmail, TYPE: 'Itinerary' });
+
+        if (savedEvents.length === 0) {
+            return res.status(404).json({
+                message: "No saved itineraries found for this tourist.",
+            });
         }
-        // Filter itineraries from all events
-        const itineraries = allEvents.filter(event => event.TYPE === 'Itinerary');
-        
-        if (itineraries.length === 0) {
-            // Case: No saved itineraries
-            return res.status(404).json({ message: 'No saved itineraries found for this user.', itineraries: [] });
+
+        // Extract itinerary names from the saved events
+        const itineraryNames = savedEvents.map(event => event.Name); // Use 'Name' field as itinerary names
+
+        // Retrieve itinerary data from the itinerarym collection
+        const itineraryDetails = await itinerarym.find({ Itinerary_Name: { $in: itineraryNames } });
+
+        if (itineraryDetails.length === 0) {
+            return res.status(404).json({
+                message: "No matching itineraries found in the database.",
+            });
         }
-        // Case: Itineraries found
-        return res.status(200).json({ message: 'Saved itineraries fetched successfully.', itineraries });
+
+        // Return the retrieved itinerary details
+        return res.status(200).json({
+            message: "Saved itineraries retrieved successfully.",
+            itineraries: itineraryDetails,
+        });
     } catch (error) {
-        console.error('Error fetching saved itineraries:', error);
-        return res.status(500).json({ message: 'Error fetching saved itineraries.' });
+        console.error("Error retrieving saved itineraries:", error);
+        return res.status(500).json({
+            message: "An error occurred while retrieving saved itineraries.",
+        });
     }
 };
+
+
 
 const viewUserStats = async (req, res) => {
     try {
@@ -6133,5 +6201,6 @@ module.exports = { getPurchasedProducts,
     checkAndSendRemindersforItinerary,
     checkandsendBirthdayPromoCode,
     getAllSalesReports,
-    getAllSalesReportsitin
+    getAllSalesReportsitin,
+    getAllSalesReportsseller
 };

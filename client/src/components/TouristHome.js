@@ -2,10 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../images/logo.png';
-import { searchEventsPlaces , rateTourGuide,commentTourGuide,viewComplaintByEmail,
-        deleteTouristItenrary,deleteTouristActivity, createComplaint,redeemPoints,
-        createPreference ,getAllTransportation,bookTransportation,addDeliveryAddress,
-        saveEvent,cancelOrder,viewSavedActivities,viewSavedItineraries} from '../services/api'; // Import the commentOnEvent function
+import { searchEventsPlaces ,redeemPoints,
+        createPreference ,getAllTransportation,bookTransportation,
+        saveEvent,cancelOrder} from '../services/api'; // Import the commentOnEvent function
 import Homet2 from '../components/Homet2.js';
 
 const TouristHome = () => {
@@ -18,40 +17,13 @@ const TouristHome = () => {
     const [transportation, setTransportation] = useState([]);
     const [loadingtransportation, setLoadingtransportation] = useState(false);
     const [errortransportation, setErrortransportation] = useState(null);
-
-    // State variables for rating a tour guide
-    const [tourGuideEmail, setTourGuideEmail] = useState(''); // State for the tour guide email
-    const [tourGuideRating, setTourGuideRating] = useState(''); // State for the tour guide rating
-
-    const [tourGuideEmaill, setTourGuideEmaill] = useState('');
-    const [commentt, setCommentt] = useState('');
-    const [errort, setErrort] = useState('');
     
-    const [complaintsList, setComplaintsList] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
-    const [errorMessage, setErrorMessage] = useState(null);
-    const [showComplaints, setShowComplaints] = useState(false); // State to control showing complaints
-    const [cancelbookingItineraryName, setcancelBookingItineraryName] = useState(''); // State for itinerary name  
-    const [cancelbookingActivityName, setcancelBookingActivityName] = useState(''); // State for activity name  
-
-    const [complaintTitle, setComplaintTitle] = useState('');
-    const [complaintBody, setComplaintBody] = useState('');
-    const [address,setAddress]=useState('');
-    const [succes,setSuccess]=useState('');
-    const [errornew,setErrornew]=useState('');
     //bto3 el save event
     const [eventType, setEventType] = useState('');
     const [eventName,setEventName]=useState('');
     const [succesEvent,setSuccessEvent]=useState('');
     const [errorEvent,setErrorEvent]=useState('');
-      // bto3 el view activity
-    const [succesViewActivity,setSuccessViewActivity]=useState('');
-    const [errorViewActivity,setErrorViewActivity]=useState('');
-    const [activity, setActivity] = useState([]);
-       // bto3 el view activity
-    const [succesViewItinerary,setSuccessViewItinerary]=useState('');
-    const [errorViewItinerary,setErrorViewItinerary]=useState('');
-    const [itinerary, setItinerary] = useState([]);
+     
      //bto3 el cancelOrder
     const [cartNum, setCartNum] = useState('');
     const [succesCancelOrder,setSuccessCancelOrder]=useState('');
@@ -67,58 +39,6 @@ const TouristHome = () => {
         budgetFriendly: false
     });
     const [messagee, setMessagee] = useState('');
-    
-    
-    const handleViewSavedActivities = async (e) => {
-        e.preventDefault(); // Prevent default form submission
-    
-        try {
-            // Call the viewSavedActivities API function with the necessary email
-            const response = await viewSavedActivities(email); 
-            
-            // On success, update the activity list and the success message
-            setActivity(response.activities);
-            setSuccessViewActivity(`Successfully fetched saved activities for ${email}`);
-            setErrorViewActivity('');  // Clear any previous error message
-        } catch (error) {
-            // Handle errors, log them, and update the error message
-            console.error('Failed to fetch saved activities:', error);
-    
-            if (error.response && error.response.data && error.response.data.message) {
-                // Use the error message returned from the server, if available
-                setErrorViewActivity(`Error: ${error.response.data.message}`);
-            } else {
-                // Fallback to a generic error message
-                setErrorViewActivity('Failed to fetch saved activities. Please try again.');
-            }
-        }
-    };
-    const handleViewSavedItineraries = async (e) => {
-        e.preventDefault(); // Prevent default form submission
-    
-        try {
-            // Call the viewSavedItineraries API function with the necessary email
-            const response = await viewSavedItineraries(email); 
-            
-            // On success, update the itinerary list and the success message
-            setItinerary(response.itineraries);
-            setSuccessViewItinerary(`Successfully fetched saved itineraries for ${email}`);
-            setErrorViewItinerary('');  // Clear any previous error message
-        } catch (error) {
-            // Handle errors, log them, and update the error message
-            console.error('Failed to fetch saved itineraries:', error);
-    
-            if (error.response && error.response.data && error.response.data.message) {
-                // Use the error message returned from the server, if available
-                setErrorViewItinerary(`Error: ${error.response.data.message}`);
-            } else {
-                // Fallback to a generic error message
-                setErrorViewItinerary('Failed to fetch saved itineraries. Please try again.');
-            }
-        }
-    };
-    
-    
     
     const handleCancelOrder = async (e) => {
         e.preventDefault(); // Prevent default form submission
@@ -180,33 +100,6 @@ const TouristHome = () => {
         }
     };
     
-    const handleNewAddress=async(e)=>{
-        e.preventDefault();
-        try{
-            const response = await addDeliveryAddress({email, address})
-            setSuccess(`Addresses added successfully: ${response.addresses.map(addr => addr.Address).join(', ')}`);
-            setEmail('');
-            setAddress('');
-        }
-        catch(error){
-            setErrornew(`Failed to add address`);
-            console.error(error);
-        }
-    }
-    
-    const handleComplaintSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const result = await createComplaint(email, complaintTitle, complaintBody);
-            console.log('Complaint submitted:', result);
-            setComplaintTitle('');
-            setComplaintBody('');
-            alert('Complaint submitted successfully!');
-        } catch (error) {
-            console.error('Error submitting complaint:', error);
-            setError('Failed to submit the complaint. Please try again later.');
-        }
-    };
     // Fetch email from localStorage on component mount
     useEffect(() => {
         const storedEmail = localStorage.getItem('email');
@@ -254,86 +147,6 @@ const TouristHome = () => {
             setIsSearched(true);
         } catch (err) {
             setError('Search failed. Please try again later.');
-        }
-    };
-
-   
-
-    // Handle rating submission for tour guides
-    const handleTourGuideRatingSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const result = await rateTourGuide(email, tourGuideEmail, tourGuideRating);
-            console.log('Tour guide rating submitted:', result);
-            setTourGuideEmail('');
-            setTourGuideRating(''); // Reset the tour guide rating input
-            alert('Tour guide rating submitted successfully!');
-        } catch (error) {
-            console.error('Error submitting tour guide rating:', error);
-            setError('Failed to submit the tour guide rating. Please try again later.');
-        }
-    };
-    
-    const handleCommentSubmitt = async (e) => {
-        e.preventDefault();
-        setErrort('');
-
-        try {
-            const result = await commentTourGuide('tourist@example.com', tourGuideEmaill, commentt); // Replace with actual tourist email
-            console.log('Comment submitted:', result);
-            setTourGuideEmaill('');
-            alert('Comment submitted successfully!');
-            setCommentt(''); // Clear comment input after submission
-        } catch (error) {
-            console.errort('Error submitting comment:', errort);
-            setErrort('Failed to submit the comment. Please try again later.');
-        }
-    };
-
-    const handleFetchComplaintByEmail = async () => {
-        setIsLoading(true);
-        setErrorMessage(null);
-        setShowComplaints(false); // Hide previous complaints list before fetching new data
-
-        try {
-            const storedEmail = localStorage.getItem('email');
-            const complaintData = await viewComplaintByEmail(storedEmail);
-
-            if (complaintData.length === 0) {
-                alert('No complaints found for this email.');
-            } else {
-                setComplaintsList(complaintData); // Set complaints list state
-                setShowComplaints(true); // Show complaints table
-            }
-        } catch (err) {
-            setErrorMessage('Error fetching complaint by email.');
-        } finally {
-            setIsLoading(false);
-        }
-    };
-    const handleItineraryCancelBooking = async (e) => {
-        e.preventDefault();
-        try {
-            const result = await deleteTouristItenrary(email, cancelbookingItineraryName);
-            console.log('Itinerary booking is canceled :', result);
-            alert('Itinerary booking is canceled successfully!');
-            setcancelBookingItineraryName(''); // Reset input
-        } catch (error) {
-            console.error('Error canceling booking itinerary:', error);
-            alert(error.message);
-        }
-    };
-    
-    const handleActivityCancelBooking = async (e) => {
-        e.preventDefault();
-        try {
-            const result = await deleteTouristActivity(email, cancelbookingActivityName);
-            console.log('Activity booking is canceled :', result);
-            alert('Activity booking is canceled successfully!');
-            setcancelBookingActivityName(''); // Reset input
-        } catch (error) {
-            console.error('Error canceling booking Activity:', error);
-            alert(error.message);
         }
     };
 
@@ -589,98 +402,7 @@ const TouristHome = () => {
             {message && <p className="text-center mt-4 text-sm text-gray-700">{message}</p>}
         </div>
 
-        <div className="max-w-lg mx-auto p-4 bg-white rounded-lg shadow-lg">
-  <h2 className="text-2xl font-semibold text-center mb-6">Create User Preference</h2>
-  
-  <form onSubmit={handleSubmit} className="space-y-4">
-    {/* Email Input */}
-    <div className="flex flex-col">
-      <label htmlFor="email" className="text-sm font-medium text-gray-700 mb-1">Email:</label>
-      <input
-        type="email"
-        name="email"
-        value={preferenceData.email}
-        onChange={handleChange}
-        required
-        className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-    </div>
-
-    {/* Historic Areas Checkbox */}
-    <div className="flex items-center">
-      <input
-        type="checkbox"
-        name="historicAreas"
-        checked={preferenceData.historicAreas}
-        onChange={handleChange}
-        className="h-5 w-5 text-blue-500 border-gray-300 rounded"
-      />
-      <label htmlFor="historicAreas" className="ml-2 text-sm text-gray-700">Historic Areas</label>
-    </div>
-
-    {/* Beaches Checkbox */}
-    <div className="flex items-center">
-      <input
-        type="checkbox"
-        name="beaches"
-        checked={preferenceData.beaches}
-        onChange={handleChange}
-        className="h-5 w-5 text-blue-500 border-gray-300 rounded"
-      />
-      <label htmlFor="beaches" className="ml-2 text-sm text-gray-700">Beaches</label>
-    </div>
-
-    {/* Family Friendly Checkbox */}
-    <div className="flex items-center">
-      <input
-        type="checkbox"
-        name="familyFriendly"
-        checked={preferenceData.familyFriendly}
-        onChange={handleChange}
-        className="h-5 w-5 text-blue-500 border-gray-300 rounded"
-      />
-      <label htmlFor="familyFriendly" className="ml-2 text-sm text-gray-700">Family Friendly</label>
-    </div>
-
-    {/* Shopping Checkbox */}
-    <div className="flex items-center">
-      <input
-        type="checkbox"
-        name="shopping"
-        checked={preferenceData.shopping}
-        onChange={handleChange}
-        className="h-5 w-5 text-blue-500 border-gray-300 rounded"
-      />
-      <label htmlFor="shopping" className="ml-2 text-sm text-gray-700">Shopping</label>
-    </div>
-
-    {/* Budget Friendly Checkbox */}
-    <div className="flex items-center">
-      <input
-        type="checkbox"
-        name="budgetFriendly"
-        checked={preferenceData.budgetFriendly}
-        onChange={handleChange}
-        className="h-5 w-5 text-blue-500 border-gray-300 rounded"
-      />
-      <label htmlFor="budgetFriendly" className="ml-2 text-sm text-gray-700">Budget Friendly</label>
-    </div>
-
-    {/* Submit Button */}
-    <div className="text-center">
-      <button
-        type="submit"
-        className="w-full py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-      >
-        Create Preference
-      </button>
-    </div>
-  </form>
-
-  {/* Message Display */}
-  {messagee && <p className="text-center text-sm text-green-500 mt-4">{messagee}</p>}
-</div>
-
+        
 {/* Bookmarking an event */}
 <div>
     <h2>Bookmark an event</h2>
@@ -719,74 +441,6 @@ const TouristHome = () => {
     {succesEvent && <p style={{ color: 'green' }}>{succesEvent}</p>}
     {errorEvent && <p style={{ color: 'red' }}>{errorEvent}</p>}
 </div>
-{/* View Bookmarked Events */}
-{/* View Bookmarked Activities */}
-<div>
-    <h2>View Saved Activities</h2>
-    <form onSubmit={handleViewSavedActivities}>
-        <div>
-            <label>Email:</label>
-            <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-            />
-        </div>
-        <button type="submit">
-            View Saved Activities
-        </button>
-    </form>
-    {succesViewActivity && <p style={{ color: 'green' }}>{succesViewActivity}</p>}
-    {errorViewActivity && <p style={{ color: 'red' }}>{errorViewActivity}</p>}
-
-    {activity.length > 0 ? (
-        <div>
-            <h3>Saved Activities:</h3>
-            <ul>
-                {activity.map((act, index) => (
-                    <li key={index}>{act.Name}</li>
-                ))}
-            </ul>
-        </div>
-    ) : (
-        <p>No saved activities found.</p>
-    )}
-</div>
-{/* View Bookmarked Itineraries */}
-<div>
-    <h2>View Saved Itineraries</h2>
-    <form onSubmit={handleViewSavedItineraries}>
-        <div>
-            <label>Email:</label>
-            <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-            />
-        </div>
-        <button type="submit">
-            View 
-        </button>
-    </form>
-    {succesViewItinerary && <p style={{ color: 'green' }}>{succesViewItinerary}</p>}
-    {errorViewItinerary && <p style={{ color: 'red' }}>{errorViewItinerary}</p>}
-
-    {itinerary.length > 0 ? (
-        <div>
-            <h3>Saved Itineraries:</h3>
-            <ul>
-                {itinerary.map((itineraryItem, index) => (
-                    <li key={index}>{itineraryItem.Name}</li>  // Customize based on your itinerary data structure
-                ))}
-            </ul>
-        </div>
-    ) : (
-        <p>No saved itineraries found.</p>
-    )}
-</div>
-
 
 {/*Cancel an order*/}
 

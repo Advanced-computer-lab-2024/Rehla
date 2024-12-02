@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link,useNavigate } from 'react-router-dom';
 import logo from '../images/logo.png';
-import { getProducts, getProductsSortedByRating, addProduct, updateProduct,toggleProductArchiveStatus,uploadProductPicture,fetchSalesReport,getSellerProfile  } from '../services/api';
+import { getProducts, getProductsSortedByRating, addProduct, updateProduct,toggleProductArchiveStatus,uploadProductPicture,fetchSalesReport,getSellerProfile,fetchAllSalesReportsSeller  } from '../services/api';
 //import { Link, useNavigate } from 'react-router-dom';
 
 const Header = () => (
@@ -65,6 +65,12 @@ const SellerHome = () => {
     const [fetchError, setFetchError] = useState(""); // Renamed error state
     const [isLoading, setIsLoading] = useState(false); // Renamed loading state
     const [seller, setSeller] = useState({});
+    const [salesReports, setSalesReports] = useState([]);
+    const [messagee, setMessagee] = useState('');
+    const [reports, setReports] = useState([]);
+
+
+
     const navigate = useNavigate();
     
 
@@ -103,6 +109,16 @@ const SellerHome = () => {
         };
         fetchProducts();
     }, []);
+
+    const handleFetchSalesReports = async () => {
+        try {
+            const reports = await fetchAllSalesReportsSeller();
+            setSalesReports(reports);
+        } catch (err) {
+            setMessagee('Error fetching sales reports.');
+            console.error(err);
+        }
+    };
 
  
     
@@ -244,21 +260,16 @@ const SellerHome = () => {
         setFetchError("");
         setIsLoading(true);
         try {
-            const data = await fetchSalesReport(seller.Shop_Name); // Fetch sales report using email
-            const updatedReport = {
-                ...data,
-                products: data.products.map(product => ({
-                    ...product,
-                    revenue: product.Price * product.Saled *0.9 // Calculate revenue dynamically
-                })),
-            };
-            setReport(updatedReport);
-        } catch (err) {
-            setFetchError(err.message || "Failed to fetch sales report.");
-        } finally {
-            setIsLoading(false);
-        }
-    };
+            const reportsData= await fetchSalesReport(seller.Username); // Fetch sales report using email
+            setReports(reportsData);
+                setError(null); // Clear any previous errors
+            } catch (err) {
+                console.error(err);
+                setError('Failed to fetch activity revenue. Please try again later.');
+            } finally {
+                setLoading(false);
+            }
+        };
 
 
     return (
@@ -630,38 +641,54 @@ const SellerHome = () => {
         </div>
     ))}
 </div>
-<div className="p-6 bg-gray-100">
-            <h2 className="text-2xl font-bold text-center">Seller Dashboard</h2>
-            <p className="text-lg text-center mt-2">View your sales report and total revenue for {seller.Shop_Name || "your shop"}.</p>
+<div>
+            <h1>Advertiser Home</h1>
+            <button onClick={handleFetchReport}>report</button>
 
-            <div className="mt-6 flex justify-center">
-                <button
-                    onClick={handleFetchReport}
-                    className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300"
-                >
-                    {isLoading ? "Fetching..." : "View Sales Report"}
-                </button>
-            </div>
+            {loading && <p>Loading Product revenue...</p>}
+            {error && <p style={{ color: 'red' }}>{error}</p>}
 
-            {fetchError && <p className="text-red-500 text-center mt-4">{fetchError}</p>}
-
-            {report && (
-                <div className="mt-6 bg-white p-4 rounded-lg shadow-md">
-                    <h3 className="text-xl font-semibold">Sales Report</h3>
-                    <p className="text-lg mt-2">Total Revenue: ${report.totalRevenue.toFixed(2)}</p>
-
-                    <h4 className="text-lg font-semibold mt-4">Products:</h4>
-                    <ul className="list-disc pl-5">
-                        {report.products.map((product) => (
-                            <li key={product._id}>
-                                <span className="font-medium">{product.Product_Name}</span> - 
-                                {product.Saled} sold at ${product.Price.toFixed(2)} each. 
-                                <span className="font-semibold text-green-600 ml-2">Revenue: ${product.revenue.toFixed(2)}</span>
+            {!loading && !error && reports.length > 0 && (
+                <div>
+                    <h2>Product Revenue Reports</h2>
+                    <ul>
+                        {reports.map((report, index) => (
+                            <li key={index}>
+                                <strong>Product:</strong> {report.Product} <br />
+                                <strong>Revenue:</strong> ${report.Revenue.toFixed(2)} <br />
+                                <strong>Sales:</strong> {report.Sales} <br />
+                                <strong>Price:</strong> ${report.Price.toFixed(2)} <br />
+                                <strong>Report No:</strong> {report.Report_no}
                             </li>
                         ))}
                     </ul>
                 </div>
             )}
+
+            {!loading && !error && reports.length === 0 && <p>No reports found.</p>}
+        </div>
+        <div>
+            {loading && <p>Loading activities...</p>}
+            {error && <p>Error: {error.message}</p>}
+            {messagee && <p>{messagee}</p>}
+            
+            <div>
+                <h2>Sales Reports</h2>
+                <button onClick={handleFetchSalesReports}>Fetch All Sales Reports</button>
+                {salesReports.length > 0 ? (
+                    <ul>
+                        {salesReports.map((report) => (
+                            <li key={report.Report_no}>
+                                <p>Products: {report.Product}</p>
+                                <p>Revenue: ${report.Revenue}</p>
+                                <p>Sales: {report.Sales}</p>
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p>No sales reports available.</p>
+                )}
+            </div>
         </div>
             </div>
             <Footer />

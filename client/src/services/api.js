@@ -1250,11 +1250,22 @@ export const getAllFiles = async () => {
 
 export const fetchSalesReport = async (sellerName) => {
     try {
-        const response = await axios.get(`${API_URL}/salesReport/${sellerName}`);
+        const response = await axios.post(`${API_URL}/salesReport/${sellerName}`);
         return response.data;
     } catch (error) {
         console.error('Error fetching sales report:', error);
         throw error.response ? error.response.data : { message: "Network error" };
+    }
+};
+
+export const fetchAllSalesReportsSeller = async () => {
+    try {
+        const response = await axios.get(`${API_URL}/getAllSalesReportsseller`);
+        console.log('Sales reports:', response.data); // Debugging line to view the fetched data
+        return response.data;  // Return the fetched sales reports
+    } catch (error) {
+        console.error('Error fetching sales reports:', error); // Error handling
+        throw error;  // Re-throw the error to be handled by the calling function
     }
 };
 
@@ -1296,6 +1307,16 @@ export const calculateItineraryRevenue = async (email) => {
             ? error.response.data
             : { message: 'Network error' };
         throw errorMessage; // Throw for front-end handling
+    }
+};
+export const fetchAllSalesReportsitin = async () => {
+    try {
+        const response = await axios.get(`${API_URL}/getAllSalesReportsitin`);
+        console.log('Sales reports:', response.data); // Debugging line to view the fetched data
+        return response.data;  // Return the fetched sales reports
+    } catch (error) {
+        console.error('Error fetching sales reports:', error); // Error handling
+        throw error;  // Re-throw the error to be handled by the calling function
     }
 };
 

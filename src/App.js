@@ -136,6 +136,7 @@ const {createUserAdmin,
   getAllUnarchivedProducts,
   getAllFiles,
   getSalesReport,
+  getAllSalesReportsseller,
   updateCartItem,
   createCartItem,
   addToCart,
@@ -336,7 +337,8 @@ app.post("/bookTransportation", bookTransportation);
 app.get("/viewAllTransportation", viewAllTransportation);
 app.get("/getAllUnarchivedProducts", getAllUnarchivedProducts);
 app.get('/getAllFiles', getAllFiles);
-app.get('/salesReport/:sellerName', getSalesReport);
+app.post('/salesReport/:sellerName', getSalesReport);
+app.get('/getAllSalesReportsseller', getAllSalesReportsseller)
 app.put('/updateCartItem', updateCartItem);
 app.post('/createCartItem', createCartItem);
 app.post('/addToCart', addToCart);
