@@ -126,7 +126,7 @@ const Home = () => {
             setFilteredPlacesAndMuseums(filtered);
     
             // Log the filtered state to confirm it's set
-            console.log("State set for filtered places and museums:", filteredPlacesAndMuseums);
+            console.log("State set for filtered places and museums:", filtered);
             
         } catch (error) {
             console.error("Error fetching filtered data:", error);
@@ -159,6 +159,8 @@ const Home = () => {
     // Use sorted or original data based on sorting/filtering
     const activitiesToDisplay = sortedActivities || data.upcomingActivities;
     const itinerariesToDisplay = sortedItineraries || data.upcomingItineraries;
+    const museumsToDisplay = filteredPlacesAndMuseums?.museums || data?.museums || [];
+    const historicalPlacesToDisplay = filteredPlacesAndMuseums?.historicalPlaces || data?.historicalPlaces || [];
 
     return (
         <div className="bg-white shadow-md">
@@ -427,7 +429,7 @@ const Home = () => {
                     </p>
                 </div>
             </section>
-
+<div>
             {/* Museums and Historical Places Filter Form */}
             <form onSubmit={handleFilterPlacesAndMuseums} className="mb-4">
             <div className="flex flex-col gap-4">
@@ -444,14 +446,14 @@ const Home = () => {
                         <option value="historical_places">Historical Places</option>
                     </select>
                 </div>
-            <div>
+                <div>
                     <label className="block text-sm font-medium">Value</label>
                     <select
                         name="value"
                         value={placesAndMuseumsFilters.value}
                         onChange={(e) => handleFilterChange(e, setPlacesAndMuseumsFilters)}
                         className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
-                        >
+                    >
                         <option value="">Select Value</option>
                         {placesAndMuseumsFilters.category === 'museums' && (
                             <>
@@ -470,18 +472,57 @@ const Home = () => {
                             </>
                         )}
                     </select>
-
-        </div>
-     </div>
+                </div>
+            </div>
             <button type="submit" className="mt-4 bg-brandBlue text-white px-3 py-1 rounded">Filter Museums & Historical Places</button>
         </form>
-
+        <div>
+                {filteredPlacesAndMuseums && (
+                    <>
+                        {filteredPlacesAndMuseums.museums && filteredPlacesAndMuseums.museums.map((museum) => (
+                            <div key={museum._id} className="gallery-item flex-none flex flex-col items-center w-80">
+                                <img
+                                    src={museum.Pictures}
+                                    alt={museum.Name}
+                                    className="w-72 h-72 object-cover rounded duration-300 ease-in-out hover:scale-105"
+                                />
+                                <div className="text-md font-medium text-center">{museum.Name}</div>
+                                <div className="text-sm text-gray-700">
+                                    <span className="font-semibold">Location: {museum.location}</span>
+                                    <br />
+                                    <span>Opening Hours: {museum.Opening_Hours}</span>
+                                    <br />
+                                    <span>Starting Prices: {convertPrice(museum.S_Tickets_Prices)} {currency}</span>
+                                </div>
+                            </div>
+                        ))}
+                        {filteredPlacesAndMuseums.historicalPlaces && filteredPlacesAndMuseums.historicalPlaces.map((place) => (
+                            <div key={place._id} className="gallery-item flex-none flex flex-col items-center w-80">
+                                <img
+                                    src={place.Pictures}
+                                    alt={place.Name}
+                                    className="w-72 h-72 object-cover rounded duration-300 ease-in-out hover:scale-105"
+                                />
+                                <div className="text-md font-medium text-center">{place.Name}</div>
+                                <div className="text-sm text-gray-700">
+                                    <span className="font-semibold">Location: {place.Location}</span>
+                                    <br />
+                                    <span>Opening Hours: {place.Opening_Time} - {place.Closing_Time}</span>
+                                    <br />
+                                    <span>Ticket Prices: {convertPrice(place.S_Ticket_Prices)} {currency}</span>
+                                </div>
+                            </div>
+                        ))}
+                    </>
+                )}
+            </div>
+            </div>
 
             {/* Museums and Historical Places Section */}
             <section className="mb-10">
                 <h2 className="text-2xl font-semibold mb-4 text-center">Museums and Historical Places</h2>
                 <div className="flex overflow-x-auto scrollbar-hide gap-6 px-6 py-4">
-                    {(filteredPlacesAndMuseums?.museums|| data.museums).map((museum) => (
+                    {museumsToDisplay.map((museum) => (
                         <div key={museum._id} className="gallery-item flex-none flex flex-col items-center w-80">
                             <img
                                 src={museum.pictures}
@@ -498,7 +539,7 @@ const Home = () => {
                             </div>
                         </div>
                     ))}
-                    {(filteredPlacesAndMuseums?.historicalPlaces || data.historicalPlaces).map((place) => (
+                    {historicalPlacesToDisplay.map((place) => (
                         <div key={place._id} className="gallery-item flex-none flex flex-col items-center w-80">
                             <img
                                 src={place.Pictures}
@@ -552,4 +593,4 @@ const Home = () => {
 
 export default Home;
 
-                
+
