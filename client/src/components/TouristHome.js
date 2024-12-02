@@ -5,7 +5,7 @@ import logo from '../images/logo.png';
 import { searchEventsPlaces , rateTourGuide,commentTourGuide,viewComplaintByEmail,
         deleteTouristItenrary,deleteTouristActivity, createComplaint,redeemPoints,
         createPreference ,getAllTransportation,bookTransportation,addDeliveryAddress,
-        saveEvent,cancelOrder} from '../services/api'; // Import the commentOnEvent function
+        saveEvent,cancelOrder,viewSavedActivities} from '../services/api'; // Import the commentOnEvent function
 import Homet2 from '../components/Homet2.js';
 
 const TouristHome = () => {
@@ -44,10 +44,10 @@ const TouristHome = () => {
     const [eventName,setEventName]=useState('');
     const [succesEvent,setSuccessEvent]=useState('');
     const [errorEvent,setErrorEvent]=useState('');
-    // bto3 el view Event
-    // const [succesViewEvent,setSuccessViewEvent]=useState('');
-    // const [errorViewEvent,setErrorViewEvent]=useState('');
-    // const [events, setEvents] = useState([]);
+      // bto3 el view activity
+    const [succesViewActivity,setSuccessViewActivity]=useState('');
+    const [errorViewActivity,setErrorViewActivity]=useState('');
+    const [activity, setActivity] = useState([]);
      //bto3 el cancelOrder
     const [cartNum, setCartNum] = useState('');
     const [succesCancelOrder,setSuccessCancelOrder]=useState('');
@@ -63,6 +63,36 @@ const TouristHome = () => {
         budgetFriendly: false
     });
     const [messagee, setMessagee] = useState('');
+    
+    
+    const handleViewSavedActivities = async (e) => {
+        e.preventDefault(); // Prevent default form submission
+    
+        try {
+            // Call the viewSavedActivities API function with the necessary email
+            const response = await viewSavedActivities(email); 
+            
+            // On success, update the activity list and the success message
+            setActivity(response.activities);
+            setSuccessViewActivity(`Successfully fetched saved activities for ${email}`);
+            setErrorViewActivity('');  // Clear any previous error message
+        } catch (error) {
+            // Handle errors, log them, and update the error message
+            console.error('Failed to fetch saved activities:', error);
+    
+            if (error.response && error.response.data && error.response.data.message) {
+                // Use the error message returned from the server, if available
+                setErrorViewActivity(`Error: ${error.response.data.message}`);
+            } else {
+                // Fallback to a generic error message
+                setErrorViewActivity('Failed to fetch saved activities. Please try again.');
+            }
+        }
+    };
+    
+
+    
+    
     
     const handleCancelOrder = async (e) => {
         e.preventDefault(); // Prevent default form submission
@@ -664,6 +694,39 @@ const TouristHome = () => {
     {errorEvent && <p style={{ color: 'red' }}>{errorEvent}</p>}
 </div>
 {/* View Bookmarked Events */}
+{/* View Bookmarked Activities */}
+<div>
+    <h2>View Saved Activities</h2>
+    <form onSubmit={handleViewSavedActivities}>
+        <div>
+            <label>Email:</label>
+            <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+            />
+        </div>
+        <button type="submit">
+            View Saved Activities
+        </button>
+    </form>
+    {succesViewActivity && <p style={{ color: 'green' }}>{succesViewActivity}</p>}
+    {errorViewActivity && <p style={{ color: 'red' }}>{errorViewActivity}</p>}
+
+    {activity.length > 0 ? (
+        <div>
+            <h3>Saved Activities:</h3>
+            <ul>
+                {activity.map((act, index) => (
+                    <li key={index}>{act.Name}</li>
+                ))}
+            </ul>
+        </div>
+    ) : (
+        <p>No saved activities found.</p>
+    )}
+</div>
 
 {/*Cancel an order*/}
 

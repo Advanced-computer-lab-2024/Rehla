@@ -1431,3 +1431,13 @@ export const cancelOrder = async (cancelData) => {
         throw error;  // Propagate the error so that it can be handled in the calling code
     }
 };
+export const viewSavedActivities = async (touristEmail) => {
+    try {
+        // Make the POST request with touristEmail in the body
+        const response = await axios.post(`${API_URL}/viewSavedActivities`, { touristEmail });
+        return response.data; // Return the response data containing activities
+    } catch (error) {
+        console.error('Error retrieving saved activities:', error);
+        throw error; // Propagate the error for handling in the calling component
+    }
+};
