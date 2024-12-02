@@ -88,7 +88,6 @@ const TourGuideHome = () => {
             console.error(err);
         }
     };
-    
 
     const fetchitinRevenue = async () => {
         try {
@@ -220,19 +219,18 @@ const TourGuideHome = () => {
     };
 
     // Handle form submission to activate or deactivate itinerary
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
+    const handleSubmit = async (accessibility) => {
         // Convert 'activated' / 'deactivated' to boolean
-        const accessibilityValue = accessibilitye === 'activated';
-
+        const accessibilityValue = accessibility === "activated";
+    
         try {
-            const response = await Itineraryactivation(itineraryNamee, accessibilityValue);
-            setMessageee(response.message);  // Display success message from the API
+            const response = await Itineraryactivation(selectedItinerary.Itinerary_Name, accessibilityValue);
+            setMessageee(response.message); // Display success message from the API
         } catch (error) {
-            setMessageee('Error updating itinerary');
+            setMessageee("Error updating itinerary");
         }
     };
+    
 
     const handleCalculateRevenue = async () => {
         if (!email) {
@@ -308,18 +306,20 @@ const TourGuideHome = () => {
                             </div>
                         </section>
 
-                        {/*openCreateModal*/}
+                        {/*openItineraryModal*/}
                         {selectedItinerary && (
                             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
                                 <div className="bg-white p-6 mt-20 rounded-lg shadow-lg w-full max-w-5xl relative">
                                     {/* Close Button */}
                                     <button
                                         onClick={() => setSelectedItinerary(null)}
-                                        className="absolute top-4 right-4 text-brandBlue hover:text-blue-700"
+                                        className="absolute top-4 right-4 p-2 focus:outline-none"
                                     >
-                                        ✖
+                                        <div className="relative w-5 h-8">
+                                            <div className="absolute w-full h-1 bg-brandBlue transform rotate-45" />
+                                            <div className="absolute w-full h-1 bg-brandBlue transform -rotate-45" />
+                                        </div>
                                     </button>
-
                                     {/* Modal Content */}
                                     <h3 className="text-2xl font-semibold mb-6 text-center">
                                         {selectedItinerary.Itinerary_Name}
@@ -338,7 +338,7 @@ const TourGuideHome = () => {
 
                                         {/* Itinerary Details */}
                                         <div className="flex-grow grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
-                                            <div>
+                                            <div className="space-y-4">
                                                 <p>
                                                     <strong>Time:</strong> {selectedItinerary.Timeline}
                                                 </p>
@@ -358,7 +358,7 @@ const TourGuideHome = () => {
                                                     <strong>Accessibility:</strong> {selectedItinerary.Accessibility ? 'Yes' : 'No'}
                                                 </p>
                                             </div>
-                                            <div>
+                                            <div className="space-y-4">
                                                 <p>
                                                     <strong>Pick Up Point:</strong> {selectedItinerary.Pick_Up_Point}
                                                 </p>
@@ -377,29 +377,40 @@ const TourGuideHome = () => {
                                                 <p>
                                                     <strong>Rating:</strong> {selectedItinerary.Rating}
                                                 </p>
+                                                <p>
+                                                    <strong>Active:</strong> {selectedItinerary.isActive ? "Yes" : "No"}
+                                                </p>
                                             </div>
                                         </div>
-                                    </div>
 
+                                    </div>
+                                    
                                     {/* Footer Actions */}
                                     <div className="flex justify-end mt-6 gap-4">
                                         <button
                                             onClick={() => openEditModal(selectedItinerary)}
-                                            className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded"
+                                            className="bg-brandBlue text-white px-4 py-2 rounded"
                                         >
                                             Edit Itinerary
                                         </button>
                                         <button
                                             onClick={handleDeleteItinerary}
-                                            className="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded"
+                                            className="bg-logoOrange text-white px-4 py-2 rounded"
                                         >
                                             Delete Itinerary
                                         </button>
                                         <button
-                                            onClick={() => setSelectedItinerary(null)}
-                                            className="bg-gray-500 hover:bg-gray-700 text-white px-4 py-2 rounded"
+                                            type="button"
+                                            onClick={async () => {
+                                                const newAccessibility = selectedItinerary.isActive ? "deactivated" : "activated";
+                                                setAccessibilitye(newAccessibility); // Update the state for potential UI sync
+                                                await handleSubmit(newAccessibility).then(() => {
+                                                    window.location.reload(); // Refresh the page; // Pass the desired value directly
+                                                });
+                                            }}
+                                            className="bg-brandBlue text-white px-4 py-2 rounded"
                                         >
-                                            Close
+                                            {selectedItinerary.isActive ? "Deactivate Itinerary" : "Activate Itinerary"}
                                         </button>
                                     </div>
                                 </div>
@@ -412,8 +423,18 @@ const TourGuideHome = () => {
             {/* Edit Itinerary Modal */}
             {isEditModalOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 mt-24">
-                <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-5xl overflow-auto">
+                <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-5xl overflow-auto relative">
                     <h2 className="text-xl font-bold mb-4">Edit Itinerary</h2>
+                    <button
+                        onClick={closeEditModal}
+                        className="absolute top-4 right-4 p-2 focus:outline-none"
+                        type="button"
+                    >
+                        <div className="relative w-5 h-8">
+                            <div className="absolute w-full h-1 bg-brandBlue transform rotate-45" />
+                            <div className="absolute w-full h-1 bg-brandBlue transform -rotate-45" />
+                        </div>
+                    </button>
                     <form onSubmit={handleUpdateItinerary}>
                         <div className="grid grid-cols-3 gap-4">
                             <label className="block">
@@ -574,13 +595,7 @@ const TourGuideHome = () => {
                             >
                                 Update Itinerary
                             </button>
-                            <button
-                                onClick={closeEditModal}
-                                className="bg-logoOrange text-white px-4 py-2 rounded"
-                                type="button"
-                            >
-                                Close
-                            </button>
+                            
                         </div>
                     </form>
                 </div>
@@ -591,7 +606,7 @@ const TourGuideHome = () => {
             {/* Create Activity Modal */}
             {isCreateModalOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 mt-24">
-                <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-5xl">
+                <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-5xl relative">
                     <h2 className="text-xl font-bold mb-4">Create Itinerary</h2>
                     <form onSubmit={handleCreateItinerary}>
                         <div className="grid grid-cols-3 gap-4">
@@ -749,16 +764,19 @@ const TourGuideHome = () => {
                         <div className="flex justify-end gap-2 mt-4">
                             <button
                                 type="submit"
-                                className="bg-green-500 text-white px-4 py-2 rounded"
+                                className="bg-brandBlue text-white px-4 py-2 rounded"
                             >
                                 Create Itinerary
                             </button>
                             <button
                                 onClick={closeCreateModal}
-                                className="bg-gray-500 text-white px-4 py-2 rounded"
+                                className="absolute top-4 right-4 p-2 focus:outline-none"
                                 type="button"
                             >
-                                Close
+                                <div className="relative w-5 h-8">
+                                    <div className="absolute w-full h-1 bg-brandBlue transform rotate-45" />
+                                    <div className="absolute w-full h-1 bg-brandBlue transform -rotate-45" />
+                                </div>
                             </button>
                         </div>
                     </form>
@@ -767,32 +785,7 @@ const TourGuideHome = () => {
             
             
             )}
-        <div>
-            <h2>Activate or Deactivate Itinerary Accessibility</h2>
-            <form onSubmit={handleSubmit}>
-                <label>
-                    Itinerary Name:
-                    <input
-                        type="text"
-                        value={itineraryNamee}
-                        onChange={handleItineraryNameChange}
-                        required
-                    />
-                </label>
-
-                <label>
-                    Accessibility:
-                    <select value={accessibilitye} onChange={handleAccessibilityChange} required>
-                        <option value="activated">Activate</option>
-                        <option value="deactivated">Deactivate</option>
-                    </select>
-                </label>
-
-                <button type="submit">{accessibilitye === 'activated' ? 'Deactivate Itinerary' : 'Update Itinerary'}</button>
-            </form>
-
-            {messageee && <p>{messageee}</p>} {/* Display success/error message */}
-        </div>
+        
         <div>
             <h1>Advertiser Dashboard</h1>
             {email ? (
@@ -828,60 +821,59 @@ const TourGuideHome = () => {
         </div>
         
         <div>
-        <h2>Sales Reports - Itineraries</h2>
-        <button
-            onClick={handleFetchSalesReports}
-            style={{
-                marginBottom: "10px",
-                padding: "10px 15px",
-                backgroundColor: "#007bff",
-                color: "white",
-                border: "none",
-                cursor: "pointer",
-            }}
-        >
-            Fetch All Itinerary Reports
-        </button>
-        {salesReports.length > 0 ? (
-            <table
-                style={{
-                    width: "100%",
-                    borderCollapse: "collapse",
-                    margin: "20px 0",
-                    fontSize: "1rem",
-                    textAlign: "left",
-                }}
-            >
-                <thead>
-                    <tr>
-                        <th style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f4f4f4" }}>Itinerary</th>
-                        <th style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f4f4f4" }}>Revenue</th>
-                        <th style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f4f4f4" }}>Sales</th>
-                        <th style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f4f4f4" }}>Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {salesReports.map((report) => (
-                        <tr
-                            key={report.Report_no}
-                            style={{
-                                border: "1px solid #ddd",
-                                backgroundColor: report.Report_no % 2 === 0 ? "#f9f9f9" : "white",
-                            }}
-                        >
-                            <td style={{ border: "1px solid #ddd", padding: "8px" }}>{report.Itinerary}</td>
-                            <td style={{ border: "1px solid #ddd", padding: "8px" }}>${report.Revenue}</td>
-                            <td style={{ border: "1px solid #ddd", padding: "8px" }}>{report.Sales}</td>
-                            <td style={{ border: "1px solid #ddd", padding: "8px" }}>{new Date(report.createdAt).toLocaleDateString()}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        ) : (
-            <p>No sales reports available.</p>
-        )}
-    </div>
-
+                <h2>Sales Reports - Itineraries</h2>
+                <button
+                    onClick={handleFetchSalesReports}
+                    style={{
+                        marginBottom: "10px",
+                        padding: "10px 15px",
+                        backgroundColor: "#007bff",
+                        color: "white",
+                        border: "none",
+                        cursor: "pointer",
+                    }}
+                >
+                    Fetch All Itinerary Reports
+                </button>
+                {salesReports.length > 0 ? (
+                    <table
+                        style={{
+                            width: "100%",
+                            borderCollapse: "collapse",
+                            margin: "20px 0",
+                            fontSize: "1rem",
+                            textAlign: "left",
+                        }}
+                    >
+                        <thead>
+                            <tr>
+                                <th style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f4f4f4" }}>Itinerary</th>
+                                <th style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f4f4f4" }}>Revenue</th>
+                                <th style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f4f4f4" }}>Sales</th>
+                                <th style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f4f4f4" }}>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {salesReports.map((report) => (
+                                <tr
+                                    key={report.Report_no}
+                                    style={{
+                                        border: "1px solid #ddd",
+                                        backgroundColor: report.Report_no % 2 === 0 ? "#f9f9f9" : "white",
+                                    }}
+                                >
+                                    <td style={{ border: "1px solid #ddd", padding: "8px" }}>{report.Itinerary}</td>
+                                    <td style={{ border: "1px solid #ddd", padding: "8px" }}>${report.Revenue}</td>
+                                    <td style={{ border: "1px solid #ddd", padding: "8px" }}>{report.Sales}</td>
+                                    <td style={{ border: "1px solid #ddd", padding: "8px" }}>{new Date(report.createdAt).toLocaleDateString()}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                ) : (
+                    <p>No sales reports available.</p>
+                )}
+            </div>
             <div>
             
             <button onClick={fetchitinRevenue}>report</button>

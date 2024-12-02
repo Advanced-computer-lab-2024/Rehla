@@ -4069,7 +4069,7 @@ const Itineraryactivation = async (req, res) => {
         }
 
         // Update the itinerary's accessibility
-        itinerary.Accessibility = Accessibility;
+        itinerary.isActive = Accessibility;
         await itinerary.save();
 
         res.status(200).json({ message: 'Itinerary updated successfully', itinerary });
