@@ -440,13 +440,16 @@ const filterPlacesAndMuseums = async (req, res) => {
 
     try {
         let results;
+        console.log('Filtering by:', category, value);
 
         if (category === 'historical_places') {
+            console.log('Filtering historical places by type:', value);
             // Step 1: Get all tags that match the specified type
-            const tagDetails = await historical_places_tagsm.find({ Type: value });
+            //const tagDetails = await historical_places_tagsm.find({ Type: value });
 
             // Step 2: Extract the names from the matching tags
-            const matchingNames = tagDetails.map(detail => detail.Name);
+            //const matchingNames = tagDetails.map(detail => detail.Name);
+            
 
             // Step 3: Find historical places that have matching names
             results = await historical_placesm.find({ Type: value });
@@ -456,6 +459,8 @@ const filterPlacesAndMuseums = async (req, res) => {
         } else {
             return res.status(400).json({ message: 'Invalid category. Use "historical_places" or "museums".' });
         }
+
+        console.log(results);
 
         // Step 4: Send the response
         if (results.length > 0) {
