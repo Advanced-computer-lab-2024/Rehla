@@ -163,7 +163,8 @@ const {createUserAdmin,
   checkAndSendRemindersforEvents,
   checkAndSendRemindersforItinerary,
   checkandsendBirthdayPromoCode,
-  getAllSalesReportsemail,getAllSalesReportsitinemail,getAllSalesReportsselleremail
+  getAllSalesReportsemail,getAllSalesReportsitinemail,getAllSalesReportsselleremail,
+  filterAdvertiserSalesReport,filterTourGuideSalesReport
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -354,6 +355,8 @@ app.post('/Tourist/ViewOrderDetails', viewOrderDetails);
 app.get('/advertiser_salesreportemail', getAllSalesReportsemail); // Takes ?email=<email>
 app.get('/getAllSalesReportsitinemail', getAllSalesReportsitinemail); // Takes ?email=<email>
 app.get('/getAllSalesReportsselleremail', getAllSalesReportsselleremail); // Takes ?email=<email>
+app.get('/filterAdvertiserSalesReport', filterAdvertiserSalesReport);
+app.get('/filterTourGuideSalesReport', filterTourGuideSalesReport);
 
 
 
