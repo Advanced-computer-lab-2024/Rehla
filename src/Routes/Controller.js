@@ -1802,20 +1802,24 @@ const deleteItinerary = async (req, res) => {
     }
 };
 
-//view all upcoming: itineraries , activities & historical places and museums
+// View all upcoming itineraries, activities, historical places, and museums
 const getAllUpcomingEventsAndPlaces = async (req, res) => {
     try {
         // Get the current date
         const currentDate = new Date();
 
-        // Query itineraries where Available_Date_Time is in the future
+        // Query itineraries where Available_Date_Time is in the future and isActive is true
         const upcomingItineraries = await itinerarym.find({
-            Available_Date_Time: { $gt: currentDate }
+            Available_Date_Time: { $gt: currentDate },
+            isActive: true,
+            Flagged: false
+
         });
 
         // Query activities where Date is greater than or equal to the current date
         const upcomingActivities = await activity.find({
-            Date: { $gte: currentDate }
+            Date: { $gte: currentDate },
+            Flagged: false
         });
 
         // Query to find all museums in the database
@@ -1837,6 +1841,7 @@ const getAllUpcomingEventsAndPlaces = async (req, res) => {
         res.status(500).json({ message: 'Error retrieving data', error: error.message });
     }
 };
+
 
 //Creating Advertiser as a request
 const createUserAdvertiser = async (req, res) => {
@@ -6425,6 +6430,13 @@ const viewmyproducts = async (req, res) => {
     }
 };
 
+// Function to generate a random 6-digit OTP
+const generateOTP = () => {
+    // Generate a random number between 100000 and 999999
+    const otp = Math.floor(100000 + Math.random() * 900000);
+    return otp;
+};
+
 
 // ----------------- Activity Category CRUD -------------------
 
@@ -6597,4 +6609,5 @@ module.exports = { getPurchasedProducts,
     checkoutOrder,
     viewOrders,
     viewOrderDetails,
+    generateOTP
 };
