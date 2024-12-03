@@ -5,6 +5,7 @@ import logo from '../images/logo.png';
 import img1 from '../images/img10.jpg';
 import img2 from '../images/img4.jpg';
 import img3 from '../images/img3.jpg';
+import { set } from 'mongoose';
 
 const Home = () => {
     const [data, setData] = useState(null);
@@ -118,8 +119,9 @@ const Home = () => {
         try {
             console.log("Filters being used:", placesAndMuseumsFilters);
             const filtered = await filterPlacesAndMuseums(placesAndMuseumsFilters);
-    
-            // Ensure that filtered data contains the expected structure
+
+            if (filtered){
+                            // Ensure that filtered data contains the expected structure
             console.log("Filtered Data:", filtered);
     
             // Setting the filtered results in state
@@ -127,10 +129,17 @@ const Home = () => {
     
             // Log the filtered state to confirm it's set
             console.log("State set for filtered places and museums:", filtered);
+            }else{
+                setFilteredPlacesAndMuseums(null);
+                console.log("No data found for the selected filters");
+                alert("No data found for the selected filters");
+            }
+    
+
             
         } catch (error) {
             console.error("Error fetching filtered data:", error);
-            setError(error);
+           // setError(error);
         }
     };
     
@@ -476,48 +485,30 @@ const Home = () => {
             </div>
             <button type="submit" className="mt-4 bg-brandBlue text-white px-3 py-1 rounded">Filter Museums & Historical Places</button>
         </form>
-        <div>
-                {filteredPlacesAndMuseums && (
-                    <>
-                        {filteredPlacesAndMuseums.museums && filteredPlacesAndMuseums.museums.map((museum) => (
-                            <div key={museum._id} className="gallery-item flex-none flex flex-col items-center w-80">
-                                <img
-                                    src={museum.Pictures}
-                                    alt={museum.Name}
-                                    className="w-72 h-72 object-cover rounded duration-300 ease-in-out hover:scale-105"
-                                />
-                                <div className="text-md font-medium text-center">{museum.Name}</div>
-                                <div className="text-sm text-gray-700">
-                                    <span className="font-semibold">Location: {museum.location}</span>
-                                    <br />
-                                    <span>Opening Hours: {museum.Opening_Hours}</span>
-                                    <br />
-                                    <span>Starting Prices: {convertPrice(museum.S_Tickets_Prices)} {currency}</span>
-                                </div>
-                            </div>
-                        ))}
-                        {filteredPlacesAndMuseums.historicalPlaces && filteredPlacesAndMuseums.historicalPlaces.map((place) => (
-                            <div key={place._id} className="gallery-item flex-none flex flex-col items-center w-80">
-                                <img
-                                    src={place.Pictures}
-                                    alt={place.Name}
-                                    className="w-72 h-72 object-cover rounded duration-300 ease-in-out hover:scale-105"
-                                />
-                                <div className="text-md font-medium text-center">{place.Name}</div>
-                                <div className="text-sm text-gray-700">
-                                    <span className="font-semibold">Location: {place.Location}</span>
-                                    <br />
-                                    <span>Opening Hours: {place.Opening_Time} - {place.Closing_Time}</span>
-                                    <br />
-                                    <span>Ticket Prices: {convertPrice(place.S_Ticket_Prices)} {currency}</span>
-                                </div>
-                            </div>
-                        ))}
-                    </>
-                )}
             </div>
+    <div className="flex overflow-x-auto scrollbar-hide gap-6 px-6 py-4">
+    {filteredPlacesAndMuseums ? (
+        filteredPlacesAndMuseums.map((museum) => (
+            <div key={museum._id} className="gallery-item flex-none flex flex-col items-center w-80">
+                <img
+                    src={museum.Pictures}
+                    alt={museum.Name}
+                    className="w-72 h-72 object-cover rounded duration-300 ease-in-out hover:scale-105"
+                />
+                <div className="text-md font-medium text-center">{museum.Name}</div>
+                <div className="text-sm text-gray-700">
+                    <span className="font-semibold">Location: {museum.location}</span>
+                    <br />
+                    <span>Opening Hours: {museum.Opening_Hours}</span>
+                    <br />
+                    <span>Starting Prices: {convertPrice(museum.S_Tickets_Prices)} {currency}</span>
+                </div>
             </div>
-
+        ))
+    ) : (
+        <div className="text-center w-full">No museums or historical places found for the selected filters.</div>
+    )}
+</div>
             {/* Museums and Historical Places Section */}
             <section className="mb-10">
                 <h2 className="text-2xl font-semibold mb-4 text-center">Museums and Historical Places</h2>
@@ -525,13 +516,13 @@ const Home = () => {
                     {museumsToDisplay.map((museum) => (
                         <div key={museum._id} className="gallery-item flex-none flex flex-col items-center w-80">
                             <img
-                                src={museum.pictures}
+                                src={museum.pictures || museum.Pictures} // Ensure compatibility with both data structures
                                 alt={museum.Name}
                                 className="w-72 h-72 object-cover rounded duration-300 ease-in-out hover:scale-105"
                             />
                             <div className="text-md font-medium text-center">{museum.Name}</div>
                             <div className="text-sm text-gray-700">
-                                <span className="font-semibold">Location: {museum.location}</span>
+                                <span className="font-semibold">Location: {museum.location || museum.Location}</span>
                                 <br />
                                 <span>Opening Hours: {museum.Opening_Hours}</span>
                                 <br />

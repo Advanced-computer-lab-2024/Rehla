@@ -122,13 +122,29 @@ const Home = () => {
     const handleFilterPlacesAndMuseums = async (e) => {
         e.preventDefault();
         try {
+            console.log("Filters being used:", placesAndMuseumsFilters);
             const filtered = await filterPlacesAndMuseums(placesAndMuseumsFilters);
+
+            if (filtered){
+                            // Ensure that filtered data contains the expected structure
+            console.log("Filtered Data:", filtered);
+    
+            // Setting the filtered results in state
             setFilteredPlacesAndMuseums(filtered);
     
-            console.log("Filtered Museums and Historical Places:", filtered);
+            // Log the filtered state to confirm it's set
+            console.log("State set for filtered places and museums:", filtered);
+            }else{
+                setFilteredPlacesAndMuseums(null);
+                console.log("No data found for the selected filters");
+                alert("No data found for the selected filters");
+            }
     
+
+            
         } catch (error) {
-            setError(error);
+            console.error("Error fetching filtered data:", error);
+           // setError(error);
         }
     };
 
@@ -502,7 +518,29 @@ const Home = () => {
      </div>
             <button type="submit" className="mt-4 bg-brandBlue text-white px-3 py-1 rounded">Filter Museums & Historical Places</button>
         </form>
-
+        <div className="flex overflow-x-auto scrollbar-hide gap-6 px-6 py-4">
+    {filteredPlacesAndMuseums ? (
+        filteredPlacesAndMuseums.map((museum) => (
+            <div key={museum._id} className="gallery-item flex-none flex flex-col items-center w-80">
+                <img
+                    src={museum.Pictures}
+                    alt={museum.Name}
+                    className="w-72 h-72 object-cover rounded duration-300 ease-in-out hover:scale-105"
+                />
+                <div className="text-md font-medium text-center">{museum.Name}</div>
+                <div className="text-sm text-gray-700">
+                    <span className="font-semibold">Location: {museum.location}</span>
+                    <br />
+                    <span>Opening Hours: {museum.Opening_Hours}</span>
+                    <br />
+                    <span>Starting Prices: {convertPrice(museum.S_Tickets_Prices)} {currency}</span>
+                </div>
+            </div>
+        ))
+    ) : (
+        <div className="text-center w-full">No museums or historical places found for the selected filters.</div>
+    )}
+</div>
 
             {/* Museums and Historical Places Section */}
             <section className="mb-10">
