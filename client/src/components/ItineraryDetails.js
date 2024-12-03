@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { getItineraryByName, createTouristItinerary } from '../services/api'; // Import the necessary functions
+import { getItineraryByName, createTouristItinerary } from '../services/api';
 import logo from '../images/logo.png';
 
 const ItineraryDetails = () => {
@@ -43,6 +43,13 @@ const ItineraryDetails = () => {
         } catch (err) {
             setJoinError(err.message || 'Failed to join the itinerary.');
         }
+    };
+
+    const handleCopyLink = () => {
+        const currentUrl = window.location.href;
+        navigator.clipboard.writeText(currentUrl).then(() => {
+            alert('Link copied to clipboard!');
+        });
     };
 
     if (loading) return <p className="text-center text-blue-500">Loading...</p>;
@@ -134,6 +141,8 @@ const ItineraryDetails = () => {
                                 <p className="absolute bottom-4 right-4 bg-white bg-opacity-80 text-lg lg:text-2xl font-bold text-gray-800 px-4 py-2 rounded-lg">
                                     {itineraryDetails.Tour_Price} {itineraryDetails.Currency || 'USD'}
                                 </p>
+                                {/* Copy Link Button */}
+                                
 
                                 <button
                                     onClick={handleJoinItinerary}
@@ -141,6 +150,17 @@ const ItineraryDetails = () => {
                                 >
                                     Join Itinerary
                                 </button>
+                                {/* Copy and Share Buttons */}
+                                <div className="mt-6 flex gap-4">
+                                    <button
+                                        onClick={handleCopyLink}
+                                        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                                    >
+                                        Copy Link
+                                    </button>
+                                    
+                                </div>
+                                
 
                                 {joinError && (
                                     <p className="text-red-500 mt-4">{joinError}</p>
@@ -148,6 +168,7 @@ const ItineraryDetails = () => {
                                 {joinSuccess && (
                                     <p className="text-green-500 mt-4">{joinSuccess}</p>
                                 )}
+                                
                             </div>
                         </div>
                     ) : (
@@ -191,9 +212,6 @@ const ItineraryDetails = () => {
                         </div>
                     </div>
                     <hr className="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
-                    <span className="block text-sm text-gray-500 sm:text-center dark:text-gray-400">
-                        © 2023 <a href="/" className="hover:underline">Rehla™</a>. All Rights Reserved.
-                    </span>
                 </div>
             </footer>
         </div>
