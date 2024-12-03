@@ -900,12 +900,11 @@ const searchByNameCategoryTag = async (req, res) => {
   
         // Search in the historical places collection by Name
         const historicalPlaces = await historical_placesm.find({
-            Name: searchRegex
+            $or: [
+                { Name: searchRegex },
+                { Type: searchRegex }
+            ]
         });
-  
-        const historicalTags = await historical_places_tagsm.find({
-            Type: searchRegex
-        })
   
         const activityName = await activity.find({
             Name: searchRegex
@@ -932,10 +931,7 @@ const searchByNameCategoryTag = async (req, res) => {
         // Combine all search results into one object
         const searchResults = {
             museums,
-            historicalPlaces:{
-                name : historicalPlaces,
-                tag : historicalTags
-            },
+            historicalPlaces,
             activities: {
                 name: activityName,
                 tags: activityTags,
@@ -952,6 +948,7 @@ const searchByNameCategoryTag = async (req, res) => {
         res.status(500).json({ error: 'Error searching for data', details: error.message });
     }
 };
+
 
 const createPreference = async (req, res) => {
     const { email, historicAreas, beaches, familyFriendly, shopping, budgetFriendly } = req.body;
