@@ -209,9 +209,7 @@ const TouristHome = () => {
                                 <th className="py-2 px-4 border">Pickup Date</th>
                                 <th className="py-2 px-4 border">Pickup Time</th>
                                 <th className="py-2 px-4 border">Dropoff Time</th>
-                                <th className="py-2 px-4 border">Available Seats</th>
                                 <th className="py-2 px-4 border">Price</th>
-                                <th className="py-2 px-4 border">Booked Seats</th>
                                 <th className="py-2 px-4 border">Available</th>
                                 <th className="py-2 px-4 border">Action</th>
                             </tr>
@@ -228,9 +226,8 @@ const TouristHome = () => {
                                     <td className="py-2 px-4 border">{new Date(item.Pickup_Date).toLocaleDateString()}</td>
                                     <td className="py-2 px-4 border">{item.Pickup_Time}</td>
                                     <td className="py-2 px-4 border">{item.Droppff_Time}</td>
-                                    <td className="py-2 px-4 border">{item.Avilable_Seats}</td>
                                     <td className="py-2 px-4 border">${item.Price}</td>
-                                    <td className="py-2 px-4 border">{item.Booked_Seats}</td>
+                        
                                     <td className="py-2 px-4 border">{item.Avilable ? 'Yes' : 'No'}</td>
                                     <td className="py-2 px-4 border">
                                         <button
