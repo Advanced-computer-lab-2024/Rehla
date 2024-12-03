@@ -165,7 +165,8 @@ const {createUserAdmin,
   checkandsendBirthdayPromoCode,
   getAllSalesReportsemail,getAllSalesReportsitinemail,getAllSalesReportsselleremail,
   filterAdvertiserSalesReport,filterTourGuideSalesReport,filterSellerSalesReport,
-  filterSellerSalesReportad
+  filterSellerSalesReportad,
+  viewmyproducts,
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -360,6 +361,7 @@ app.get('/filterAdvertiserSalesReport', filterAdvertiserSalesReport);
 app.get('/filterTourGuideSalesReport', filterTourGuideSalesReport);
 app.get('/filterSellerSalesReport', filterSellerSalesReport);
 app.get('/filterSellerSalesReportad', filterSellerSalesReportad);
+app.get('/viewmyproducts', viewmyproducts);
 
 
 
