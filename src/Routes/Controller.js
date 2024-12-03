@@ -1811,12 +1811,15 @@ const getAllUpcomingEventsAndPlaces = async (req, res) => {
         // Query itineraries where Available_Date_Time is in the future and isActive is true
         const upcomingItineraries = await itinerarym.find({
             Available_Date_Time: { $gt: currentDate },
-            isActive: true
+            isActive: true,
+            Flagged: false
+
         });
 
         // Query activities where Date is greater than or equal to the current date
         const upcomingActivities = await activity.find({
-            Date: { $gte: currentDate }
+            Date: { $gte: currentDate },
+            Flagged: false
         });
 
         // Query to find all museums in the database
