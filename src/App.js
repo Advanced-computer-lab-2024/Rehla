@@ -169,7 +169,12 @@ const {createUserAdmin,
   filterAdvertiserSalesReport,filterTourGuideSalesReport,filterSellerSalesReport,
   filterSellerSalesReportad,
   viewmyproducts,
-  generateOTP
+  generateOTP,
+  getNotifications,
+  markAsSeen,
+  createNotification,
+  getAllNotifications,
+testNotification,
   
 } = require("./Routes/Controller");
 
@@ -370,6 +375,12 @@ app.get('/filterSellerSalesReport', filterSellerSalesReport);
 app.get('/filterSellerSalesReportad', filterSellerSalesReportad);
 app.post('/viewmyproducts', viewmyproducts);
 app.get('/generate-otp', generateOTP);
+
+app.get('/getNotifications',getNotifications);
+app.post('/markAsSeen',markAsSeen);
+app.post('/createNotification',createNotification);
+app.get('/getAllNotifications',getAllNotifications);
+app.post('/testNotification',testNotification);
 
 
 

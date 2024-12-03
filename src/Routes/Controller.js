@@ -45,6 +45,8 @@ const saved_eventm =require ('../Models/Saved_Events.js');
 const advertiser_salesreport = require ('../Models/advertiser_salesreport.js');
 const tourguide_salesreport = require ('../Models/tourguide_salesreport.js');
 const seller_salesreport = require ('../Models/seller_salesreport.js');
+const Notifications = require('../Models/Notifications.js');
+
 
 
 // Define all models where the user could exist
@@ -6456,6 +6458,113 @@ const generateOTP = () => {
     return otp;
 };
 
+// Get all unseen notifications for a certain user
+const getNotifications = async (req, res) => {
+    try {
+        const { user } = req.body; // Take user from request body
+        if (!user) {
+            return res.status(400).json({ message: "User is required." });
+        }
+
+        const notifications = await Notifications.find({ user: user, seen: false });
+        if (notifications.length === 0) {
+            return res.status(404).json({ message: "No unseen notifications found for this user." });
+        }
+
+        res.status(200).json(notifications);
+    } catch (err) {
+        console.error("Error fetching notifications:", err);
+        res.status(500).json({ message: "An error occurred while fetching notifications.", error: err.message });
+    }
+};
+
+
+ // Mark a notification as seen
+const markAsSeen = async (req, res) => {
+    try {
+        const { id } = req.body; // Take id from request body
+        if (!id) {
+            return res.status(400).json({ message: "Notification ID is required." });
+        }
+
+        const notification = await Notifications.findById(id);
+        if (!notification) {
+            return res.status(404).json({ message: "Notification not found." });
+        }
+
+        notification.seen = true;
+        await notification.save();
+        res.status(200).json({ message: "Notification marked as seen." });
+    } catch (err) {
+        console.error("Error marking notification as seen:", err);
+        res.status(500).json({ message: "An error occurred while marking the notification as seen.", error: err.message });
+    }
+};
+
+
+// Create a new notification
+const createNotification = async (req, res) => {
+    try {
+        const { message, user, title } = req.body;
+
+        // Check for required fields
+        if (!message || !user) {
+            return res.status(400).json({ message: "Message and user are required." });
+        }
+
+        // Create a new notification
+        const notification = new Notifications({
+            message: message,
+            user: user,
+            seen: false,
+            date: new Date(),
+            title: title || "Notification"
+        });
+
+        // Save the notification to the database
+        await notification.save();
+
+        // Respond with success
+        res.status(201).json({ message: "Notification created successfully.", notification });
+    } catch (err) {
+        console.error("Error creating notification:", err);
+        res.status(500).json({ message: "An error occurred while creating the notification.", error: err.message });
+    }
+};
+
+
+//get all notifications for all users
+const getAllNotifications = async (req, res) => {
+    try{
+        const notifications = await Notifications.find();
+        res.status(200).json(notifications);
+    }catch(err){
+        res.status(400).json({err: err.message});
+    }
+}
+
+// Add notification to a certain user for testing purposes
+const testNotification = async (req, res) => {
+    try {
+        const { message, user, title } = req.body; // Extract data from request body
+
+        // Validate inputs
+        if (!message || !user) {
+            return res.status(400).json({ message: "Message and user are required." });
+        }
+
+        // Use the createNotification function to add the notification
+        await createNotification(message, user, title);
+
+        res.status(200).json({ message: "Notification added successfully." });
+    } catch (err) {
+        console.error("Error adding notification:", err);
+        res.status(500).json({ message: "An error occurred while adding the notification.", error: err.message });
+    }
+};
+
+
+
 
 // ----------------- Activity Category CRUD -------------------
 
@@ -6629,5 +6738,6 @@ module.exports = { getPurchasedProducts,
     viewOrders,
     viewOrderDetails,
     generateOTP,
-    getAllProductstourist
+    getAllProductstourist,
+    getNotifications, markAsSeen, createNotification, getAllNotifications ,testNotification
 };

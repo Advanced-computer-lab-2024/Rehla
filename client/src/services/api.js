@@ -1596,3 +1596,51 @@ export const viewMyProducts = async (email) => {
         throw error; // Propagate the error for handling in the calling component
     }
 };
+
+// Get all unseen notifications for a specific user
+export const getNotifications = async (user) => {
+    try {
+        const response = await axios.post(`${API_URL}/getNotifications`, { user });
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching notifications:", error);
+        throw error;
+    }
+};
+
+// Mark a notification as seen
+export const markAsSeen = async (id) => {
+    try {
+        const response = await axios.post(`${API_URL}/markAsSeen`, { id });
+        return response.data;
+    } catch (error) {
+        console.error("Error marking notification as seen:", error);
+        throw error;
+    }
+};
+
+// Create a new notification
+export const createNotification = async (message, user, title) => {
+    try {
+        const response = await axios.post(`${API_URL}/createNotification`, {
+            message,
+            user,
+            title,
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error creating notification:", error);
+        throw error;
+    }
+};
+
+// Get all notifications for all users
+export const getAllNotifications = async () => {
+    try {
+        const response = await axios.get(`${API_URL}/getAllNotifications`);
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching all notifications:", error);
+        throw error;
+    }
+};
