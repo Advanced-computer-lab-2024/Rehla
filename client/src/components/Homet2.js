@@ -296,7 +296,7 @@ const Home = () => {
                     )}
 
                     <button type="submit" className="bg-brandBlue text-white px-3 py-1 rounded">Filter Activities</button>
-                    <button onClick={() => handleSortActivities('price')} className="bg-green-500 text-white px-3 py-1 rounded ml-2">Sort by Price</button>
+                    <button onClick={() => handleSortActivities('price')} className="bg-logoOrange text-white px-3 py-1 rounded ml-2">Sort by Price</button>
                 </form>
                 <div className="flex overflow-x-auto scrollbar-hide px-6 py-4">
                     {activitiesToDisplay.map((activity) => (
@@ -433,7 +433,7 @@ const Home = () => {
                     )}
 
                     <button type="submit" className="bg-brandBlue text-white px-3 py-1 rounded">Filter Itineraries</button>
-                    <button onClick={() => handleSortItineraries('price')} className="bg-green-500 text-white px-3 py-1 rounded ml-2">Sort by Price</button>
+                    <button onClick={() => handleSortItineraries('price')} className="bg-logoOrange text-white px-3 py-1 rounded ml-2">Sort by Price</button>
                 </form>
                 <div className="flex overflow-x-auto scrollbar-hide px-6 py-4">
                     {itinerariesToDisplay.map((itinerary) => (
@@ -469,61 +469,58 @@ const Home = () => {
                     </p>
                 </div>
             </section>
-
-           {/* Museums and Historical Places Filter Form */}
-           <form onSubmit={handleFilterPlacesAndMuseums} className="mb-4">
-            <div className="flex flex-col gap-4">
-                <div>
-                    <label className="block text-sm font-medium">Category</label>
-                    <select
-                        name="category"
-                        value={placesAndMuseumsFilters.category}
-                        onChange={(e) => handleFilterChange(e, setPlacesAndMuseumsFilters)}
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
-                    >
-                        <option value="">Select Category</option>
-                        <option value="museums">Museums</option>
-                        <option value="historical_places">Historical Places</option>
-                    </select>
-                </div>
-            <div>
-                    <label className="block text-sm font-medium">Value</label>
-                    <select
-                        name="value"
-                        value={placesAndMuseumsFilters.value}
-                        onChange={(e) => handleFilterChange(e, setPlacesAndMuseumsFilters)}
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
-                        >
-                        <option value="">Select Value</option>
-                        {placesAndMuseumsFilters.category === 'museums' && (
-                            <>
-                                <option value="Historical">Historical</option>
-                                <option value="Art Museum">Art Museum</option>
-                                <option value="Art">Art</option>
-                                <option value="Mix">Mix</option>
-                            </>
-                        )}
-                        {placesAndMuseumsFilters.category === 'historical_places' && (
-                            <>
-                                <option value="Monuments">Monuments</option>
-                                <option value="Ancient Greece">Ancient Greece</option>
-                                <option value="Religious">Religious</option>
-                                <option value="Sites">Sites</option>
-                                <option value="Castle">Castle</option>
-                            </>
-                        )}
-                    </select>
-
-        </div>
-     </div>
-            <button type="submit" className="mt-4 bg-brandBlue text-white px-3 py-1 rounded">Filter Museums & Historical Places</button>
-        </form>
              <div className="flex overflow-x-auto scrollbar-hide gap-6 px-6 py-4">
                 {filteredPlacesAndMuseums && (
                     <section className="mb-10 w-full">
                         <h2 className="text-2xl font-semibold mb-4 text-center">
                             Museums and Historical Places
                          </h2>
+                         {/* Museums and Historical Places Filter Form */}
+                        <form onSubmit={handleFilterPlacesAndMuseums} className="mb-4 flex ml-10">
+                            <div className="flex gap-4">
+                                <div>
+                                    <select
+                                        name="category"
+                                        value={placesAndMuseumsFilters.category}
+                                        onChange={(e) => handleFilterChange(e, setPlacesAndMuseumsFilters)}
+                                        className="border rounded p-1 mx-1"
+                                    >
+                                        <option value="">Select Category</option>
+                                        <option value="museums">Museums</option>
+                                        <option value="historical_places">Historical Places</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <select
+                                        name="value"
+                                        value={placesAndMuseumsFilters.value}
+                                        onChange={(e) => handleFilterChange(e, setPlacesAndMuseumsFilters)}
+                                        className="border rounded p-1 mx-1"
+                                        >
+                                        <option value="">Select Value</option>
+                                        {placesAndMuseumsFilters.category === 'museums' && (
+                                            <>
+                                                <option value="Historical">Historical</option>
+                                                <option value="Art Museum">Art Museum</option>
+                                                <option value="Art">Art</option>
+                                                <option value="Mix">Mix</option>
+                                            </>
+                                        )}
+                                        {placesAndMuseumsFilters.category === 'historical_places' && (
+                                            <>
+                                                <option value="Monuments">Monuments</option>
+                                                <option value="Ancient Greece">Ancient Greece</option>
+                                                <option value="Religious">Religious</option>
+                                                <option value="Sites">Sites</option>
+                                                <option value="Castle">Castle</option>
+                                            </>
+                                        )}
+                                    </select>
+
+                                </div>
+                            </div>
+                            <button type="submit" className="bg-brandBlue text-white px-3 h-8 rounded">Filter Places</button>
+                        </form>
                         <div className="flex overflow-x-auto scrollbar-hide gap-6 px-6 py-4">
                             {filteredPlacesAndMuseums.map((museum) => (
                                 <div
@@ -563,6 +560,52 @@ const Home = () => {
                     <h2 className="text-2xl font-semibold mb-4 text-center">
                         Museums and Historical Places
                     </h2>
+                    {/* Museums and Historical Places Filter Form */}
+                    <form onSubmit={handleFilterPlacesAndMuseums} className="mb-4 flex ml-10">
+                        <div className="flex gap-4">
+                            <div>
+                                <select
+                                    name="category"
+                                    value={placesAndMuseumsFilters.category}
+                                    onChange={(e) => handleFilterChange(e, setPlacesAndMuseumsFilters)}
+                                    className="border rounded p-1 mx-1"
+                                >
+                                    <option value="">Select Category</option>
+                                    <option value="museums">Museums</option>
+                                    <option value="historical_places">Historical Places</option>
+                                </select>
+                            </div>
+                            <div>
+                                <select
+                                    name="value"
+                                    value={placesAndMuseumsFilters.value}
+                                    onChange={(e) => handleFilterChange(e, setPlacesAndMuseumsFilters)}
+                                    className="border rounded p-1 mx-1"
+                                    >
+                                    <option value="">Select Value</option>
+                                    {placesAndMuseumsFilters.category === 'museums' && (
+                                        <>
+                                            <option value="Historical">Historical</option>
+                                            <option value="Art Museum">Art Museum</option>
+                                            <option value="Art">Art</option>
+                                            <option value="Mix">Mix</option>
+                                        </>
+                                    )}
+                                    {placesAndMuseumsFilters.category === 'historical_places' && (
+                                        <>
+                                            <option value="Monuments">Monuments</option>
+                                            <option value="Ancient Greece">Ancient Greece</option>
+                                            <option value="Religious">Religious</option>
+                                            <option value="Sites">Sites</option>
+                                            <option value="Castle">Castle</option>
+                                        </>
+                                    )}
+                                </select>
+
+                            </div>
+                        </div>
+                        <button type="submit" className="bg-brandBlue text-white px-3 h-8 rounded">Filter Places</button>
+                    </form>
                     <div className="flex overflow-x-auto scrollbar-hide gap-6 px-6 py-4">
                         {/* Render Museums */}
                         {data.museums.map((museum) => (
