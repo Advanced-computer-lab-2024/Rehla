@@ -46,6 +46,7 @@ const advertiser_salesreport = require ('../Models/advertiser_salesreport.js');
 const tourguide_salesreport = require ('../Models/tourguide_salesreport.js');
 const seller_salesreport = require ('../Models/seller_salesreport.js');
 const Notifications = require('../Models/Notifications.js');
+const InterestedEvents = require('../Models/InterestedEvents');
 
 
 
@@ -6563,6 +6564,56 @@ const testNotification = async (req, res) => {
     }
 };
 
+/// Request to be notified when an event starts taking bookings
+const requestNotificationForEvent = async (req, res) => {
+    try {
+        const { eventId, user } = req.body;
+
+        // Validate inputs
+        if (!eventId || !user) {
+            return res.status(400).json({ message: "Event ID and user are required." });
+        }
+
+        // Check if the request already exists
+        const existingRequest = await InterestedEvents.findOne({ user, eventId });
+        if (existingRequest) {
+            return res.status(409).json({ message: "You have already requested a notification for this event." });
+        }
+// Check if the event exists and whether bookings are available
+const event = await activity.findById(eventId);
+if (!event) {
+    return res.status(404).json({ message: "Event not found." });
+}
+
+// Extract the event name
+const eventName = event.Name;
+
+// If the event has already started taking bookings, return an error
+if (event.Booking_Available === true) {
+    return res.status(400).json({ message: `The event "${eventName}" has already started taking bookings.` });
+}
+
+// If the event is not yet taking bookings, create an InterestedEvents document
+const interestedEvent = new InterestedEvents({
+    user: user,
+    eventId: eventId,
+    eventName: eventName,
+    requestedAt: new Date(),
+});
+
+// Save the InterestedEvents document
+await interestedEvent.save();
+
+res.status(201).json({
+    message: `Your request to be notified for the event "${eventName}" has been received.`,
+    interestedEvent
+});
+} catch (error) {
+console.error("Error handling notification request:", error);
+res.status(500).json({ message: "An error occurred while processing your request.", error: error.message });
+}
+};
+
 
 
 
@@ -6739,5 +6790,6 @@ module.exports = { getPurchasedProducts,
     viewOrderDetails,
     generateOTP,
     getAllProductstourist,
-    getNotifications, markAsSeen, createNotification, getAllNotifications ,testNotification
+    getNotifications, markAsSeen, createNotification, getAllNotifications ,testNotification,
+    requestNotificationForEvent
 };

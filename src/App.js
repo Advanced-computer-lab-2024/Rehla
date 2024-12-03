@@ -174,7 +174,8 @@ const {createUserAdmin,
   markAsSeen,
   createNotification,
   getAllNotifications,
-testNotification,
+  testNotification,
+  requestNotificationForEvent
   
 } = require("./Routes/Controller");
 
@@ -381,6 +382,9 @@ app.post('/markAsSeen',markAsSeen);
 app.post('/createNotification',createNotification);
 app.get('/getAllNotifications',getAllNotifications);
 app.post('/testNotification',testNotification);
+
+app.post('/requestNotificationForEvent', requestNotificationForEvent);
+
 
 
 

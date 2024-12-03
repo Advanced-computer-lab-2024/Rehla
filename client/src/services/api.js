@@ -1644,3 +1644,19 @@ export const getAllNotifications = async () => {
         throw error;
     }
 };
+
+// Function to request a notification for an event
+export const requestNotificationForEvent = async (user, eventId) => {
+    try {
+        const response = await axios.post(`${API_URL}/requestNotificationForEvent`, {
+            user,
+            eventId,
+        });
+
+        console.log('Notification request submitted successfully:', response.data);
+        return response.data; // Return the server response
+    } catch (error) {
+        console.error('Error requesting notification for event:', error.response?.data || error.message);
+        throw error; // Re-throw the error for the caller to handle
+    }
+};
