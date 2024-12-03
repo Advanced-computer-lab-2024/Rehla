@@ -27,8 +27,8 @@ import {
     createPromoCode,
     viewUserStats,
     fetchAllSalesReports,fetchAllSalesReportsitin,fetchAllSalesReportsSeller,
-    fetchFilteredSellerSalesReportad
-    
+    fetchFilteredSellerSalesReportad,
+    viewMyProducts
 } from '../services/api'; // Import all API functions
 import '../css/Home.css';
 import logo from '../images/logo.png';
@@ -126,7 +126,7 @@ const AdminHome = () => {
     const [endDate, setEndDate] = useState("");
     const [month, setMonth] = useState("");
 
-
+    const [myProducts, setMyProducts] = useState([]); // New state for my products
 
     const handleFilterFetchSalesReports = async () => {
         try {
@@ -142,6 +142,26 @@ const AdminHome = () => {
         }
     };
 
+
+    useEffect(() => {
+        const fetchMyProducts = async () => {
+            const email = localStorage.getItem('email'); // Retrieve email from localStorage
+            console.log(email);
+            try {
+                if (!email) {
+                    setError('No email found. Please sign in again.');
+                    return;
+                }
+                const fetchedProducts = await viewMyProducts(email);
+                console.log(fetchedProducts);
+                setMyProducts(fetchedProducts);
+            } catch (error) {
+                //setError('Failed to load my products');
+                console.error(error);
+            }
+        };
+        fetchMyProducts();
+    }, []);
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -1463,6 +1483,41 @@ const handleCreatePromoCode = async (e) => {
         )}
     </div>
         </div>
+
+                    {/* Products Table */}
+                    <div className="overflow-x-auto">
+                <table className="min-w-full bg-white">
+                    <thead>
+                        <tr>
+                            <th className="py-2 px-4 border-b">Product Name</th>
+                            <th className="py-2 px-4 border-b">Picture</th>
+                            <th className="py-2 px-4 border-b">Price</th>
+                            <th className="py-2 px-4 border-b">Quantity</th>
+                            <th className="py-2 px-4 border-b">Seller Name</th>
+                            <th className="py-2 px-4 border-b">Description</th>
+                            <th className="py-2 px-4 border-b">Archived</th>
+                            <th className="py-2 px-4 border-b">Saled</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {myProducts.map((product) => (
+                            <tr key={product._id.$oid}>
+                                <td className="py-2 px-4 border-b">{product.Product_Name}</td>
+                                <td className="py-2 px-4 border-b">
+                                    <img src={product.Picture} alt={product.Product_Name} className="w-16 h-16 object-cover" />
+                                </td>
+                                <td className="py-2 px-4 border-b">{product.Price}</td>
+                                <td className="py-2 px-4 border-b">{product.Quantity}</td>
+                                <td className="py-2 px-4 border-b">{product.Seller_Name}</td>
+                                <td className="py-2 px-4 border-b">{product.Description}</td>
+                                <td className="py-2 px-4 border-b">{product.Archived ? 'Yes' : 'No'}</td>
+                                <td className="py-2 px-4 border-b">{product.Saled}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+            
         <footer className="bg-brandBlue shadow dark:bg-brandBlue m-0">
                 <div className="w-full mx-auto md:py-8">
                     <div className="sm:flex sm:items-center sm:justify-between">
