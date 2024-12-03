@@ -146,11 +146,10 @@ const {createUserAdmin,
   getAllSalesReports,
   calculateItineraryRevenue,
   getAllSalesReportsitin,
-
+  viewOrderDetails,
   createPromoCode,
   createwishlistItem,
   sendEmail,
-  viewOrderDetails,
   cancelOrder,
   addTouristAddress,
   saveEvent,
@@ -356,7 +355,8 @@ app.post('/checkout-order', checkoutOrder);
 app.post('/view-orders', viewOrders);
 app.post('/createPromoCode', createPromoCode);
 app.post('/createwishlistItem', createwishlistItem);
-app.post('/Tourist/ViewOrderDetails', viewOrderDetails);
+app.post('/view-order-details', viewOrderDetails);
+
 app.get('/advertiser_salesreportemail', getAllSalesReportsemail); // Takes ?email=<email>
 app.get('/getAllSalesReportsitinemail', getAllSalesReportsitinemail); // Takes ?email=<email>
 app.get('/getAllSalesReportsselleremail', getAllSalesReportsselleremail); // Takes ?email=<email>
