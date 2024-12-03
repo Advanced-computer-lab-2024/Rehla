@@ -1410,6 +1410,29 @@ export const fetchFilteredSellerSalesReport = async (email, product, startDate, 
     }
 };
 
+export const fetchFilteredSellerSalesReportad = async (product, startDate, endDate, month) => {
+    try {
+        let url = `${API_URL}/filterSellerSalesReportad`;
+
+        const params = [];
+        if (product) params.push(`product=${product}`);
+        if (startDate && endDate) params.push(`startDate=${startDate}&endDate=${endDate}`);
+        if (month) params.push(`month=${month}`);
+
+        if (params.length > 0) {
+            url += `?${params.join('&')}`;
+        }
+
+        const response = await axios.get(url);
+        console.log('Filtered Seller sales reports:', response.data);
+        return response.data;  // Return the filtered sales reports
+    } catch (error) {
+        console.error('Error fetching filtered Seller sales reports:', error);
+        throw error;  // Re-throw the error to be handled by the calling function
+    }
+};
+
+
 
 // function to create new promo code
 export const createPromoCode = async (Code, Discount, Expiry,CreatedBy ,type) => {

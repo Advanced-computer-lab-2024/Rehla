@@ -696,7 +696,7 @@ const SellerHome = () => {
             {!loading && !error && reports.length === 0 && <p>No reports found.</p>}
         </div>
         <div>
-    <h1>Tour Guide Home</h1>
+    <h1>Seller Home</h1>
     {loading && <p>Loading Products...</p>}
     {error && <p>Error: {error.message}</p>}
     {messagee && <p>{messagee}</p>}
