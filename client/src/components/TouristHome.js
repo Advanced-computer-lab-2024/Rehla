@@ -264,7 +264,7 @@ const TouristHome = () => {
                             {searchResults.museums.map(museum => (
                                 <div key={museum._id}>
                                     <h4>{museum.Name}</h4>
-                                    <p>{museum.Description}</p>
+                                    <p>{museum.description}</p>
                                 </div>
                             ))}
                         </div>
@@ -282,17 +282,49 @@ const TouristHome = () => {
                         </div>
                     )}
 
-                    {searchResults.activities && searchResults.activities.length > 0 && (
+                    {searchResults.activities && (
                         <div>
                             <h3>Activities:</h3>
-                            {searchResults.activities.map(activity => (
-                                <div key={activity._id}>
-                                    <h4>{activity.Name}</h4>
-                                    <p>{activity.Description}</p>
+
+                            {/* Display activities by name */}
+                            {searchResults.activities.name && searchResults.activities.name.length > 0 && (
+                                <div>
+                                    <h4>By Name:</h4>
+                                    {searchResults.activities.name.map(activity => (
+                                        <div key={activity._id}>
+                                            <h4>{activity.Name}</h4>
+                                            {activity.Description && <p>{activity.Description}</p>}
+                                        </div>
+                                    ))}
                                 </div>
-                            ))}
+                            )}
+
+                            {/* Display activities by tags */}
+                            {searchResults.activities.tags && searchResults.activities.tags.length > 0 && (
+                                <div>
+                                    <h4>By Tags:</h4>
+                                    {searchResults.activities.tags.map(tag => (
+                                        <div key={tag._id}>
+                                            <p>{tag.Activity}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            {/* Display activities by categories */}
+                            {searchResults.activities.categories && searchResults.activities.categories.length > 0 && (
+                                <div>
+                                    <h4>By Categories:</h4>
+                                    {searchResults.activities.categories.map(category => (
+                                        <div key={category._id}>
+                                            <p>{category.Category}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     )}
+
 
                     {searchResults.itineraries && searchResults.itineraries.length > 0 && (
                         <div>
@@ -308,12 +340,7 @@ const TouristHome = () => {
                 </div>
             )}
 
-            {/* Separate Comment Submission Form for Itineraries */}
-            <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-md mt-8">
-            <div className="flex flex-col md:flex-row justify-between space-y-6 md:space-y-0 md:space-x-6">
-                
-            </div>
-        </div>
+            
 
         
 {/* Bookmarking an event */}

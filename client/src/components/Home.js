@@ -486,69 +486,115 @@ const Home = () => {
             <button type="submit" className="mt-4 bg-brandBlue text-white px-3 py-1 rounded">Filter Museums & Historical Places</button>
         </form>
             </div>
-    <div className="flex overflow-x-auto scrollbar-hide gap-6 px-6 py-4">
-    {filteredPlacesAndMuseums ? (
-        filteredPlacesAndMuseums.map((museum) => (
-            <div key={museum._id} className="gallery-item flex-none flex flex-col items-center w-80">
-                <img
-                    src={museum.pictures}
-                    alt={museum.Name}
-                    className="w-72 h-72 object-cover rounded duration-300 ease-in-out hover:scale-105"
-                />
-                <div className="text-md font-medium text-center">{museum.Name}</div>
-                <div className="text-sm text-gray-700">
-                    <span className="font-semibold">Location: {museum.location}</span>
-                    <br />
-                    <span>Opening Hours: {museum.Opening_Hours}</span>
-                    <br />
-                    <span>Starting Prices: {convertPrice(museum.S_Tickets_Prices)} {currency}</span>
-                </div>
+            <div className="flex overflow-x-auto scrollbar-hide gap-6 px-6 py-4">
+                {filteredPlacesAndMuseums && (
+                    <section className="mb-10 w-full">
+                        <h2 className="text-2xl font-semibold mb-4 text-center">
+                            Museums and Historical Places
+                         </h2>
+                        <div className="flex overflow-x-auto scrollbar-hide gap-6 px-6 py-4">
+                            {filteredPlacesAndMuseums.map((museum) => (
+                                <div
+                                    key={museum._id}
+                                    className="gallery-item flex-none flex flex-col items-center w-80"
+                                >
+                                    <img
+                                        src={museum.pictures || museum.Pictures}
+                                        alt={museum.Name}
+                                        className="w-72 h-72 object-cover rounded duration-300 ease-in-out hover:scale-105"
+                                    />
+                                    <div className="text-md font-medium text-center">
+                                        {museum.Name}
+                                    </div>
+                                    <div className="text-sm text-gray-700">
+                                        <span className="font-semibold">
+                                            Location: {museum.location}
+                                        </span>
+                                        <br />
+                                        <span>Opening Hours: {museum.Opening_Hours}</span>
+                                        <br />
+                                        <span>
+                                            Starting Prices: {convertPrice(museum.S_Tickets_Prices)}{' '}
+                                            {currency}
+                                        </span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+                )}
             </div>
-        ))
-    ) : (
-        <div className="text-center w-full">No museums or historical places found for the selected filters.</div>
-    )}
-</div>
+
             {/* Museums and Historical Places Section */}
-            <section className="mb-10">
-                <h2 className="text-2xl font-semibold mb-4 text-center">Museums and Historical Places</h2>
-                <div className="flex overflow-x-auto scrollbar-hide gap-6 px-6 py-4">
-                    {museumsToDisplay.map((museum) => (
-                        <div key={museum._id} className="gallery-item flex-none flex flex-col items-center w-80">
-                            <img
-                                src={museum.pictures || museum.Pictures} // Ensure compatibility with both data structures
-                                alt={museum.Name}
-                                className="w-72 h-72 object-cover rounded duration-300 ease-in-out hover:scale-105"
-                            />
-                            <div className="text-md font-medium text-center">{museum.Name}</div>
-                            <div className="text-sm text-gray-700">
-                                <span className="font-semibold">Location: {museum.location || museum.Location}</span>
-                                <br />
-                                <span>Opening Hours: {museum.Opening_Hours}</span>
-                                <br />
-                                <span>Starting Prices: {convertPrice(museum.S_Tickets_Prices)} {currency}</span>
+            {!filteredPlacesAndMuseums && (
+                <section className="mb-10">
+                    <h2 className="text-2xl font-semibold mb-4 text-center">
+                        Museums and Historical Places
+                    </h2>
+                    <div className="flex overflow-x-auto scrollbar-hide gap-6 px-6 py-4">
+                        {/* Render Museums */}
+                        {data.museums.map((museum) => (
+                            <div
+                                key={museum._id}
+                                className="gallery-item flex-none flex flex-col items-center w-80"
+                            >
+                                <img
+                                    src={museum.pictures}
+                                    alt={museum.Name}
+                                    className="w-72 h-72 object-cover rounded duration-300 ease-in-out hover:scale-105"
+                                />
+                                <div className="text-md font-medium text-center">
+                                    {museum.Name}
+                                </div>
+                                <div className="text-sm text-gray-700">
+                                    <span className="font-semibold">
+                                        Location: {museum.location}
+                                    </span>
+                                    <br />
+                                    <span>Opening Hours: {museum.Opening_Hours}</span>
+                                    <br />
+                                    <span>
+                                        Starting Prices: {convertPrice(museum.S_Tickets_Prices)}{' '}
+                                        {currency}
+                                    </span>
+                                </div>
                             </div>
-                        </div>
-                    ))}
-                    {historicalPlacesToDisplay.map((place) => (
-                        <div key={place._id} className="gallery-item flex-none flex flex-col items-center w-80">
-                            <img
-                                src={place.Pictures}
-                                alt={place.Name}
-                                className="w-72 h-72 object-cover rounded duration-300 ease-in-out hover:scale-105"
-                            />
-                            <div className="text-md font-medium text-center">{place.Name}</div>
-                            <div className="text-sm text-gray-700">
-                                <span className="font-semibold">Location: {place.Location}</span>
-                                <br />
-                                <span>Opening Hours: {place.Opening_Time} - {place.Closing_Time}</span>
-                                <br />
-                                <span>Ticket Prices: {convertPrice(place.S_Ticket_Prices)} {currency}</span>
+                        ))}
+
+                        {/* Render Historical Places */}
+                        {data.historicalPlaces.map((place) => (
+                            <div
+                                key={place._id}
+                                className="gallery-item flex-none flex flex-col items-center w-80"
+                            >
+                                <img
+                                    src={place.Pictures}
+                                    alt={place.Name}
+                                    className="w-72 h-72 object-cover rounded duration-300 ease-in-out hover:scale-105"
+                                />
+                                <div className="text-md font-medium text-center">
+                                    {place.Name}
+                                </div>
+                                <div className="text-sm text-gray-700">
+                                    <span className="font-semibold">
+                                        Location: {place.Location}
+                                    </span>
+                                    <br />
+                                    <span>
+                                        Opening Hours: {place.Opening_Time} -{' '}
+                                        {place.Closing_Time}
+                                    </span>
+                                    <br />
+                                    <span>
+                                        Ticket Prices: {convertPrice(place.S_Tickets_Prices)}{' '}
+                                        {currency}
+                                    </span>
+                                </div>
                             </div>
-                        </div>
-                    ))} 
-                </div>
-            </section>
+                        ))}
+                    </div>
+                </section>
+            )}
 
             <footer className="bg-brandBlue shadow dark:bg-brandBlue m-0">
                 <div className="w-full mx-auto md:py-8">
