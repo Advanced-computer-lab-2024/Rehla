@@ -4753,48 +4753,105 @@ const searchFlights = async (req, res) => {
       res.status(500).json({ error: error.message });
     }
 };
-
-// Checkout Order for a Tourist
+// Tourist Checkout My Order
 const checkoutOrder = async (req, res) => {
     try {
-        const { Tourist_Email, Product_Name } = req.body;
+        // Extract inputs from the request body
+        const { Email, Cart_Num, Address, Payment_Method } = req.body;
 
         // Validate input
-        if (!Tourist_Email || !Product_Name) {
-            return res.status(400).json({ message: "Tourist_Email and Product_Name are required." });
+        if (!Email || !Cart_Num || !Address || !Payment_Method) {
+            return res.status(400).json({ message: "All fields (Email, Cart_Num, Address, Payment_Method) are required." });
         }
 
-        // Find the product matching both email and product name
-        const product = await tourist_products.findOne({ 
-            Tourist_Email, 
-            Product_Name 
+        // Create a new order
+        const newOrder = new order({
+            Email,
+            Cart_Num,
+            Address,
+            Payment_Method,
+            Status: "Pending" // Status defaults to "Pending", but can also be set explicitly
         });
 
-        if (!product) {
-            return res.status(404).json({ 
-                message: 'No product found for the provided email and product name.' 
+        // Save the order to the database
+        const savedOrder = await newOrder.save();
+
+        // Respond with success
+        res.status(201).json({
+            message: "Order created successfully.",
+            order: savedOrder
+        });
+    } catch (error) {
+        console.error("Error creating order:", error.message);
+
+        // Handle unique constraint error for Email (if duplicate Email is entered)
+        if (error.code === 11000 && error.keyPattern.Email) {
+            return res.status(409).json({
+                message: "An order already exists with this email. Please use a different email."
             });
         }
 
-        // Process the checkout (e.g., log data, prepare response, etc.)
-        const checkedOutProduct = {
-            Product_Name: product.Product_Name,
-            Review: product.Review,
-            Rating: product.Rating || 'No rating',
-        };
-
-        res.status(200).json({
-            message: 'Order checked out successfully.',
-            data: checkedOutProduct,
-        });
-    } catch (error) {
-        console.error('Error checking out order:', error.message);
-        res.status(500).json({ 
-            error: 'Error checking out order', 
-            details: error.message 
+        // Respond with generic error message
+        res.status(500).json({
+            message: "Error creating order.",
+            error: error.message
         });
     }
 };
+
+
+const viewOrders = async (req, res) => {
+    try {
+        // Extract the Email from the request body
+        const { Email } = req.body;
+
+        // Validate the Email input
+        if (!Email) {
+            return res.status(400).json({ message: "Email is required." });
+        }
+
+        // Fetch orders for the given email
+        const orders = await order.find({ Email: { $regex: new RegExp(`^${Email}$`, "i") } });
+
+        // If no orders are found
+        if (!orders || orders.length === 0) {
+            return res.status(404).json({
+                message: "No orders found for the provided Email."
+            });
+        }
+
+        // Separate orders into current and past based on status
+        const currentOrders = orders.filter(order => order.Status.toLowerCase() === "pending");
+        const pastOrders = orders.filter(order => order.Status.toLowerCase() === "delivered");
+
+        // Respond with the categorized orders
+        res.status(200).json({
+            message: "Orders fetched successfully.",
+            currentOrders: currentOrders.map(order => ({
+                Cart_Num: order.Cart_Num,
+                Address: order.Address,
+                Payment_Method: order.Payment_Method,
+                Status: order.Status
+            })),
+            pastOrders: pastOrders.map(order => ({
+                Cart_Num: order.Cart_Num,
+                Address: order.Address,
+                Payment_Method: order.Payment_Method,
+                Status: order.Status
+            }))
+        });
+    } catch (error) {
+        console.error("Error fetching orders:", error.message);
+        res.status(500).json({
+            message: "Error fetching orders.",
+            error: error.message
+        });
+    }
+};
+
+
+
+
 
 
 // view my purchased products
@@ -4872,47 +4929,6 @@ const deleteRequest = async (req, res) => {
     } catch (error) {
         console.error('Error deleting delete request:', error);
         return res.status(500).json({ error: 'Failed to delete delete request' });
-    }
-};
-
-// Tourist View Order Details and Status
-const viewOrderDetails = async (req, res) => {
-    try {
-        // Extract Email and Cart_Num from the request body
-        const { Email, Cart_Num } = req.body;
-
-        // Validate input: Check if Email and Cart_Num are provided
-        if (!Email || !Cart_Num) {
-            return res.status(400).json({ message: "Email and Cart_Num are required." });
-        }
-
-        // Fetch the order using Email and Cart_Num
-        const orderm = await order.findOne({ Email, Cart_Num });
-
-        // If no order is found for the provided Email and Cart_Num
-        if (!orderm) {
-            return res.status(404).json({
-                message: "No order found for the provided Email and Cart_Num."
-            });
-        }
-
-        // Respond with the order details
-        res.status(200).json({
-            message: "Order details fetched successfully.",
-            orderDetails: {
-                Email: orderm.Email,
-                Cart_Num: orderm.Cart_Num,
-                Status: orderm.Status,
-                Address: orderm.Address,
-                Payment_Method: orderm.Payment_Method,
-            }
-        });
-    } catch (error) {
-        console.error('Error fetching order details:', error.message);
-        res.status(500).json({
-            error: "Error fetching order details",
-            details: error.message
-        });
     }
 };
 
@@ -6317,6 +6333,40 @@ const filterSellerSalesReport = async (req, res) => {
     }
 };
 
+const viewOrderDetails = async (req, res) => {
+    try {
+        const { Email, Cart_Num } = req.body;
+
+        if (!Email || !Cart_Num) {
+            return res.status(400).json({ message: "Email and Cart_Num are required." });
+        }
+
+        const cartDetails = await cartm.find({ Email, Cart_Num });
+
+        if (!cartDetails || cartDetails.length === 0) {
+            return res.status(404).json({
+                message: "No cart details found for the provided Email and Cart_Num."
+            });
+        }
+
+        res.status(200).json({
+            message: "Cart details fetched successfully.",
+            cartDetails: cartDetails.map(item => ({
+                Productname: item.Productname,
+                Quantity: item.Quantity
+            }))
+        });
+    } catch (error) {
+        console.error("Error fetching cart details:", error.message);
+        res.status(500).json({
+            message: "Error fetching cart details.",
+            error: error.message
+        });
+    }
+};
+
+
+
 const filterSellerSalesReportad = async (req, res) => {
     try {
         const {product, startDate, endDate, month } = req.query;
@@ -6522,11 +6572,10 @@ module.exports = { getPurchasedProducts,
     calculateActivityRevenue,
     calculateItineraryRevenue,
     viewTouristOrders,
-    checkoutOrder,
+   
     createPromoCode,
     createwishlistItem,
     sendEmail,
-    viewOrderDetails,
     cancelOrder,
     addTouristAddress,
     saveEvent,
@@ -6547,5 +6596,8 @@ module.exports = { getPurchasedProducts,
     getAllSalesReportsseller,
     getAllSalesReportsemail,getAllSalesReportsitinemail,getAllSalesReportsselleremail,
     filterAdvertiserSalesReport, filterTourGuideSalesReport ,filterSellerSalesReport,
-    filterSellerSalesReportad
+    filterSellerSalesReportad,
+    checkoutOrder,
+    viewOrders,
+    viewOrderDetails,
 };

@@ -51,6 +51,8 @@ const {createUserAdmin,
   createTourGuideProfile,
   updateTourGuideProfile ,
   getTourGuideProfile,
+  checkoutOrder,
+  viewOrders,
   createItinerary,
   createUserAdvertiser,
   readAdvertiser, 
@@ -144,11 +146,10 @@ const {createUserAdmin,
   getAllSalesReports,
   calculateItineraryRevenue,
   getAllSalesReportsitin,
-  checkoutOrder,
+  viewOrderDetails,
   createPromoCode,
   createwishlistItem,
   sendEmail,
-  viewOrderDetails,
   cancelOrder,
   addTouristAddress,
   saveEvent,
@@ -350,10 +351,12 @@ app.post('/calculateActivityRevenue', calculateActivityRevenue);
 app.get('/advertiser_salesreport', getAllSalesReports);
 app.post('/calculateItineraryRevenue', calculateItineraryRevenue);
 app.get('/getAllSalesReportsitin', getAllSalesReportsitin);
-app.post('/Tourist/CheckoutOrder', checkoutOrder);
+app.post('/checkout-order', checkoutOrder);
+app.post('/view-orders', viewOrders);
 app.post('/createPromoCode', createPromoCode);
 app.post('/createwishlistItem', createwishlistItem);
-app.post('/Tourist/ViewOrderDetails', viewOrderDetails);
+app.post('/view-order-details', viewOrderDetails);
+
 app.get('/advertiser_salesreportemail', getAllSalesReportsemail); // Takes ?email=<email>
 app.get('/getAllSalesReportsitinemail', getAllSalesReportsitinemail); // Takes ?email=<email>
 app.get('/getAllSalesReportsselleremail', getAllSalesReportsselleremail); // Takes ?email=<email>
