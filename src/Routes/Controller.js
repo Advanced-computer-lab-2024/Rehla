@@ -4800,6 +4800,60 @@ const checkoutOrder = async (req, res) => {
 };
 
 
+const viewOrders = async (req, res) => {
+    try {
+        // Extract the Email from the request body
+        const { Email } = req.body;
+
+        // Validate the Email input
+        if (!Email) {
+            return res.status(400).json({ message: "Email is required." });
+        }
+
+        // Fetch orders for the given email
+        const orders = await order.find({ Email: { $regex: new RegExp(`^${Email}$`, "i") } });
+
+        // If no orders are found
+        if (!orders || orders.length === 0) {
+            return res.status(404).json({
+                message: "No orders found for the provided Email."
+            });
+        }
+
+        // Separate orders into current and past based on status
+        const currentOrders = orders.filter(order => order.Status.toLowerCase() === "pending");
+        const pastOrders = orders.filter(order => order.Status.toLowerCase() === "delivered");
+
+        // Respond with the categorized orders
+        res.status(200).json({
+            message: "Orders fetched successfully.",
+            currentOrders: currentOrders.map(order => ({
+                Cart_Num: order.Cart_Num,
+                Address: order.Address,
+                Payment_Method: order.Payment_Method,
+                Status: order.Status
+            })),
+            pastOrders: pastOrders.map(order => ({
+                Cart_Num: order.Cart_Num,
+                Address: order.Address,
+                Payment_Method: order.Payment_Method,
+                Status: order.Status
+            }))
+        });
+    } catch (error) {
+        console.error("Error fetching orders:", error.message);
+        res.status(500).json({
+            message: "Error fetching orders.",
+            error: error.message
+        });
+    }
+};
+
+
+
+
+
+
 // view my purchased products
 const viewMyPurchasedProducts = async (req, res) => {
     try {
@@ -6552,4 +6606,5 @@ module.exports = { getPurchasedProducts,
     filterAdvertiserSalesReport, filterTourGuideSalesReport ,filterSellerSalesReport,
     filterSellerSalesReportad,
     checkoutOrder,
+    viewOrders,
 };
