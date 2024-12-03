@@ -2941,6 +2941,8 @@ const rateActivity = async (req, res) => {
             return res.status(404).json({ message: 'Activity not found for the given tourist.' });
         }
 
+        await calculateActivityRating(Activity_Name);
+
         res.status(200).json({ message: 'Activity rating updated successfully', activity: updatedActivity });
     } catch (error) {
         console.error('Error updating activity rating:', error);
@@ -3004,6 +3006,7 @@ const productRateReview = async (req, res) => {
         existingReview.Rating = Rating;
 
         await existingReview.save();
+        await calculateProductRating(Product_Name);
 
         return res.status(200).json({
             message: "Review updated successfully",
@@ -4226,6 +4229,84 @@ const calculateItineraryRating = async (Itinerary_Name) => {
     } catch (error) {
         console.error("Error details:", error.message, error.stack); // Log full error details
         res.status(500).json({ error: 'Error calculating itinerary rating', details: error.message });
+    }
+};
+
+const calculateActivityRating = async (Activity_Name) => {
+    try {
+        // Validate input
+        if (!Activity_Name) {
+            return res.status(400).json({ error: 'Activity name is required.' });
+        }
+
+        // Check if the Activity exists
+        const Activity = await activity.findOne({ Name: Activity_Name });
+        if (!Activity) {
+            return res.status(404).json({ error: 'Itinerary not found.' });
+        }
+
+        //clculate the no. of ratings and the total of the Activity from table tourist_itineraries
+        const ratings = await tourist_activities.find({ Activity_Name: Activity_Name });
+        let total = 0;
+        let count = 0;
+        ratings.forEach(rating => {
+            if (rating.Rating) {
+                total += rating.Rating;
+                count++;
+            }
+        });
+
+        // Calculate the average rating
+        const averageRating = count > 0 ? total / count : 0;
+
+        // Update the Activity with the new rating
+        Activity.Rating = averageRating;
+        await Activity.save();
+
+        res.status(200).json({ message: 'Activity rating calculated successfully', Activity });
+
+    } catch (error) {
+        console.error("Error details:", error.message, error.stack); // Log full error details
+        res.status(500).json({ error: 'Error calculating Activity rating', details: error.message });
+    }
+};
+
+const calculateProductRating = async (Product_Name) => {
+    try {
+        // Validate input
+        if (!Product_Name) {
+            return res.status(400).json({ error: 'Product name is required.' });
+        }
+
+        // Check if the Product exists
+        const product = await Product.findOne({ Product_Name });
+        if (!product) {
+            return res.status(404).json({ error: 'Product not found.' });
+        }
+
+        //clculate the no. of ratings and the total of the product from table tourist_itineraries
+        const ratings = await tourist_products.find({ Product_Name });
+        let total = 0;
+        let count = 0;
+        ratings.forEach(rating => {
+            if (rating.Rating) {
+                total += rating.Rating;
+                count++;
+            }
+        });
+
+        // Calculate the average rating
+        const averageRating = count > 0 ? total / count : 0;
+
+        // Update the itinerary with the new rating
+        product.Rating = averageRating;
+        await product.save();
+
+        res.status(200).json({ message: 'product rating calculated successfully', product });
+
+    } catch (error) {
+        console.error("Error details:", error.message, error.stack); // Log full error details
+        res.status(500).json({ error: 'Error calculating product rating', details: error.message });
     }
 };
 
