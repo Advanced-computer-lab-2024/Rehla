@@ -305,7 +305,7 @@ const getAllProducts = async (req, res) => {
 const getAllProductstourist = async (req, res) => {
     try {
         // Fetch all products that are not archived
-        const products = await Product.find({ isArchived: { $ne: false } });
+        const products = await Product.find({ Archived: { $ne: true } });
 
         // Check if there are any products
         if (!products || products.length === 0) {
