@@ -361,7 +361,7 @@ app.get('/filterAdvertiserSalesReport', filterAdvertiserSalesReport);
 app.get('/filterTourGuideSalesReport', filterTourGuideSalesReport);
 app.get('/filterSellerSalesReport', filterSellerSalesReport);
 app.get('/filterSellerSalesReportad', filterSellerSalesReportad);
-app.get('/viewmyproducts', viewmyproducts);
+app.post('/viewmyproducts', viewmyproducts);
 
 
 

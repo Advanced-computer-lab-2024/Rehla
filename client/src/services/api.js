@@ -1586,3 +1586,13 @@ export const viewSavedItineraries = async (touristEmail) => {
         throw error; // Propagate the error for handling in the calling component
     }
 };
+
+export const viewMyProducts = async (email) => {
+    try {
+        const response = await axios.post(`${API_URL}/viewmyproducts`, { email });
+        return response.data; // Return the response data containing products
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        throw error; // Propagate the error for handling in the calling component
+    }
+};
