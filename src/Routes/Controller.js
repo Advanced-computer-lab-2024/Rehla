@@ -6201,6 +6201,41 @@ const filterTourGuideSalesReport = async (req, res) => {
     }
 };
 
+const filterSellerSalesReport = async (req, res) => {
+    try {
+        const { email, product, startDate, endDate, month } = req.query;
+
+        // Build the filter object
+        let filter = { Email: email };
+
+        if (product) filter.Product = product;
+        if (startDate && endDate) {
+            filter.createdAt = { $gte: new Date(startDate), $lte: new Date(endDate) };
+        } else if (month) {
+            const startOfMonth = new Date(`${month}-01`);
+            const endOfMonth = new Date(startOfMonth.getFullYear(), startOfMonth.getMonth() + 1, 0);
+            filter.createdAt = { $gte: startOfMonth, $lte: endOfMonth };
+        }
+
+        // Fetch filtered sales reports
+        const reports = await seller_salesreport.find(filter);
+
+        // If no reports are found, return a 404 status
+        if (!reports || reports.length === 0) {
+            return res.status(404).json({ message: 'No sales reports found.' });
+        }
+
+        // Return the filtered sales reports
+        return res.status(200).json(reports);
+    } catch (error) {
+        console.error('Error filtering Seller sales reports:', error.message);
+        return res.status(500).json({
+            error: 'Error filtering Seller sales reports',
+            details: error.message,
+        });
+    }
+};
+
 
 // ----------------- Activity Category CRUD -------------------
 
@@ -6368,5 +6403,5 @@ module.exports = { getPurchasedProducts,
     getAllSalesReportsitin,
     getAllSalesReportsseller,
     getAllSalesReportsemail,getAllSalesReportsitinemail,getAllSalesReportsselleremail,
-    filterAdvertiserSalesReport, filterTourGuideSalesReport
+    filterAdvertiserSalesReport, filterTourGuideSalesReport ,filterSellerSalesReport
 };

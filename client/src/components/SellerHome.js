@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link,useNavigate } from 'react-router-dom';
 import logo from '../images/logo.png';
-import { getProducts, getProductsSortedByRating, addProduct, updateProduct,toggleProductArchiveStatus,uploadProductPicture,fetchSalesReport,getSellerProfile,fetchAllSalesReportsSelleremail  } from '../services/api';
+import { getProducts, getProductsSortedByRating, addProduct, updateProduct,toggleProductArchiveStatus,uploadProductPicture,fetchSalesReport,getSellerProfile,fetchAllSalesReportsSelleremail ,fetchFilteredSellerSalesReport } from '../services/api';
 //import { Link, useNavigate } from 'react-router-dom';
 
 const Header = () => (
@@ -69,9 +69,29 @@ const SellerHome = () => {
     const [messagee, setMessagee] = useState('');
     const [reports, setReports] = useState([]);
 
+    
+    const [productFilter, setProductFilter] = useState("");
+    const [startDate, setStartDate] = useState("");
+    const [endDate, setEndDate] = useState("");
+    const [month, setMonth] = useState("");
+
 
 
     const navigate = useNavigate();
+
+    const handleFilterFetchSalesReports = async () => {
+        try {
+            setLoading(true);
+            const email = localStorage.getItem('email');
+            const reports = await fetchFilteredSellerSalesReport(email, productFilter, startDate, endDate, month); // Send filters to API
+            setSalesReports(reports);
+            setLoading(false);
+        } catch (err) {
+            setMessagee("Error fetching filtered sales reports.");
+            setError(err);
+            setLoading(false);
+        }
+    };
     
 
     useEffect(() => {
@@ -676,6 +696,70 @@ const SellerHome = () => {
             {!loading && !error && reports.length === 0 && <p>No reports found.</p>}
         </div>
         <div>
+    <h1>Tour Guide Home</h1>
+    {loading && <p>Loading Products...</p>}
+    {error && <p>Error: {error.message}</p>}
+    {messagee && <p>{messagee}</p>}
+
+    {/* Filter Section */}
+    <div>
+        <h2>Filter Sales Reports</h2>
+        <div>
+            <label htmlFor="productFilter">Product:</label>
+            <input
+                type="text"
+                id="productFilter"
+                value={productFilter}
+                onChange={(e) => setProductFilter(e.target.value)}
+                placeholder="Enter product name"
+                style={{ margin: "5px", padding: "5px" }}
+            />
+        </div>
+        <div>
+            <label htmlFor="startDate">Start Date:</label>
+            <input
+                type="date"
+                id="startDate"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                style={{ margin: "5px", padding: "5px" }}
+            />
+        </div>
+        <div>
+            <label htmlFor="endDate">End Date:</label>
+            <input
+                type="date"
+                id="endDate"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                style={{ margin: "5px", padding: "5px" }}
+            />
+        </div>
+        <div>
+            <label htmlFor="month">Month:</label>
+            <input
+                type="month"
+                id="month"
+                value={month}
+                onChange={(e) => setMonth(e.target.value)}
+                style={{ margin: "5px", padding: "5px" }}
+            />
+        </div>
+        <button
+            onClick={handleFilterFetchSalesReports}
+            style={{
+                marginTop: "10px",
+                padding: "10px 15px",
+                backgroundColor: "#007bff",
+                color: "white",
+                border: "none",
+                cursor: "pointer",
+            }}
+        >
+            Apply Filters
+        </button>
+    </div>
+            
         <h2>Sales Reports - Products</h2>
         <button
             onClick={handleFetchSalesReports}
