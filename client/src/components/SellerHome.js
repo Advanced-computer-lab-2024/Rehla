@@ -554,6 +554,14 @@ const SellerHome = () => {
                                         >
                                             Cancel
                                         </button>
+                                        <button
+                                            onClick={() => handleArchiveToggle(updatedProduct.Product_Name).then(() => {
+                                                window.location.reload(); // Refresh the page; // Pass the desired value directly
+                                            })}
+                                            className="bg-logoOrange text-white px-6 py-2 rounded-lg ml-2"
+                                        >
+                                            {updatedProduct.Archived ? 'Unarchive' : 'Archive'}
+                                        </button>
                                     </div>
                                 </div>
                        )}
@@ -660,37 +668,7 @@ const SellerHome = () => {
                     </div>
                 )}
 
-<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-    {products.map((product) => (
-        <div
-            key={product._id}
-            className={`bg-white shadow-lg rounded-lg p-6 transform hover:scale-105 transition-transform duration-300 cursor-pointer ${product.Archived ? 'opacity-50' : 'opacity-100'}`}
-        >
-            {product.Picture && (
-                <img
-                    src={product.Picture}
-                    alt={product.Product_Name}
-                    className="w-full h-40 object-cover mb-4 rounded"
-                />
-            )}
-            <h3 className="text-lg font-semibold">{product.Product_Name}</h3>
-            <p>Price: ${product.Price}</p>
-            <p>Rating: {product.Rating}</p>
-            <p>Quantity: {product.Quantity}</p>
-            <p>Sales: {product.Saled}</p>
-            <p>{product.Description}</p>
-            
 
-            {/* Archive/Unarchive Button */}
-            <button
-                onClick={() => handleArchiveToggle(product.Product_Name)}
-                className={`mt-4 px-4 py-2 rounded-full text-white ${product.Archived ? 'bg-red-500' : 'bg-green-500'}`}
-            >
-                {product.Archived ? 'Unarchive' : 'Archive'}
-            </button>
-        </div>
-    ))}
-</div>
 <div>
             <h1>Advertiser Home</h1>
             <button onClick={handleFetchReport}>report</button>

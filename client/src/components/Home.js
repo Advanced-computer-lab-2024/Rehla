@@ -491,7 +491,7 @@ const Home = () => {
         filteredPlacesAndMuseums.map((museum) => (
             <div key={museum._id} className="gallery-item flex-none flex flex-col items-center w-80">
                 <img
-                    src={museum.Pictures}
+                    src={museum.pictures}
                     alt={museum.Name}
                     className="w-72 h-72 object-cover rounded duration-300 ease-in-out hover:scale-105"
                 />
