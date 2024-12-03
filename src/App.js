@@ -51,6 +51,7 @@ const {createUserAdmin,
   createTourGuideProfile,
   updateTourGuideProfile ,
   getTourGuideProfile,
+  checkoutOrder,
   createItinerary,
   createUserAdvertiser,
   readAdvertiser, 
@@ -144,7 +145,7 @@ const {createUserAdmin,
   getAllSalesReports,
   calculateItineraryRevenue,
   getAllSalesReportsitin,
-  checkoutOrder,
+
   createPromoCode,
   createwishlistItem,
   sendEmail,
@@ -350,7 +351,7 @@ app.post('/calculateActivityRevenue', calculateActivityRevenue);
 app.get('/advertiser_salesreport', getAllSalesReports);
 app.post('/calculateItineraryRevenue', calculateItineraryRevenue);
 app.get('/getAllSalesReportsitin', getAllSalesReportsitin);
-app.post('/Tourist/CheckoutOrder', checkoutOrder);
+app.post('/checkout-order', checkoutOrder);
 app.post('/createPromoCode', createPromoCode);
 app.post('/createwishlistItem', createwishlistItem);
 app.post('/Tourist/ViewOrderDetails', viewOrderDetails);

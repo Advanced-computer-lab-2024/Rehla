@@ -4753,45 +4753,48 @@ const searchFlights = async (req, res) => {
       res.status(500).json({ error: error.message });
     }
 };
-
-// Checkout Order for a Tourist
+// Tourist Checkout My Order
 const checkoutOrder = async (req, res) => {
     try {
-        const { Tourist_Email, Product_Name } = req.body;
+        // Extract inputs from the request body
+        const { Email, Cart_Num, Address, Payment_Method } = req.body;
 
         // Validate input
-        if (!Tourist_Email || !Product_Name) {
-            return res.status(400).json({ message: "Tourist_Email and Product_Name are required." });
+        if (!Email || !Cart_Num || !Address || !Payment_Method) {
+            return res.status(400).json({ message: "All fields (Email, Cart_Num, Address, Payment_Method) are required." });
         }
 
-        // Find the product matching both email and product name
-        const product = await tourist_products.findOne({ 
-            Tourist_Email, 
-            Product_Name 
+        // Create a new order
+        const newOrder = new order({
+            Email,
+            Cart_Num,
+            Address,
+            Payment_Method,
+            Status: "Pending" // Status defaults to "Pending", but can also be set explicitly
         });
 
-        if (!product) {
-            return res.status(404).json({ 
-                message: 'No product found for the provided email and product name.' 
+        // Save the order to the database
+        const savedOrder = await newOrder.save();
+
+        // Respond with success
+        res.status(201).json({
+            message: "Order created successfully.",
+            order: savedOrder
+        });
+    } catch (error) {
+        console.error("Error creating order:", error.message);
+
+        // Handle unique constraint error for Email (if duplicate Email is entered)
+        if (error.code === 11000 && error.keyPattern.Email) {
+            return res.status(409).json({
+                message: "An order already exists with this email. Please use a different email."
             });
         }
 
-        // Process the checkout (e.g., log data, prepare response, etc.)
-        const checkedOutProduct = {
-            Product_Name: product.Product_Name,
-            Review: product.Review,
-            Rating: product.Rating || 'No rating',
-        };
-
-        res.status(200).json({
-            message: 'Order checked out successfully.',
-            data: checkedOutProduct,
-        });
-    } catch (error) {
-        console.error('Error checking out order:', error.message);
-        res.status(500).json({ 
-            error: 'Error checking out order', 
-            details: error.message 
+        // Respond with generic error message
+        res.status(500).json({
+            message: "Error creating order.",
+            error: error.message
         });
     }
 };
@@ -6522,7 +6525,7 @@ module.exports = { getPurchasedProducts,
     calculateActivityRevenue,
     calculateItineraryRevenue,
     viewTouristOrders,
-    checkoutOrder,
+   
     createPromoCode,
     createwishlistItem,
     sendEmail,
@@ -6547,5 +6550,6 @@ module.exports = { getPurchasedProducts,
     getAllSalesReportsseller,
     getAllSalesReportsemail,getAllSalesReportsitinemail,getAllSalesReportsselleremail,
     filterAdvertiserSalesReport, filterTourGuideSalesReport ,filterSellerSalesReport,
-    filterSellerSalesReportad
+    filterSellerSalesReportad,
+    checkoutOrder,
 };
