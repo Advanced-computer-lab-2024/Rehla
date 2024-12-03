@@ -9,6 +9,7 @@ require("dotenv").config();
 const {createUserAdmin,
   deleteUserAdmin,
   getAllProducts , 
+  getAllProductstourist,
   searchProductByName,
   filterProductByPrice,
   sortActivities,
@@ -204,6 +205,7 @@ app.use(express.json());
 app.post("/addUser", createUserAdmin);  // Admins can add a user
 app.delete("/deleteUser/:email", deleteUserAdmin);  // Admins can delete users
 app.get("/getProducts", getAllProducts); //
+app.get("/getAllProductstourist", getAllProductstourist); //
 app.get("/getProductByName/:productName", searchProductByName);
 app.get("/filterProductsByPrice/:minPrice/:maxPrice", filterProductByPrice); // Filter products based on price range
 app.get("/sortActivities", sortActivities); // Route for sorting activities

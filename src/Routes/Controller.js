@@ -302,6 +302,25 @@ const getAllProducts = async (req, res) => {
     }
 };
 
+const getAllProductstourist = async (req, res) => {
+    try {
+        // Fetch all products that are not archived
+        const products = await Product.find({ isArchived: { $ne: false } });
+
+        // Check if there are any products
+        if (!products || products.length === 0) {
+            return res.status(404).json({ message: "No products found." });
+        }
+
+        // Send the list of products as a response
+        return res.status(200).json(products);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "An error occurred while fetching products." });
+    }
+};
+
+
 const searchProductByName = async (req, res) => {
     const { productName } = req.params; // Get product name from request body
 
@@ -6609,5 +6628,6 @@ module.exports = { getPurchasedProducts,
     checkoutOrder,
     viewOrders,
     viewOrderDetails,
-    generateOTP
+    generateOTP,
+    getAllProductstourist
 };
