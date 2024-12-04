@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../images/logo.png';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBell } from '@fortawesome/free-solid-svg-icons'; // Notification icon
 import {
     createActivityByAdvertiser,
     readActivity,
@@ -8,7 +10,8 @@ import {
     updateActivityByAdvertiser,
     getAllCreatedByEmail,
     calculateActivityRevenue, fetchAllSalesReportsemail,
-    fetchFilteredAdvertiserSalesReport
+    fetchFilteredAdvertiserSalesReport,
+    getNotificationsForTourGuide ,markAsSeen
 } from '../services/api';
 
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -52,6 +55,43 @@ const AdvertiserHome = () => {
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [month, setMonth] = useState('');
+    const [notifications, setNotifications] = useState([]);
+    const [unreadCount, setUnreadCount] = useState(0);
+    const [showModal, setShowModal] = useState(false);
+
+    // Fetch notifications for flagged activities
+    useEffect(() => {
+        const email = localStorage.getItem('email'); // Assuming email is stored in localStorage
+
+        if (email) {
+            // Fetch notifications for flagged activities
+            getNotificationsForTourGuide(email)
+                .then((data) => {
+                    setNotifications(data.notifications || []); // Assuming response contains notifications array
+                    setUnreadCount(data.notifications?.filter(n => !n.seen).length || 0);
+                })
+                .catch((err) => {
+                    console.error("Error fetching flagged activities notifications:", err);
+                });
+        }
+    }, []);
+
+    const handleNotificationClick = () => {
+        setShowModal(true);
+
+        // Mark notifications as seen
+        notifications.forEach((notification) => {
+            if (!notification.seen) {
+                markAsSeen(notification._id).then(() => {
+                    setUnreadCount(0); // Reset notification count
+                }).catch((err) => console.error("Error marking notification as seen:", err));
+            }
+        });
+    };
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+    };
 
 
     useEffect(() => {
@@ -249,7 +289,63 @@ const AdvertiserHome = () => {
                 <nav className="signing">
                     <Link to="/AdvertiserHome/AdvertiserProfile">My Profile</Link>
                 </nav>
+                {/* Notification Icon */}
+                <nav className="signing">
+                    <div className="relative ml-4">
+                        <FontAwesomeIcon
+                            icon={faBell}
+                            size="2x" // Increased the size to 2x
+                            onClick={handleNotificationClick}
+                            className="cursor-pointer text-white" // Added text-white to make the icon white
+                        />
+                        {unreadCount > 0 && (
+                            <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                {unreadCount}
+                            </span>
+                        )}
+                    </div>
+                </nav>
             </div>
+
+            {/* Notification Modal */}
+            {showModal && (
+                <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
+                    <div className="bg-white p-6 rounded-lg w-96 relative">
+                        <button
+                            className="absolute top-2 right-2 text-xl text-gray-500"
+                            onClick={handleCloseModal}
+                        >
+                            &times;
+                        </button>
+                        <h2 className="text-xl font-semibold mb-4">Notifications</h2>
+                        <div className="max-h-60 overflow-y-auto">
+                            {notifications.length > 0 ? (
+                                notifications.map((notification) => (
+                                    <div
+                                        key={notification._id}
+                                        className={`p-3 mb-2 rounded-lg ${
+                                            notification.seen ? 'bg-gray-100' : 'bg-yellow-100'
+                                        }`}
+                                    >
+                                        <p className="font-semibold">{notification.title}</p>
+                                        <p>{notification.message}</p>
+                                    </div>
+                                ))
+                            ) : (
+                                <p>No notifications available.</p>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Main content */}
+            <div className="content">
+                <h1>Welcome to the Advertiser Home Page!</h1>
+                {/* Other content goes here */}
+            </div>
+
+            
 
             <div className="mt-24">
                 <h1 className="text-2xl font-bold">My Created Activities</h1>

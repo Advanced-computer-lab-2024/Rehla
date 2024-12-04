@@ -1683,3 +1683,12 @@ export const notifyForFlaggedActivities = async (email) => {
         throw error; // Re-throw the error for the caller to handle
     }
 };
+export const getNotificationsForTourGuide = async (email) => {
+    try {
+        const response = await axios.get(`${API_URL}/getNotificationsForTourGuide/${email}`);
+        return response.data.notifications; // Handle the notifications as needed
+    } catch (error) {
+        console.error("Error fetching notifications:", error);
+        throw error;
+    }
+};

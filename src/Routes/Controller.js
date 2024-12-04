@@ -6743,6 +6743,30 @@ const notifyForFlaggedActivities = async (req, res) => {
     }
 };
 
+// Function to get all notifications for a specific tour guide
+const getNotificationsForTourGuide = async (req, res) => {
+    try {
+        const { email } = req.params; // Extract email from request parameters
+
+        if (!email) {
+            return res.status(400).json({ message: "Email is required." });
+        }
+
+        // Fetch all notifications for the specific tour guide (based on email)
+        const notifications = await Notificationtour.find({ user: email });
+
+        if (!notifications || notifications.length === 0) {
+            return res.status(404).json({ message: "No notifications found for this tour guide." });
+        }
+
+        // Respond with the notifications data
+        res.status(200).json({ notifications });
+    } catch (err) {
+        console.error("Error fetching notifications for tour guide:", err);
+        res.status(500).json({ message: "An error occurred while fetching notifications.", error: err.message });
+    }
+};
+
 
 // ----------------- Activity Category CRUD -------------------
 
@@ -6922,4 +6946,5 @@ module.exports = { getPurchasedProducts,
     notifyForAvailableBookings,
     viewTotalAttendees,
     notifyForFlaggedActivities,
+    getNotificationsForTourGuide
 };
