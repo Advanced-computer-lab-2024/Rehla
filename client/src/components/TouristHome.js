@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../images/logo.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
+import { faShoppingCart,faBell  } from '@fortawesome/free-solid-svg-icons';
 import { searchEventsPlaces ,getAllTransportation,bookTransportation,
-        saveEvent,cancelOrder} from '../services/api'; // Import the commentOnEvent function
+        saveEvent,cancelOrder,getAllNotifications ,markAsSeen } from '../services/api'; // Import the commentOnEvent function
 import Homet2 from '../components/Homet2.js';
 
 const TouristHome = () => {
@@ -27,6 +27,49 @@ const TouristHome = () => {
     const [cartNum, setCartNum] = useState('');
     const [succesCancelOrder,setSuccessCancelOrder]=useState('');
     const [errorCancelOrder,setErrorCancelOrder]=useState('');
+
+
+    const [notifications, setNotifications] = useState([]); // State for notifications
+    const [unreadCount, setUnreadCount] = useState(0); // State for unread notifications
+    const [showModal, setShowModal] = useState(false); // State to show/hide the modal
+
+    useEffect(() => {
+        const fetchNotifications = async () => {
+            try {
+                const data = await getAllNotifications(); // Fetch all notifications
+                setNotifications(data); // Set notifications
+                const unread = data.filter((notification) => !notification.seen).length; // Count unread notifications
+                setUnreadCount(unread);
+            } catch (error) {
+                console.error("Error fetching notifications:", error);
+            }
+        };
+
+        fetchNotifications();
+    }, []);
+
+    const handleNotificationClick = async () => {
+        setShowModal(true); // Show the modal when the notification icon is clicked
+        
+        // Mark all notifications as seen when the icon is clicked
+        try {
+            for (const notification of notifications) {
+                if (!notification.seen) {
+                    await markAsSeen(notification._id); // Mark as seen
+                }
+            }
+            // Refresh the notifications to show the updated status
+            const updatedNotifications = await getAllNotifications();
+            setNotifications(updatedNotifications); // Set updated notifications
+        } catch (error) {
+            console.error("Error marking notifications as seen:", error);
+        }
+    };
+
+    const handleCloseModal = () => {
+        setShowModal(false); // Close the modal
+        setUnreadCount(0); // Reset the unread count when the modal is closed
+    };
     
     const handleCancelOrder = async (e) => {
         e.preventDefault(); // Prevent default form submission
@@ -141,7 +184,7 @@ const TouristHome = () => {
 
     
     return (
-        <div>
+<div>
             <div className="NavBar">
                 <img src={logo} alt="Logo" />
                 <nav className="main-nav">
@@ -151,21 +194,73 @@ const TouristHome = () => {
                         <Link to="/MyEvents">Events/Places</Link>
                         <Link to="/Flights">Flights</Link>
                         <Link to="/Hotels">Hotels</Link>
-
                     </ul>
                 </nav>
 
                 <nav className="signing">
-                    <Link to="/Cart" >
-                    <FontAwesomeIcon icon={faShoppingCart} />
+                    <Link to="/Cart">
+                        <FontAwesomeIcon icon={faShoppingCart} />
                     </Link>
-  
                 </nav>
 
                 <nav className="signing">
                     <Link to="/TouristHome/TouristProfile">My Profile</Link>
                 </nav>
-                
+
+                {/* Notification Icon */}
+                <nav className="signing">
+                    <div className="relative ml-4"> {/* Added margin-left for spacing */}
+                        <FontAwesomeIcon
+                            icon={faBell}
+                            size="2x" // Increased the size to 2x
+                            onClick={handleNotificationClick}
+                            className="cursor-pointer text-white" // Added text-white to make the icon white
+                        />
+                        {unreadCount > 0 && (
+                            <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                {unreadCount}
+                            </span>
+                        )}
+                    </div>
+                </nav>
+            </div>
+
+            {/* Notification Modal */}
+            {showModal && (
+                <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
+                    <div className="bg-white p-6 rounded-lg w-96 relative">
+                        <button
+                            className="absolute top-2 right-2 text-xl text-gray-500"
+                            onClick={handleCloseModal}
+                        >
+                            &times;
+                        </button>
+                        <h2 className="text-xl font-semibold mb-4">Notifications</h2>
+                        <div className="max-h-60 overflow-y-auto">
+                            {notifications.length > 0 ? (
+                                notifications.map((notification) => (
+                                    <div
+                                        key={notification._id}
+                                        className={`p-3 mb-2 rounded-lg ${
+                                            notification.seen ? 'bg-gray-100' : 'bg-yellow-100'
+                                        }`}
+                                    >
+                                        <p className="font-semibold">{notification.title}</p>
+                                        <p>{notification.message}</p>
+                                    </div>
+                                ))
+                            ) : (
+                                <p>No notifications available.</p>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Main content */}
+            <div className="content">
+                <h1>Welcome to the Home Page!</h1>
+                {/* Other content goes here */}
             </div>
 
             {/* Search Section */}
