@@ -48,6 +48,7 @@ const seller_salesreport = require ('../Models/seller_salesreport.js');
 const Notifications = require('../Models/Notifications.js');
 const InterestedEvents = require('../Models/InterestedEvents');
 const Notificationtour = require('../Models/Notificationtour.js');
+const Notitour = require('../Models/Notitour.js')
 
 
 
@@ -6789,6 +6790,95 @@ const markAsSeenn = async (req, res) => {
     }
 };
 
+// Function to fetch flagged activities and create notifications
+const notifyForFlaggedItins = async (req, res) => {
+    try {
+        const { email } = req.body; // Extract email from request body
+
+        if (!email) {
+            return res.status(400).json({ message: "Email is required." });
+        }
+
+        // Fetch activities where Flagged is true and match the email
+        const activities = await itinerarym.find({ 
+            'Flagged': true, // Flagged activities
+            'Created_By': email // Activities that belong to the given email
+        });
+
+        if (!activities || activities.length === 0) {
+            return res.status(404).json({ message: "No flagged Itinerary found for the given email." });
+        }
+
+        // Loop through each flagged activity and create a notification
+        for (const activity of activities) {
+            // Create a notification for the user about the flagged activity
+            const notificationMessage = `The Itinerary "${activity.Itinerary_Name}" has been flagged!`;
+
+            const notification = new Notitour({
+                message: notificationMessage,
+                user: email, // Assuming email is used to reference the user
+                seen: false, // Notifications are initially unseen
+                date: new Date(),
+                title: "Itinerary Flagged"
+            });
+
+            // Save the notification to the database
+            await notification.save();
+        }
+
+        res.status(200).json({ message: "Notifications for flagged activities created successfully." });
+
+    } catch (err) {
+        console.error("Error notifying for flagged activities:", err);
+        res.status(500).json({ message: "An error occurred while creating notifications.", error: err.message });
+    }
+};
+
+// Function to get all notifications for a specific tour guide
+const getNotificationsForTourGuidet = async (req, res) => {
+    try {
+        const { email } = req.params; // Extract email from request parameters
+
+        if (!email) {
+            return res.status(400).json({ message: "Email is required." });
+        }
+
+        // Fetch all notifications for the specific tour guide (based on email)
+        const notifications = await Notitour.find({ 'user': email });
+
+        if (!notifications || notifications.length === 0) {
+            return res.status(404).json({ message: "No notifications found for this advertiser." });
+        }
+
+        // Respond with the notifications data
+        res.status(200).json({ notifications });
+    } catch (err) {
+        console.error("Error fetching notifications for tour guide:", err);
+        res.status(500).json({ message: "An error occurred while fetching notifications.", error: err.message });
+    }
+};
+
+const markAsSeennt = async (req, res) => {
+    try {
+        const { id } = req.body; // Take id from request body
+        if (!id) {
+            return res.status(400).json({ message: "Notification ID is required." });
+        }
+
+        const notification = await Notitour.findById(id);
+        if (!notification) {
+            return res.status(404).json({ message: "Notification not found." });
+        }
+
+        notification.seen = true;
+        await notification.save();
+        res.status(200).json({ message: "Notification marked as seen." });
+    } catch (err) {
+        console.error("Error marking notification as seen:", err);
+        res.status(500).json({ message: "An error occurred while marking the notification as seen.", error: err.message });
+    }
+};
+
 
 // ----------------- Activity Category CRUD -------------------
 
@@ -6969,5 +7059,8 @@ module.exports = { getPurchasedProducts,
     viewTotalAttendees,
     notifyForFlaggedActivities,
     getNotificationsForTourGuide,
-    markAsSeenn
+    markAsSeenn,
+    getNotificationsForTourGuidet,
+    markAsSeennt,
+    notifyForFlaggedItins
 };

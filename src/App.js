@@ -180,7 +180,10 @@ const {createUserAdmin,
   viewTotalAttendees,
   notifyForFlaggedActivities,
   getNotificationsForTourGuide,
-  markAsSeenn
+  markAsSeenn,
+  markAsSeennt,
+  notifyForFlaggedItins,
+  getNotificationsForTourGuidet
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -384,6 +387,8 @@ app.get('/generate-otp', generateOTP);
 app.get('/getNotifications',getNotifications);
 app.post('/markAsSeen',markAsSeen);
 app.post('/markAsSeenn',markAsSeenn);
+app.post('/markAsSeennt',markAsSeennt);
+
 
 app.post('/createNotification',createNotification);
 app.get('/getAllNotifications',getAllNotifications);
@@ -396,6 +401,9 @@ app.get('/view-report', viewTotalAttendees);
 
 app.post('/notifyForFlaggedActivities',notifyForFlaggedActivities)
 app.get('/getNotificationsForTourGuide/:email', getNotificationsForTourGuide);
+
+app.post('/notifyForFlaggedItins',notifyForFlaggedItins)
+app.get('/getNotificationsForTourGuidet/:email', getNotificationsForTourGuidet);
 
 
 
