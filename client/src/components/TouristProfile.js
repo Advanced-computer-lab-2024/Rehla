@@ -68,6 +68,8 @@ const TouristProfile = () => {
  const [succesViewItinerary,setSuccessViewItinerary]=useState('');
  const [errorViewItinerary,setErrorViewItinerary]=useState('');
  const [itinerary, setItinerary] = useState([]);
+ const [isModalOpen, setIsModalOpen] = useState(false);
+ const [isaddressModalOpen, setIsaddressModalOpen] = useState(false);
 
  const [preferenceData, setPreferenceData] = useState({
   email: '',
@@ -241,12 +243,17 @@ const handleNewAddress=async(e)=>{
     }
 }
 
-const handleChange = (e) => {
+const handleChangepref = (e) => {
   const { name, type, checked, value } = e.target;
   setPreferenceData((prevData) => ({
     ...prevData,
     [name]: type === "checkbox" ? checked : value, // Properly toggle checkbox values
   }));
+};
+
+const handleChange = (e) => {
+  const { name, value } = e.target;
+  setFormData({ ...formData, [name]: value });
 };
 
   
@@ -351,259 +358,370 @@ if (!tourist) {
   return <div>Loading...</div>;
 }
 
-  return (
-    <div className="min-h-screen flex flex-col justify-between">
-      <div className="w-full bg-brandBlue shadow-md p-4 flex justify-between items-center">
-        <img src={logo} alt="Logo" className="w-16" />
-        <ul className="nav-links flex-grow flex justify-center space-x-8">
-          <Link to="/TouristHome" className="text-white">Home</Link>
-          <Link to="/products" className="text-white">Products</Link>
-          <Link to="/MyEvents" className="text-white">Events/Places</Link>
-          <Link to="/Flights" className="text-white">Flights</Link>
-          <Link to="/Hotels" className="text-white">Hotels</Link>
-        </ul>
-        <Link to="/" className="text-white">signout</Link>
-      </div>
-      <div className="flex">
-      {/* First Division (Profile Section) */}
-      <div className="w-3/5 rounded-lg shadow-lg">
-      {/* Profile Picture */}
-      <div className="relative w-full flex items-center justify-center">
-      {/* Cover Picture */}
-      <div
-        className="w-full h-48 bg-cover bg-center bg-gray-300"
-        style={{ backgroundImage: `url(${formData.Cover_Pic || 'default-cover.jpg'})` }}
-      ></div>
+return (
 
-      {/* Profile Picture */}
-      <div className="absolute top-24 left-6">
-        {formData.Profile_Pic ? (
-          <img
-            src={formData.Profile_Pic}
-            alt={`${formData.Name}'s profile`}
-            className="w-40 h-40 rounded-full object-cover border-4 border-white"
-          />
-        ) : (
-          <div className="w-40 h-40 rounded-full bg-brandBlue text-white text-center flex items-center justify-center border-4 border-white">
-            <span className="text-4xl font-bold">{formData.Username.charAt(0)}</span>
+  <div className="min-h-screen flex flex-col justify-between w-full">
+     <div className="w-full mx-auto px-6 py-4 h-20 bg-brandBlue shadow flex justify-between items-center sticky z-50 top-1 -mt-1">
+                {/* Logo */}
+                <img src={logo} alt="Logo" className="w-20" />
+
+                {/* Main Navigation */}
+                <nav className="flex space-x-6">
+                </nav>
+
+                {/* Sign In/Sign Up Navigation */}
+                <nav className="flex space-x-6">
+                    <Link to="/" className="text-lg font-medium text-white-700 hover:text-blue-500">
+                        Signout
+                    </Link>
+                </nav>
+            </div>
+    <div className="flex flex-wrap w-full">
+      {/* Profile Section */}
+      <div className="w-full md:w-full rounded-lg shadow-lg bg-white">
+        {/* Profile and Cover Picture Section */}
+        <div className="relative w-full flex items-center justify-center">
+          {/* Cover Picture */}
+          <div
+            className="w-full h-48 bg-cover bg-center bg-gray-300"
+            style={{ backgroundImage: `url(${formData.Cover_Pic || 'default-cover.jpg'})` }}
+          ></div>
+
+          {/* Profile Picture */}
+          <div className="absolute top-24 left-6">
+            {formData.Profile_Pic ? (
+              <img
+                src={formData.Profile_Pic}
+                alt={`${formData.Name}'s profile`}
+                className="w-40 h-40 rounded-full object-cover border-4 border-white"
+              />
+            ) : (
+              <div className="w-40 h-40 rounded-full bg-brandBlue text-white text-center flex items-center justify-center border-4 border-white">
+                <span className="text-4xl font-bold">{formData.Username.charAt(0)}</span>
+              </div>
+            )}
           </div>
-        )}
-      </div>
-    </div>
-    <div className="mt-16 ml-14 flex items-center space-x-4">
-      <h2 className="text-4xl font-bold text-brandBlue">{tourist.Username}</h2>
-      <img
-        src={badgeImage}
-        alt={`${tourist.Username}'s badge`}
-        className="w-12 h-12 rounded-full object-cover"
-      />
-    </div>
-    <div className="flex justify-end mb-4 mr-6">
-      <button
-        className="bg-logoOrange text-white py-2 px-4 rounded-lg hover:bg-opacity-90 transition duration-300 w-32 h-10 -mt-16"
-        onClick={handleEdit}
-      >
-        Edit Profile
-      </button>
-    </div>
+        </div>
 
-    {/* User Details */}
-    <div className="flex flex-col items-center mt-16">
-      {isEditing ? (
-        <div>
-          <form className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-gray-700 text-sm font-bold mb-2">Username:</label>
-                <input
-                  type="text"
-                  name="Username"
-                  value={formData.Username}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700 text-sm font-bold mb-2">Email:</label>
-                <input
-                  type="email"
-                  name="Email"
-                  value={formData.Email}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
-                />
-              </div>
+        {/* Username and Badge */}
+        <div className="mt-16 ml-14 flex items-center space-x-4">
+          <h2 className="text-4xl font-bold text-brandBlue">{formData.Username}</h2>
+        </div>
+
+        {/* Edit Profile Button */}
+        <div className="flex justify-end mb-4 mr-6">
+          <button
+            className="bg-logoOrange text-white py-2 px-4 rounded-lg hover:bg-opacity-90 transition duration-300 w-32 h-10 -mt-16"
+            onClick={handleEdit}
+          >
+            Edit Profile
+          </button>
+        </div>
+
+          {/* Navigation Bar (Horizontal Links) */}
+          <div className="flex flex-col p-4 ml-8 mt-2 rounded-lg w-3/4">
+            <div className="flex space-x-4">
+            <nav className="flex space-x-6">
+            <a
+                href="#itineraries"
+                className=" text-brandBlue hover:text-logoOrange transition duration-300"
+                onClick={handlepoints}
+              >
+                My Itineraries
+              </a> 
+
+              <a
+              href="#activities"
+              className=" text-brandBlue hover:text-logoOrange transition duration-300"
+              onClick={handlepoints}
+              >
+                My Activities
+              </a> 
+
+              <a
+              href="#activities"
+              className=" text-brandBlue hover:text-logoOrange transition duration-300"
+              onClick={handlepoints}
+              >
+                My Complaints
+              </a>
+
+              <a
+              href="#activities"
+              className=" text-brandBlue hover:text-logoOrange transition duration-300"
+              onClick={handlepoints}
+              >
+                My preference Tags
+              </a>
+
+              <a
+              href="#activities"
+              className=" text-brandBlue hover:text-logoOrange transition duration-300"
+              onClick={handlepoints}
+              >
+                My Orders
+              </a>
+                </nav>
+              
             </div>
+          </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-gray-700 text-sm font-bold mb-2">Password:</label>
-                <input
-                  type="password"
-                  name="Password"
-                  value={formData.Password}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700 text-sm font-bold mb-2">Mobile Number:</label>
-                <input
-                  type="text"
-                  name="Mobile_Number"
-                  value={formData.Mobile_Number}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-gray-700 text-sm font-bold mb-2">Nationality:</label>
-                <input
-                  type="text"
-                  name="Nationality"
-                  value={formData.Nationality}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700 text-sm font-bold mb-2">Job/Student:</label>
-                <input
-                  type="text"
-                  name="Job_Student"
-                  value={formData.Job_Student}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
-                />
-              </div>
-            </div>
-
-            {/* New File Input for Profile Picture */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-              <div>
-                <label className="block text-gray-700 text-sm font-bold mb-2">
-                  Upload Profile Picture:
-                </label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
-                />
-                {preview && (
-                  <img
-                    src={preview}
-                    alt="Preview"
-                    className="mt-2 w-32 h-32 rounded-full object-cover"
-                  />
-                )}
-              </div>
-              <div className="flex justify-start md:justify-center">
-                <button
-                  type="button"
-                  onClick={handleUploadProfilePicture}
-                  className="bg-brandBlue text-white py-2 px-4 rounded-lg hover:bg-opacity-90 transition duration-300 mt-6"
+        {/* Main Content Area */}
+        <div className="flex">
+          {/* Left Section with Vertical Boxes Below Profile Picture */}
+          <div className="ml-6 mt-4 flex flex-col space-y-4 w-1/3">
+            {/* Contact Details Box */}
+            <div className="bg-gray-100 p-4 rounded-lg shadow-md h-52">
+              <h3 className="text-xl font-bold text-gray-800 mb-2">Personal Information</h3>
+              <p><strong>Email:</strong> {formData.Email}</p>
+              <p><strong>Mobile Number:</strong> {formData.Mobile_Number}</p>
+              <p><strong>Nationality:</strong> {formData.Nationality}</p>
+              <p><strong>Job/Student:</strong> {formData.Job_Student}</p>
+              <button
+                  onClick={() => setIsaddressModalOpen(true)}
+                  className="w-full py-2 px-6 rounded-lg text-white font-medium transition duration-300 bg-brandBlue hover:bg-opacity-90"
                 >
-                  Upload Profile Picture
+                  Add Address
+                </button>
+            </div>
+
+            {/* Points & Badge Box */}
+            <div className="bg-gray-100 p-4 rounded-lg shadow-md h-48">
+              <h3 className="text-xl font-bold text-gray-800">Achievements</h3>
+              <div className="flex items-center mb-0 mt-2">
+                <img
+                  src={badgeImage}
+                  alt={`${formData.Badge}`}
+                  className="w-12 h-12 rounded-full ml-2 object-cover"
+                />
+              </div>
+              <p><strong>Points:</strong> {formData.Points}</p>
+              <div className="mt-4">
+                <button
+                  onClick={() => setIsModalOpen(true)}
+                  className="w-full py-2 px-6 rounded-lg text-white font-medium transition duration-300 bg-brandBlue hover:bg-opacity-90"
+                >
+                  Redeem Points
                 </button>
               </div>
             </div>
+          </div>
 
-            <button
-              type="button"
-              onClick={() => window.location.reload()}
-              className="w-full bg-brandBlue text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300 mt-2"
-            >
-              Cancel
-            </button>
+          <div>
+          {isEditing && (
+              <div className="transform scale-95 ml-44">
+                <form className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-gray-700 text-sm font-bold mb-2">Username:</label>
+                      <input
+                        type="text"
+                        name="Username"
+                        value={formData.Username}
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-gray-700 text-sm font-bold mb-2">Email:</label>
+                      <input
+                        type="email"
+                        name="Email"
+                        value={formData.Email}
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                      />
+                    </div>
+                  </div>
 
-            <button
-              type="button"
-              onClick={handleSave}
-              className="w-full bg-brandBlue text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300 mt-2"
-            >
-              Save Profile
-            </button>
-            <button
-              type="button"
-              class="w-full py-2 px-4 bg-logoOrange text-white font-semibold rounded-md hover:bg-red-700 transition duration-200"
-              onClick={handleDeleteRequest}
-            >
-              Delete Profile
-            </button>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-gray-700 text-sm font-bold mb-2">Password:</label>
+                      <input
+                        type="password"
+                        name="Password"
+                        value={formData.Password}
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-gray-700 text-sm font-bold mb-2">Mobile Number:</label>
+                      <input
+                        type="text"
+                        name="Mobile_Number"
+                        value={formData.Mobile_Number}
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                      />
+                    </div>
+                  </div>
 
-            {message && <p class="mt-4 text-center text-red-600">{message}</p>}
-          </form>
-        </div>
-      ) : (
-        <div className="space-y-4 text-gray-700 -mt-12 ml-14">
-          <p className="-mt-6"><strong>{tourist.Job_Student}</strong> </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            <div>
-              <p><strong>Nationality:</strong> {tourist.Nationality}</p>
-              <p><strong>DOB: </strong>{new Date(tourist.DOB).toLocaleDateString()}</p>
-              <p><strong>Wallet:</strong> {tourist.Wallet}</p>
-            </div>
-            <div>
-              <p><strong>Points:</strong> {tourist.Points}</p>
-            </div>
-            <div>
-              <p><strong>Contact Details:</strong></p>
-              <p><strong>Email:</strong> {tourist.Email}</p>
-              <p><strong>Mobile Number:</strong> {tourist.Mobile_Number}</p>
-            </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-gray-700 text-sm font-bold mb-2">Nationality:</label>
+                      <input
+                        type="text"
+                        name="Nationality"
+                        value={formData.Nationality}
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-gray-700 text-sm font-bold mb-2">Job/Student:</label>
+                      <input
+                        type="text"
+                        name="Job_Student"
+                        value={formData.Job_Student}
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                      />
+                    </div>
+                  </div>
+
+                  {/* New File Input for Profile Picture */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                    <div>
+                      <label className="block text-gray-700 text-sm font-bold mb-2">Upload Profile Picture:</label>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleFileChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                      />
+                      {preview && (
+                        <img
+                          src={preview}
+                          alt="Preview"
+                          className="mt-2 w-32 h-32 rounded-full object-cover"
+                        />
+                      )}
+                    </div>
+                    <div className="flex justify-start md:justify-center">
+                      <button
+                        type="button"
+                        onClick={handleUploadProfilePicture}
+                        className="bg-brandBlue text-white py-2 px-4 rounded-lg hover:bg-opacity-90 transition duration-300 mt-6"
+                      >
+                        Upload Profile Picture
+                      </button>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => window.location.reload()}
+                    className="w-full bg-brandBlue text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300 mt-2"
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleSave}
+                    className="w-full bg-brandBlue text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300 mt-2"
+                  >
+                    Save Profile
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleDeleteRequest}
+                    className="w-full py-2 px-4 bg-logoOrange text-white font-semibold rounded-md hover:bg-red-700 transition duration-200 mt-2"
+                  >
+                    Delete Profile
+                  </button>
+
+                  {message && <p className="mt-4 text-center text-red-600">{message}</p>}
+                </form>
+              </div>
+            )}
+
+
           </div>
         </div>
-      )}
-    </div>
-    {!isEditing && (
-   <div>
-    
-
-    {/* Divider */}
-    <div className="border-t border-brandBlue w-full mx-auto rounded-lg items-center mt-4"></div>
-    {/* Navbar */}
-    <nav className="bg-gray-100 text-white px-6 py-4 flex justify-between items-center shadow-md">
-      <div className="flex space-x-4">
-        <a
-          href="#addresss"
-          className=" text-brandBlue hover:text-logoOrange transition duration-300"
-          onClick={handleaddress}
-        >
-          Address
-        </a>
-        <a
-          href="#complaints"
-          className=" text-brandBlue hover:text-logoOrange transition duration-300"
-          onClick={handlecomplaints}
-        >
-          Complaints
-        </a>
-
-        <a
-          href="#Preferences"
-          className=" text-brandBlue hover:text-logoOrange transition duration-300"
-          onClick={handlepreference}
-        >
-          Preference Tags
-        </a>
-        
-        <a
-          href="#points"
-          className=" text-brandBlue hover:text-logoOrange transition duration-300"
-          onClick={handlepoints}
-        >
-          My Points
-        </a> 
       </div>
-    </nav>
-{addresssection && (
-  <div className="flex items-center justify-center bg-gray-100 min-h-screen">
-    <div className="bg-white w-3/4 shadow-md rounded-lg p-6 mt-0 -translate-y-52">
+    </div>
+
+    {/* Points Modal */}
+    {isModalOpen && (
+      <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
+        <div className="bg-white p-6 rounded-lg shadow-lg w-96 relative">
+          {/* Close Icon */}
+          <button
+            onClick={() => setIsModalOpen(false)}
+            className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              className="w-6 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+
+          <h3 className="text-2xl font-bold mb-4">Redeem Points</h3>
+          <div className="mb-4">
+            <label htmlFor="pointsToRedeem" className="block text-gray-700 text-sm font-medium mb-1">Points to Redeem:</label>
+            <input
+              type="number"
+              id="pointsToRedeem"
+              placeholder="Enter points to redeem"
+              value={pointsToRedeem}
+              onChange={(e) => setPointsToRedeem(e.target.value)}
+              required
+              min="1"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+            />
+          </div>
+          <div className="flex justify-end space-x-4">
+            <button
+              onClick={handleRedeemPoints}
+              className="py-2 px-6 text-white font-medium rounded-lg bg-logoOrange hover:bg-opacity-90"
+            >
+              Redeem
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
+
+    {/*Address Modal */}
+    {isaddressModalOpen && (
+  <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
+    <div className="bg-white p-6 rounded-lg shadow-lg w-96 relative">
+      {/* Close Icon */}
+      <button
+        onClick={() => setIsaddressModalOpen(false)}
+        className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          className="w-6 h-6"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
+      </button>
+
       <h2 className="text-2xl font-semibold text-brandBlue text-center mb-4">Add a New Address</h2>
+
       <form className="space-y-4">
         <div>
           <label className="block text-gray-700 text-sm font-medium mb-1">Address:</label>
@@ -616,6 +734,7 @@ if (!tourist) {
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
           />
         </div>
+
         <div className="flex justify-center">
           <button
             onClick={handleNewAddress}
@@ -625,224 +744,16 @@ if (!tourist) {
           </button>
         </div>
       </form>
+
       {succes && <p className="mt-4 text-green-600 font-medium">{succes}</p>}
       {errornew && <p className="mt-4 text-red-600 font-medium">{errornew}</p>}
     </div>
   </div>
 )}
 
-{complaintsection && (
-  <div className="flex items-center justify-center bg-gray-100 min-h-screen">
-    <div className="bg-white w-3/4 shadow-md rounded-lg p-6 mt-0 -translate-y-24">
-      <h2 className="text-2xl font-semibold text-brandBlue text-center mb-4">Submit a Complaint</h2>
-      <form onSubmit={handleComplaintSubmit} className="space-y-4">
-        <div>
-          <label htmlFor="complaint-title" className="block text-gray-700 text-sm font-medium mb-1">Title:</label>
-          <input
-            id="complaint-title"
-            type="text"
-            value={complaintTitle}
-            onChange={(e) => setComplaintTitle(e.target.value)}
-            required
-            placeholder="Enter complaint title"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
-          />
-        </div>
-        <div>
-          <label htmlFor="complaint-body" className="block text-gray-700 text-sm font-medium mb-1">Body:</label>
-          <textarea
-            id="complaint-body"
-            value={complaintBody}
-            onChange={(e) => setComplaintBody(e.target.value)}
-            required
-            placeholder="Enter complaint details"
-            rows="4"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
-          ></textarea>
-        </div>
-        <button
-          type="submit"
-          className="w-full bg-logoOrange text-white font-medium py-2 px-6 rounded-lg hover:bg-opacity-90 transition duration-300"
-        >
-          Submit Complaint
-        </button>
-      </form>
-      <button
-        type="button"
-        className="w-full mt-4 bg-brandBlue text-white font-medium py-2 px-6 rounded-lg hover:bg-opacity-90 transition duration-300"
-        onClick={handleFetchComplaintByEmail}
-      >
-        My Complaint
-      </button>
-      {isLoading && <p className="mt-4 text-gray-500">Loading complaints...</p>}
-      {errorMessage && <p className="mt-4 text-red-600 font-medium">Error: {errorMessage}</p>}
-      {showComplaints && complaintsList.length === 0 && !isLoading && <p className="mt-4 text-gray-700 font-medium">No complaints found.</p>}
-      {showComplaints && complaintsList.length > 0 && (
-        <div className="mt-6 overflow-x-auto">
-          <table className="min-w-full border border-gray-200">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="border px-4 py-2 text-left text-gray-700 font-medium">Title</th>
-                <th className="border px-4 py-2 text-left text-gray-700 font-medium">Body</th>
-                <th className="border px-4 py-2 text-left text-gray-700 font-medium">Status</th>
-                <th className="border px-4 py-2 text-left text-gray-700 font-medium">Reply</th>
-              </tr>
-            </thead>
-            <tbody>
-              {complaintsList.map((complaint) => (
-                <tr key={complaint._id}>
-                  <td className="border px-4 py-2">{complaint.Title}</td>
-                  <td className="border px-4 py-2">{complaint.Body}</td>
-                  <td className={`border px-4 py-2 ${complaint.Status === "resolved" ? "text-green-600" : "text-red-600"}`}>{complaint.Status}</td>
-                  <td className="border px-4 py-2">{complaint.Reply}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-    </div>
-  </div>
-)}
-
-{prefsection && (
-  <div className="flex items-center justify-center bg-gray-100 min-h-screen">
-    <div className="bg-white w-3/4 shadow-md rounded-lg p-6 mt-0 -translate-y-44">
-      <h2 className="text-2xl font-semibold text-brandBlue text-center mb-6">Create User Preference</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="space-y-2">
-          {[{ name: "historicAreas", label: "Historic Areas" }, { name: "beaches", label: "Beaches" }, { name: "familyFriendly", label: "Family Friendly" }, { name: "shopping", label: "Shopping" }, { name: "budgetFriendly", label: "Budget Friendly" }].map((pref) => (
-            <div key={pref.name} className="flex items-center">
-              <input
-                type="checkbox"
-                name={pref.name}
-                checked={preferenceData[pref.name]}
-                onChange={handleChange}
-                className="h-5 w-5 text-brandBlue border-gray-300 rounded focus:ring-brandBlue"
-              />
-              <label htmlFor={pref.name} className="ml-2 text-sm text-gray-700">{pref.label}</label>
-            </div>
-          ))}
-        </div>
-        <div className="flex justify-center">
-          <button
-            type="submit"
-            className="w-full py-2 px-6 rounded-lg text-white font-medium transition duration-300 bg-logoOrange hover:bg-opacity-90"
-          >
-            Create Preference
-          </button>
-        </div>
-      </form>
-      {messagee && <p className="text-center text-sm text-green-500 mt-4">{messagee}</p>}
-    </div>
-  </div>
-)}
-
-{pointssection && (
-  <div className="flex items-center justify-center bg-gray-100 min-h-screen">
-    <div className="bg-white w-3/4 shadow-md rounded-lg p-6 mt-0 -translate-y-52">
-      <h2 className="text-2xl font-semibold text-brandBlue text-center mb-4">Redeem Points</h2>
-      <div className="space-y-4">
-        <div>
-          <label htmlFor="pointsToRedeem" className="block text-gray-700 text-sm font-medium mb-1">Points to Redeem:</label>
-          <input
-            type="number"
-            id="pointsToRedeem"
-            placeholder="Enter points to redeem"
-            value={pointsToRedeem}
-            onChange={(e) => setPointsToRedeem(e.target.value)}
-            required
-            min="1"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
-          />
-        </div>
-        <div className="flex justify-center">
-          <button
-            onClick={handleRedeemPoints}
-            className="w-full py-2 px-6 rounded-lg text-white font-medium transition duration-300 bg-logoOrange hover:bg-opacity-90"
-          >
-            Redeem Points
-          </button>
-        </div>
-      </div>
-      {message && <p className={`text-center mt-4 text-sm font-medium ${message.includes("successfully") ? "text-green-600" : "text-red-600"}`}>{message}</p>}
-    </div>
-  </div>
-)}
 
 
-
-
-
-   </div>
-    )}
-    </div>
-          <div className="border-l border-brandBlue "></div>
-
-            {/* Second Division (Saved Items Section) */}
-                <div className="w-2/5 p-4 bg-white rounded-lg shadow-md">
-                  <h3 className="text-lg font-bold text-center mb-4">Saved Items</h3>
-
-                  {/* Activities Section */}
-                  {activity.length > 0 && (
-                    <div className="mt-8 w-full">
-                      <h4 className="text-md font-semibold mb-2">Activities</h4>
-                      <ul className="list-inside space-y-4 text-sm">
-                        {activity.map((act, index) => (
-                          <li key={index} className="text-center">
-                            <div 
-                              className="w-full h-40 mx-auto bg-gray-200 border border-gray-300 rounded-lg overflow-hidden duration-300 ease-in-out hover:scale-105"
-                              onClick={() => handleActivityClick(act)}
-                            >
-                              <img
-                                src={act.Picture || 'default-activity.jpg'}
-                                alt={act.Name}
-                                className="w-full h-full object-cover duration-300 ease-in-out"
-                              />
-                            </div>
-                            <p className="mt-2 text-gray-700 font-semibold">{act.Name}</p>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-
-                  {/* Itineraries Section */}
-                  {itinerary.length > 0 && (
-                    <div className="mt-8 w-full">
-                      <h4 className="text-md font-semibold mb-2">Itineraries</h4>
-                      <ul className="list-inside space-y-4 text-sm">
-                        {itinerary.map((itin, index) => (
-                          <li key={index} className="text-center">
-                            <div 
-                              className="w-full h-40 mx-auto bg-gray-200 border border-gray-300 rounded-lg overflow-hidden duration-300 ease-in-out hover:scale-105"
-                              onClick={() => handleItineraryClick(itin)}
-                            >
-                              <img
-                                src={itin.Picture || 'default-itinerary.jpg'}
-                                alt={itin.Itinerary_Name}
-                                className="w-full h-full object-cover duration-300 ease-in-out"
-                              />
-                            </div>
-                            <p className="mt-2 text-gray-700 font-semibold">{itin.Itinerary_Name}</p>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-
-                  {/* No Saved Items Message */}
-                  {activity.length === 0 && itinerary.length === 0 && (
-                    <p className="text-center text-gray-600">No saved activities or itineraries.</p>
-                  )}
-                </div>
-
-            </div>
-
-
-
-
-      <footer className="bg-brandBlue shadow dark:bg-brandBlue m-0">
+<footer className="bg-brandBlue shadow dark:bg-brandBlue m-0">
                 <div className="w-full mx-auto md:py-8">
                     <div className="sm:flex sm:items-center sm:justify-between">
                         <a href="/" className="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
@@ -868,9 +779,10 @@ if (!tourist) {
                     <hr className="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
                     <span className="block text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2023 <a href="/" className="hover:underline">Rehla™</a>. All Rights Reserved.</span>
                 </div>
-       </footer>
-    </div>
-  ); 
+            </footer>
+  </div>
+);
+
 };
 
 export default TouristProfile; 
