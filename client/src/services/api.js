@@ -1672,3 +1672,14 @@ export const notifyForAvailableBookings = async () => {
         throw error; // Re-throw the error for the caller to handle
     }
 };
+
+// Function to notify for flagged activities
+export const notifyForFlaggedActivities = async (email) => {
+    try {
+        const response = await axios.post(`${API_URL}/notifyForFlaggedActivities`, { email });
+        return response.data; // Return success message or response data
+    } catch (error) {
+        console.error('Error notifying for flagged activities:', error.response?.data || error.message);
+        throw error; // Re-throw the error for the caller to handle
+    }
+};

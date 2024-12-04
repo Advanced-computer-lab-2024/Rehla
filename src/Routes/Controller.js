@@ -6697,6 +6697,50 @@ const notifyForAvailableBookings = async (req, res) => {
 };
 
 
+// Function to fetch flagged activities and create notifications
+const notifyForFlaggedActivities = async (req, res) => {
+    try {
+        const { email } = req.body; // Extract email from request body
+
+        if (!email) {
+            return res.status(400).json({ message: "Email is required." });
+        }
+
+        // Fetch activities where Flagged is true and match the email
+        const activities = await activity.find({ 
+            'Flagged': true, // Flagged activities
+            'Created_By': email // Activities that belong to the given email
+        });
+
+        if (!activities || activities.length === 0) {
+            return res.status(404).json({ message: "No flagged activities found for the given email." });
+        }
+
+        // Loop through each flagged activity and create a notification
+        for (const activity of activities) {
+            // Create a notification for the user about the flagged activity
+            const notificationMessage = `The activity "${activity.Name}" has been flagged!`;
+
+            const notification = new Notifications({
+                message: notificationMessage,
+                user: email, // Assuming email is used to reference the user
+                seen: false, // Notifications are initially unseen
+                date: new Date(),
+                title: "Activity Flagged"
+            });
+
+            // Save the notification to the database
+            await notification.save();
+        }
+
+        res.status(200).json({ message: "Notifications for flagged activities created successfully." });
+
+    } catch (err) {
+        console.error("Error notifying for flagged activities:", err);
+        res.status(500).json({ message: "An error occurred while creating notifications.", error: err.message });
+    }
+};
+
 
 // ----------------- Activity Category CRUD -------------------
 
@@ -6875,4 +6919,5 @@ module.exports = { getPurchasedProducts,
     requestNotificationForEvent,
     notifyForAvailableBookings,
     viewTotalAttendees,
+    notifyForFlaggedActivities,
 };
