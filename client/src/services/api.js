@@ -1745,3 +1745,14 @@ export const createwishlistItem = async (wishlistData) => {
         throw error; // Rethrow the error for handling in the calling component
     }
 };
+
+// Function to remind the user of upcoming paid activities
+export const remindUpcomingPaidActivities = async (email) => {
+    try {
+        const response = await axios.post(`${API_URL}/remindUpcomingPaidActivities`, { email });
+        return response.data;
+    } catch (error) {
+        console.error("Error reminding upcoming paid activities:", error);
+        throw error;
+    }
+};

@@ -4,7 +4,7 @@ import logo from '../images/logo.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart,faBell  } from '@fortawesome/free-solid-svg-icons';
 import { searchEventsPlaces ,getAllTransportation,bookTransportation,
-        saveEvent,cancelOrder,getAllNotifications ,markAsSeen } from '../services/api'; // Import the commentOnEvent function
+        saveEvent,cancelOrder,getAllNotifications ,markAsSeen,remindUpcomingPaidActivities  } from '../services/api'; // Import the commentOnEvent function
 import Homet2 from '../components/Homet2.js';
 
 const TouristHome = () => {
@@ -32,6 +32,23 @@ const TouristHome = () => {
     const [notifications, setNotifications] = useState([]); // State for notifications
     const [unreadCount, setUnreadCount] = useState(0); // State for unread notifications
     const [showModal, setShowModal] = useState(false); // State to show/hide the modal
+
+    useEffect(() => {
+        // Retrieve the user's email from localStorage
+        const storedEmail = localStorage.getItem('email');
+        if (storedEmail) {
+            setEmail(storedEmail);
+
+            // Call the remindUpcomingPaidActivities function
+            remindUpcomingPaidActivities(storedEmail)
+                .then(response => {
+                    console.log("Reminders created:", response);
+                })
+                .catch(error => {
+                    console.error("Error creating reminders:", error);
+                });
+        }
+    }, []); // Runs once when the component mounts
 
     useEffect(() => {
         const fetchNotifications = async () => {
