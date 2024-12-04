@@ -6174,6 +6174,35 @@ const checkandsendBirthdayPromoCode = async () => {
 };
 
 
+// Function to view the report of total attendees
+const viewTotalAttendees = async (req, res) => {
+    try {
+        // Fetch the total count of activities where `Attended` is true
+        const activitiesCount = await tourist_activities.countDocuments({ Attended: true });
+
+        // Fetch the total count of itineraries where `Attended` is true
+        const itinerariesCount = await touristIteneraries.countDocuments({ Attended: true });
+
+        // Calculate the total count
+        const totalAttendees = activitiesCount + itinerariesCount;
+
+        // Respond with the report
+        res.status(200).json({
+            message: "Report generated successfully.",
+            activitiesCount,
+            itinerariesCount,
+            totalAttendees
+        });
+    } catch (error) {
+        console.error("Error generating report:", error.message);
+        res.status(500).json({
+            message: "Error generating report.",
+            error: error.message
+        });
+    }
+};
+
+
 const getAllSalesReportsemail = async (req, res) => {
     try {
         const { email } = req.query;
@@ -6844,5 +6873,6 @@ module.exports = { getPurchasedProducts,
     getAllProductstourist,
     getNotifications, markAsSeen, createNotification, getAllNotifications ,testNotification,
     requestNotificationForEvent,
-    notifyForAvailableBookings
+    notifyForAvailableBookings,
+    viewTotalAttendees,
 };

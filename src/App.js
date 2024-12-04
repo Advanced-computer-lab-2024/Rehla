@@ -177,7 +177,7 @@ const {createUserAdmin,
   testNotification,
   requestNotificationForEvent,
   notifyForAvailableBookings,
-  
+  viewTotalAttendees,
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -387,7 +387,7 @@ app.post('/testNotification',testNotification);
 app.post('/requestNotificationForEvent', requestNotificationForEvent);
 
 app.post('/notifyForAvailableBookings',notifyForAvailableBookings);
-
+app.get('/view-report', viewTotalAttendees);
 
 
 
