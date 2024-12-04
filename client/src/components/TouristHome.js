@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../images/logo.png';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 import { searchEventsPlaces ,getAllTransportation,bookTransportation,
         saveEvent,cancelOrder} from '../services/api'; // Import the commentOnEvent function
 import Homet2 from '../components/Homet2.js';
@@ -154,7 +156,10 @@ const TouristHome = () => {
                 </nav>
 
                 <nav className="signing">
-                    <Link to="/Cart">Cart</Link>
+                    <Link to="/Cart" >
+                    <FontAwesomeIcon icon={faShoppingCart} />
+                    </Link>
+  
                 </nav>
 
                 <nav className="signing">

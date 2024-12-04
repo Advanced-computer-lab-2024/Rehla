@@ -10,7 +10,7 @@ const Cart = () => {
         <img src={logo} alt="Logo" className="mx-auto my-4" />
         <nav className="main-nav text-center">
           <ul className="nav-links">
-            <Link to="/">Home</Link>
+            <Link to="/TouristHome">Home</Link>
           </ul>
         </nav>
       </div>
