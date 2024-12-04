@@ -35,12 +35,12 @@ const TouristHome = () => {
 
     useEffect(() => {
         // Retrieve the user's email from localStorage
-        const storedEmail = localStorage.getItem('email');
-        if (storedEmail) {
-            setEmail(storedEmail);
+        const storedEmaill = localStorage.getItem('email');
+        if (storedEmaill) {
+            setEmail(storedEmaill);
 
             // Call the remindUpcomingPaidActivities function
-            remindUpcomingPaidActivities(storedEmail)
+            remindUpcomingPaidActivities(storedEmaill)
                 .then(response => {
                     console.log("Reminders created:", response);
                 })
