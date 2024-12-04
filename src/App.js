@@ -175,7 +175,8 @@ const {createUserAdmin,
   createNotification,
   getAllNotifications,
   testNotification,
-  requestNotificationForEvent
+  requestNotificationForEvent,
+  notifyForAvailableBookings,
   
 } = require("./Routes/Controller");
 
@@ -385,7 +386,7 @@ app.post('/testNotification',testNotification);
 
 app.post('/requestNotificationForEvent', requestNotificationForEvent);
 
-
+app.post('/notifyForAvailableBookings',notifyForAvailableBookings);
 
 
 

@@ -1660,3 +1660,15 @@ export const requestNotificationForEvent = async (user, eventId) => {
         throw error; // Re-throw the error for the caller to handle
     }
 };
+
+// Function to notify users for available bookings
+export const notifyForAvailableBookings = async () => {
+    try {
+        const response = await axios.post(`${API_URL}/notifyForAvailableBookings`);
+        console.log('Notifications processed successfully:', response.data);
+        return response.data; // Return the server response
+    } catch (error) {
+        console.error('Error processing notifications:', error.response?.data || error.message);
+        throw error; // Re-throw the error for the caller to handle
+    }
+};

@@ -6627,6 +6627,46 @@ res.status(500).json({ message: "An error occurred while processing your request
 };
 
 
+// Check events and create notifications if booking is available
+const notifyForAvailableBookings = async (req, res) => {
+    try {
+        // Fetch all interested events
+        const interestedEvents = await InterestedEvents.find();
+
+        if (!interestedEvents || interestedEvents.length === 0) {
+            return res.status(404).json({ message: "No interested events found." });
+        }
+
+        // Loop through each interested event
+        for (const event of interestedEvents) {
+            // Find the matching activity
+            const activitys = await activity.findOne({ Name: event.eventName });
+
+            // If activity exists and Booking_Available is true, send a notification
+            if (activitys && activitys.Booking_Available === true) {
+                const notificationMessage = `The event "${activitys.Name}" is now open for bookings!`;
+
+                // Create a notification
+                const notification = new Notifications({
+                    message: notificationMessage,
+                    user: event.user, // The user associated with the interested event
+                    seen: false,
+                    date: new Date(),
+                    title: "Booking Available",
+                });
+
+                // Save the notification to the database
+                await notification.save();
+            }
+        }
+
+        res.status(200).json({ message: "Notifications processed successfully." });
+    } catch (err) {
+        console.error("Error processing notifications:", err);
+        res.status(500).json({ message: "An error occurred while processing notifications.", error: err.message });
+    }
+};
+
 
 
 // ----------------- Activity Category CRUD -------------------
@@ -6803,5 +6843,6 @@ module.exports = { getPurchasedProducts,
     generateOTP,
     getAllProductstourist,
     getNotifications, markAsSeen, createNotification, getAllNotifications ,testNotification,
-    requestNotificationForEvent
+    requestNotificationForEvent,
+    notifyForAvailableBookings
 };
