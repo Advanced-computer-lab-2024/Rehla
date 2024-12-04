@@ -1683,3 +1683,54 @@ export const notifyForFlaggedActivities = async (email) => {
         throw error; // Re-throw the error for the caller to handle
     }
 };
+export const getNotificationsForTourGuide = async (email) => {
+    try {
+        const response = await axios.get(`${API_URL}/getNotificationsForTourGuide/${email}`);
+        return response.data.notifications; // Handle the notifications as needed
+    } catch (error) {
+        console.error("Error fetching notifications:", error);
+        throw error;
+    }
+};
+
+// Mark a notification as seen
+export const markAsSeenn = async (id) => {
+    try {
+        const response = await axios.post(`${API_URL}/markAsSeenn`, { id });
+        return response.data;
+    } catch (error) {
+        console.error("Error marking notification as seen:", error);
+        throw error;
+    }
+};
+
+// Function to notify for flagged activities
+export const notifyForFlaggedItins = async (email) => {
+    try {
+        const response = await axios.post(`${API_URL}/notifyForFlaggedItins`, { email });
+        return response.data; // Return success message or response data
+    } catch (error) {
+        console.error('Error notifying for flagged activities:', error.response?.data || error.message);
+        throw error; // Re-throw the error for the caller to handle
+    }
+};
+export const getNotificationsForTourGuidet = async (email) => {
+    try {
+        const response = await axios.get(`${API_URL}/getNotificationsForTourGuidet/${email}`);
+        return response.data.notifications; // Handle the notifications as needed
+    } catch (error) {
+        console.error("Error fetching notifications:", error);
+        throw error;
+    }
+};
+
+// Mark a notification as seen
+export const markAsSeennt = async (id) => {
+    try {
+        const response = await axios.post(`${API_URL}/markAsSeennt`, { id });
+        return response.data;
+    } catch (error) {
+        console.error("Error marking notification as seen:", error);
+        throw error;
+    }
+};
