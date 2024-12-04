@@ -6,8 +6,7 @@ const Schema = mongoose.Schema;
 const wishlistSchema = new Schema({
   Email: { 
     type: String, 
-    required: true, 
-    unique: true 
+    required: true
   },
   Productname: { 
     type: String, 
