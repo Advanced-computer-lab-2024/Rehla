@@ -19,36 +19,37 @@ const Header = () => (
 </div>
 );
 
-
 const Footer = () => (
-    <footer className="bg-brandBlue shadow dark:bg-brandBlue m-0">
-    <div className="w-full mx-auto md:py-8">
+    <footer className="bg-black shadow dark:bg-black m-0">
+      <div className="w-full mx-auto md:py-8">
         <div className="sm:flex sm:items-center sm:justify-between">
-            <a href="/" className="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
-                <img src={logo} className="w-12" alt="Flowbite Logo" />
-            </a>
-            <div className="flex justify-center w-full">
-                <ul className="flex flex-wrap items-center mb-6 text-sm font-medium text-gray-500 sm:mb-0 dark:text-gray-400 -ml-14">
-                    <li>
-                        <a href="/" className="hover:underline me-4 md:me-6">About</a>
-                    </li>
-                    <li>
-                        <a href="/" className="hover:underline me-4 md:me-6">Privacy Policy</a>
-                    </li>
-                    <li>
-                        <a href="/" className="hover:underline me-4 md:me-6">Licensing</a>
-                    </li>
-                    <li>
-                        <a href="/" className="hover:underline">Contact</a>
-                    </li>
-                </ul>
-            </div>
+          <a href="/" className="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
+          </a>
+          <div className="flex justify-center w-full">
+            <ul className="flex flex-wrap items-center mb-6 text-sm font-medium text-gray-500 sm:mb-0 dark:text-gray-400 -ml-14">
+              <li>
+                <a href="/" className="hover:underline me-4 md:me-6">About</a>
+              </li>
+              <li>
+                <a href="/" className="hover:underline me-4 md:me-6">Privacy Policy</a>
+              </li>
+              <li>
+                <a href="/" className="hover:underline me-4 md:me-6">Licensing</a>
+              </li>
+              <li>
+                <a href="/" className="hover:underline">Contact</a>
+              </li>
+            </ul>
+          </div>
         </div>
-        <hr className="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
-        <span className="block text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2023 <a href="/" className="hover:underline">Rehla™</a>. All Rights Reserved.</span>
-    </div>
-</footer>
-);
+        <div className="mt-6"> {/* Added a new div to increase the spacing */}
+          <span className="block text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2023 <a href="/" className="hover:underline">Rehla™</a>. All Rights Reserved.</span>
+        </div>
+      </div>
+    </footer>
+  );
+  
+
 const ProductList = () => {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -197,25 +198,61 @@ const ProductList = () => {
         <div>
         <div className="container mx-auto px-4 py-10">
             <Header/>
-            <h1 className="text-4xl font-bold text-center mb-8">Products List</h1>
+            {/*<h1 className="text-4xl font-bold text-center mb-8">Products List</h1>*/}
+         
+            <div className="mb-8 mt-8">
 
-            {/* Search, Filter, and Sort Section */}
-            <div className="mb-8">
-                <form onSubmit={handleSearchProducts} className="flex flex-col items-center">
-                    {/* Search */}
-                    <div className="flex justify-center mb-4 w-full">
-                        <input
-                            type="text"
-                            placeholder="Search by product name"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="border border-gray-300 rounded-full px-6 py-3 w-full max-w-3xl" // Increased max-width
-                        />
-                        <button type="submit" className="bg-brandBlue text-white px-6 py-3 rounded-full ml-2">Search</button>
+            <div className="mt-4">
+            <img
+                src="https://cdn.myportfolio.com/00dc7a14-6ffa-49b8-be56-2071b6c070d5/570e84e1-48c3-4c00-8a49-a505b7bc25e1_rw_1920.png?h=2432628c96a3da54b5747dc016f3296a"
+                alt="Product Image"
+                className="w-full h-auto max-h-[500px] object-cover"
+            />
+            </div>
+
+                    {/* Search and Currency Section */}
+                    <div className="mt-10 mb-8 flex justify-end items-center">
+                        <form onSubmit={handleSearchProducts} className="flex items-center">
+                            <input
+                                type="text"
+                                placeholder="Search by product name"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="border border-gray-300 rounded-full px-4 py-2 w-full max-w-2xl text-sm"
+                            />
+                            <button type="submit" className="bg-black text-white rounded-full ml-2 p-2">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="h-5 w-5"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                    />
+                                </svg>
+                            </button>
+                        </form>
+
+                        <div className="flex items-center ml-4">
+                            <label htmlFor="currency" className="mb-0 font-medium mr-2">Change currency</label>
+                            <select value={currency} onChange={handleCurrencyChange} className="border rounded p-1 bg-white">
+                                <option value="USD">USD</option>
+                                <option value="EUR">EUR</option>
+                                <option value="GBP">GBP</option>
+                                <option value="JPY">JPY</option>
+                                <option value="CAD">CAD</option>
+                                <option value="AUD">AUD</option>
+                            </select>
+                        </div>
                     </div>
-                </form>
 
-                {/* Filter and Sort Section */}
+
+                {/* Filter and Sort Section 
                 <div className="flex space-x-4 items-center justify-center">
                     <div className="flex space-x-2 items-center">
                         <label className="font-medium">Min Price:</label>
@@ -253,6 +290,7 @@ const ProductList = () => {
                         Sort by Rating
                     </button>
                 </div>
+                 <label htmlFor="currency" className="mb-1 font-medium">Change currency</label>
                 <select value={currency} onChange={handleCurrencyChange} className="border rounded p-1 mx-2 bg-white">
                     <option value="USD">USD</option>
                     <option value="EUR">EUR</option>
@@ -260,7 +298,8 @@ const ProductList = () => {
                     <option value="JPY">JPY</option>
                     <option value="CAD">CAD</option>
                     <option value="AUD">AUD</option>
-                </select>
+                </select>*/}
+               
             </div>
 
             {/* Conditionally Render Products */}
