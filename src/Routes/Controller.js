@@ -6546,6 +6546,7 @@ const markAsSeen = async (req, res) => {
 };
 
 
+
 // Create a new notification
 const createNotification = async (req, res) => {
     try {
@@ -6753,10 +6754,10 @@ const getNotificationsForTourGuide = async (req, res) => {
         }
 
         // Fetch all notifications for the specific tour guide (based on email)
-        const notifications = await Notificationtour.find({ user: email });
+        const notifications = await Notificationtour.find({ 'user': email });
 
         if (!notifications || notifications.length === 0) {
-            return res.status(404).json({ message: "No notifications found for this tour guide." });
+            return res.status(404).json({ message: "No notifications found for this advertiser." });
         }
 
         // Respond with the notifications data
@@ -6764,6 +6765,27 @@ const getNotificationsForTourGuide = async (req, res) => {
     } catch (err) {
         console.error("Error fetching notifications for tour guide:", err);
         res.status(500).json({ message: "An error occurred while fetching notifications.", error: err.message });
+    }
+};
+
+const markAsSeenn = async (req, res) => {
+    try {
+        const { id } = req.body; // Take id from request body
+        if (!id) {
+            return res.status(400).json({ message: "Notification ID is required." });
+        }
+
+        const notification = await Notificationtour.findById(id);
+        if (!notification) {
+            return res.status(404).json({ message: "Notification not found." });
+        }
+
+        notification.seen = true;
+        await notification.save();
+        res.status(200).json({ message: "Notification marked as seen." });
+    } catch (err) {
+        console.error("Error marking notification as seen:", err);
+        res.status(500).json({ message: "An error occurred while marking the notification as seen.", error: err.message });
     }
 };
 
@@ -6946,5 +6968,6 @@ module.exports = { getPurchasedProducts,
     notifyForAvailableBookings,
     viewTotalAttendees,
     notifyForFlaggedActivities,
-    getNotificationsForTourGuide
+    getNotificationsForTourGuide,
+    markAsSeenn
 };

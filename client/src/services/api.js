@@ -1692,3 +1692,14 @@ export const getNotificationsForTourGuide = async (email) => {
         throw error;
     }
 };
+
+// Mark a notification as seen
+export const markAsSeenn = async (id) => {
+    try {
+        const response = await axios.post(`${API_URL}/markAsSeenn`, { id });
+        return response.data;
+    } catch (error) {
+        console.error("Error marking notification as seen:", error);
+        throw error;
+    }
+};

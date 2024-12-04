@@ -11,7 +11,7 @@ import {
     getAllCreatedByEmail,
     calculateActivityRevenue, fetchAllSalesReportsemail,
     fetchFilteredAdvertiserSalesReport,
-    getNotificationsForTourGuide ,markAsSeen
+    getNotificationsForTourGuide ,markAsSeenn
 } from '../services/api';
 
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -64,34 +64,43 @@ const AdvertiserHome = () => {
         const email = localStorage.getItem('email'); // Assuming email is stored in localStorage
 
         if (email) {
-            // Fetch notifications for flagged activities
-            getNotificationsForTourGuide(email)
-                .then((data) => {
-                    setNotifications(data.notifications || []); // Assuming response contains notifications array
-                    setUnreadCount(data.notifications?.filter(n => !n.seen).length || 0);
-                })
-                .catch((err) => {
-                    console.error("Error fetching flagged activities notifications:", err);
-                });
+            const fetchNotifications = async () => {
+                try {
+                    const data = await getNotificationsForTourGuide(email); // Fetch all notifications
+                    setNotifications(data); // Set notifications
+                    const unread = data.filter((notification) => !notification.seen).length; // Count unread notifications
+                    setUnreadCount(unread);
+                } catch (error) {
+                    console.error("Error fetching notifications:", error);
+                }
+            };
+    
+            fetchNotifications();
         }
-    }, []);
+        }, []);
 
-    const handleNotificationClick = () => {
-        setShowModal(true);
-
-        // Mark notifications as seen
-        notifications.forEach((notification) => {
-            if (!notification.seen) {
-                markAsSeen(notification._id).then(() => {
-                    setUnreadCount(0); // Reset notification count
-                }).catch((err) => console.error("Error marking notification as seen:", err));
+        const handleNotificationClick = async () => {
+            setShowModal(true); // Show the modal when the notification icon is clicked
+            
+            // Mark all notifications as seen when the icon is clicked
+            try {
+                for (const notification of notifications) {
+                    if (!notification.seen) {
+                        await markAsSeenn(notification._id); // Mark as seen
+                    }
+                }
+                // Refresh the notifications to show the updated status
+                const updatedNotifications = await getNotificationsForTourGuide();
+                setNotifications(updatedNotifications); // Set updated notifications
+            } catch (error) {
+                console.error("Error marking notifications as seen:", error);
             }
-        });
-    };
-
-    const handleCloseModal = () => {
-        setShowModal(false);
-    };
+        };
+    
+        const handleCloseModal = () => {
+            setShowModal(false); // Close the modal
+            setUnreadCount(0); // Reset the unread count when the modal is closed
+        };
 
 
     useEffect(() => {
@@ -291,7 +300,7 @@ const AdvertiserHome = () => {
                 </nav>
                 {/* Notification Icon */}
                 <nav className="signing">
-                    <div className="relative ml-4">
+                    <div className="relative ml-4"> {/* Added margin-left for spacing */}
                         <FontAwesomeIcon
                             icon={faBell}
                             size="2x" // Increased the size to 2x
@@ -341,10 +350,9 @@ const AdvertiserHome = () => {
 
             {/* Main content */}
             <div className="content">
-                <h1>Welcome to the Advertiser Home Page!</h1>
+                <h1>Welcome to the Home Page!</h1>
                 {/* Other content goes here */}
             </div>
-
             
 
             <div className="mt-24">
