@@ -47,6 +47,8 @@ const tourguide_salesreport = require ('../Models/tourguide_salesreport.js');
 const seller_salesreport = require ('../Models/seller_salesreport.js');
 const Notifications = require('../Models/Notifications.js');
 const InterestedEvents = require('../Models/InterestedEvents');
+const Notificationtour = require('../Models/Notificationtour.js');
+
 
 
 
@@ -6721,7 +6723,7 @@ const notifyForFlaggedActivities = async (req, res) => {
             // Create a notification for the user about the flagged activity
             const notificationMessage = `The activity "${activity.Name}" has been flagged!`;
 
-            const notification = new Notifications({
+            const notification = new Notificationtour({
                 message: notificationMessage,
                 user: email, // Assuming email is used to reference the user
                 seen: false, // Notifications are initially unseen
