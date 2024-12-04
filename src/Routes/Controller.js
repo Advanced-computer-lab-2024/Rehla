@@ -4777,24 +4777,36 @@ const searchFlights = async (req, res) => {
       res.status(500).json({ error: error.message });
     }
 };
-// Tourist Checkout My Order
 const checkoutOrder = async (req, res) => {
     try {
         // Extract inputs from the request body
-        const { Email, Cart_Num, Address, Payment_Method } = req.body;
+        const { Email, Address, Payment_Method } = req.body;
 
         // Validate input
-        if (!Email || !Cart_Num || !Address || !Payment_Method) {
-            return res.status(400).json({ message: "All fields (Email, Cart_Num, Address, Payment_Method) are required." });
+        if (!Email || !Address || !Payment_Method) {
+            return res.status(400).json({ message: "All fields (Email, Address, Payment_Method) are required." });
         }
 
-        // Create a new order
+        // Fetch the cart details for the given Email
+        const cart = await cartm.findOne({ Email });
+
+        // If no cart is found, respond with an error
+        if (!cart) {
+            return res.status(404).json({
+                message: "No cart found for the provided Email. Please add items to the cart first."
+            });
+        }
+
+        // Get the Cart_Num from the retrieved cart
+        const { Cart_Num } = cart.Cart_Num;
+
+        // Create a new order with the fetched Cart_Num
         const newOrder = new order({
             Email,
             Cart_Num,
             Address,
             Payment_Method,
-            Status: "Pending" // Status defaults to "Pending", but can also be set explicitly
+            Status: "Pending" // Status defaults to "Pending"
         });
 
         // Save the order to the database
