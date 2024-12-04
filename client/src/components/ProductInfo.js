@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../images/logo.png';
 
-const Cart = () => {
+const ProductInfo = () => {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Navbar */}
@@ -17,8 +17,7 @@ const Cart = () => {
 
       {/* Main Content */}
       <div className="flex-grow max-w-full mx-auto p-24">
-        <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">Your Cart</h1>
-        <p className="text-gray-600 text-center">Your cart is currently empty.</p>
+        <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">No product details</h1>
       </div>
 
       {/* Footer */}
@@ -53,4 +52,4 @@ const Cart = () => {
   );
 };
 
-export default Cart;
+export default ProductInfo;

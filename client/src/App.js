@@ -35,6 +35,10 @@ import EventDetails from './components/EventDetails';
 import ActivityDetails from './components/ActivityDetails.js';
 import ItineraryDetails from './components/ItineraryDetails.js';
 import Wishlist from './components/Wishlist'; // Import the Wishlist component
+import Cart from './components/Cart.js'; 
+import ProductInfo from './components/ProductInfo.js'; 
+
+
 
 
 
@@ -81,6 +85,10 @@ function App() {
                 <Route path="/TourGuideItineraries" element={<TourGuideItineraries />} />
                 <Route path="/event-details/:type/:name" element={<EventDetails />} />
                 <Route path="/" component={Home} />
+                <Route path="/Cart" element={<Cart />} />
+                <Route path="/ProductInfo" element={<ProductInfo />} />
+
+ 
 
 
 

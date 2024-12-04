@@ -154,8 +154,13 @@ const TouristHome = () => {
                 </nav>
 
                 <nav className="signing">
+                    <Link to="/Cart">Cart</Link>
+                </nav>
+
+                <nav className="signing">
                     <Link to="/TouristHome/TouristProfile">My Profile</Link>
                 </nav>
+                
             </div>
 
             {/* Search Section */}
