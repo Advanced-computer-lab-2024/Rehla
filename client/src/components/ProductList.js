@@ -204,7 +204,7 @@ const ProductList = () => {
 
             <div className="mt-4">
             <img
-                src="https://cdn.myportfolio.com/00dc7a14-6ffa-49b8-be56-2071b6c070d5/570e84e1-48c3-4c00-8a49-a505b7bc25e1_rw_1920.png?h=2432628c96a3da54b5747dc016f3296a"
+                src="https://mrbrainwashartmuseum.com/wp-content/uploads/2022/06/GIFT_SHOP_4.gif"
                 alt="Product Image"
                 className="w-full h-auto max-h-[500px] object-cover"
             />
