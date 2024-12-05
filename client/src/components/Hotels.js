@@ -49,7 +49,7 @@ const Hotels = () => {
         <img src={logo} alt="Logo" />
         <nav className="main-nav">
           <ul className="nav-links">
-            <Link to="/">Home</Link>
+            <Link to="/TouristHome">Home</Link>
           </ul>
         </nav>
       </div>
@@ -153,22 +153,20 @@ const Hotels = () => {
                   className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-200"
                 >
                   <h3 className="text-xl font-semibold text-gray-800">{hotel.name}</h3>
-                  <div className="flex justify-between mt-4">
-                    <div className="text-gray-600">
-                      <strong>Price:</strong> {hotel.price?.total} {hotel.price?.currency}
+                  <div className="flex flex-col justify-between mt-4">
+                  <div className="text-gray-600">
+                    <div>
+                      <strong>Location:</strong> {cityCode}
                     </div>
-                    <div className="text-gray-600">
-                      <strong>Location:</strong> {hotel.location?.cityCode}
-                    </div>
-                  </div>
-                  <div className="flex justify-between mt-2">
-                    <div className="text-gray-600">
+                    <div>
                       <strong>Check-in:</strong> {hotel.checkInDate}
                     </div>
-                    <div className="text-gray-600">
+                    <div>
                       <strong>Check-out:</strong> {hotel.checkOutDate}
                     </div>
                   </div>
+                </div>
+
                 </div>
               ))}
             </div>
