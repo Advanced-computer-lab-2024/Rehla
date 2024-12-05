@@ -430,7 +430,7 @@ app.post('/saveEvent', saveEvent);
 // app.post('/viewSavedEvents', viewSavedEvents);
 app.post('/viewSavedActivities', viewSavedActivities);
 app.post('/viewSavedItineraries', viewSavedItineraries);
-app.get('/viewMyWishlist/:mail', viewMyWishlist);
+app.post('/viewMyWishlist', viewMyWishlist);
 app.delete('/deleteProductFromMyWishList/:mail/:productname', deleteProductFromMyWishList);
 // Endpoint to handle payment and send receipt
 app.post('/send-payment-receipt', async (req, res) => {

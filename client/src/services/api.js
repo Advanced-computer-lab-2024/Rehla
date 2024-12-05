@@ -1756,3 +1756,16 @@ export const remindUpcomingPaidActivities = async (email) => {
         throw error;
     }
 };
+
+export const viewMyWishlist = async (mail) => {
+    try {
+        const response = await axios.post(`${API_URL}/viewMyWishlist`, {
+            mail,  // Pass email in the request body
+        });
+        
+        return response.data.wishlistProducts; // Return the response from the backend
+    } catch (error) {
+        console.error("Error fetching your wish list:", error);
+        throw error.response ? error.response.data : { message: "Network error" }; // Proper error handling
+    }
+};
