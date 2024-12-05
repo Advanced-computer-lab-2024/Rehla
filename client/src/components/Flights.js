@@ -44,7 +44,7 @@ const Flights = () => {
         <img src={logo} alt="Logo" />
         <nav className="main-nav">
             <ul className="nav-links">
-                <Link to="/">Home</Link>
+                <Link to="/TouristHome">Home</Link>
 
             </ul>
         </nav>

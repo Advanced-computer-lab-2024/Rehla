@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { readActivity, createTouristActivity } from '../services/api'; // Import the necessary functions
+import { readActivity, createTouristActivity, saveEvent } from '../services/api'; // Import the necessary functions
 import logo from '../images/logo.png';
+import { HeartIcon } from '@heroicons/react/24/outline';
 
 const ActivityDetails = () => {
     const { activityName } = useParams(); // Extract activity name from the URL
@@ -11,6 +12,9 @@ const ActivityDetails = () => {
     const [email, setEmail] = useState('');
     const [joinError, setJoinError] = useState(null); // State for join errors
     const [joinSuccess, setJoinSuccess] = useState(null); // State for join success
+    const [succesEvent, setSuccessEvent] = useState(''); // State for success message
+    const [errorEvent, setErrorEvent] = useState(''); // State for error message
+    const [isSaved, setIsSaved] = useState('false');
 
     // Fetch email from localStorage on component mount
     useEffect(() => {
@@ -19,6 +23,40 @@ const ActivityDetails = () => {
             setEmail(storedEmail);
         }
     }, []);
+
+    // Handle saving the event (bookmarking)
+    const handleSaveEvent = async (e) => {
+        e.preventDefault(); // Prevent default form submission
+
+        try {
+            const email = localStorage.getItem('email');
+            const eventType = 'Activity'; // Always set to 'Activity'
+            const eventName = activityDetails.Name; // Use activity name from the API
+
+            // Call the saveEvent API function with the necessary data
+            const response = await saveEvent({ 
+                email, 
+                type: eventType, 
+                name: eventName // Pass the activity name
+            });
+
+
+            // On success, update the success message
+            setSuccessEvent(`Event added successfully`);
+            setIsSaved(true); // Mark as saved
+            // Clear the success message after a delay
+            setTimeout(() => setSuccessEvent(''), 3000);
+        } catch (error) {
+            // Handle errors, log them, and update the error message
+            console.error('Failed to save event:', error);
+
+            if (error.response && error.response.data && error.response.data.message) {
+                setErrorEvent(`Error: ${error.response.data.message}`);
+            } else {
+                setErrorEvent('Failed to save event. Please try again.');
+            }
+        }
+    };
 
     useEffect(() => {
         const fetchActivityDetails = async () => {
@@ -137,37 +175,41 @@ const ActivityDetails = () => {
                                     {activityDetails.Price} {activityDetails.Currency}
                                 </p>
 
+                                <div className="mt-6 flex gap-4 justify-start">
                                 <button
                                     onClick={handleJoinActivity}
-                                    className="bg-logoOrange text-white px-6 py-3 ml-32 rounded hover:bg-green-600"
+                                    className="bg-logoOrange text-white px-6 py-3 rounded"
                                 >
                                     Join Activity
                                 </button>
-
-                                {/* Copy and Share Buttons */}
-                                <div className="mt-6 flex gap-4">
-                                    <button
-                                        onClick={handleCopyLink}
-                                        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                                    >
-                                        Copy Link
-                                    </button>
-                                    <button
-                                        onClick={handleShareViaEmail}
-                                        className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-                                    >
-                                        Share via Email
-                                    </button>
-                                </div>
-
-                                {joinError && (
-                                    <p className="text-red-500 mt-4">{joinError}</p>
-                                )}
-                                {joinSuccess && (
-                                    <p className="text-green-500 mt-4">{joinSuccess}</p>
-                                )}
+                                <button
+                                    onClick={handleCopyLink}
+                                    className="bg-brandBlue text-white px-4 py-2 rounded"
+                                >
+                                    Copy Link
+                                </button>
+                                <button
+                                    onClick={handleShareViaEmail}
+                                    className="bg-brandBlue text-white px-4 py-2 rounded"
+                                >
+                                    Share via Email
+                                </button>
+                                <button
+                                    onClick={handleSaveEvent}
+                                    className={`flex items-center space-x-2 px-4 py-2 rounded ${
+                                        isSaved ? 'bg-red-500' : 'bg-gray-200'
+                                    }`}
+                                >
+                                    <HeartIcon
+                                        className={`w-6 h-6 ${isSaved ? 'text-white' : 'text-gray-600'}`}
+                                    />
+                                    <span className={`text-lg ${isSaved ? 'text-white' : 'text-gray-800'}`}>
+                                        {isSaved ? 'Saved' : 'Save'}
+                                    </span>
+                                </button>
                             </div>
-                        </div>
+                             </div>
+                             </div>
                     ) : (
                         <p className="text-red-500">Activity details not found.</p>
                     )}
