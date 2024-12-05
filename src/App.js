@@ -183,7 +183,8 @@ const {createUserAdmin,
   markAsSeenn,
   markAsSeennt,
   notifyForFlaggedItins,
-  getNotificationsForTourGuidet
+  getNotificationsForTourGuidet,
+  remindUpcomingPaidActivities
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -404,6 +405,9 @@ app.get('/getNotificationsForTourGuide/:email', getNotificationsForTourGuide);
 
 app.post('/notifyForFlaggedItins',notifyForFlaggedItins)
 app.get('/getNotificationsForTourGuidet/:email', getNotificationsForTourGuidet);
+
+app.post('/remindUpcomingPaidActivities', remindUpcomingPaidActivities);
+
 
 
 

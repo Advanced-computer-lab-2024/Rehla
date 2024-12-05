@@ -6879,6 +6879,58 @@ const markAsSeennt = async (req, res) => {
     }
 };
 
+// Function to create reminders for paid activities
+const remindUpcomingPaidActivities = async (req, res) => {
+    try {
+        const { email } = req.body; // Extract email from request body
+
+        if (!email) {
+            return res.status(400).json({ message: "Email is required." });
+        }
+
+        // Fetch all activities with Paid = true and match the email
+        const upcomingActivities = await tourist_activities.find({
+            Tourist_Email: email,
+            Paid: true,
+            Date: { $gte: new Date() }, // Ensure the event date is in the future
+        });
+
+        if (!upcomingActivities || upcomingActivities.length === 0) {
+            return res.status(404).json({ message: "No upcoming paid activities found for this email." });
+        }
+
+        // Loop through each upcoming activity and create a notification
+        for (const activity of upcomingActivities) {
+            const notificationMessage = `Reminder: You have an upcoming event "${activity.Activity_Name}" on ${activity.Date.toDateString()}.`;
+
+            // Check if the notification already exists
+            const existingNotification = await Notifications.findOne({
+                user: email,
+                message: notificationMessage,
+            });
+
+            if (!existingNotification) {
+                // Create a new notification if it doesn't exist
+                const notification = new Notifications({
+                    message: notificationMessage,
+                    user: email,
+                    seen: false,
+                    date: new Date(),
+                    title: "Upcoming Event Reminder",
+                });
+
+                // Save the notification to the database
+                await notification.save();
+            }
+        }
+
+        res.status(200).json({ message: "Reminders for upcoming paid activities processed successfully." });
+    } catch (err) {
+        console.error("Error creating reminders for paid activities:", err);
+        res.status(500).json({ message: "An error occurred while creating reminders.", error: err.message });
+    }
+};
+
 
 // ----------------- Activity Category CRUD -------------------
 
@@ -7062,5 +7114,6 @@ module.exports = { getPurchasedProducts,
     markAsSeenn,
     getNotificationsForTourGuidet,
     markAsSeennt,
-    notifyForFlaggedItins
+    notifyForFlaggedItins,
+    remindUpcomingPaidActivities
 };

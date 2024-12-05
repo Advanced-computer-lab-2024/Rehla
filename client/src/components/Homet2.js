@@ -221,87 +221,87 @@ const Home = () => {
             <section className="mb-10">
             <h2 className="text-2xl font-semibold mb-4 ml-10">Discover Your Next Adventure</h2>
             <form onSubmit={handleFilterActivities} className="mb-4 mr-10 ml-auto">
-    <div className="flex items-center justify-end space-x-4">
-        <select
-            value={activityFilterType}
-            onChange={handleActivityFilterChange}
-            className="border rounded p-1"
-        >
-            <option value="">Select Filter</option>
-            {activityfilterOptions.map(option => (
-                <option key={option} value={option}>{option.charAt(0).toUpperCase() + option.slice(1)}</option>
-            ))}
-        </select>
-
-        {activityFilterType === 'price' && (
-            <>
-                <input
-                    type="number"
-                    placeholder="Min Price"
-                    value={activityFilters.minPrice}
-                    onChange={(e) => setActivityFilters({ ...activityFilters, minPrice: e.target.value })}
+            <div className="flex items-center justify-end space-x-4">
+                <select
+                    value={activityFilterType}
+                    onChange={handleActivityFilterChange}
                     className="border rounded p-1"
-                />
-                <input
-                    type="number"
-                    placeholder="Max Price"
-                    value={activityFilters.maxPrice}
-                    onChange={(e) => setActivityFilters({ ...activityFilters, maxPrice: e.target.value })}
-                    className="border rounded p-1"
-                />
-            </>
-        )}
+                >
+                    <option value="">Select Filter</option>
+                    {activityfilterOptions.map(option => (
+                        <option key={option} value={option}>{option.charAt(0).toUpperCase() + option.slice(1)}</option>
+                    ))}
+                </select>
 
-        {activityFilterType === 'rating' && (
-            <input
-                type="number"
-                placeholder="Rating"
-                value={activityFilters.rating}
-                onChange={(e) => setActivityFilters({ ...activityFilters, rating: e.target.value })}
-                className="border rounded p-1"
-            />
-        )}
+                {activityFilterType === 'price' && (
+                    <>
+                        <input
+                            type="number"
+                            placeholder="Min Price"
+                            value={activityFilters.minPrice}
+                            onChange={(e) => setActivityFilters({ ...activityFilters, minPrice: e.target.value })}
+                            className="border rounded p-1"
+                        />
+                        <input
+                            type="number"
+                            placeholder="Max Price"
+                            value={activityFilters.maxPrice}
+                            onChange={(e) => setActivityFilters({ ...activityFilters, maxPrice: e.target.value })}
+                            className="border rounded p-1"
+                        />
+                    </>
+                )}
 
-        {activityFilterType === 'category' && (
-            <select
-                value={activityFilters.category}
-                onChange={(e) => setActivityFilters({ ...activityFilters, category: e.target.value })}
-                className="border rounded p-1"
-            >
-                <option value="">Select Category</option>
-                <option value="exhibitions">Exhibitions</option>
-                <option value="museums">Museums</option>
-                <option value="sports matches">Sports Matches</option>
-                <option value="food">Food</option>
-                <option value="concert">Concert</option>
-                <option value="party">Party</option>
-                <option value="Adventure">Adventure</option>
-            </select>
-        )}
+                {activityFilterType === 'rating' && (
+                    <input
+                        type="number"
+                        placeholder="Rating"
+                        value={activityFilters.rating}
+                        onChange={(e) => setActivityFilters({ ...activityFilters, rating: e.target.value })}
+                        className="border rounded p-1"
+                    />
+                )}
 
-        {activityFilterType === 'date' && (
-            <>
-                <input
-                    type="date"
-                    value={activityFilters.startDate}
-                    onChange={(e) => setActivityFilters({ ...activityFilters, startDate: e.target.value })}
-                    className="border rounded p-1"
-                />
-                <input
-                    type="date"
-                    value={activityFilters.endDate}
-                    onChange={(e) => setActivityFilters({ ...activityFilters, endDate: e.target.value })}
-                    className="border rounded p-1"
-                />
-            </>
-        )}
+                {activityFilterType === 'category' && (
+                    <select
+                        value={activityFilters.category}
+                        onChange={(e) => setActivityFilters({ ...activityFilters, category: e.target.value })}
+                        className="border rounded p-1"
+                    >
+                        <option value="">Select Category</option>
+                        <option value="exhibitions">Exhibitions</option>
+                        <option value="museums">Museums</option>
+                        <option value="sports matches">Sports Matches</option>
+                        <option value="food">Food</option>
+                        <option value="concert">Concert</option>
+                        <option value="party">Party</option>
+                        <option value="Adventure">Adventure</option>
+                    </select>
+                )}
 
-        <div className="flex justify-end space-x-2">
-            <button type="submit" className="bg-brandBlue text-white px-3 py-1 rounded">Filter Activities</button>
-            <button onClick={() => handleSortActivities('price')} className="bg-logoOrange text-white px-3 py-1 rounded">Sort by Price</button>
-        </div>
-    </div>
-</form>
+                {activityFilterType === 'date' && (
+                    <>
+                        <input
+                            type="date"
+                            value={activityFilters.startDate}
+                            onChange={(e) => setActivityFilters({ ...activityFilters, startDate: e.target.value })}
+                            className="border rounded p-1"
+                        />
+                        <input
+                            type="date"
+                            value={activityFilters.endDate}
+                            onChange={(e) => setActivityFilters({ ...activityFilters, endDate: e.target.value })}
+                            className="border rounded p-1"
+                        />
+                    </>
+                )}
+
+                <div className="flex justify-end space-x-2">
+                    <button type="submit" className="bg-brandBlue text-white px-3 py-1 rounded">Filter Activities</button>
+                    <button onClick={() => handleSortActivities('price')} className="bg-logoOrange text-white px-3 py-1 rounded">Sort by Price</button>
+                </div>
+            </div>
+        </form>
 
                 <div className="flex overflow-x-auto scrollbar-hide px-6 py-4">
                     {activitiesToDisplay.map((activity) => (

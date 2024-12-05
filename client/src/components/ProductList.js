@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../images/logo.png';
-import { getProducts, getProductsSortedByRating, productRateReview } from '../services/api'; // Import the search API call
+import { getProducts, getProductsSortedByRating, productRateReview, createwishlistItem } from '../services/api'; // Import the search API call
 const Header = () => (
     <div className="NavBar">
     <img src={logo} alt="Logo" />
@@ -147,6 +147,25 @@ const ProductList = () => {
         setIsFiltered(false); // Clear other views
         setIsSorted(false);
     };
+
+    // Handle adding a product to the wishlist
+    const handleAddToWishlist = async (productName) => {
+        const email = localStorage.getItem('email'); // Get email from local storage
+        if (!email) {
+        alert('You must be logged in to add to the wishlist.');
+        return;
+        }
+
+        try {
+        // Call the createWishlistItem function
+        await createwishlistItem({ Email: email, Productname: productName });
+        alert('Product added to wishlist!');
+        } catch (error) {
+        console.error('Error adding product to wishlist:', error);
+        alert('There was an issue adding the product to your wishlist.');
+        }
+    };
+
 
     // Filter products by price
     const handleFilterProducts = (e) => {
@@ -384,6 +403,12 @@ const ProductList = () => {
                             <p className="mt-2 text-lg font-semibold">{convertPrice(product.Price)} {currency}</p>
                             <p className="text-gray-600 mt-2">{product.Description}</p>
                             <p className="text-yellow-500 font-bold mt-2">Rating: {product.Rating}</p>
+                            <button
+                            onClick={() => handleAddToWishlist(product.Product_Name)}
+                            className="mt-4 w-full py-2 px-4 bg-logoOrange text-white rounded-lg"
+                            >
+                            Add to Wishlist
+                            </button>
                         </div>
                     ))}
                 </div>
