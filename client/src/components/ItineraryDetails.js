@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { getItineraryByName, createTouristItinerary } from '../services/api';
+import { getItineraryByName, createTouristItinerary, saveEvent } from '../services/api'; // Ensure all functions are imported correctly
 import logo from '../images/logo.png';
 
 const ItineraryDetails = () => {
@@ -11,6 +11,8 @@ const ItineraryDetails = () => {
     const [email, setEmail] = useState('');
     const [joinError, setJoinError] = useState(null);
     const [joinSuccess, setJoinSuccess] = useState(null);
+    const [successEvent, setSuccessEvent] = useState('');  // Add state for success message
+    const [errorEvent, setErrorEvent] = useState('');  // Add state for error message
 
     useEffect(() => {
         const storedEmail = localStorage.getItem('email');
@@ -34,6 +36,29 @@ const ItineraryDetails = () => {
         fetchItineraryDetails();
     }, [itineraryName]);
 
+    const handleSaveEvent = async (e) => {
+        e.preventDefault();
+
+        try {
+            const email = localStorage.getItem('email');
+            const eventType = 'Itinerary'; 
+            const eventName = itineraryDetails.Itinerary_Name;
+
+            const response = await saveEvent({ 
+                email, 
+                type: eventType, 
+                name: eventName 
+            });
+
+            setSuccessEvent('Event added successfully');
+
+            setTimeout(() => setSuccessEvent(''), 3000);
+        } catch (error) {
+            console.error('Failed to save event:', error);
+            setErrorEvent('Failed to save event. Please try again.');
+        }
+    };
+
     const handleJoinItinerary = async () => {
         try {
             setJoinError(null);
@@ -50,6 +75,12 @@ const ItineraryDetails = () => {
         navigator.clipboard.writeText(currentUrl).then(() => {
             alert('Link copied to clipboard!');
         });
+    };
+
+    const handleShareViaEmail = () => {
+        const currentUrl = window.location.href;
+        const mailtoLink = `mailto:?subject=Check out this itinerary!&body=Hey, check out this itinerary: ${currentUrl}`;
+        window.location.href = mailtoLink;
     };
 
     if (loading) return <p className="text-center text-blue-500">Loading...</p>;
@@ -86,7 +117,6 @@ const ItineraryDetails = () => {
                                     alt={itineraryDetails.Itinerary_Name}
                                     className="w-full h-96 object-cover rounded mb-6 lg:mb-0"
                                 />
-                                {/* Created By Section */}
                                 <p className="text-gray-700 mt-4 text-lg text-center">
                                     <span className="font-semibold">Created By: </span>
                                     {itineraryDetails.Created_By}
@@ -141,34 +171,47 @@ const ItineraryDetails = () => {
                                 <p className="absolute bottom-4 right-4 bg-white bg-opacity-80 text-lg lg:text-2xl font-bold text-gray-800 px-4 py-2 rounded-lg">
                                     {itineraryDetails.Tour_Price} {itineraryDetails.Currency || 'USD'}
                                 </p>
-                                {/* Copy Link Button */}
-                                
 
-                                <button
-                                    onClick={handleJoinItinerary}
-                                    className="bg-logoOrange text-white px-6 py-3 ml-32 rounded hover:bg-green-600"
-                                >
-                                    Join Itinerary
-                                </button>
-                                {/* Copy and Share Buttons */}
-                                <div className="mt-6 flex gap-4">
+                                {/* Buttons Section */}
+                                <div className="mt-6 flex gap-4 justify-start">
+                                    <button
+                                        onClick={handleJoinItinerary}
+                                        className="bg-logoOrange text-white px-6 py-3 rounded"
+                                    >
+                                        Join Itinerary
+                                    </button>
                                     <button
                                         onClick={handleCopyLink}
-                                        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                                        className="bg-brandBlue text-white px-4 py-2 rounded"
                                     >
                                         Copy Link
                                     </button>
-                                    
+                                    <button
+                                        onClick={handleShareViaEmail}
+                                        className="bg-brandBlue text-white px-4 py-2 rounded "
+                                    >
+                                        Share via Email
+                                    </button>
+                                    <button
+                                        onClick={handleSaveEvent}
+                                        className="bg-brandBlue text-white px-4 py-2 rounded "
+                                    >
+                                        Bookmark
+                                    </button>
                                 </div>
                                 
-
                                 {joinError && (
                                     <p className="text-red-500 mt-4">{joinError}</p>
                                 )}
                                 {joinSuccess && (
                                     <p className="text-green-500 mt-4">{joinSuccess}</p>
                                 )}
-                                
+                                {errorEvent && (
+                                    <p className="text-red-500 mt-4">{errorEvent}</p>
+                                )}
+                                {successEvent && (
+                                    <p className="text-green-500 mt-4">{successEvent}</p>
+                                )}
                             </div>
                         </div>
                     ) : (
