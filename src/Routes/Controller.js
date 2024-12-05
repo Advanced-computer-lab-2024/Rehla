@@ -2674,7 +2674,45 @@ const getTotalTouristsReport = async (req, res) => {
         res.status(500).json({ message: "An error occurred while generating the report.", error });
     }
 };
+const getTotalTouristsReportTourGuide = async (req, res) => {
+    try {
+        const { email } = req.params; // Tour guide's email as input
 
+        if (!email) {
+            return res.status(400).json({ message: "Tour guide email is required." });
+        }
+
+        // Step 1: Get all itineraries created by the tour guide
+        const itineraries = await itinerarym.find({ Created_By: email }, 'Itinerary_Name');
+
+        if (!itineraries.length) {
+            return res.status(404).json({ message: "No itineraries found for this tour guide." });
+        }
+
+        // Step 2: Get attendance count for each itinerary
+        const attendanceReport = await Promise.all(
+            itineraries.map(async (itinerary) => {
+                const attendanceCount = await touristIteneraries.countDocuments({
+                    Itinerary_Name: itinerary.Itinerary_Name,
+                    Attended:true
+                });
+
+                return {
+                    Itinerary_Name: itinerary.Itinerary_Name,
+                    totalAttended: attendanceCount
+                };
+            })
+        );
+
+        res.status(200).json({
+            message: "Attendance report generated successfully.",
+            report: attendanceReport
+        });
+    } catch (error) {
+        console.error("Error generating attendance report:", error);
+        res.status(500).json({ message: "An error occurred while generating the report.", error });
+    }
+};
 const getTouristAddresses = async (req, res) => {
     try {
         const { email } = req.params; 
@@ -7055,6 +7093,7 @@ module.exports = { getPurchasedProducts,
     getPaidItineraries,
     getPastPaidItineraries,
     getTotalTouristsReport,
+    getTotalTouristsReportTourGuide,
     getTouristAddresses,
     viewMyCreatedMuseumsAndHistoricalPlaces,
     signIn,
