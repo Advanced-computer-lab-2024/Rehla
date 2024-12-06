@@ -7024,7 +7024,7 @@ const remindUpcomingPaidActivities = async (req, res) => {
         const upcomingActivities = await tourist_activities.find({
             Tourist_Email: email,
             Paid: true,
-            Date: { $gte: new Date() }, // Ensure the event date is in the future
+           // Date: { $gte: new Date() }, // Ensure the event date is in the future
         });
 
         if (!upcomingActivities || upcomingActivities.length === 0) {
@@ -7033,7 +7033,7 @@ const remindUpcomingPaidActivities = async (req, res) => {
 
         // Loop through each upcoming activity and create a notification
         for (const activity of upcomingActivities) {
-            const notificationMessage = `Reminder: You have an upcoming event "${activity.Activity_Name}" on ${activity.Date.toDateString()}.`;
+            const notificationMessage = `Reminder: You have an upcoming event "${activity.Activity_Name}".`;
 
             // Check if the notification already exists
             const existingNotification = await Notifications.findOne({
