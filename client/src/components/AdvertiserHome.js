@@ -375,6 +375,7 @@ const AdvertiserHome = () => {
                                     src={activity.Picture}
                                     alt={activity.Name}
                                     className="w-full h-40 object-cover"
+                                    onClick={() => openEditModal(activity)}
                                 />
                                 <div className="p-4">
                                     <h3 className="text-lg font-semibold text-gray-700">{activity.Name}</h3>
