@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart,faBell  } from '@fortawesome/free-solid-svg-icons';
 import { searchEventsPlaces ,getAllTransportation,bookTransportation,
         saveEvent,cancelOrder,getAllNotifications ,markAsSeen,remindUpcomingPaidActivities,
-        getTouristProfile  } from '../services/api'; // Import the commentOnEvent function
+        getTouristProfile ,notifyForAvailableBookings  } from '../services/api'; // Import the commentOnEvent function
 import Homet2 from '../components/Homet2.js';
 
 const TouristHome = () => {
@@ -62,6 +62,30 @@ const TouristHome = () => {
     const handleCurrencyChange = (e) => {
         setCurrency(e.target.value);
     };
+
+    const [notificationError, setNotificationError] = useState(null); // State for notification errors
+    const [notificationSuccess, setNotificationSuccess] = useState(null); // State for notification success
+
+
+
+    useEffect(() => {
+        const storedEmail = localStorage.getItem('email');
+        if (storedEmail) {
+            setEmail(storedEmail);
+    
+            const handleNotifyForBookings = async () => {
+                try {
+                    const response = await notifyForAvailableBookings(storedEmail); // Pass email to notify function
+                    setNotificationSuccess(response.message || 'Notifications processed successfully.');
+                } catch (err) {
+                    setNotificationError(err.message || 'Failed to process notifications.');
+                }
+            };
+    
+            handleNotifyForBookings();
+        }
+    }, []); // This runs only once when the component mounts
+    
 
     useEffect(() => {
         const fetchProfile = async () => {

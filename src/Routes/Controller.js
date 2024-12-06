@@ -6822,35 +6822,53 @@ res.status(500).json({ message: "An error occurred while processing your request
 };
 
 
-// Check events and create notifications if booking is available
 const notifyForAvailableBookings = async (req, res) => {
     try {
-        // Fetch all interested events
-        const interestedEvents = await InterestedEvents.find();
+        const { email } = req.body;
 
-        if (!interestedEvents || interestedEvents.length === 0) {
-            return res.status(404).json({ message: "No interested events found." });
+        if (!email) {
+            return res.status(400).json({ message: "Email is required." });
         }
 
-        // Loop through each interested event
+        const interestedEvents = await InterestedEvents.find({ user: email });
+        console.log("Interested events for user:", interestedEvents);
+
+        if (!interestedEvents || interestedEvents.length === 0) {
+            return res.status(404).json({ message: "No interested events found for this user." });
+        }
+
         for (const event of interestedEvents) {
-            // Find the matching activity
             const activitys = await activity.findOne({ Name: event.eventName });
+            console.log("Activity found:", activitys);
 
-            // If activity exists and Booking_Available is true, send a notification
-            if (activitys && activitys.Booking_Available === true) {
-                const notificationMessage = `The event "${activitys.Name}" is now open for bookings!`;
+            if (!activitys) {
+                console.log(`No activity found for event: ${event.eventName}`);
+                continue;
+            }
 
-                // Create a notification
+            if (!activitys.Booking_Available) {
+                console.log(`Booking not available for activity: ${activitys.Name}`);
+                continue;
+            }
+
+            const notificationMessage = `The event "${activitys.Name}" is now open for bookings!`;
+            const existingNotification = await Notifications.findOne({
+                message: notificationMessage,
+                user: email,
+            });
+            console.log("Existing notification:", existingNotification);
+
+            if (!existingNotification) {
+                console.log("Creating notification:", notificationMessage);
+
                 const notification = new Notifications({
                     message: notificationMessage,
-                    user: event.user, // The user associated with the interested event
+                    user: email,
                     seen: false,
                     date: new Date(),
                     title: "Booking Available",
                 });
 
-                // Save the notification to the database
                 await notification.save();
             }
         }
@@ -6861,6 +6879,9 @@ const notifyForAvailableBookings = async (req, res) => {
         res.status(500).json({ message: "An error occurred while processing notifications.", error: err.message });
     }
 };
+
+
+
 
 
 // Function to fetch flagged activities and create notifications
