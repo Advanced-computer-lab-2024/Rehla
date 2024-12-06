@@ -186,7 +186,9 @@ const {createUserAdmin,
   markAsSeennt,
   notifyForFlaggedItins,
   getNotificationsForTourGuidet,
-  remindUpcomingPaidActivities,checkEventSaved
+  remindUpcomingPaidActivities,checkEventSaved,
+  bookhotel,
+  bookflight,
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -460,3 +462,6 @@ cron.schedule('*/30 * * * * *', async () => {
   //await checkAndSendRemindersforItinerary();
   await checkandsendBirthdayPromoCode();
 });
+
+app.post('/bookhotel', bookhotel);
+app.post('/bookflight', bookflight);
