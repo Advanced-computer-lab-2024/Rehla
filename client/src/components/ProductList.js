@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../images/logo.png';
-import { getProducts, getProductsSortedByRating, productRateReview, createwishlistItem } from '../services/api'; // Import the search API call
+import { getProducts, getProductsSortedByRating, productRateReview, createwishlistItem ,checkoutOrder} from '../services/api'; // Import the search API call
 const Header = () => (
     <div className="NavBar">
     <img src={logo} alt="Logo" />
@@ -75,6 +75,15 @@ const ProductList = () => {
 
     const [reviewData, setReviewData] = useState({ productName: '', review: '', rating: '' });
     const [isInWishlist, setIsInWishlist] = useState(false);
+
+    const [orderData, setOrderData] = useState({
+        Email: '', // Initialize email
+        Address: '', // Initialize address
+        Payment_Method: '', // Initialize payment method
+    });
+    const [message, setMessage] = useState(''); // State to hold success or error messages
+    
+
 
 
     const convertPrice = (price) => {
@@ -168,6 +177,25 @@ const ProductList = () => {
         alert('There was an issue adding the product to your wishlist.');
         }
     };
+
+ // Handle input changes
+ const handleChange = (e) => {
+    const { name, value } = e.target;
+    setOrderData({ ...orderData, [name]: value });
+};
+
+// Function to handle order checkout
+const handleCheckout = async () => {
+    try {
+        const response = await checkoutOrder(orderData); // Call the API function
+        setMessage(response.message); // Display success message
+        setError(''); // Clear any existing errors
+    } catch (err) {
+        setError(err.message); // Display error message
+        setMessage(''); // Clear success message
+    }
+};
+
 
 
     // Filter products by price
@@ -477,6 +505,121 @@ const ProductList = () => {
             {error && <p className="text-red-500">{error}</p>}
             <button type="submit" className="bg-brandBlue text-white px-6 py-3 rounded">Submit Review</button>
           </form>
+        </div>
+
+        return (
+        <div style={{ margin: '20px', padding: '20px', border: '1px solid #ddd', borderRadius: '5px' }}>
+            <h1 style={{ textAlign: 'center', color: '#333' }}>Product List</h1>
+            
+            {/* Checkout Section */}
+            <div style={{ marginTop: '30px', padding: '20px', border: '1px solid #ccc', borderRadius: '10px', backgroundColor: '#f9f9f9' }}>
+                <h3 style={{ textAlign: 'center', color: '#555' }}>Checkout Your Order</h3>
+                <form style={{ display: 'flex', flexDirection: 'column', gap: '15px', maxWidth: '400px', margin: '0 auto' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <label htmlFor="email" style={{ marginBottom: '5px', color: '#333' }}>Email:</label>
+                        <input
+                            id="email"
+                            type="email"
+                            name="Email"
+                            value={orderData.Email}
+                            onChange={handleChange}
+                            placeholder="Enter your email"
+                            style={{
+                                padding: '10px',
+                                border: '1px solid #ddd',
+                                borderRadius: '5px',
+                                outline: 'none',
+                                fontSize: '14px',
+                            }}
+                        />
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <label htmlFor="address" style={{ marginBottom: '5px', color: '#333' }}>Address:</label>
+                        <input
+                            id="address"
+                            type="text"
+                            name="Address"
+                            value={orderData.Address}
+                            onChange={handleChange}
+                            placeholder="Enter your address"
+                            style={{
+                                padding: '10px',
+                                border: '1px solid #ddd',
+                                borderRadius: '5px',
+                                outline: 'none',
+                                fontSize: '14px',
+                            }}
+                        />
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <label htmlFor="payment-method" style={{ marginBottom: '5px', color: '#333' }}>Payment Method:</label>
+                        <select
+                            id="payment-method"
+                            name="Payment_Method"
+                            value={orderData.Payment_Method}
+                            onChange={handleChange}
+                            style={{
+                                padding: '10px',
+                                border: '1px solid #ddd',
+                                borderRadius: '5px',
+                                outline: 'none',
+                                fontSize: '14px',
+                                backgroundColor: '#fff',
+                            }}
+                        >
+                            <option value="">Select Payment Method</option>
+                            <option value="Credit Card">Credit Card</option>
+                            <option value="PayPal">PayPal</option>
+                            <option value="Cash on Delivery">Cash on Delivery</option>
+                        </select>
+                    </div>
+                    <button
+                        type="button"
+                        onClick={handleCheckout}
+                        style={{
+                            padding: '10px 20px',
+                            backgroundColor: '#007BFF',
+                            color: '#fff',
+                            border: 'none',
+                            borderRadius: '5px',
+                            cursor: 'pointer',
+                            fontSize: '16px',
+                        }}
+                    >
+                        Checkout
+                    </button>
+                </form>
+
+                {/* Success or Error Messages */}
+                {message && (
+                    <div
+                        style={{
+                            marginTop: '20px',
+                            padding: '10px',
+                            backgroundColor: '#D4EDDA',
+                            color: '#155724',
+                            border: '1px solid #C3E6CB',
+                            borderRadius: '5px',
+                        }}
+                    >
+                        {message}
+                    </div>
+                )}
+                {error && (
+                    <div
+                        style={{
+                            marginTop: '20px',
+                            padding: '10px',
+                            backgroundColor: '#F8D7DA',
+                            color: '#721C24',
+                            border: '1px solid #F5C6CB',
+                            borderRadius: '5px',
+                        }}
+                    >
+                        {error}
+                    </div>
+                )}
+            </div>
         </div>
         <Footer />
         </div>

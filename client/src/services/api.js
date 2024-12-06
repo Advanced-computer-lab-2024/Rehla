@@ -182,6 +182,23 @@ export const filterProductsByPrice = async (minPrice, maxPrice) => {
     }
 };
 
+export const checkoutOrder = async (orderData) => {
+    try {
+        const response = await axios.post(`${API_URL}/checkout-order`, orderData);
+        return response.data; // Return the response from the backend
+    } catch (error) {
+        console.error('Error during order checkout:', error);
+
+        // Check for specific error messages from the backend
+        if (error.response && error.response.data) {
+            throw new Error(error.response.data.message); // Return the backend error message
+        } else {
+            throw new Error('Failed to checkout order. Please try again later.');
+        }
+    }
+};
+
+
 export const getProductsSortedByRating = async () => {
     try {
         const response = await axios.get(`${API_URL}/getProductsSortedByRating`);

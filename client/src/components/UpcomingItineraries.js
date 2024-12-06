@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getAllUpcomingEventsAndPlaces,sortActivities,filterActivities} from '../services/api';
+import { getAllUpcomingEventsAndPlaces, sortActivities, sortItineraries, filterActivities, filterItineraries , filterPlacesAndMuseums} from '../services/api';
 import { useNavigate } from 'react-router-dom';
 import logo from '../images/logoWhite.png';
-import img1 from '../images/img10.jpg';
-import img3 from '../images/img3.jpg';
 
 
 
-const UpcomingActivities = () => {
+const UpcomingItineraries = () => {
     const navigate = useNavigate();
     const [data, setData] = useState(null);
     const [error, setError] = useState(null);
@@ -23,16 +21,19 @@ const UpcomingActivities = () => {
     });
 
     const [sortedActivities, setSortedActivities] = useState(null);
-    const [activityFilters, setActivityFilters] = useState({
+    const [sortedItineraries, setSortedItineraries] = useState(null);
+    const [filteredPlacesAndMuseums, setFilteredPlacesAndMuseums] = useState(null);
+    const [itineraryFilters, setItineraryFilters] = useState({
         minPrice: '',
         maxPrice: '',
-        rating: '',
-        category: '',
         startDate: '',
-        endDate: ''
+        endDate: '',
+        preferences: '',
+        language: ''
     });
-    const [activityFilterType, setActivityFilterType] = useState(''); // For activities
-    const [activityfilterOptions] = useState(['price', 'rating', 'category', 'date']); // Filter options
+    const [itineraryFilterType, setItineraryFilterType] = useState(''); // For itineraries
+    const [itineraryfilterOptions] = useState(['price', 'rating', 'Preference Tag', 'date']);
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -62,27 +63,55 @@ const UpcomingActivities = () => {
         }
     };
 
-    const handleActivityClick = (activity) => {
-        navigate(`/activity-details/${encodeURIComponent(activity.Name)}`); // Encode to make the URL safe
-    };
-
-    const handleFilterActivities = async (e) => {
-        e.preventDefault();
+    const handleSortItineraries = async (sortBy) => {
         try {
-            const filtered = await filterActivities(activityFilters);
-            setSortedActivities(filtered.activities); // Update the displayed activities
+            const sorted = await sortItineraries(sortBy);
+            setSortedItineraries(sorted);
         } catch (error) {
             setError(error);
         }
     };
 
-    const handleActivityFilterChange = (e) => {
-        setActivityFilterType(e.target.value);
-    };
     
 
-    const activitiesToDisplay = sortedActivities || (data && data.upcomingActivities) || [];
+    const handleItineraryClick = (itinerary) => {
+        navigate(`/itinerary-details/${encodeURIComponent(itinerary.Itinerary_Name)}`); // Encode to make the URL safe
+    };
 
+   
+
+    const handleFilterItineraries = async (e) => {
+        e.preventDefault();
+        try {
+            const filtered = await filterItineraries(itineraryFilters);
+            setSortedItineraries(filtered); // Update the displayed itineraries
+        } catch (error) {
+            setError(error);
+        }
+    };
+
+   
+
+    const handleItineraryFilterChange = (e) => {
+        setItineraryFilterType(e.target.value);
+    };
+
+  
+
+    useEffect(() => {
+        console.log("Updated filteredPlacesAndMuseums:", filteredPlacesAndMuseums);
+    }, [filteredPlacesAndMuseums]);
+
+    if (error) {
+        return <div className="text-red-500 text-center">Error: {error.message}</div>;
+    }
+
+    if (!data) {
+        return <div className="text-center py-10">Loading...</div>;
+    }
+
+    // Use sorted or original data based on sorting/filtering
+    const itinerariesToDisplay = sortedItineraries || data.upcomingItineraries;
 
     return (
         <div className="bg-white shadow-md">
@@ -169,134 +198,118 @@ const UpcomingActivities = () => {
                 </nav>            
             </div>
 
-            {/* Activity Filters and Sort */}
-            <section className="mb-10 mt-20">
-            <form onSubmit={handleFilterActivities} className="mb-4 mr-10 ml-auto">
-    <div className="flex items-center justify-end space-x-4">
-        <select
-            value={activityFilterType}
-            onChange={handleActivityFilterChange}
-            className="border rounded-full p-2"
-        >
-            <option value="">Select Filter</option>
-            {activityfilterOptions.map(option => (
-                <option key={option} value={option}>{option.charAt(0).toUpperCase() + option.slice(1)}</option>
-            ))}
-        </select>
-
-        {activityFilterType === 'price' && (
-            <>
-                <input
-                    type="number"
-                    placeholder="Min Price"
-                    value={activityFilters.minPrice}
-                    onChange={(e) => setActivityFilters({ ...activityFilters, minPrice: e.target.value })}
-                    className="border rounded-full p-2"
-                />
-                <input
-                    type="number"
-                    placeholder="Max Price"
-                    value={activityFilters.maxPrice}
-                    onChange={(e) => setActivityFilters({ ...activityFilters, maxPrice: e.target.value })}
-                    className="border rounded-full p-2"
-                />
-            </>
-        )}
-
-        {activityFilterType === 'rating' && (
-            <input
-                type="number"
-                placeholder="Rating"
-                value={activityFilters.rating}
-                onChange={(e) => setActivityFilters({ ...activityFilters, rating: e.target.value })}
-                className="border rounded-full p-2"
-            />
-        )}
-
-        {activityFilterType === 'category' && (
-            <select
-                value={activityFilters.category}
-                onChange={(e) => setActivityFilters({ ...activityFilters, category: e.target.value })}
-                className="border rounded-full p-2"
-            >
-                <option value="">Select Category</option>
-                <option value="exhibitions">Exhibitions</option>
-                <option value="museums">Museums</option>
-                <option value="sports matches">Sports Matches</option>
-                <option value="food">Food</option>
-                <option value="concert">Concert</option>
-                <option value="party">Party</option>
-                <option value="Adventure">Adventure</option>
-            </select>
-        )}
-
-        {activityFilterType === 'date' && (
-            <>
-                <input
-                    type="date"
-                    value={activityFilters.startDate}
-                    onChange={(e) => setActivityFilters({ ...activityFilters, startDate: e.target.value })}
-                    className="border rounded-full p-2"
-                />
-                <input
-                    type="date"
-                    value={activityFilters.endDate}
-                    onChange={(e) => setActivityFilters({ ...activityFilters, endDate: e.target.value })}
-                    className="border rounded-full p-2"
-                />
-            </>
-        )}
-
-        <div className="flex justify-end space-x-2">
-            <button 
-                type="submit" 
-                className="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-700"
-            >
-                Filter Activities
-            </button>
-            <button 
-                onClick={() => handleSortActivities('price')} 
-                className="bg-logoOrange text-white px-4 py-2 rounded-full hover:bg-orange-600"
-            >
-                Sort by Price
-            </button>
-        </div>
-    </div>
-</form>
-
-
-        <div className="flex overflow-x-auto scrollbar-hide px-6 py-4 gap-6">
-                {activitiesToDisplay.map((activity) => (
-                    <div
-                        key={activity._id}
-                        className="card w-96 h-auto bg-white rounded-lg shadow-lg overflow-hidden flex flex-col"
-                        onClick={() => handleActivityClick(activity)}
+            {/* Itinerary Filters and Sort */}
+            <section className="mb-10 mt-10">
+                <form onSubmit={handleFilterItineraries} className="mb-4 mr-10 ml-auto">
+                <div className="flex items-center justify-end space-x-4">
+                    <select
+                        value={itineraryFilterType}
+                        onChange={handleItineraryFilterChange}
+                        className="border rounded-full p-2"
                     >
+                        <option value="">Select Filter</option>
+                        {itineraryfilterOptions.map(option => (
+                            <option key={option} value={option}>{option.charAt(0).toUpperCase() + option.slice(1)}</option>
+                        ))}
+                    </select>
+
+                    {itineraryFilterType === 'price' && (
+                        <>
+                            <input
+                                type="number"
+                                placeholder="Min Price"
+                                value={itineraryFilters.minPrice}
+                                onChange={(e) => setItineraryFilters({ ...itineraryFilters, minPrice: e.target.value })}
+                                className="border rounded-full p-2"
+                            />
+                            <input
+                                type="number"
+                                placeholder="Max Price"
+                                value={itineraryFilters.maxPrice}
+                                onChange={(e) => setItineraryFilters({ ...itineraryFilters, maxPrice: e.target.value })}
+                                className="border rounded-full p-2"
+                            />
+                        </>
+                    )}
+
+                    {itineraryFilterType === 'rating' && (
+                        <input
+                            type="number"
+                            placeholder="Rating"
+                            value={itineraryFilters.rating}
+                            onChange={(e) => setItineraryFilters({ ...itineraryFilters, rating: e.target.value })}
+                            className="border rounded-full p-2"
+                        />
+                    )}
+
+                    {itineraryFilterType === 'preferences' && (
+                        <input
+                            type="text"
+                            placeholder="Preferences"
+                            value={itineraryFilters.preferences}
+                            onChange={(e) => setItineraryFilters({ ...itineraryFilters, preferences: e.target.value })}
+                            className="border rounded-full p-2"
+                        />
+                    )}
+
+                    {itineraryFilterType === 'date' && (
+                        <>
+                            <input
+                                type="date"
+                                value={itineraryFilters.startDate}
+                                onChange={(e) => setItineraryFilters({ ...itineraryFilters, startDate: e.target.value })}
+                                className="border rounded-full p-2"
+                            />
+                            <input
+                                type="date"
+                                value={itineraryFilters.endDate}
+                                onChange={(e) => setItineraryFilters({ ...itineraryFilters, endDate: e.target.value })}
+                                className="border rounded-full p-2"
+                            />
+                        </>
+                    )}
+
+                    <div className="flex justify-end space-x-2">
+                        <button type="submit" className="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-700">Filter Itineraries</button>
+                        <button onClick={() => handleSortItineraries('price')} className="bg-logoOrange text-white px-4 py-2 rounded-full hover:bg-orange-600">Sort by Price</button>
+                    </div>
+                </div>
+            </form>
+
+                <div className="flex overflow-x-auto scrollbar-hide px-6 py-4 gap-6">
+                    {itinerariesToDisplay.map((itinerary) => (
+                        <div
+                        key={itinerary._id}
+                        className="card w-96 h-auto bg-white rounded-lg shadow-lg overflow-hidden flex flex-col"
+                        onClick={() => handleItineraryClick(itinerary)}
+                        >
                         <img
-                            src={activity.Picture}
-                            alt={activity.Name}
+                            src={itinerary.Picture}
+                            alt={itinerary.Itinerary_Name}
                             className="w-full h-48 object-cover"
                         />
-                        <div className="p-4 flex flex-col justify-between flex-grow">
-                            <div className="text-lg font-semibold text-gray-800">{activity.Name}</div>
+                       <div className="p-4 flex flex-col justify-between flex-grow">
+                            <div className="text-lg font-semibold text-gray-800">{itinerary.Itinerary_NameName}</div>
                             <div className="text-sm text-gray-600 mt-2">
-                                <span className="font-semibold">{convertPrice(activity.Price)} {currency}</span>
-                                <div className="mt-1">Rating: {activity.Rating}</div>
-                                <div className="mt-1">Location: {activity.Location}</div>
+                                <span className="font-semibold">{convertPrice(itinerary.Tour_Price)} {currency}</span>
+                                <div className="mt-1">Rating: {itinerary.Rating}</div>
+                                <div className="mt-1">Language: {itinerary.Language}</div>
                             </div>
                             <button 
-                                onClick={() => handleActivityClick(activity)} 
+                                onClick={() => handleItineraryClick(itinerary)} 
                                 className="mt-4 bg-black text-white rounded-full py-2 px-4 w-full hover:bg-gray-700"
                             >
                                 View Details
                             </button>
                         </div>
-                    </div>
-                ))}
-            </div>
-
-
+                        </div>
+                    ))}
+                </div>
             </section>
+           
+
+
+        
 
             <footer className="bg-black shadow m-0">
                 <div className="w-full mx-auto md:py-8">
@@ -328,7 +341,8 @@ const UpcomingActivities = () => {
 
         </div>
     );
-
-
 };
-export default UpcomingActivities;
+
+export default UpcomingItineraries;
+
+
