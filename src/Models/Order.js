@@ -7,8 +7,7 @@ const OrderSchema = new Schema({
  
   Email: { 
     type: String, 
-    required: true, 
-    unique: true 
+    required: true
   },
   Cart_Num:{
     type: Number, 
