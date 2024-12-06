@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { bookFlight } from './api';
+import { bookFlight } from '../services/api';
 import logo from '../images/logo.png';
 
 const Flights = () => {
