@@ -109,7 +109,7 @@ const shareactivtybyemail = async (req, res) => {
             from: 'rehlanotification@gmail.com', // Sender address
             to: to,                       // List of receivers
             subject: 'Check out this Event',   // Subject line
-            text: `Click on the link to view the activity: ${link}` // Plain text body
+            text: `Click on the link to view the event: ${link}` // Plain text body
         };
 
         await transporter.sendMail(mailOptions);
