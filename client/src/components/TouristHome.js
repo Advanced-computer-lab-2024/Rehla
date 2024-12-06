@@ -459,48 +459,6 @@ const TouristHome = () => {
                 </div>
             )}
 
-            
-
-        
-{/* Bookmarking an event */}
-<div>
-    <h2>Bookmark an event</h2>
-    <form>
-    <div>
-    <label>Email:</label>
-                    <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
-                </div>
-                <div>
-                    <label>Event Type:</label>
-                    <input
-                        type="text"
-                        value={eventType}
-                        onChange={(e) => setEventType(e.target.value)}
-                        required
-                    />
-                </div> 
-                <div>
-                    <label>Event Name:</label>
-                    <input
-                        type="text"
-                        value={eventName}
-                        onChange={(e) => setEventName(e.target.value)}
-                        required
-                    />
-                </div>
-                <button onClick={handleSaveEvent}>
-                    Bookmark an Event
-                </button>
-    </form>
-    {succesEvent && <p style={{ color: 'green' }}>{succesEvent}</p>}
-    {errorEvent && <p style={{ color: 'red' }}>{errorEvent}</p>}
-</div>
-
 {/*Cancel an order*/}
 
 <div>
