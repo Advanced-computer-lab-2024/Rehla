@@ -6520,23 +6520,29 @@ const filterSellerSalesReport = async (req, res) => {
 
 const viewOrderDetails = async (req, res) => {
     try {
-        const { Email, Cart_Num } = req.body;
+        // Extract Email from the request body
+        const { Email } = req.body;
 
-        if (!Email || !Cart_Num) {
-            return res.status(400).json({ message: "Email and Cart_Num are required." });
+        // Validate input: Check if Email is provided
+        if (!Email) {
+            return res.status(400).json({ message: "Email is required." });
         }
 
-        const cartDetails = await cartm.find({ Email, Cart_Num });
+        // Fetch cart details for the provided Email (find the first cart with the email)
+        const cartDetails = await cartm.find({ Email });
 
+        // If no cart details are found
         if (!cartDetails || cartDetails.length === 0) {
             return res.status(404).json({
-                message: "No cart details found for the provided Email and Cart_Num."
+                message: "No cart details found for the provided Email."
             });
         }
 
+        // Respond with the cart details, including Cart_Num for each item
         res.status(200).json({
             message: "Cart details fetched successfully.",
             cartDetails: cartDetails.map(item => ({
+                Cart_Num: item.Cart_Num,  // Include Cart_Num in the details
                 Productname: item.Productname,
                 Quantity: item.Quantity
             }))
@@ -6549,7 +6555,6 @@ const viewOrderDetails = async (req, res) => {
         });
     }
 };
-
 
 
 const filterSellerSalesReportad = async (req, res) => {
