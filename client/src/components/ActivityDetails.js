@@ -128,8 +128,13 @@ const ActivityDetails = () => {
 
     const handleShareViaEmail = () => {
         const currentUrl = window.location.href;
-        const mailtoLink = `mailto:?subject=Check out this activity!&body=Hey, check out this activity: ${currentUrl}`;
-        window.location.href = mailtoLink;
+        shareactivtybyemail(recipientEmail, currentUrl)
+            .then((response) => {
+                alert(response.message || 'Email sent successfully!');
+            })
+            .catch((err) => {
+                alert(err.message || 'Failed to send email.');
+            });
     };
 
     if (loading) return <p className="text-center text-blue-500">Loading...</p>;

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { getItineraryByName, createTouristItinerary, saveEvent,checkIfEventSaved } from '../services/api'; // Ensure all functions are imported correctly
+import {shareactivtybyemail, getItineraryByName, createTouristItinerary, saveEvent,checkIfEventSaved } from '../services/api'; // Ensure all functions are imported correctly
 import logo from '../images/logo.png';
 import { HeartIcon } from '@heroicons/react/24/outline';
 
@@ -14,6 +14,7 @@ const ItineraryDetails = () => {
     const [joinSuccess, setJoinSuccess] = useState(null);
     const [successEvent, setSuccessEvent] = useState('');  // Add state for success message
     const [errorEvent, setErrorEvent] = useState('');  // Add state for error message
+    const [recipientEmail, setRecipientEmail] = useState(''); // State for recipient email
 
     const [isSaved, setIsSaved] = useState(null);
     const [message, setMessage] = useState("");
@@ -100,8 +101,13 @@ const ItineraryDetails = () => {
 
     const handleShareViaEmail = () => {
         const currentUrl = window.location.href;
-        const mailtoLink = `mailto:?subject=Check out this itinerary!&body=Hey, check out this itinerary: ${currentUrl}`;
-        window.location.href = mailtoLink;
+        shareactivtybyemail(recipientEmail, currentUrl)
+            .then((response) => {
+                alert(response.message || 'Email sent successfully!');
+            })
+            .catch((err) => {
+                alert(err.message || 'Failed to send email.');
+            });
     };
 
     if (loading) return <p className="text-center text-blue-500">Loading...</p>;
@@ -207,6 +213,13 @@ const ItineraryDetails = () => {
                                     >
                                         Copy Link
                                     </button>
+                                    <input
+                                    type="email"
+                                    placeholder="Enter recipient's email"
+                                    value={recipientEmail}
+                                    onChange={(e) => setRecipientEmail(e.target.value)}
+                                    className="border border-gray-300 rounded px-4 py-2"
+                                />
                                     <button
                                         onClick={handleShareViaEmail}
                                         className="bg-brandBlue text-white px-4 py-2 rounded "
