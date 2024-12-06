@@ -192,11 +192,12 @@ const Home = () => {
 
                     {/* Search Form */}
                     <form className="flex items-center ml-4">
-                        <input
-                            type="text"
-                            placeholder="Search"
-                            className="border border-gray-300 rounded-full px-44 py-2 w-full max-w-2xl text-sm"
-                        />
+                    <input
+                        type="text"
+                        placeholder="Search"
+                        className="border border-gray-300 rounded-full px-72 py-2 w-full max-w-2xl text-sm pl-2"
+                    />
+
                         <button type="submit" className="bg-white text-black rounded-full ml-2 p-2">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -214,29 +215,31 @@ const Home = () => {
                             </svg>
                         </button>
                     </form>
-                    <select 
-                        value={currency} 
-                        onChange={handleCurrencyChange} 
-                        className="rounded p-1 mx-2 bg-transparent text-white ml-52"
-                    >
-                        <option value="USD" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">USD</option>
-                        <option value="EUR" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">EUR</option>
-                        <option value="GBP" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">GBP</option>
-                        <option value="JPY" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">JPY</option>
-                        <option value="CAD" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">CAD</option>
-                        <option value="AUD" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">AUD</option>
-                    </select>
+                    <div className="flex items-center ml-auto">
+                        <select 
+                            value={currency} 
+                            onChange={handleCurrencyChange} 
+                            className="rounded p-1 mx-2 bg-transparent text-white"
+                        >
+                            <option value="USD" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">USD</option>
+                            <option value="EUR" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">EUR</option>
+                            <option value="GBP" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">GBP</option>
+                            <option value="JPY" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">JPY</option>
+                            <option value="CAD" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">CAD</option>
+                            <option value="AUD" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">AUD</option>
+                        </select>
 
+                        {/* Sign In/Sign Up Navigation */}
+                        <nav className="flex space-x-6 ml-4">
+                            <Link to="/signin" className="text-lg font-medium text-white hover:text-blue-500">
+                                Sign in
+                            </Link>
+                            <Link to="/signup" className="text-lg font-medium text-white hover:text-blue-500">
+                                Sign up
+                            </Link>
+                        </nav>
+                    </div>
 
-                    {/* Sign In/Sign Up Navigation */}
-                    <nav className="flex space-x-6">
-                        <Link to="/signin" className="text-lg font-medium text-white-700 hover:text-blue-500">
-                            Sign in
-                        </Link>
-                        <Link to="/signup" className="text-lg font-medium text-white-700 hover:text-blue-500">
-                            Sign up
-                        </Link>
-                    </nav>
                 </div>
 
                 {/* Main Navigation */}
