@@ -5913,6 +5913,45 @@ const saveEvent = async (req, res) => {
     }
 };
 
+const checkEventSaved = async (req, res) => {
+    try {
+        const { email, name } = req.body;
+
+        // Validate inputs
+        if (!email || !name) {
+            return res.status(400).json({
+                message: "Tourist's email and event name are required.",
+            });
+        }
+
+        // Search for the saved event
+        const existingEvent = await saved_eventm.findOne({
+            Tourist_Email: email,
+            Name: name,
+        });
+
+        // If the event exists, return true
+        if (existingEvent) {
+            return res.status(200).json({
+                isSaved: true,
+                message: "Event is already saved for this tourist.",
+            });
+        }
+
+        // If the event does not exist, return false
+        return res.status(200).json({
+            isSaved: false,
+            message: "Event is not saved for this tourist.",
+        });
+    } catch (error) {
+        console.error("Error checking if event is saved:", error);
+        return res.status(500).json({
+            message: "An error occurred while checking the event status.",
+        });
+    }
+};
+
+
 // const viewSavedEvents = async (req, res) => {
 //     try {
 //         const { email } = req.body;
@@ -7194,5 +7233,6 @@ module.exports = { getPurchasedProducts,
     getNotificationsForTourGuidet,
     markAsSeennt,
     notifyForFlaggedItins,
-    remindUpcomingPaidActivities
+    remindUpcomingPaidActivities,
+    checkEventSaved
 };
