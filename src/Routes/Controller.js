@@ -96,6 +96,31 @@ const sendEmail = async (to, subject, text) => {
     }
 };
 
+const shareactivtybyemail = async (req, res) => {
+    try {
+        const { to, link} = req.body;
+
+        // Check if all fields are provided
+        if (!to || !link) {
+            return res.status(400).json({ error: 'All fields are required.' });
+        }
+
+        const mailOptions = {
+            from: 'rehlanotification@gmail.com', // Sender address
+            to: to,                       // List of receivers
+            subject: 'Check out this Activity',   // Subject line
+            text: `Click on the link to view the activity: ${link}` // Plain text body
+        };
+
+        await transporter.sendMail(mailOptions);
+        console.log('Email sent successfully');
+        res.status(200).json({ message: 'Email sent successfully' });
+    } catch (error) {
+        console.error('Error sending email:', error);
+        res.status(500).json({ error: 'Error sending email', details: error.message });
+    }
+};
+
 // Function to send a payment receipt email
 const sendPaymentReceipt = async (to, amount, eventName) => {
     const mailOptions = {
@@ -7319,5 +7344,6 @@ module.exports = { getPurchasedProducts,
     remindUpcomingPaidActivities,
     checkEventSaved,
     bookhotel,
-    bookflight
+    bookflight,
+    shareactivtybyemail,
 };
