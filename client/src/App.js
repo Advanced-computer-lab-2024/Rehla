@@ -37,7 +37,7 @@ import ItineraryDetails from './components/ItineraryDetails.js';
 import Wishlist from './components/Wishlist'; // Import the Wishlist component
 import Cart from './components/Cart.js'; 
 import ProductInfo from './components/ProductInfo.js'; 
-
+import UpcomingActivities from './components/UpcomingActivities.js'; 
 
 
 
@@ -87,6 +87,7 @@ function App() {
                 <Route path="/" component={Home} />
                 <Route path="/Cart" element={<Cart />} />
                 <Route path="/ProductInfo" element={<ProductInfo />} />
+                <Route path="/UpcomingActivities" element={<UpcomingActivities/>} />
 
  
 

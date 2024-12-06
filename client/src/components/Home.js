@@ -247,7 +247,7 @@ const Home = () => {
                     <Link to="/" className="text-lg font-medium text-white hover:text-blue-500">
                         Home
                     </Link>
-                    <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-blue-500">
+                    <Link to="/UpcomingActivities" className="text-lg font-medium text-white hover:text-blue-500">
                         Activities
                     </Link>
                     <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-blue-500">
