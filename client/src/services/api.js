@@ -1651,16 +1651,25 @@ export const createNotification = async (message, user, title) => {
     }
 };
 
-// Get all notifications for all users
-export const getAllNotifications = async () => {
+// Get all notifications for a specific user by email
+export const getAllNotifications = async (email) => {
     try {
-        const response = await axios.get(`${API_URL}/getAllNotifications`);
-        return response.data;
+        if (!email) {
+            throw new Error("Email is required to fetch notifications.");
+        }
+
+        // Make an API call with the email as a query parameter
+        const response = await axios.get(`${API_URL}/getAllNotifications`, {
+            params: { email }, // Pass email as query parameter
+        });
+
+        return response.data; // Return the fetched notifications
     } catch (error) {
-        console.error("Error fetching all notifications:", error);
-        throw error;
+        console.error("Error fetching notifications:", error.response?.data || error.message);
+        throw error; // Re-throw the error for the caller to handle
     }
 };
+
 
 // Function to request a notification for an event
 export const requestNotificationForEvent = async (user, eventId) => {

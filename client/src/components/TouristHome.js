@@ -96,7 +96,13 @@ const TouristHome = () => {
     useEffect(() => {
         const fetchNotifications = async () => {
             try {
-                const data = await getAllNotifications(); // Fetch all notifications
+                const storedEmail = localStorage.getItem('email'); // Retrieve the signed-in user's email
+                if (!storedEmail) {
+                    throw new Error("User email not found in local storage.");
+                }
+    
+                // Fetch notifications for the signed-in user
+                const data = await getAllNotifications(storedEmail);
                 setNotifications(data); // Set notifications
                 const unread = data.filter((notification) => !notification.seen).length; // Count unread notifications
                 setUnreadCount(unread);
@@ -104,27 +110,34 @@ const TouristHome = () => {
                 console.error("Error fetching notifications:", error);
             }
         };
-
+    
         fetchNotifications();
     }, []);
-
+    
     const handleNotificationClick = async () => {
         setShowModal(true); // Show the modal when the notification icon is clicked
-        
-        // Mark all notifications as seen when the icon is clicked
+    
         try {
+            const storedEmail = localStorage.getItem('email'); // Retrieve the signed-in user's email
+            if (!storedEmail) {
+                throw new Error("User email not found in local storage.");
+            }
+    
+            // Mark all unseen notifications for the user as seen
             for (const notification of notifications) {
                 if (!notification.seen) {
                     await markAsSeen(notification._id); // Mark as seen
                 }
             }
-            // Refresh the notifications to show the updated status
-            const updatedNotifications = await getAllNotifications();
+    
+            // Refresh the notifications for the signed-in user
+            const updatedNotifications = await getAllNotifications(storedEmail);
             setNotifications(updatedNotifications); // Set updated notifications
         } catch (error) {
             console.error("Error marking notifications as seen:", error);
         }
     };
+    
 
     const handleCloseModal = () => {
         setShowModal(false); // Close the modal

@@ -6696,15 +6696,30 @@ const createNotification = async (req, res) => {
 };
 
 
-//get all notifications for all users
+// Get all notifications for a specific user by email
 const getAllNotifications = async (req, res) => {
-    try{
-        const notifications = await Notifications.find();
-        res.status(200).json(notifications);
-    }catch(err){
-        res.status(400).json({err: err.message});
+    try {
+        const { email } = req.query; // Extract email from query parameters
+
+        if (!email) {
+            return res.status(400).json({ message: "Email is required." });
+        }
+
+        // Find notifications for the specified email
+        const notifications = await Notifications.find({ user: email });
+
+        // If no notifications are found
+        if (!notifications || notifications.length === 0) {
+            return res.status(404).json({ message: "No notifications found for the specified email." });
+        }
+
+        res.status(200).json(notifications); // Return the notifications
+    } catch (err) {
+        console.error("Error fetching notifications:", err);
+        res.status(500).json({ error: err.message });
     }
-}
+};
+
 
 // Add notification to a certain user for testing purposes
 const testNotification = async (req, res) => {
