@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { readActivity, createTouristActivity, saveEvent, checkIfEventSaved,requestNotificationForEvent } from '../services/api'; // Import the necessary functions
+import { readActivity, shareactivtybyemail,createTouristActivity, saveEvent, checkIfEventSaved,requestNotificationForEvent } from '../services/api'; // Import the necessary functions
 import logo from '../images/logo.png';
 import { HeartIcon } from '@heroicons/react/24/outline';
 
@@ -16,6 +16,7 @@ const ActivityDetails = () => {
     const [errorEvent, setErrorEvent] = useState(''); // State for error message
     const [isSaved, setIsSaved] = useState(null);
     const [message, setMessage] = useState("");
+    const [recipientEmail, setRecipientEmail] = useState(''); // State for recipient email
     
     const [notificationError, setNotificationError] = useState(null); // State for notification errors
     const [notificationSuccess, setNotificationSuccess] = useState(null); // State for notification success
@@ -228,6 +229,13 @@ const ActivityDetails = () => {
                                 >
                                     Copy Link
                                 </button>
+                                <input
+                                    type="email"
+                                    placeholder="Enter recipient's email"
+                                    value={recipientEmail}
+                                    onChange={(e) => setRecipientEmail(e.target.value)}
+                                    className="border border-gray-300 rounded px-4 py-2"
+                                />
                                 <button
                                     onClick={handleShareViaEmail}
                                     className="bg-brandBlue text-white px-4 py-2 rounded"

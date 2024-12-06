@@ -1827,3 +1827,13 @@ export const bookFlight = async (bookingData) => {
         throw error; // Rethrow the error for handling in the calling component
     }
 };
+
+export const shareactivtybyemail = async (to, link) => {
+    try {
+        const response = await axios.post(`${API_URL}/shareactivtybyemail`, { to, link });
+        return response.data;
+    }catch (error) {
+        console.error('Error sharing activity:', error);
+        throw error;
+    }
+};
