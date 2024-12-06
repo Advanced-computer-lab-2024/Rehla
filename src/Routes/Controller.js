@@ -48,8 +48,9 @@ const seller_salesreport = require ('../Models/seller_salesreport.js');
 const Notifications = require('../Models/Notifications.js');
 const InterestedEvents = require('../Models/InterestedEvents');
 const Notificationtour = require('../Models/Notificationtour.js');
-const Notitour = require('../Models/Notitour.js')
-
+const Notitour = require('../Models/Notitour.js');
+const flightm = require('../Models/flights.js'); 
+const hotelm = require('../Models/hotels.js');
 
 
 
@@ -7047,6 +7048,68 @@ const remindUpcomingPaidActivities = async (req, res) => {
     }
 };
 
+const bookhotel = async (req, res) => {
+    try {
+        const { Tourist_Email , Hotel_Name , Hotel_Location , Check_In , Check_Out } = req.body;
+
+        if (!Tourist_Email || !Hotel_Name || !Hotel_Location || !Check_In || !Check_Out) {
+            return res.status(400).json({ message: "Tourist Email, Hotel Name, Hotel Location, Check-In and Check-Out dates are required." });
+        }
+
+        // check if if the booking exists
+        const existingBooking = await hotelm.findOne({ Tourist_Email, Hotel_Name, Hotel_Location, Check_In, Check_Out });
+        if (existingBooking) {
+            return res.status(409).json({ message: "You have already booked this hotel." });
+        }
+
+        // check that the tourist exists
+        const tourist = await Tourist.findOne({ Email: Tourist_Email });
+        if (!tourist) {
+            return res.status(404).json({ message: "Tourist not found." });
+        }
+
+        // make the booking
+        const newBooking = new hotelm({ Tourist_Email, Hotel_Name, Hotel_Location, Check_In, Check_Out });
+        await newBooking.save();
+
+        res.status(201).json({ message: "Hotel booking created successfully.", newBooking });
+    } catch (error) {
+        console.error("Error creating hotel booking:", error);
+        res.status(500).json({ message: "An error occurred while creating the hotel booking.", error: error.message });
+    }
+};
+
+const bookflight = async (req, res) => {
+    try {
+        const { Tourist_Email , Flight_Name , Price , Departure , Arrival ,Duration} = req.body;
+
+        if (!Tourist_Email || !Flight_Name || !Price || !Departure || !Arrival || !Duration) {
+            return res.status(400).json({ message: "Tourist Email, Flight Name, Price, Departure, Arrival and Duration are required." });
+        }
+
+        // check if if the booking exists
+        const existingBooking = await flightm.findOne({ Tourist_Email, Flight_Name, Price, Departure, Arrival, Duration });
+        if (existingBooking) {
+            return res.status(409).json({ message: "You have already booked this flight." });
+        }
+
+        // check that the tourist exists
+        const tourist = await Tourist.findOne({ Email: Tourist_Email });
+        if (!tourist) {
+            return res.status(404).json({ message: "Tourist not found." });
+        }
+
+        // make the booking
+        const newBooking = new flightm({ Tourist_Email, Flight_Name, Price, Departure, Arrival, Duration });
+        await newBooking.save();
+
+        res.status(201).json({ message: "Flight booking created successfully.", newBooking });
+    } catch (error) {
+        console.error("Error creating flight booking:", error);
+        res.status(500).json({ message: "An error occurred while creating the flight booking.", error: error.message });
+    }
+};
+
 
 // ----------------- Activity Category CRUD -------------------
 
@@ -7234,5 +7297,7 @@ module.exports = { getPurchasedProducts,
     markAsSeennt,
     notifyForFlaggedItins,
     remindUpcomingPaidActivities,
-    checkEventSaved
+    checkEventSaved,
+    bookhotel,
+    bookflight
 };
