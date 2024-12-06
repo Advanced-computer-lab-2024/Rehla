@@ -357,6 +357,12 @@ const TouristHome = () => {
                     <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-blue-500">
                         Transportation
                     </Link>
+                    <Link to="/Flights" className="text-lg font-medium text-white hover:text-blue-500">
+                        Flights
+                    </Link>
+                    <Link to="/Hotels" className="text-lg font-medium text-white hover:text-blue-500">
+                        Hotels
+                    </Link>
                 </nav>            
             </div>
 
