@@ -593,7 +593,7 @@ const handleCheckout = async () => {
           </form>
         </div>
 
-        return (
+        
         <div style={{ margin: '20px', padding: '20px', border: '1px solid #ddd', borderRadius: '5px' }}>
             <h1 style={{ textAlign: 'center', color: '#333' }}>Product List</h1>
             
