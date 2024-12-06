@@ -297,7 +297,7 @@ const Home = () => {
                 )}
 
                 <div className="flex justify-end space-x-2">
-                    <button type="submit" className="bg-brandBlue text-white px-3 py-1 rounded">Filter Activities</button>
+                    <button type="submit" className="bg-black text-white px-3 py-1 rounded">Filter Activities</button>
                     <button onClick={() => handleSortActivities('price')} className="bg-logoOrange text-white px-3 py-1 rounded">Sort by Price</button>
                 </div>
             </div>
@@ -335,7 +335,7 @@ const Home = () => {
                         <p className="text-lg">Rating: {selectedActivity.Rating}</p>
                         <div className="mt-4">
                             <button
-                                className="bg-brandBlue text-white px-4 py-2 rounded"
+                                className="bg-black text-white px-4 py-2 rounded"
                                 onClick={() => {
                                     const link = generateShareLink();
                                     alert(`Share this link: ${link}`); // You can also copy it to the clipboard or handle sharing in other ways
@@ -439,7 +439,7 @@ const Home = () => {
                     )}
 
                     <div className="flex justify-end space-x-2">
-                        <button type="submit" className="bg-brandBlue text-white px-3 py-1 rounded">Filter Itineraries</button>
+                        <button type="submit" className="bg-black text-white px-3 py-1 rounded">Filter Itineraries</button>
                         <button onClick={() => handleSortItineraries('price')} className="bg-logoOrange text-white px-3 py-1 rounded">Sort by Price</button>
                     </div>
                 </div>
@@ -529,7 +529,7 @@ const Home = () => {
 
                                 </div>
                             </div>
-                            <button type="submit" className="bg-brandBlue text-white px-3 h-8 rounded">Filter Places</button>
+                            <button type="submit" className="bg-black text-white px-3 h-8 rounded">Filter Places</button>
                         </form>
                         <div className="flex overflow-x-auto scrollbar-hide gap-6 px-6 py-4">
                             {filteredPlacesAndMuseums.map((museum) => (
@@ -614,7 +614,7 @@ const Home = () => {
 
                             </div>
                         </div>
-                        <button type="submit" className="bg-brandBlue text-white px-3 h-8 rounded">Filter Places</button>
+                        <button type="submit" className="bg-black text-white px-3 h-8 rounded">Filter Places</button>
                     </form>
                     <div className="flex overflow-x-auto scrollbar-hide gap-6 px-6 py-4">
                         {/* Render Museums */}
