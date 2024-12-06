@@ -7081,14 +7081,14 @@ const bookhotel = async (req, res) => {
 
 const bookflight = async (req, res) => {
     try {
-        const { Tourist_Email , Flight_Name , Price , Departure , Arrival ,Duration} = req.body;
+        const { Tourist_Email , Flight_Name , Price ,Departure_Date, Arrival_Date, Departure , Arrival ,Duration} = req.body;
 
-        if (!Tourist_Email || !Flight_Name || !Price || !Departure || !Arrival || !Duration) {
-            return res.status(400).json({ message: "Tourist Email, Flight Name, Price, Departure, Arrival and Duration are required." });
+        if (!Tourist_Email || !Flight_Name || !Price || !Departure || !Arrival || !Duration || !Departure_Date || !Arrival_Date) {
+            return res.status(400).json({ message: "Tourist Email, Flight Name, Price,,Departure_Date ,Arrival_Date, Departure, Arrival and Duration are required." });
         }
 
         // check if if the booking exists
-        const existingBooking = await flightm.findOne({ Tourist_Email, Flight_Name, Price, Departure, Arrival, Duration });
+        const existingBooking = await flightm.findOne({ Tourist_Email, Flight_Name, Price,Departure_Date ,Arrival_Date, Departure, Arrival, Duration });
         if (existingBooking) {
             return res.status(409).json({ message: "You have already booked this flight." });
         }
@@ -7100,7 +7100,7 @@ const bookflight = async (req, res) => {
         }
 
         // make the booking
-        const newBooking = new flightm({ Tourist_Email, Flight_Name, Price, Departure, Arrival, Duration });
+        const newBooking = new flightm({ Tourist_Email, Flight_Name, Price,Departure_Date ,Arrival_Date, Departure, Arrival, Duration });
         await newBooking.save();
 
         res.status(201).json({ message: "Flight booking created successfully.", newBooking });
