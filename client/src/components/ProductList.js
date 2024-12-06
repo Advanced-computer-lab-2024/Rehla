@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import logo from '../images/logo.png';
-import { getProducts, getProductsSortedByRating, productRateReview, createwishlistItem ,checkoutOrder} from '../services/api'; // Import the search API call
+import logo from '../images/logoWhite.png';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faShoppingCart,faBell  } from '@fortawesome/free-solid-svg-icons';
+import { getProducts, getProductsSortedByRating, productRateReview, createwishlistItem ,checkoutOrder, getTouristProfile} from '../services/api'; // Import the search API call
 const Header = () => (
     <div className="NavBar">
     <img src={logo} alt="Logo" />
@@ -62,6 +64,17 @@ const ProductList = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [isSearched, setIsSearched] = useState(false);
+    const [formData, setFormData] = useState({
+        Email: '',
+        Username: '',
+        Password: '',
+        Mobile_Number: '',
+        Nationality: '',
+        Job_Student: '',
+        Type: '',
+        Points: 0, 
+        Badge: '',
+      });
 
     const [currency, setCurrency] = useState('USD');
     const [conversionRates] = useState({
@@ -83,7 +96,19 @@ const ProductList = () => {
     });
     const [message, setMessage] = useState(''); // State to hold success or error messages
     
-
+    useEffect(() => {
+        const fetchProfile = async () => {
+          try {
+            const email = localStorage.getItem('email');
+            const profileData = await getTouristProfile({ Email: email });
+            //setTourist(profileData);
+            setFormData(profileData);
+          } catch (error) {
+            console.error("Error fetching profile:", error);
+          }
+        };
+        fetchProfile();
+    }, []);
 
 
     const convertPrice = (price) => {
@@ -246,8 +271,110 @@ const handleCheckout = async () => {
 
     return (
         <div>
+            <div className="w-full mx-auto px-6 py-1 bg-black shadow flex flex-col sticky z-50 top-0">
+                <div className="flex items-center">                
+                    {/* Logo */}
+                    <img src={logo} alt="Logo" className="w-44" />
+
+                    {/* Search Form */}
+                    <form onSubmit={handleSearchProducts} className="flex items-center ml-4">
+                    <input
+                        type="text"
+                        placeholder="Search"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="border border-gray-300 rounded-full px-72 py-2 w-full max-w-2xl text-sm pl-2"
+                    />
+
+                        <button type="submit" className="bg-white text-black rounded-full ml-2 p-2">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-5 w-5"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                />
+                            </svg>
+                        </button>
+                    </form>
+                    <div className="flex items-center ml-auto">
+                        <select 
+                            value={currency} 
+                            onChange={handleCurrencyChange} 
+                            className="rounded p-1 mx-2 bg-transparent text-white"
+                        >
+                            <option value="USD" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">USD</option>
+                            <option value="EUR" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">EUR</option>
+                            <option value="GBP" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">GBP</option>
+                            <option value="JPY" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">JPY</option>
+                            <option value="CAD" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">CAD</option>
+                            <option value="AUD" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">AUD</option>
+                        </select>
+                        <nav className="flex space-x-4 ml-2"> {/* Reduced ml-4 to ml-2 and space-x-6 to space-x-4 */}
+                            <Link to="/Cart">
+                                <FontAwesomeIcon icon={faShoppingCart} />
+                            </Link>
+                        </nav>
+                        
+                        <nav className="flex space-x-4 ml-2"> {/* Reduced ml-4 to ml-2 and space-x-6 to space-x-4 */}
+                            <Link to="/TouristHome/TouristProfile">
+                                {/* Profile Picture */}
+                                <div className="">
+                                    {formData.Profile_Pic ? (
+                                        <img
+                                            src={formData.Profile_Pic}
+                                            alt={`${formData.Name}'s profile`}
+                                            className="w-14 h-14 rounded-full object-cover border-2 border-white"
+                                        />
+                                    ) : (
+                                        <div className="w-16 h-16 rounded-full bg-black text-white text-center flex items-center justify-center border-4 border-white">
+                                            <span className="text-4xl font-bold">{formData.Username.charAt(0)}</span>
+                                        </div>
+                                    )}
+                                </div>
+                            </Link>
+                        </nav>
+                    </div>
+
+
+                </div>
+
+                {/* Main Navigation */}
+                <nav className="flex space-x-6">
+                    <Link to="/" className="text-lg font-medium text-white hover:text-blue-500">
+                        Home
+                    </Link>
+                    <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-blue-500">
+                        Activities
+                    </Link>
+                    <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-blue-500">
+                        Itineraries
+                    </Link>
+                    <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-blue-500">
+                        Historical Places
+                    </Link>
+                    <Link to="/Wishlist" className="text-lg font-medium text-white hover:text-blue-500">
+                        Wishlist
+                    </Link>
+                    <Link to="/products" className="text-lg font-medium text-logoOrange hover:text-blue-500">
+                        Gift Shop
+                    </Link>
+                    <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-blue-500">
+                        Transportation
+                    </Link>
+                </nav>            
+            </div>
         <div className="container mx-auto px-4 py-10">
-            <Header/>
+
+        
+
+          
             {/*<h1 className="text-4xl font-bold text-center mb-8">Products List</h1>*/}
          
             <div className="mb-8 mt-8">
@@ -259,47 +386,6 @@ const handleCheckout = async () => {
                 className="w-full h-auto max-h-[500px] object-cover"
             />
             </div>
-
-                    {/* Search and Currency Section */}
-                    <div className="mt-10 mb-8 flex justify-end items-center">
-                        <form onSubmit={handleSearchProducts} className="flex items-center">
-                            <input
-                                type="text"
-                                placeholder="Search by product name"
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                className="border border-gray-300 rounded-full px-4 py-2 w-full max-w-2xl text-sm"
-                            />
-                            <button type="submit" className="bg-black text-white rounded-full ml-2 p-2">
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="h-5 w-5"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                                    />
-                                </svg>
-                            </button>
-                        </form>
-
-                        <div className="flex items-center ml-4">
-                            <label htmlFor="currency" className="mb-0 font-medium mr-2">Change currency</label>
-                            <select value={currency} onChange={handleCurrencyChange} className="border rounded p-1 bg-white">
-                                <option value="USD">USD</option>
-                                <option value="EUR">EUR</option>
-                                <option value="GBP">GBP</option>
-                                <option value="JPY">JPY</option>
-                                <option value="CAD">CAD</option>
-                                <option value="AUD">AUD</option>
-                            </select>
-                        </div>
-                    </div>
 
 
                 {/* Filter and Sort Section 

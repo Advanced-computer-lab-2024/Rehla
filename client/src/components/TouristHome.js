@@ -336,7 +336,7 @@ const TouristHome = () => {
 
                 {/* Main Navigation */}
                 <nav className="flex space-x-6">
-                    <Link to="/" className="text-lg font-medium text-white hover:text-blue-500">
+                    <Link to="/" className="text-lg font-medium text-logoOrange hover:text-blue-500">
                         Home
                     </Link>
                     <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-blue-500">
