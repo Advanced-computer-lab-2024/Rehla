@@ -1769,3 +1769,13 @@ export const viewMyWishlist = async (mail) => {
         throw error.response ? error.response.data : { message: "Network error" }; // Proper error handling
     }
 };
+
+ export const checkIfEventSaved = async (email, name) => {
+    try {
+        const response = await axios.post(`${API_URL}/checkEventSaved`, { email, name });
+        return response.data; // Contains isSaved and message
+    } catch (error) {
+        console.error("Error checking event saved status:", error);
+        return { isSaved: false, message: "An error occurred." };
+    }
+};

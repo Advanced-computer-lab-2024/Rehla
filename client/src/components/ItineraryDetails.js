@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { getItineraryByName, createTouristItinerary, saveEvent } from '../services/api'; // Ensure all functions are imported correctly
+import { getItineraryByName, createTouristItinerary, saveEvent,checkIfEventSaved } from '../services/api'; // Ensure all functions are imported correctly
 import logo from '../images/logo.png';
+import { HeartIcon } from '@heroicons/react/24/outline';
 
 const ItineraryDetails = () => {
     const { itineraryName } = useParams();
@@ -14,12 +15,33 @@ const ItineraryDetails = () => {
     const [successEvent, setSuccessEvent] = useState('');  // Add state for success message
     const [errorEvent, setErrorEvent] = useState('');  // Add state for error message
 
+    const [isSaved, setIsSaved] = useState(null);
+    const [message, setMessage] = useState("");
+
     useEffect(() => {
         const storedEmail = localStorage.getItem('email');
         if (storedEmail) {
             setEmail(storedEmail);
         }
     }, []);
+
+
+    useEffect(() => {
+        const storedEmail = localStorage.getItem('email');
+        
+        const handleCheckEvent = async () => {
+            if (storedEmail && itineraryDetails?.Itinerary_Name) {
+                const result = await checkIfEventSaved(storedEmail, itineraryDetails.Itinerary_Name);
+                setIsSaved(result.isSaved);
+                setMessage(result.message);
+                console.log(result.isSaved);
+            }
+        };
+
+        handleCheckEvent();  // Call the function when the component mounts
+
+    }, [itineraryDetails?.Itinerary_Name]);
+
 
     useEffect(() => {
         const fetchItineraryDetails = async () => {
@@ -51,8 +73,7 @@ const ItineraryDetails = () => {
             });
 
             setSuccessEvent('Event added successfully');
-
-            setTimeout(() => setSuccessEvent(''), 3000);
+            setIsSaved(true); 
         } catch (error) {
             console.error('Failed to save event:', error);
             setErrorEvent('Failed to save event. Please try again.');
@@ -193,11 +214,18 @@ const ItineraryDetails = () => {
                                         Share via Email
                                     </button>
                                     <button
-                                        onClick={handleSaveEvent}
-                                        className="bg-brandBlue text-white px-4 py-2 rounded "
-                                    >
-                                        Bookmark
-                                    </button>
+                                    onClick={handleSaveEvent}
+                                    className={`flex items-center space-x-2 px-4 py-2 rounded ${
+                                        isSaved ? 'bg-red-500' : 'bg-gray-200'
+                                    }`}
+                                >
+                                    <HeartIcon
+                                        className={`w-6 h-6 ${isSaved ? 'text-white' : 'text-gray-600'}`}
+                                    />
+                                    <span className={`text-lg ${isSaved ? 'text-white' : 'text-gray-800'}`}>
+                                        {isSaved ? 'Saved' : 'Save'}
+                                    </span>
+                                </button>
                                 </div>
                                 
                                 {joinError && (

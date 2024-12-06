@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { readActivity, createTouristActivity, saveEvent } from '../services/api'; // Import the necessary functions
+import { readActivity, createTouristActivity, saveEvent, checkIfEventSaved} from '../services/api'; // Import the necessary functions
 import logo from '../images/logo.png';
 import { HeartIcon } from '@heroicons/react/24/outline';
 
@@ -14,7 +14,8 @@ const ActivityDetails = () => {
     const [joinSuccess, setJoinSuccess] = useState(null); // State for join success
     const [succesEvent, setSuccessEvent] = useState(''); // State for success message
     const [errorEvent, setErrorEvent] = useState(''); // State for error message
-    const [isSaved, setIsSaved] = useState('false');
+    const [isSaved, setIsSaved] = useState(null);
+    const [message, setMessage] = useState("");
 
     // Fetch email from localStorage on component mount
     useEffect(() => {
@@ -23,6 +24,23 @@ const ActivityDetails = () => {
             setEmail(storedEmail);
         }
     }, []);
+
+
+    useEffect(() => {
+        const storedEmail = localStorage.getItem('email');
+        
+        const handleCheckEvent = async () => {
+            if (storedEmail && activityDetails?.Name) {
+                const result = await checkIfEventSaved(storedEmail, activityDetails.Name);
+                setIsSaved(result.isSaved);
+                setMessage(result.message);
+                console.log(result.isSaved);
+            }
+        };
+
+        handleCheckEvent();  // Call the function when the component mounts
+
+    }, [activityDetails?.Name]);
 
     // Handle saving the event (bookmarking)
     const handleSaveEvent = async (e) => {
@@ -45,7 +63,7 @@ const ActivityDetails = () => {
             setSuccessEvent(`Event added successfully`);
             setIsSaved(true); // Mark as saved
             // Clear the success message after a delay
-            setTimeout(() => setSuccessEvent(''), 3000);
+            //window.location.reload(); 
         } catch (error) {
             // Handle errors, log them, and update the error message
             console.error('Failed to save event:', error);
