@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import logo from '../images/logoWhite.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart,faBell  } from '@fortawesome/free-solid-svg-icons';
-import { getProducts, getProductsSortedByRating, productRateReview, createwishlistItem ,checkoutOrder, getTouristProfile} from '../services/api'; // Import the search API call
+import { getProducts, getProductsSortedByRating, productRateReview, createwishlistItem ,checkoutOrder, getTouristProfile,viewOrderDetails} from '../services/api'; // Import the search API call
 const Header = () => (
     <div className="NavBar">
     <img src={logo} alt="Logo" />
@@ -95,6 +95,33 @@ const ProductList = () => {
         Payment_Method: '', // Initialize payment method
     });
     const [message, setMessage] = useState(''); // State to hold success or error messages
+
+    const [cartDetails, setCartDetails] = useState([]); // State for cart details
+    const [errorr, setErrorr] = useState(null); // State for errors
+    const [loadingg, setLoadingg] = useState(false); // State for loading status
+
+    const email = localStorage.getItem('email'); // Assuming the email is stored in localStorage
+
+    const handleViewOrderDetails = async () => {
+        if (!email) {
+            setError('No email found');
+            return;
+        }
+
+        setLoading(true);
+        setError(null); // Clear previous errors
+
+        try {
+            const response = await viewOrderDetails(email);
+            setCartDetails(response.cartDetails); // Store cart details in state
+        } catch (err) {
+            setError('Failed to fetch cart details.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
     
     useEffect(() => {
         const fetchProfile = async () => {
@@ -706,6 +733,31 @@ const handleCheckout = async () => {
                     </div>
                 )}
             </div>
+            <div>
+            <button
+                onClick={handleViewOrderDetails}
+                className="bg-blue-500 text-white px-4 py-2 rounded"
+            >
+                View Order Details
+            </button>
+
+            {loading && <p>Loading...</p>}
+
+            {error && <p className="text-red-500">{error}</p>}
+
+            {cartDetails.length > 0 && (
+                <div>
+                    <h3>Your Cart Details:</h3>
+                    <ul>
+                        {cartDetails.map((item, index) => (
+                            <li key={index}>
+                                Product: {item.Productname} | Quantity: {item.Quantity} | Cart Number: {item.Cart_Num}
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
+        </div>
         </div>
         <Footer />
         </div>
