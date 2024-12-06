@@ -1796,3 +1796,25 @@ export const viewMyWishlist = async (mail) => {
         return { isSaved: false, message: "An error occurred." };
     }
 };
+
+// Function to book a hotel
+export const bookHotel = async (bookingData) => {
+    try {
+        const response = await axios.post(`${API_URL}/bookhotel`, bookingData);
+        return response.data;
+    } catch (error) {
+        console.error('Error booking hotel:', error);
+        throw error; // Rethrow the error for handling in the calling component
+    }
+};
+
+// Function to book a flight
+export const bookFlight = async (bookingData) => {
+    try {
+        const response = await axios.post(`${API_URL}/bookflight`, bookingData);
+        return response.data;
+    } catch (error) {
+        console.error('Error booking flight:', error);
+        throw error; // Rethrow the error for handling in the calling component
+    }
+};
