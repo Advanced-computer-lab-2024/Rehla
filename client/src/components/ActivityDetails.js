@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { readActivity, createTouristActivity, saveEvent, checkIfEventSaved} from '../services/api'; // Import the necessary functions
+import { readActivity, createTouristActivity, saveEvent, checkIfEventSaved,requestNotificationForEvent } from '../services/api'; // Import the necessary functions
 import logo from '../images/logo.png';
 import { HeartIcon } from '@heroicons/react/24/outline';
 
@@ -16,6 +16,10 @@ const ActivityDetails = () => {
     const [errorEvent, setErrorEvent] = useState(''); // State for error message
     const [isSaved, setIsSaved] = useState(null);
     const [message, setMessage] = useState("");
+    
+    const [notificationError, setNotificationError] = useState(null); // State for notification errors
+    const [notificationSuccess, setNotificationSuccess] = useState(null); // State for notification success
+
 
     // Fetch email from localStorage on component mount
     useEffect(() => {
@@ -99,6 +103,18 @@ const ActivityDetails = () => {
             setJoinSuccess(response.message || 'You have successfully joined the activity!');
         } catch (err) {
             setJoinError(err.message || 'Failed to join the activity.');
+        }
+    };
+
+    const handleNotificationRequest = async () => {
+        try {
+            setNotificationError(null); // Clear previous errors
+            setNotificationSuccess(null); // Clear previous success messages
+
+            const response = await requestNotificationForEvent(email, activityDetails._id); // Request notification
+            setNotificationSuccess(response.message || 'Notification request submitted successfully!');
+        } catch (err) {
+            setNotificationError(err.message || 'Failed to request notification.');
         }
     };
 
@@ -201,6 +217,12 @@ const ActivityDetails = () => {
                                     Join Activity
                                 </button>
                                 <button
+                                    onClick={handleNotificationRequest}
+                                    className="bg-blue-500 text-white px-6 py-3 ml-4 rounded hover:bg-blue-600"
+                                >
+                                    Request Notification
+                                </button>
+                                <button
                                     onClick={handleCopyLink}
                                     className="bg-brandBlue text-white px-4 py-2 rounded"
                                 >
@@ -226,6 +248,12 @@ const ActivityDetails = () => {
                                     </span>
                                 </button>
                             </div>
+                            {notificationError && (
+                                    <p className="text-red-500 mt-4">{notificationError}</p>
+                                )}
+                                {notificationSuccess && (
+                                    <p className="text-green-500 mt-4">{notificationSuccess}</p>
+                                )}
                              </div>
                              </div>
                     ) : (
