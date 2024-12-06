@@ -18,7 +18,7 @@ const flightSchema = new Schema({
         type: String,
         required: true,
     },
-    Arrival_Date: {
+    Return_Date: {
         type: String,
         required: true,
     },
