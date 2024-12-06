@@ -5488,7 +5488,7 @@ const createwishlistItem = async (req, res) => {
 //view my wish list of product
 const viewMyWishlist = async (req, res) =>{
     try {
-        const { mail } = req.params;
+        const { mail } = req.body;
 
         // Validate request
         if (!mail) {
