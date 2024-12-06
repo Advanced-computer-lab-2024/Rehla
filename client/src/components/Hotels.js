@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { bookHotel} from '../services/api';
+import { bookHotel } from '../services/api';
 import logo from '../images/logo.png';
 
 const Hotels = () => {
@@ -13,6 +13,7 @@ const Hotels = () => {
   const [hotels, setHotels] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [selectedHotel, setSelectedHotel] = useState(null);
 
   // Function to handle search
   const handleSearch = async (e) => {
@@ -42,7 +43,33 @@ const Hotels = () => {
       setLoading(false);
     }
   };
-  
+
+  const handleBookHotel = async (hotel) => {
+    const touristEmail = localStorage.getItem('email'); // Get Tourist_Email from localStorage
+    if (!touristEmail) {
+      alert('Tourist email not found. Please log in.');
+      return;
+    }
+
+    try {
+      const response = await bookHotel({
+        Tourist_Email: touristEmail,
+        Hotel_Name: hotel.name,
+        Hotel_Location: cityCode,
+        Check_In: checkInDate,
+        Check_Out: checkOutDate,
+      });
+
+      if (response.status === 201) {
+        alert('Hotel booking created successfully.');
+      } else {
+        alert(response.message);
+      }
+    } catch (error) {
+      console.error("Error booking hotel:", error);
+      alert('Failed to book hotel. Please try again later.');
+    }
+  };
 
   return (
     <div>
@@ -166,6 +193,12 @@ const Hotels = () => {
                       <strong>Check-out:</strong> {hotel.checkOutDate}
                     </div>
                   </div>
+                  <button
+                    onClick={() => handleBookHotel(hotel)}
+                    className="mt-4 py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                  >
+                    Book Hotel
+                  </button>
                 </div>
 
                 </div>

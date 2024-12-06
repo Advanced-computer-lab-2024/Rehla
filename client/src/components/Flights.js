@@ -39,6 +39,31 @@ const Flights = () => {
     }
   };
 
+  const handleBookFlight = async (flight) => {
+    const Tourist_Email = localStorage.getItem('email');
+    const flightDetails = {
+      Tourist_Email,
+      Flight_Name: flight.name,
+      Price: flight.price?.total,
+      Departure_Date: flight.itineraries[0]?.segments[0]?.departure?.at,
+      Return_Date: flight.itineraries[0]?.segments.slice(-1)[0]?.arrival?.at,
+      Departure: flight.itineraries[0]?.segments[0]?.departure?.iataCode,
+      Arrival: flight.itineraries[0]?.segments.slice(-1)[0]?.arrival?.iataCode,
+      Duration: flight.itineraries[0]?.duration,
+    };
+
+    try {
+      const response = await bookFlight(flightDetails);
+      if (response.ok) {
+        alert('Flight booked successfully!');
+      } else {
+        alert('Failed to book flight.');
+      }
+    } catch (err) {
+      alert('An error occurred while booking the flight.');
+    }
+  };
+
   return (
     <div>
     <div className="NavBar">
@@ -153,6 +178,12 @@ const Flights = () => {
                     <strong>Duration:</strong> {flight.itineraries[0]?.duration}
                   </div>
                 </div>
+                <button
+                  onClick={() => handleBookFlight(flight)}
+                  className="mt-4 py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                >
+                  Book Flight
+                </button>
               </div>
             ))}
           </div>
