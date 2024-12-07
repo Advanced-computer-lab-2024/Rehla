@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import logo from '../images/logoWhite.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faShoppingCart,faBell  } from '@fortawesome/free-solid-svg-icons';
-import { getProducts, getProductsSortedByRating, productRateReview, createwishlistItem ,checkoutOrder, getTouristProfile,viewOrderDetails} from '../services/api'; // Import the search API call
-const Header = () => (
+import { faShoppingCart, faBell } from '@fortawesome/free-solid-svg-icons';
+import { getProducts, getProductsSortedByRating, productRateReview, createwishlistItem, checkoutOrder, getTouristProfile, viewOrderDetails } from '../services/api';const Header = () => (
     <div className="NavBar">
     <img src={logo} alt="Logo" />
     <nav className="main-nav">
@@ -102,6 +101,8 @@ const ProductList = () => {
 
     const email = localStorage.getItem('email'); // Assuming the email is stored in localStorage
 
+    const navigate = useNavigate();
+
     const handleViewOrderDetails = async () => {
         if (!email) {
             setError('No email found');
@@ -121,6 +122,10 @@ const ProductList = () => {
         }
     };
 
+    const handleProductClick = (product) => {
+        navigate('/productinfo', { state: { product } });
+    };
+    
 
     
     useEffect(() => {
@@ -537,16 +542,19 @@ const handleCheckout = async () => {
             ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     {products.map(product => (
-                        <div key={product._id} className="bg-white shadow-lg rounded-lg p-6 transform hover:scale-105 transition-transform duration-300">
+                        <div
+                            key={product._id}
+                            className="bg-white shadow-lg rounded-lg p-6 transform hover:scale-105 transition-transform duration-300 cursor-pointer"
+                            onClick={() => handleProductClick(product)}
+                        >
                             <h3 className="text-xl font-medium">{product.Product_Name}</h3>
-                            <img 
-                                src={product.Picture} 
-                                alt={product.Product_Name} 
+                            <img
+                                src={product.Picture}
+                                alt={product.Product_Name}
                                 className="w-full h-48 object-cover rounded-lg mt-4"
                             />
                             <p className="mt-2 text-lg font-semibold">{convertPrice(product.Price)} {currency}</p>
                             <p className="text-gray-600 mt-2">{product.Description}</p>
-                            <p className="text-yellow-500 font-bold mt-2">Rating: {product.Rating}</p>
                             {/* Heart Button */}
             <button
                 onClick={handleAddToWishlist}
