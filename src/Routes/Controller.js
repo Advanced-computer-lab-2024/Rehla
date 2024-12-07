@@ -6416,7 +6416,7 @@ const viewTotalAttendees = async (req, res) => {
             });
         }
 
-        // Prepare an array to store activity names and their attendee counts
+        // Prepare an array to store activity names, dates, and their attendee counts
         const activityDetails = [];
 
         let totalAttendees = 0;
@@ -6428,9 +6428,10 @@ const viewTotalAttendees = async (req, res) => {
                 Attended: true
             });
 
-            // Add the activity name and its count to the details
+            // Add the activity name, date, and its count to the details
             activityDetails.push({
                 activityName: activityItem.Name,
+                date: activityItem.Date, // Assuming the Date field exists in your activity schema
                 attendeesCount: count
             });
 
@@ -6453,6 +6454,8 @@ const viewTotalAttendees = async (req, res) => {
     }
 };
 
+
+
 // Function to view the report of total attendees for itineraries created by a specific email
 const viewTotalAttendeesForItineraries = async (req, res) => {
     try {
@@ -6473,7 +6476,7 @@ const viewTotalAttendeesForItineraries = async (req, res) => {
             });
         }
 
-        // Prepare an array to store itinerary names and their attendee counts
+        // Prepare an array to store itinerary names, their attendee counts, and itinerary dates
         const itineraryDetails = [];
 
         let totalAttendees = 0;
@@ -6485,10 +6488,11 @@ const viewTotalAttendeesForItineraries = async (req, res) => {
                 Attended: true
             });
 
-            // Add the itinerary name and its count to the details
+            // Add the itinerary name, its count, and the itinerary date to the details
             itineraryDetails.push({
                 itineraryName: itineraryItem.Itinerary_Name,
-                attendeesCount: count
+                attendeesCount: count,
+                itineraryDate: itineraryItem.Available_Date_Time  // Include the itinerary date
             });
 
             // Increment the total attendees count

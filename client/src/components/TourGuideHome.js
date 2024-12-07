@@ -1200,14 +1200,14 @@ const TourGuideHome = () => {
         View Itinerary Report
     </button>
 
-    {/* Display the itinerary report if available */}
+    {/* Display the report if available */}
     {itineraryReport && (
         <div>
             <h2>Itinerary Report</h2>
             <ul>
                 {itineraryReport.itineraryDetails.map((itinerary, index) => (
                     <li key={index}>
-                        {itinerary.itineraryName}: {itinerary.attendeesCount} attendees
+                        {itinerary.itineraryName} (Date: {new Date(itinerary.Available_Date_Time).toLocaleDateString()}): {itinerary.attendeesCount} attendees
                     </li>
                 ))}
             </ul>
@@ -1215,6 +1215,7 @@ const TourGuideHome = () => {
         </div>
     )}
 </div>
+
 <footer className="bg-black shadow m-0">
                 <div className="w-full mx-auto md:py-8">
                     <div className="sm:flex sm:items-center sm:justify-between">

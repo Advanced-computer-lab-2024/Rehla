@@ -928,17 +928,17 @@ const AdvertiserHome = () => {
             <ul>
                 {activityReport.activityDetails.map((activity, index) => (
                     <li key={index}>
-                        {activity.activityName}: {activity.attendeesCount} attendees
+                        {activity.activityName} (Date: {new Date(activity.date).toLocaleDateString()}): {activity.attendeesCount} attendees
                     </li>
                 ))}
             </ul>
             <p><strong>Total Attendees:</strong> {activityReport.totalAttendees}</p>
         </div>
     )}
-
-    {/* Display error if one occurs */}
-    {erro && <p style={{ color: 'red' }}>Error: {erro}</p>}
 </div>
+
+
+
 
 
         </div>
