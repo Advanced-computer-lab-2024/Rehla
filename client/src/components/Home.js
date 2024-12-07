@@ -244,25 +244,25 @@ const Home = () => {
 
                 {/* Main Navigation */}
                 <nav className="flex space-x-6">
-                    <Link to="/" className="text-lg font-medium text-logoOrange hover:text-blue-500">
+                    <Link to="/" className="text-lg font-medium text-logoOrange">
                         Home
                     </Link>
-                    <Link to="/UpcomingActivities" className="text-lg font-medium text-white hover:text-blue-500">
+                    <Link to="/UpcomingActivities" className="text-lg font-medium text-white hover:text-logoOrange">
                         Activities
                     </Link>
-                    <Link to="/UpcomingItineraries" className="text-lg font-medium text-white hover:text-blue-500">
+                    <Link to="/UpcomingItineraries" className="text-lg font-medium text-white hover:text-logoOrange">
                         Itineraries
                     </Link>
-                    <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-blue-500">
+                    <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-logoOrange">
                         Historical Places
                     </Link>
-                    <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-blue-500">
+                    <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-logoOrange">
                         Museums
                     </Link>
-                    <Link to="/products" className="text-lg font-medium text-white hover:text-blue-500">
+                    <Link to="/products" className="text-lg font-medium text-white hover:text-logoOrange">
                         Gift Shop
                     </Link>
-                    <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-blue-500">
+                    <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-logoOrange">
                         Transportation
                     </Link>
                 </nav>            
@@ -287,7 +287,7 @@ const Home = () => {
                 <select
                     value={activityFilterType}
                     onChange={handleActivityFilterChange}
-                    className="border rounded p-1"
+                    className="border rounded-full p-2"
                 >
                     <option value="">Select Filter</option>
                     {activityfilterOptions.map(option => (
@@ -302,14 +302,14 @@ const Home = () => {
                             placeholder="Min Price"
                             value={activityFilters.minPrice}
                             onChange={(e) => setActivityFilters({ ...activityFilters, minPrice: e.target.value })}
-                            className="border rounded p-1"
+                            className="border rounded-full p-2"
                         />
                         <input
                             type="number"
                             placeholder="Max Price"
                             value={activityFilters.maxPrice}
                             onChange={(e) => setActivityFilters({ ...activityFilters, maxPrice: e.target.value })}
-                            className="border rounded p-1"
+                            className="border rounded-full p-2"
                         />
                     </>
                 )}
@@ -320,7 +320,7 @@ const Home = () => {
                         placeholder="Rating"
                         value={activityFilters.rating}
                         onChange={(e) => setActivityFilters({ ...activityFilters, rating: e.target.value })}
-                        className="border rounded p-1"
+                        className="border rounded-full p-2"
                     />
                 )}
 
@@ -328,7 +328,7 @@ const Home = () => {
                     <select
                         value={activityFilters.category}
                         onChange={(e) => setActivityFilters({ ...activityFilters, category: e.target.value })}
-                        className="border rounded p-1"
+                        className="border rounded-full p-2"
                     >
                         <option value="">Select Category</option>
                         <option value="exhibitions">Exhibitions</option>
@@ -347,39 +347,49 @@ const Home = () => {
                             type="date"
                             value={activityFilters.startDate}
                             onChange={(e) => setActivityFilters({ ...activityFilters, startDate: e.target.value })}
-                            className="border rounded p-1"
+                            className="border rounded-full p-2"
                         />
                         <input
                             type="date"
                             value={activityFilters.endDate}
                             onChange={(e) => setActivityFilters({ ...activityFilters, endDate: e.target.value })}
-                            className="border rounded p-1"
+                            className="border rounded-full p-2"
                         />
                     </>
                 )}
 
                 <div className="flex justify-end space-x-2">
-                    <button type="submit" className="bg-black text-white px-3 py-1 rounded">Filter Activities</button>
-                    <button onClick={() => handleSortActivities('price')} className="bg-logoOrange text-white px-3 py-1 rounded">Sort by Price</button>
+                    <button type="submit" className="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-700">Filter Activities</button>
+                    <button onClick={() => handleSortActivities('price')} className="bg-logoOrange text-white px-4 py-2 rounded-full hover:bg-orange-600">Sort by Price</button>
                 </div>
             </div>
         </form>
 
-                <div className="flex overflow-x-auto scrollbar-hide px-6 py-4">
+                <div className="flex overflow-x-auto scrollbar-hide px-6 py-4 gap-6">
                     {activitiesToDisplay.map((activity) => (
                         <div
                         key={activity._id}
-                        className="gallery-item flex-none flex flex-col items-center w-80"
+                        className="card w-96 h-auto bg-white rounded-lg shadow-lg overflow-hidden flex flex-col"
                         onClick={() => handleActivityClick(activity)}
                         >
                         <img
                             src={activity.Picture}
                             alt={activity.Name}
-                            className="w-72 h-72 object-cover rounded duration-300 ease-in-out hover:scale-105"
+                            className="w-full h-48 object-cover"
                         />
-                        <div className="text-md font-medium text-center mt-2">{activity.Name}</div>
-                        <div className="text-sm text-gray-700">
-                            <span className="font-semibold">{convertPrice(activity.Price)} {currency}</span> - Rating: {activity.Rating}
+                         <div className="p-4 flex flex-col justify-between flex-grow">
+                            <div className="text-lg font-semibold text-gray-800">{activity.Name}</div>
+                            <div className="text-sm text-gray-600 mt-2">
+                                <span className="font-semibold">{convertPrice(activity.Price)} {currency}</span>
+                                <div className="mt-1">Rating: {activity.Rating}</div>
+                                <div className="mt-1">Location: {activity.Location}</div>
+                            </div>
+                            <button 
+                                onClick={() => handleActivityClick(activity)} 
+                                className="mt-4 bg-black text-white rounded-full py-2 px-4 w-full hover:bg-gray-700"
+                            >
+                                View Details
+                            </button>
                         </div>
                         </div>
                     ))}
@@ -406,7 +416,7 @@ const Home = () => {
                     <select
                         value={itineraryFilterType}
                         onChange={handleItineraryFilterChange}
-                        className="border rounded p-1"
+                        className="border rounded-full p-2"
                     >
                         <option value="">Select Filter</option>
                         {itineraryfilterOptions.map(option => (
@@ -421,14 +431,14 @@ const Home = () => {
                                 placeholder="Min Price"
                                 value={itineraryFilters.minPrice}
                                 onChange={(e) => setItineraryFilters({ ...itineraryFilters, minPrice: e.target.value })}
-                                className="border rounded p-1"
+                                className="border rounded-full p-2"
                             />
                             <input
                                 type="number"
                                 placeholder="Max Price"
                                 value={itineraryFilters.maxPrice}
                                 onChange={(e) => setItineraryFilters({ ...itineraryFilters, maxPrice: e.target.value })}
-                                className="border rounded p-1"
+                                className="border rounded-full p-2"
                             />
                         </>
                     )}
@@ -439,7 +449,7 @@ const Home = () => {
                             placeholder="Rating"
                             value={itineraryFilters.rating}
                             onChange={(e) => setItineraryFilters({ ...itineraryFilters, rating: e.target.value })}
-                            className="border rounded p-1"
+                            className="border rounded-full p-2"
                         />
                     )}
 
@@ -449,7 +459,7 @@ const Home = () => {
                             placeholder="Preferences"
                             value={itineraryFilters.preferences}
                             onChange={(e) => setItineraryFilters({ ...itineraryFilters, preferences: e.target.value })}
-                            className="border rounded p-1"
+                            className="border rounded-full p-2"
                         />
                     )}
 
@@ -459,39 +469,49 @@ const Home = () => {
                                 type="date"
                                 value={itineraryFilters.startDate}
                                 onChange={(e) => setItineraryFilters({ ...itineraryFilters, startDate: e.target.value })}
-                                className="border rounded p-1"
+                                className="border rounded-full p-2"
                             />
                             <input
                                 type="date"
                                 value={itineraryFilters.endDate}
                                 onChange={(e) => setItineraryFilters({ ...itineraryFilters, endDate: e.target.value })}
-                                className="border rounded p-1"
+                                className="border rounded-full p-2"
                             />
                         </>
                     )}
 
                     <div className="flex justify-end space-x-2">
-                        <button type="submit" className="bg-black text-white px-3 py-1 rounded">Filter Itineraries</button>
-                        <button onClick={() => handleSortItineraries('price')} className="bg-logoOrange text-white px-3 py-1 rounded">Sort by Price</button>
+                        <button type="submit" className="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-700">Filter Itineraries</button>
+                        <button onClick={() => handleSortItineraries('price')} className="bg-logoOrange text-white px-4 py-2 rounded-full hover:bg-orange-600">Sort by Price</button>
                     </div>
                 </div>
             </form>
 
-                <div className="flex overflow-x-auto scrollbar-hide px-6 py-4">
+                <div className="flex overflow-x-auto scrollbar-hide px-6 py-4 gap-6">
                     {itinerariesToDisplay.map((itinerary) => (
                         <div
                         key={itinerary._id}
-                        className="gallery-item flex-none flex flex-col items-center w-80"
+                        className="card w-96 h-auto bg-white rounded-lg shadow-lg overflow-hidden flex flex-col"
                         onClick={() => handleItineraryClick(itinerary)}
                         >
                         <img
                             src={itinerary.Picture}
                             alt={itinerary.Itinerary_Name}
-                            className="w-72 h-72 object-cover rounded duration-300 ease-in-out hover:scale-105"
+                            className="w-full h-48 object-cover"
                         />
-                        <div className="text-md font-medium text-center mt-2">{itinerary.Itinerary_Name}</div>
-                        <div className="text-sm text-gray-700">
-                            <span className="font-semibold">{convertPrice(itinerary.Tour_Price)} {currency}</span> - Rating: {itinerary.Rating}
+                        <div className="p-4 flex flex-col justify-between flex-grow">
+                            <div className="text-lg font-semibold text-gray-800">{itinerary.Itinerary_NameName}</div>
+                                <div className="text-sm text-gray-600 mt-2">
+                                    <span className="font-semibold">{convertPrice(itinerary.Tour_Price)} {currency}</span>
+                                    <div className="mt-1">Rating: {itinerary.Rating}</div>
+                                    <div className="mt-1">Language: {itinerary.Language}</div>
+                                </div>
+                                <button 
+                                    onClick={() => handleItineraryClick(itinerary)} 
+                                    className="mt-4 bg-black text-white rounded-full py-2 px-4 w-full hover:bg-gray-700"
+                                >
+                                    View Details
+                                </button>
                         </div>
                         </div>
                     ))}
@@ -511,209 +531,245 @@ const Home = () => {
                     </p>
                 </div>
             </section>
-             <div className="flex overflow-x-auto scrollbar-hide gap-6 px-6 py-4">
-                {filteredPlacesAndMuseums && (
-                    <section className="mb-10 w-full">
-                        <h2 className="text-2xl font-semibold mb-4 text-center">
-                            Museums and Historical Places
-                         </h2>
-                         {/* Museums and Historical Places Filter Form */}
-                        <form onSubmit={handleFilterPlacesAndMuseums} className="mb-4 flex ml-10">
-                            <div className="flex gap-4">
-                                <div>
-                                    <select
-                                        name="category"
-                                        value={placesAndMuseumsFilters.category}
-                                        onChange={(e) => handleFilterChange(e, setPlacesAndMuseumsFilters)}
-                                        className="border rounded p-1 mx-1"
-                                    >
-                                        <option value="">Select Category</option>
-                                        <option value="museums">Museums</option>
-                                        <option value="historical_places">Historical Places</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <select
-                                        name="value"
-                                        value={placesAndMuseumsFilters.value}
-                                        onChange={(e) => handleFilterChange(e, setPlacesAndMuseumsFilters)}
-                                        className="border rounded p-1 mx-1"
-                                        >
-                                        <option value="">Select Value</option>
-                                        {placesAndMuseumsFilters.category === 'museums' && (
-                                            <>
-                                                <option value="Historical">Historical</option>
-                                                <option value="Art Museum">Art Museum</option>
-                                                <option value="Art">Art</option>
-                                                <option value="Mix">Mix</option>
-                                            </>
-                                        )}
-                                        {placesAndMuseumsFilters.category === 'historical_places' && (
-                                            <>
-                                                <option value="Monuments">Monuments</option>
-                                                <option value="Ancient Greece">Ancient Greece</option>
-                                                <option value="Religious">Religious</option>
-                                                <option value="Sites">Sites</option>
-                                                <option value="Castle">Castle</option>
-                                            </>
-                                        )}
-                                    </select>
+            <div className="flex overflow-x-auto scrollbar-hide px-6 py-4">
+        {filteredPlacesAndMuseums && (
+            <section className="mb-10 w-full">
+            <h2 className="text-2xl font-semibold mb-4 text-center">
+                Museums and Historical Places
+            </h2>
 
-                                </div>
-                            </div>
-                            <button type="submit" className="bg-black text-white px-3 h-8 rounded">Filter Places</button>
-                        </form>
-                        <div className="flex overflow-x-auto scrollbar-hide gap-6 px-6 py-4">
-                            {filteredPlacesAndMuseums.map((museum) => (
-                                <div
-                                    key={museum._id}
-                                    className="gallery-item flex-none flex flex-col items-center w-80"
-                                >
-                                    <img
-                                        src={museum.pictures || museum.Pictures}
-                                        alt={museum.Name}
-                                        className="w-72 h-72 object-cover rounded duration-300 ease-in-out hover:scale-105"
-                                    />
-                                    <div className="text-md font-medium text-center">
-                                        {museum.Name}
-                                    </div>
-                                    <div className="text-sm text-gray-700">
-                                        <span className="font-semibold">
-                                            Location: {museum.location}
-                                        </span>
-                                        <br />
-                                        <span>Opening Hours: {museum.Opening_Hours}</span>
-                                        <br />
-                                        <span>
-                                            Starting Prices: {convertPrice(museum.S_Tickets_Prices)}{' '}
-                                            {currency}
-                                        </span>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </section>
+            {/* Museums and Historical Places Filter Form */}
+            <form onSubmit={handleFilterPlacesAndMuseums} className="mb-4 flex justify-center gap-4">
+                <select
+                name="category"
+                value={placesAndMuseumsFilters.category}
+                onChange={(e) => handleFilterChange(e, setPlacesAndMuseumsFilters)}
+                className="border rounded-full p-2"
+                >
+                <option value="">Select Category</option>
+                <option value="museums">Museums</option>
+                <option value="historical_places">Historical Places</option>
+                </select>
+
+                <select
+                name="value"
+                value={placesAndMuseumsFilters.value}
+                onChange={(e) => handleFilterChange(e, setPlacesAndMuseumsFilters)}
+                className="border rounded-full p-2"
+                >
+                <option value="">Select Value</option>
+                {placesAndMuseumsFilters.category === 'museums' && (
+                    <>
+                    <option value="Historical">Historical</option>
+                    <option value="Art Museum">Art Museum</option>
+                    <option value="Art">Art</option>
+                    <option value="Mix">Mix</option>
+                    </>
                 )}
-            </div>
+                {placesAndMuseumsFilters.category === 'historical_places' && (
+                    <>
+                    <option value="Monuments">Monuments</option>
+                    <option value="Ancient Greece">Ancient Greece</option>
+                    <option value="Religious">Religious</option>
+                    <option value="Sites">Sites</option>
+                    <option value="Castle">Castle</option>
+                    </>
+                )}
+                </select>
 
-            {/* Museums and Historical Places Section */}
-            {!filteredPlacesAndMuseums && (
-                <section className="mb-10">
-                    <h2 className="text-2xl font-semibold mb-4 text-center">
-                        Museums and Historical Places
-                    </h2>
-                    {/* Museums and Historical Places Filter Form */}
-                    <form onSubmit={handleFilterPlacesAndMuseums} className="mb-4 flex ml-10">
-                        <div className="flex gap-4">
-                            <div>
-                                <select
-                                    name="category"
-                                    value={placesAndMuseumsFilters.category}
-                                    onChange={(e) => handleFilterChange(e, setPlacesAndMuseumsFilters)}
-                                    className="border rounded p-1 mx-1"
-                                >
-                                    <option value="">Select Category</option>
-                                    <option value="museums">Museums</option>
-                                    <option value="historical_places">Historical Places</option>
-                                </select>
-                            </div>
-                            <div>
-                                <select
-                                    name="value"
-                                    value={placesAndMuseumsFilters.value}
-                                    onChange={(e) => handleFilterChange(e, setPlacesAndMuseumsFilters)}
-                                    className="border rounded p-1 mx-1"
-                                    >
-                                    <option value="">Select Value</option>
-                                    {placesAndMuseumsFilters.category === 'museums' && (
-                                        <>
-                                            <option value="Historical">Historical</option>
-                                            <option value="Art Museum">Art Museum</option>
-                                            <option value="Art">Art</option>
-                                            <option value="Mix">Mix</option>
-                                        </>
-                                    )}
-                                    {placesAndMuseumsFilters.category === 'historical_places' && (
-                                        <>
-                                            <option value="Monuments">Monuments</option>
-                                            <option value="Ancient Greece">Ancient Greece</option>
-                                            <option value="Religious">Religious</option>
-                                            <option value="Sites">Sites</option>
-                                            <option value="Castle">Castle</option>
-                                        </>
-                                    )}
-                                </select>
+                <button 
+                type="submit" 
+                className="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-700"
+                >
+                Filter Places
+                </button>
+            </form>
 
-                            </div>
-                        </div>
-                        <button type="submit" className="bg-black text-white px-3 h-8 rounded">Filter Places</button>
-                    </form>
-                    <div className="flex overflow-x-auto scrollbar-hide gap-6 px-6 py-4">
-                        {/* Render Museums */}
-                        {data.museums.map((museum) => (
-                            <div
-                                key={museum._id}
-                                className="gallery-item flex-none flex flex-col items-center w-80"
-                                onClick={() => handleActivityClick(museum)}
-                            >
-                                <img
-                                    src={museum.pictures}
-                                    alt={museum.Name}
-                                    className="w-72 h-72 object-cover rounded duration-300 ease-in-out hover:scale-105"
-                                />
-                                <div className="text-md font-medium text-center">
-                                    {museum.Name}
-                                </div>
-                                <div className="text-sm text-gray-700">
-                                    <span className="font-semibold">
-                                        Location: {museum.location}
-                                    </span>
-                                    <br />
-                                    <span>Opening Hours: {museum.Opening_Hours}</span>
-                                    <br />
-                                    <span>
-                                        Starting Prices: {convertPrice(museum.S_Tickets_Prices)}{' '}
-                                        {currency}
-                                    </span>
-                                </div>
-                            </div>
-                        ))}
-
-                        {/* Render Historical Places */}
-                        {data.historicalPlaces.map((place) => (
-                            <div
-                                key={place._id}
-                                className="gallery-item flex-none flex flex-col items-center w-80"
-                                onClick={() => handleActivityClick(place)}
-                            >
-                                <img
-                                    src={place.Pictures}
-                                    alt={place.Name}
-                                    className="w-72 h-72 object-cover rounded duration-300 ease-in-out hover:scale-105"
-                                />
-                                <div className="text-md font-medium text-center">
-                                    {place.Name}
-                                </div>
-                                <div className="text-sm text-gray-700">
-                                    <span className="font-semibold">
-                                        Location: {place.Location}
-                                    </span>
-                                    <br />
-                                    <span>
-                                        Opening Hours: {place.Opening_Time} -{' '}
-                                        {place.Closing_Time}
-                                    </span>
-                                    <br />
-                                    <span>
-                                        Ticket Prices: {convertPrice(place.S_Tickets_Prices)}{' '}
-                                        {currency}
-                                    </span>
-                                </div>
-                            </div>
-                        ))}
+            <div className="flex overflow-x-auto scrollbar-hide px-6 py-4 gap-6">
+                {filteredPlacesAndMuseums.map((museum) => (
+                <div
+                    key={museum._id}
+                    className="card w-96 bg-white rounded-lg shadow-lg overflow-hidden flex flex-col"
+                >
+                    <img
+                    src={museum.pictures || museum.Pictures}
+                    alt={museum.Name}
+                    className="w-full h-48 object-cover"
+                    />
+                    <div className="p-4 flex flex-col justify-between flex-grow">
+                    <div className="text-lg font-semibold text-gray-800">
+                        {museum.Name}
                     </div>
+                    <div className="text-sm text-gray-600 mt-2">
+                        <div>
+                        <span className="font-semibold">Location: </span>
+                        {museum.location}
+                        </div>
+                        <div className="mt-1">
+                        <span className="font-semibold">Opening Hours: </span>
+                        {museum.Opening_Hours}
+                        </div>
+                        <div className="mt-1">
+                        <span className="font-semibold">Starting Prices: </span>
+                        {convertPrice(museum.S_Tickets_Prices)} {currency}
+                        </div>
+                    </div>
+                    <button 
+                        className="mt-4 bg-black text-white rounded-full py-2 px-4 w-full hover:bg-gray-700"
+                    >
+                        View Details
+                    </button>
+                    </div>
+                </div>
+                ))}
+            </div>
                 </section>
             )}
+            </div>
+
+
+            {/* Museums and Historical Places Section */}
+           {/* Museums and Historical Places Section */}
+            {/* Museums and Historical Places Section */}
+                {!filteredPlacesAndMuseums && (
+                <section className="mb-10">
+                    <h2 className="text-2xl font-semibold mb-4 text-center">
+                    Museums and Historical Places
+                    </h2>
+
+                    {/* Museums and Historical Places Filter Form */}
+                    <form 
+                    onSubmit={handleFilterPlacesAndMuseums} 
+                    className="mb-4 flex justify-center gap-4"
+                    >
+                    <select
+                        name="category"
+                        value={placesAndMuseumsFilters.category}
+                        onChange={(e) => handleFilterChange(e, setPlacesAndMuseumsFilters)}
+                        className="border rounded-full p-2"
+                    >
+                        <option value="">Select Category</option>
+                        <option value="museums">Museums</option>
+                        <option value="historical_places">Historical Places</option>
+                    </select>
+
+                    <select
+                        name="value"
+                        value={placesAndMuseumsFilters.value}
+                        onChange={(e) => handleFilterChange(e, setPlacesAndMuseumsFilters)}
+                        className="border rounded-full p-2"
+                    >
+                        <option value="">Select Value</option>
+                        {placesAndMuseumsFilters.category === 'museums' && (
+                        <>
+                            <option value="Historical">Historical</option>
+                            <option value="Art Museum">Art Museum</option>
+                            <option value="Art">Art</option>
+                            <option value="Mix">Mix</option>
+                        </>
+                        )}
+                        {placesAndMuseumsFilters.category === 'historical_places' && (
+                        <>
+                            <option value="Monuments">Monuments</option>
+                            <option value="Ancient Greece">Ancient Greece</option>
+                            <option value="Religious">Religious</option>
+                            <option value="Sites">Sites</option>
+                            <option value="Castle">Castle</option>
+                        </>
+                        )}
+                    </select>
+
+                    <button 
+                        type="submit" 
+                        className="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-700"
+                    >
+                        Filter Places
+                    </button>
+                    </form>
+
+                    <div className="flex overflow-x-auto scrollbar-hide px-6 py-4 gap-6">
+                    {/* Render Museums - Limited to 4 */}
+                    {data.museums.slice(0, 2).map((museum) => (
+                        <div
+                        key={museum._id}
+                        className="card w-96 bg-white rounded-lg shadow-lg overflow-hidden flex flex-col"
+                        /*onClick={() => handleActivityClick(museum)}*/
+                        >
+                        <img
+                            src={museum.pictures}
+                            alt={museum.Name}
+                            className="w-full h-48 object-cover"
+                        />
+                        <div className="p-4 flex flex-col justify-between flex-grow">
+                            <div className="text-lg font-semibold text-gray-800">
+                            {museum.Name}
+                            </div>
+                            <div className="text-sm text-gray-600 mt-2">
+                            <div>
+                                <span className="font-semibold">Location: </span>
+                                {museum.location}
+                            </div>
+                            <div className="mt-1">
+                                <span className="font-semibold">Opening Hours: </span>
+                                {museum.Opening_Hours}
+                            </div>
+                            <div className="mt-1">
+                                <span className="font-semibold">Starting Prices: </span>
+                                {convertPrice(museum.S_Tickets_Prices)} {currency}
+                            </div>
+                            </div>
+                            <button 
+                            className="mt-4 bg-black text-white rounded-full py-2 px-4 w-full hover:bg-gray-700"
+                            >
+                            View Details
+                            </button>
+                        </div>
+                        </div>
+                    ))}
+
+                    {/* Render Historical Places - Limited to 4 */}
+                    {data.historicalPlaces.slice(0, 1).map((place) => (
+                        <div
+                        key={place._id}
+                        className="card w-96 bg-white rounded-lg shadow-lg overflow-hidden flex flex-col"
+                        onClick={() => handleActivityClick(place)}
+                        >
+                        <img
+                            src={place.Pictures}
+                            alt={place.Name}
+                            className="w-full h-48 object-cover"
+                        />
+                        <div className="p-4 flex flex-col justify-between flex-grow">
+                            <div className="text-lg font-semibold text-gray-800">
+                            {place.Name}
+                            </div>
+                            <div className="text-sm text-gray-600 mt-2">
+                            <div>
+                                <span className="font-semibold">Location: </span>
+                                {place.Location}
+                            </div>
+                            <div className="mt-1">
+                                <span className="font-semibold">Opening Hours: </span>
+                                {place.Opening_Time} - {place.Closing_Time}
+                            </div>
+                            <div className="mt-1">
+                                <span className="font-semibold">Ticket Prices: </span>
+                                {convertPrice(place.S_Tickets_Prices)} {currency}
+                            </div>
+                            </div>
+                            <button 
+                            className="mt-4 bg-black text-white rounded-full py-2 px-4 w-full hover:bg-gray-700"
+                            >
+                            View Details
+                            </button>
+                        </div>
+                        </div>
+                    ))}
+                    </div>
+                </section>
+                )}
+
+
 
         
 
