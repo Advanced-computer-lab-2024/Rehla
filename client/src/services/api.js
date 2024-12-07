@@ -1860,3 +1860,14 @@ export const viewOrderDetails = async (email) => {
         throw error; // Re-throw the error to handle it in the caller
     }
 };
+
+//function add Product From Wish List To Cart 
+export const addProductFromWishListToCart = async (email, product) => {
+    try {
+        const response = await axios.post(`${API_URL}/addProductFromWishListToCart`, { email, product });
+        return response.data; // Return the response data from the server
+    } catch (error) {
+        console.error('Error adding product to cart:', error);
+        throw error; // Rethrow the error for handling in the calling component
+    }
+};
