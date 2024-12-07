@@ -622,7 +622,7 @@ const handleCheckout = async () => {
 
         
         <div style={{ margin: '20px', padding: '20px', border: '1px solid #ddd', borderRadius: '5px' }}>
-            <h1 style={{ textAlign: 'center', color: '#333' }}>Product List</h1>
+            <h1 style={{ textAlign: 'center', color: '#333' }}>checkout</h1>
             
             {/* Checkout Section */}
             <div style={{ marginTop: '30px', padding: '20px', border: '1px solid #ccc', borderRadius: '10px', backgroundColor: '#f9f9f9' }}>
