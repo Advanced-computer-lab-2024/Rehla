@@ -5562,9 +5562,8 @@ const deleteProductFromMyWishList = async (req, res) => {
     }
 };
 
-// add an item from my wish list to my cart
 const addProductFromWishListToCart = async (req, res) => {
-    try{
+    try {
         const { mail, productName } = req.params;
 
         // Validate request
@@ -5578,31 +5577,58 @@ const addProductFromWishListToCart = async (req, res) => {
         if (!wishlistItem) {
             return res.status(404).json({ message: "Product not found in wishlist." });
         }
-        // Check if the product already exists in the cart
-        const existingCartItem = await cartm.findOne({ Email: mail, Productname: productName });
+
+        // Check if the tourist email exists
+        const tourist = await Tourist.findOne({ Email: mail });
+        if (!tourist) {
+            return res.status(404).json({ message: "Tourist email not found." });
+        }
+
+        // Retrieve the current Cart_Num from the tourist
+        const currentCartNum = tourist.Cart_Num;
+
+        // Check if the product exists in the cart
+        const existingCartItem = await cartm.findOne({ 
+            Email: mail, 
+            Productname: productName, 
+            Cart_Num: currentCartNum 
+        });
+
+        console.log("Existing Cart Item:", existingCartItem); // Debugging log
 
         if (existingCartItem) {
-            // If it exists, update the quantity
-            existingCartItem.Quantity += 1; // Increase quantity by 1
+            // If the product exists in the cart, increment the quantity
+            existingCartItem.Quantity += 1;
             await existingCartItem.save();
-            return res.status(200).json({ message: "Product quantity updated in cart.", cartItem: existingCartItem });
+
+            return res.status(200).json({ 
+                message: "Product quantity updated in cart.", 
+                cartItem: existingCartItem, 
+                cartNumber: existingCartItem.Cart_Num 
+            });
         } else {
             // If it doesn't exist, create a new cart item
             const newCartItem = new cartm({
+                Cart_Num: currentCartNum, // Use the tourist's current Cart_Num
                 Email: mail,
                 Productname: productName,
                 Quantity: 1 // Default quantity
             });
 
             await newCartItem.save();
-            return res.status(201).json({ message: "Product added to cart successfully.", cartItem: newCartItem });
+            return res.status(201).json({ 
+                message: "Product added to cart successfully.", 
+                cartItem: newCartItem, 
+                cartNumber: newCartItem.Cart_Num 
+            });
         }
 
     } catch (error) {
-        console.error('Error adding product to cart:', error.message);
-        res.status(500).json({ error: "Error adding product to cart", details: error.message });
+        console.error('Error adding product to cart from wishlist:', error.message);
+        res.status(500).json({ error: "Error adding product to cart from wishlist", details: error.message });
     }
 };
+
 
 const viewTouristOrders = async (req, res) => {
     try {
