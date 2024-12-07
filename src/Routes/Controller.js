@@ -5872,9 +5872,7 @@ const createPromoCode = async (req, res) => {
 const cancelOrder = async (req, res) => {
     try {
         const { email, cartNum } = req.body;  // Destructure email and cartNum from the request body
-        // Log the incoming data for debugging
-        console.log('Received email:', email);
-        console.log('Received cartNum:', cartNum);
+        
         // Validate inputs
         if (!email) {
             return res.status(400).json({ message: "Email is required" });
@@ -5882,27 +5880,45 @@ const cancelOrder = async (req, res) => {
         if (!cartNum) {
             return res.status(400).json({ message: "Cart number is required" });
         }
-        // Check if the order exists in the database
-        const existingOrder = await order.findOne({ Email: email, Cart_Num: cartNum });
-        // Log the result of the database query for debugging
-        console.log('Found Order:', existingOrder);
-        if (!existingOrder) {
-            // Return 404 if the order doesn't exist
-            return res.status(404).json({ message: "Order not found" });
+
+        // Find all cart items for this email and cartNum
+        const cartItems = await cartm.find({ Email: email, Cart_Num: cartNum });
+        if (!cartItems || cartItems.length === 0) {
+            return res.status(404).json({ message: "Cart not found" });
         }
-        // Delete the order from the database
-        await order.deleteOne({ Email: email, Cart_Num: cartNum });
-        // Return a success response with the deleted order details
+
+        // Loop through each cart item and update the corresponding product's quantity and saled count
+        for (let item of cartItems) {
+            const product = await Product.findOne({ Product_Name: item.Productname });
+            if (product) {
+                // Increase the product quantity by the cart quantity
+                product.Quantity += item.Quantity;
+
+                // Decrease the "Saled" count by the cart quantity
+                product.Saled -= item.Quantity;
+
+                // Ensure Saled doesn't go below zero
+                if (product.Saled < 0) {
+                    product.Saled = 0;
+                }
+
+                await product.save();
+            }
+        }
+
+        // Return a success response with the updated cart items
         return res.status(200).json({
-            message: "Order deleted successfully",
-            deletedOrder: existingOrder
+            message: "Order canceled, product quantities updated, and sales adjusted successfully",
+            updatedCart: cartItems
         });
+
     } catch (error) {
         // Log the error and return a 500 response if something goes wrong
         console.error(`Error canceling order:`, error);
         return res.status(500).json({ message: "Server error" });
     }
 };
+
 
 const addTouristAddress = async (req, res) => {
     try {
