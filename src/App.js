@@ -180,6 +180,7 @@ const {createUserAdmin,
   requestNotificationForEvent,
   notifyForAvailableBookings,
   viewTotalAttendees,
+  viewTotalAttendeesForItineraries,
   notifyForFlaggedActivities,
   getNotificationsForTourGuide,
   markAsSeenn,
@@ -407,6 +408,8 @@ app.post('/requestNotificationForEvent', requestNotificationForEvent);
 
 app.post('/notifyForAvailableBookings',notifyForAvailableBookings);
 app.get('/view-report', viewTotalAttendees);
+app.get('/viewTotalAttendeesForItineraries', viewTotalAttendeesForItineraries);
+
 
 app.post('/notifyForFlaggedActivities',notifyForFlaggedActivities)
 app.get('/getNotificationsForTourGuide/:email', getNotificationsForTourGuide);

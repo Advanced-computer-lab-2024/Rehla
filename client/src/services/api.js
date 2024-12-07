@@ -1871,3 +1871,25 @@ export const addProductFromWishListToCart = async (email, product) => {
         throw error; // Rethrow the error for handling in the calling component
     }
 };
+
+// Function to fetch total attendees for activities created by a specific email
+export const fetchActivityReport = async (email) => {
+    try {
+        const response = await axios.get(`${API_URL}/view-report`, { params: { email } });
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching activity report:", error);
+        throw error;
+    }
+};
+
+// Function to fetch total attendees for itineraries created by a specific email
+export const fetchItineraryReport = async (email) => {
+    try {
+        const response = await axios.get(`${API_URL}/viewTotalAttendeesForItineraries`, { params: { email } });
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching itinerary report:", error);
+        throw error;
+    }
+};
