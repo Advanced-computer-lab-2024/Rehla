@@ -11,7 +11,7 @@ import {
     getAllCreatedByEmail,
     calculateActivityRevenue, fetchAllSalesReportsemail,
     fetchFilteredAdvertiserSalesReport,
-    getNotificationsForTourGuide ,markAsSeenn
+    getNotificationsForTourGuide ,markAsSeenn,fetchActivityReport
 } from '../services/api';
 
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -58,6 +58,28 @@ const AdvertiserHome = () => {
     const [notifications, setNotifications] = useState([]);
     const [unreadCount, setUnreadCount] = useState(0);
     const [showModal, setShowModal] = useState(false);
+    const [activityReport, setActivityReport] = useState(null); // State to store the report data
+    const [erro, setErro] = useState(null); // State to handle any errors
+    const handleViewActivityReport = async () => {
+        try {
+            setErro(null); // Reset errors
+    
+            // Retrieve email from localStorage
+            const email = localStorage.getItem('email');
+            if (!email) {
+                setErro("No email found. Please sign in.");
+                return;
+            }
+    
+            // Fetch the report with the user's email
+            const data = await fetchActivityReport(email);
+            setActivityReport(data); // Set the report data
+        } catch (err) {
+            setErro(err.message); // Handle errors
+            console.error("Error fetching activity report:", err);
+        }
+    };
+    
 
     // Fetch notifications for flagged activities
     useEffect(() => {
@@ -893,6 +915,31 @@ const AdvertiserHome = () => {
 
             {!loading && !error && reports.length === 0 && <p>No reports found.</p>}
         </div>
+        <div>
+    {/* Button to fetch and view activity report */}
+    <button onClick={handleViewActivityReport}>
+        View Activity Report
+    </button>
+
+    {/* Display the report if available */}
+    {activityReport && (
+        <div>
+            <h2>Activity Report</h2>
+            <ul>
+                {activityReport.activityDetails.map((activity, index) => (
+                    <li key={index}>
+                        {activity.activityName} (Date: {new Date(activity.date).toLocaleDateString()}): {activity.attendeesCount} attendees
+                    </li>
+                ))}
+            </ul>
+            <p><strong>Total Attendees:</strong> {activityReport.totalAttendees}</p>
+        </div>
+    )}
+</div>
+
+
+
+
 
         </div>
     );

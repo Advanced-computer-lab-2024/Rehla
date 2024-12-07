@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import logo from '../images/logo.png';
+import logo from '../images/logoWhite.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBell } from '@fortawesome/free-solid-svg-icons'; // Notification icon
+import { faShoppingCart,faBell  } from '@fortawesome/free-solid-svg-icons';
+
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import { faBell } from '@fortawesome/free-solid-svg-icons'; // Notification icon
 import {
     createItinerary,
     deleteItinerary,
@@ -13,12 +16,24 @@ import {
     fetchAllSalesReportsitinemail,
     fetchFilteredTourGuideSalesReport,
     getNotificationsForTourGuidet,
-    markAsSeennt
+    markAsSeennt,
+    fetchItineraryReport,
+    getTourGuideProfile
 } from '../services/api';
 
 const TourGuideHome = () => {
     const [data, setData] = useState({
         itineraries: [],
+    });
+
+    const [formData, setFormData] = useState({
+        Username: '',
+        Email: '',
+        Password: '',
+        Mobile_Number: '',
+        Experience: '',
+        Previous_work: '',
+        Type: ''
     });
     const [selectedItinerary, setSelectedItinerary] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -52,6 +67,16 @@ const TourGuideHome = () => {
     const [loadingg, setLoadingg] = useState(false); // Loading indicator
     const [errorr, setErrorr] = useState(null); // Error messages
 
+    const [currency, setCurrency] = useState('USD');
+    const [conversionRates] = useState({
+        USD: 1,
+        EUR: 0.85,
+        GBP: 0.75,
+        JPY: 110,
+        CAD: 1.25,
+        AUD: 1.35
+    });
+
     const [salesReports, setSalesReports] = useState([]);
     const [messagee, setMessagee] = useState('');
     const [reports, setReports] = useState([]);
@@ -62,6 +87,46 @@ const TourGuideHome = () => {
     const [notifications, setNotifications] = useState([]);
     const [unreadCount, setUnreadCount] = useState(0);
     const [showModal, setShowModal] = useState(false);
+    const [itineraryReport, setItineraryReport] = useState(null);
+    const [erro, setErro] = useState(null); // State to handle any errors
+
+    const handleViewItineraryReport = async () => {
+        try {
+            setErro(null);
+            const email = localStorage.getItem('email');
+            if (!email) {
+                setErro("No email found. Please sign in.");
+                return;
+            }
+            const data = await fetchItineraryReport(email);
+            setItineraryReport(data);
+        } catch (err) {
+            setErro("An error occurred while fetching the itinerary report.");
+            console.error(err);
+        }
+    };
+
+    const convertPrice = (price) => {
+        return (price * conversionRates[currency]).toFixed(2);
+    };
+
+    const handleCurrencyChange = (e) => {
+        setCurrency(e.target.value);
+    };
+
+    useEffect(() => {
+        const fetchProfile = async () => {
+          try {
+            const email = localStorage.getItem('email');
+            const profileData = await getTourGuideProfile({ Email: email });
+            //setTourist(profileData);
+            setFormData(profileData);
+          } catch (error) {
+            console.error("Error fetching profile:", error);
+          }
+        };
+        fetchProfile();
+    }, []);
 
     // Fetch notifications for flagged activities
     useEffect(() => {
@@ -325,33 +390,75 @@ const TourGuideHome = () => {
 
     return (
         <div>
-            <div className="NavBar">
-                <img src={logo} alt="Logo" />
-                <nav className="main-nav">
-                    <ul className="nav-links">
-                        <Link to="/">Home</Link>
-                    </ul>
-                </nav>
+            <div className="w-full mx-auto px-6 py-1 bg-black shadow flex flex-col sticky z-50 top-0">
+                <div className="flex items-center">                
+                    {/* Logo */}
+                    <img src={logo} alt="Logo" className="w-44" />
 
-                <nav className="signing">
-                <Link to="/TourGuideHome/TourGuideProfile">My Profile</Link>
-                </nav>
-                {/* Notification Icon */}
-                <nav className="signing">
-                    <div className="relative ml-4"> {/* Added margin-left for spacing */}
-                        <FontAwesomeIcon
-                            icon={faBell}
-                            size="2x" // Increased the size to 2x
-                            onClick={handleNotificationClick}
-                            className="cursor-pointer text-white" // Added text-white to make the icon white
-                        />
-                        {unreadCount > 0 && (
-                            <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                                {unreadCount}
-                            </span>
-                        )}
+                    {/* Main Navigation */}
+                    <nav className="flex space-x-6">
+                        <Link to="/TourGuideHome" className="text-lg font-medium text-logoOrange hover:text-blue-500">
+                            Home
+                        </Link>
+                        <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-blue-500">
+                            Create
+                        </Link>
+                        <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-blue-500">
+                            Reports
+                        </Link>
+                    </nav>
+
+                    <div className="flex items-center ml-auto">
+                        <select 
+                            value={currency} 
+                            onChange={handleCurrencyChange} 
+                            className="rounded p-1 mx-2 bg-transparent text-white"
+                        >
+                            <option value="USD" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">USD</option>
+                            <option value="EUR" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">EUR</option>
+                            <option value="GBP" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">GBP</option>
+                            <option value="JPY" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">JPY</option>
+                            <option value="CAD" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">CAD</option>
+                            <option value="AUD" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">AUD</option>
+                        </select>
+                        {/* Notification Icon */}
+                        <nav className="flex space-x-4 ml-2"> {/* Reduced ml-4 to ml-2 and space-x-6 to space-x-4 */}
+                            <div className="relative ml-2"> {/* Reduced ml-4 to ml-2 */}
+                                <FontAwesomeIcon
+                                    icon={faBell}
+                                    size="1x" // Increased the size to 2x
+                                    onClick={handleNotificationClick}
+                                    className="cursor-pointer text-white" // Added text-white to make the icon white
+                                />
+                                {unreadCount > 0 && (
+                                    <span className="absolute top-0 -right-1 bg-red-500 text-white text-xs rounded-full w-3 h-3 flex items-center justify-center">
+                                        {unreadCount}
+                                    </span>
+                                )}
+                            </div>
+                        </nav>
+                        <nav className="flex space-x-4 ml-2"> {/* Reduced ml-4 to ml-2 and space-x-6 to space-x-4 */}
+                            <Link to="/TourGuideHome/TourGuideProfile">
+                                {/* Profile Picture */}
+                                <div className="">
+                                    {formData.Profile_Pic ? (
+                                        <img
+                                            src={formData.Profile_Pic}
+                                            alt={`${formData.Name}'s profile`}
+                                            className="w-14 h-14 rounded-full object-cover border-2 border-white"
+                                        />
+                                    ) : (
+                                        <div className="w-14 h-14 rounded-full bg-black text-white text-center flex items-center justify-center border-2 border-white">
+                                            <span className="text-4xl font-bold">{formData.Username.charAt(0)}</span>
+                                        </div>
+                                    )}
+                                </div>
+                            </Link>
+                        </nav>
                     </div>
-                </nav>
+
+
+                </div>            
             </div>
 
             {/* Notification Modal */}
@@ -385,16 +492,7 @@ const TourGuideHome = () => {
                     </div>
                 </div>
             )}
-
-            {/* Main content */}
-            <div className="content">
-                <h1>Welcome to the Home Page!</h1>
-                {/* Other content goes here */}
-            </div>
-            
-            
-
-            <div className="mt-24">
+            <div className="">
 
                 {loading && <div>Loading...</div>}
                 {error && <div>Error: {error.message}</div>}
@@ -1096,6 +1194,62 @@ const TourGuideHome = () => {
 
             {!loading && !error && reports.length === 0 && <p>No reports found.</p>}
         </div>
+        <div>
+    {/* Button to fetch and view itinerary report */}
+    <button onClick={handleViewItineraryReport}>
+        View Itinerary Report
+    </button>
+
+    {/* Display the report if available */}
+    {itineraryReport && (
+        <div>
+            <h2>Itinerary Report</h2>
+            <ul>
+                {itineraryReport.itineraryDetails.map((itinerary, index) => {
+                    const date = new Date(itinerary.itineraryDate);
+                    const formattedDate = date instanceof Date && !isNaN(date) ? date.toLocaleDateString() : 'Invalid Date';
+
+                    return (
+                        <li key={index}>
+                            {itinerary.itineraryName} (Date: {formattedDate}): {itinerary.attendeesCount} attendees
+                        </li>
+                    );
+                })}
+            </ul>
+            <p><strong>Total Attendees:</strong> {itineraryReport.totalAttendees}</p>
+        </div>
+    )}
+</div>
+
+
+
+<footer className="bg-black shadow m-0">
+                <div className="w-full mx-auto md:py-8">
+                    <div className="sm:flex sm:items-center sm:justify-between">
+                        <a href="/" className="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
+                            <img src={logo} className="w-44" alt="Flowbite Logo" />
+                        </a>
+                        <div className="flex justify-center w-full">
+                            <ul className="flex flex-wrap items-center mb-6 text-sm font-medium text-gray-500 sm:mb-0 dark:text-gray-400 -ml-14">
+                                <li>
+                                    <a href="/" className="hover:underline me-4 md:me-6">About</a>
+                                </li>
+                                <li>
+                                    <a href="/" className="hover:underline me-4 md:me-6">Privacy Policy</a>
+                                </li>
+                                <li>
+                                    <a href="/" className="hover:underline me-4 md:me-6">Licensing</a>
+                                </li>
+                                <li>
+                                    <a href="/" className="hover:underline">Contact</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <hr className="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
+                    <span className="block text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2023 <a href="/" className="hover:underline">Rehla™</a>. All Rights Reserved.</span>
+                </div>
+            </footer>
             
         </div>
         

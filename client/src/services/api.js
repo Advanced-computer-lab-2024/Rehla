@@ -1871,3 +1871,26 @@ export const addProductFromWishListToCart = async (email, product) => {
         throw error; // Rethrow the error for handling in the calling component
     }
 };
+
+// Function to fetch the activity report based on the email
+export const fetchActivityReport = async (email) => {
+    try {
+        const response = await axios.post(`${API_URL}/view-report`, { email });
+        return response.data; // Return the report data
+    } catch (error) {
+        console.error("Error fetching activity report:", error.response?.data || error.message);
+        throw error; // Re-throw the error for the caller to handle
+    }
+};
+
+// Function to fetch the itinerary report based on the email
+export const fetchItineraryReport = async (email) => {
+    try {
+        const response = await axios.post(`${API_URL}/viewTotalAttendeesForItineraries`, { email });
+        return response.data; // Return the report data
+    } catch (error) {
+        console.error("Error fetching itinerary report:", error.response?.data || error.message);
+        throw error; // Re-throw the error for the caller to handle
+    }
+};
+

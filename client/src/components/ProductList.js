@@ -382,14 +382,17 @@ const handleCheckout = async () => {
                     <Link to="/" className="text-lg font-medium text-white hover:text-blue-500">
                         Home
                     </Link>
-                    <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-blue-500">
+                    <Link to="/UpcomingActivities" className="text-lg font-medium text-white hover:text-blue-500">
                         Activities
                     </Link>
-                    <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-blue-500">
+                    <Link to="/UpcomingItineraries" className="text-lg font-medium text-white hover:text-blue-500">
                         Itineraries
                     </Link>
-                    <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-blue-500">
+                    <Link to="/HistoricalPlaces" className="text-lg font-medium text-white hover:text-blue-500">
                         Historical Places
+                    </Link>
+                    <Link to="/Museums" className="text-lg font-medium text-white hover:text-blue-500">
+                        Museums
                     </Link>
                     <Link to="/Wishlist" className="text-lg font-medium text-white hover:text-blue-500">
                         Wishlist
@@ -630,7 +633,7 @@ const handleCheckout = async () => {
 
         
         <div style={{ margin: '20px', padding: '20px', border: '1px solid #ddd', borderRadius: '5px' }}>
-            <h1 style={{ textAlign: 'center', color: '#333' }}>Product List</h1>
+            <h1 style={{ textAlign: 'center', color: '#333' }}>checkout</h1>
             
             {/* Checkout Section */}
             <div style={{ marginTop: '30px', padding: '20px', border: '1px solid #ccc', borderRadius: '10px', backgroundColor: '#f9f9f9' }}>

@@ -5872,9 +5872,7 @@ const createPromoCode = async (req, res) => {
 const cancelOrder = async (req, res) => {
     try {
         const { email, cartNum } = req.body;  // Destructure email and cartNum from the request body
-        // Log the incoming data for debugging
-        console.log('Received email:', email);
-        console.log('Received cartNum:', cartNum);
+        
         // Validate inputs
         if (!email) {
             return res.status(400).json({ message: "Email is required" });
@@ -5882,27 +5880,45 @@ const cancelOrder = async (req, res) => {
         if (!cartNum) {
             return res.status(400).json({ message: "Cart number is required" });
         }
-        // Check if the order exists in the database
-        const existingOrder = await order.findOne({ Email: email, Cart_Num: cartNum });
-        // Log the result of the database query for debugging
-        console.log('Found Order:', existingOrder);
-        if (!existingOrder) {
-            // Return 404 if the order doesn't exist
-            return res.status(404).json({ message: "Order not found" });
+
+        // Find all cart items for this email and cartNum
+        const cartItems = await cartm.find({ Email: email, Cart_Num: cartNum });
+        if (!cartItems || cartItems.length === 0) {
+            return res.status(404).json({ message: "Cart not found" });
         }
-        // Delete the order from the database
-        await order.deleteOne({ Email: email, Cart_Num: cartNum });
-        // Return a success response with the deleted order details
+
+        // Loop through each cart item and update the corresponding product's quantity and saled count
+        for (let item of cartItems) {
+            const product = await Product.findOne({ Product_Name: item.Productname });
+            if (product) {
+                // Increase the product quantity by the cart quantity
+                product.Quantity += item.Quantity;
+
+                // Decrease the "Saled" count by the cart quantity
+                product.Saled -= item.Quantity;
+
+                // Ensure Saled doesn't go below zero
+                if (product.Saled < 0) {
+                    product.Saled = 0;
+                }
+
+                await product.save();
+            }
+        }
+
+        // Return a success response with the updated cart items
         return res.status(200).json({
-            message: "Order deleted successfully",
-            deletedOrder: existingOrder
+            message: "Order canceled, product quantities updated, and sales adjusted successfully",
+            updatedCart: cartItems
         });
+
     } catch (error) {
         // Log the error and return a 500 response if something goes wrong
         console.error(`Error canceling order:`, error);
         return res.status(500).json({ message: "Server error" });
     }
 };
+
 
 const addTouristAddress = async (req, res) => {
     try {
@@ -6380,23 +6396,53 @@ const checkandsendBirthdayPromoCode = async () => {
 };
 
 
-// Function to view the report of total attendees
+// Function to view the report of total attendees for activities created by a specific email
 const viewTotalAttendees = async (req, res) => {
     try {
-        // Fetch the total count of activities where `Attended` is true
-        const activitiesCount = await tourist_activities.countDocuments({ Attended: true });
+        const { email } = req.body; // Extract email from request body
 
-        // Fetch the total count of itineraries where `Attended` is true
-        const itinerariesCount = await touristIteneraries.countDocuments({ Attended: true });
+        // Validate input: Check if email is provided
+        if (!email) {
+            return res.status(400).json({ message: "Email is required." });
+        }
 
-        // Calculate the total count
-        const totalAttendees = activitiesCount + itinerariesCount;
+        // Fetch all activities created by the given email
+        const activities = await activity.find({ Created_By: email });
 
-        // Respond with the report
+        // If no activities found, return an appropriate message
+        if (!activities || activities.length === 0) {
+            return res.status(404).json({
+                message: "No activities found for the provided email."
+            });
+        }
+
+        // Prepare an array to store activity names, dates, and their attendee counts
+        const activityDetails = [];
+
+        let totalAttendees = 0;
+
+        // Loop through each activity and count attendees
+        for (const activityItem of activities) {
+            const count = await tourist_activities.countDocuments({
+                Activity_Name: activityItem.Name,
+                Attended: true
+            });
+
+            // Add the activity name, date, and its count to the details
+            activityDetails.push({
+                activityName: activityItem.Name,
+                date: activityItem.Date, // Assuming the Date field exists in your activity schema
+                attendeesCount: count
+            });
+
+            // Increment the total attendees count
+            totalAttendees += count;
+        }
+
+        // Respond with the detailed report
         res.status(200).json({
             message: "Report generated successfully.",
-            activitiesCount,
-            itinerariesCount,
+            activityDetails,
             totalAttendees
         });
     } catch (error) {
@@ -6407,6 +6453,74 @@ const viewTotalAttendees = async (req, res) => {
         });
     }
 };
+
+
+
+// Function to view the report of total attendees for itineraries created by a specific email
+const viewTotalAttendeesForItineraries = async (req, res) => {
+    try {
+        const { email } = req.body; // Extract email from request body
+
+        // Validate input: Check if email is provided
+        if (!email) {
+            return res.status(400).json({ message: "Email is required." });
+        }
+
+        // Fetch all itineraries created by the given email
+        const itineraries = await itinerarym.find({ Created_By: email });
+
+        // If no itineraries found, return an appropriate message
+        if (!itineraries || itineraries.length === 0) {
+            return res.status(404).json({
+                message: "No itineraries found for the provided email."
+            });
+        }
+
+        // Prepare an array to store itinerary names, their attendee counts, and itinerary dates
+        const itineraryDetails = [];
+
+        let totalAttendees = 0;
+
+        // Loop through each itinerary and count attendees
+        for (const itineraryItem of itineraries) {
+            const count = await touristIteneraries.countDocuments({
+                Itinerary_Name: itineraryItem.Itinerary_Name,
+                Attended: true
+            });
+
+            // Ensure Available_Date_Time is a valid date and format it
+            const itineraryDate = new Date(itineraryItem.Available_Date_Time);
+            const formattedDate = itineraryDate instanceof Date && !isNaN(itineraryDate)
+                ? itineraryDate.toISOString() // Ensure ISO format
+                : 'Invalid Date';
+
+            // Add the itinerary name, its count, and the formatted date to the details
+            itineraryDetails.push({
+                itineraryName: itineraryItem.Itinerary_Name,
+                attendeesCount: count,
+                itineraryDate: formattedDate  // Include formatted date
+            });
+
+            // Increment the total attendees count
+            totalAttendees += count;
+        }
+
+        // Respond with the detailed report
+        res.status(200).json({
+            message: "Report generated successfully.",
+            itineraryDetails,
+            totalAttendees
+        });
+    } catch (error) {
+        console.error("Error generating report:", error.message);
+        res.status(500).json({
+            message: "Error generating report.",
+            error: error.message
+        });
+    }
+};
+
+
 
 
 const getAllSalesReportsemail = async (req, res) => {
@@ -7417,6 +7531,7 @@ module.exports = { getPurchasedProducts,
     requestNotificationForEvent,
     notifyForAvailableBookings,
     viewTotalAttendees,
+    viewTotalAttendeesForItineraries,
     notifyForFlaggedActivities,
     getNotificationsForTourGuide,
     markAsSeenn,
