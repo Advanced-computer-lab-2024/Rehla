@@ -13,7 +13,8 @@ import {
     fetchAllSalesReportsitinemail,
     fetchFilteredTourGuideSalesReport,
     getNotificationsForTourGuidet,
-    markAsSeennt
+    markAsSeennt,
+    fetchItineraryReport
 } from '../services/api';
 
 const TourGuideHome = () => {
@@ -62,6 +63,24 @@ const TourGuideHome = () => {
     const [notifications, setNotifications] = useState([]);
     const [unreadCount, setUnreadCount] = useState(0);
     const [showModal, setShowModal] = useState(false);
+    const [itineraryReport, setItineraryReport] = useState(null);
+    const [erro, setErro] = useState(null); // State to handle any errors
+
+    const handleViewItineraryReport = async () => {
+        try {
+            setErro(null);
+            const email = localStorage.getItem('email');
+            if (!email) {
+                setErro("No email found. Please sign in.");
+                return;
+            }
+            const data = await fetchItineraryReport(email);
+            setItineraryReport(data);
+        } catch (err) {
+            setErro("An error occurred while fetching the itinerary report.");
+            console.error(err);
+        }
+    };
 
     // Fetch notifications for flagged activities
     useEffect(() => {
@@ -1096,6 +1115,28 @@ const TourGuideHome = () => {
 
             {!loading && !error && reports.length === 0 && <p>No reports found.</p>}
         </div>
+        <div>
+    {/* Button to fetch and view itinerary report */}
+    <button onClick={handleViewItineraryReport}>
+        View Itinerary Report
+    </button>
+
+    {/* Display the itinerary report if available */}
+    {itineraryReport && (
+        <div>
+            <h2>Itinerary Report</h2>
+            <ul>
+                {itineraryReport.itineraryDetails.map((itinerary, index) => (
+                    <li key={index}>
+                        {itinerary.itineraryName}: {itinerary.attendeesCount} attendees
+                    </li>
+                ))}
+            </ul>
+            <p><strong>Total Attendees:</strong> {itineraryReport.totalAttendees}</p>
+        </div>
+    )}
+</div>
+
             
         </div>
         
