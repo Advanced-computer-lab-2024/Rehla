@@ -6488,11 +6488,17 @@ const viewTotalAttendeesForItineraries = async (req, res) => {
                 Attended: true
             });
 
-            // Add the itinerary name, its count, and the itinerary date to the details
+            // Ensure Available_Date_Time is a valid date and format it
+            const itineraryDate = new Date(itineraryItem.Available_Date_Time);
+            const formattedDate = itineraryDate instanceof Date && !isNaN(itineraryDate)
+                ? itineraryDate.toISOString() // Ensure ISO format
+                : 'Invalid Date';
+
+            // Add the itinerary name, its count, and the formatted date to the details
             itineraryDetails.push({
                 itineraryName: itineraryItem.Itinerary_Name,
                 attendeesCount: count,
-                itineraryDate: itineraryItem.Available_Date_Time  // Include the itinerary date
+                itineraryDate: formattedDate  // Include formatted date
             });
 
             // Increment the total attendees count
