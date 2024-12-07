@@ -259,7 +259,7 @@ const Home = () => {
                     <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-blue-500">
                         Museums
                     </Link>
-                    <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-blue-500">
+                    <Link to="/products" className="text-lg font-medium text-white hover:text-blue-500">
                         Gift Shop
                     </Link>
                     <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-blue-500">
