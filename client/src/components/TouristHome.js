@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart,faBell  } from '@fortawesome/free-solid-svg-icons';
 import { searchEventsPlaces ,getAllTransportation,bookTransportation,
         saveEvent,cancelOrder,getAllNotifications ,markAsSeen,remindUpcomingPaidActivities,
-        getTouristProfile ,notifyForAvailableBookings  } from '../services/api'; // Import the commentOnEvent function
+        getTouristProfile ,notifyForAvailableBookings ,cancelSavedEvent } from '../services/api'; // Import the commentOnEvent function
 import Homet2 from '../components/Homet2.js';
 
 const TouristHome = () => {
@@ -38,13 +38,17 @@ const TouristHome = () => {
         CAD: 1.25,
         AUD: 1.35
     });
-    
+    //bto3 cancel event 
+    const [eventTypeCancel, setEventTypeCancel] = useState('');
+    const [eventNameCancel,setEventNameCancel]=useState('');
+    const [succesEventCancel,setSuccessEventCancel]=useState('');
+    const [errorEventCancel,setErrorEventCancel]=useState('');
     //bto3 el save event
     const [eventType, setEventType] = useState('');
     const [eventName,setEventName]=useState('');
     const [succesEvent,setSuccessEvent]=useState('');
     const [errorEvent,setErrorEvent]=useState('');
-     
+    
      //bto3 el cancelOrder
     const [cartNum, setCartNum] = useState('');
     const [succesCancelOrder,setSuccessCancelOrder]=useState('');
@@ -278,7 +282,38 @@ const TouristHome = () => {
         }
     };
 
-
+    const handleCancelEvent = async (e) => {
+        e.preventDefault(); // Prevent default form submission
+    
+        try {
+            // Call the cancelSavedEvent API function with the necessary data
+            const response = await cancelSavedEvent({
+                email,
+                type: eventTypeCancel,
+                name: eventNameCancel,
+            });
+    
+            // On success, update the success message
+            setSuccessEventCancel(`Event canceled successfully: ${eventNameCancel} (${eventTypeCancel})`);
+    
+            // Clear the form inputs
+            setEmail('');
+            setEventTypeCancel('');
+            setEventNameCancel('');
+        } catch (error) {
+            // Handle errors, log them, and update the error message
+            console.error('Failed to cancel event:', error);
+    
+            if (error.response && error.response.data && error.response.data.message) {
+                // Use the error message returned from the server, if available
+                setErrorEventCancel(`Error: ${error.response.data.message}`);
+            } else {
+                // Fallback to a generic error message
+                setErrorEventCancel('Failed to cancel event. Please try again.');
+            }
+        }
+    };
+    
     
     return (
     <div>
@@ -614,6 +649,44 @@ const TouristHome = () => {
                 {succesCancelOrder && <p style={{ color: 'green' }}>{succesCancelOrder}</p>}
                 {errorCancelOrder && <p style={{ color: 'red' }}>{errorCancelOrder}</p>}
             </div>
+            <div>
+    <h2>Cancel an Event</h2>
+    <form>
+        <div>
+            <label>Email:</label>
+            <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+            />
+        </div>
+        <div>
+            <label>Event Type:</label>
+            <input
+                type="text"
+                value={eventTypeCancel}
+                onChange={(e) => setEventTypeCancel(e.target.value)}
+                required
+            />
+        </div>
+        <div>
+            <label>Event Name:</label>
+            <input
+                type="text"
+                value={eventNameCancel}
+                onChange={(e) => setEventNameCancel(e.target.value)}
+                required
+            />
+        </div>
+        <button onClick={handleCancelEvent}>
+            Cancel Event
+        </button>
+    </form>
+    {succesEventCancel && <p style={{ color: 'green' }}>{succesEventCancel}</p>}
+    {errorEventCancel && <p style={{ color: 'red' }}>{errorEventCancel}</p>}
+</div>
+
             <footer className="bg-black shadow m-0">
                 <div className="w-full mx-auto md:py-8">
                     <div className="sm:flex sm:items-center sm:justify-between">

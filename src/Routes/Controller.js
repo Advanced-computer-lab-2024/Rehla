@@ -5938,6 +5938,41 @@ const saveEvent = async (req, res) => {
         });
     }
 };
+const cancelSavedEvent = async (req, res) => {
+    try {
+        const { email, type, name } = req.body;
+
+        // Validate inputs
+        if (!email || !type || !name) {
+            return res.status(400).json({
+                message: "Tourist email, Type, and Name are required.",
+            });
+        }
+
+        // Find and delete the saved event
+        const deletedEvent = await saved_eventm.findOneAndDelete({
+            Tourist_Email: email,
+            TYPE: type,
+            Name: name,
+        });
+
+        if (!deletedEvent) {
+            return res.status(404).json({
+                message: "Saved event not found.",
+            });
+        }
+
+        return res.status(200).json({
+            message: "Saved event canceled successfully.",
+            canceled_event: deletedEvent,
+        });
+    } catch (error) {
+        console.error("Error canceling saved event:", error);
+        return res.status(500).json({
+            message: "An error occurred while canceling the saved event.",
+        });
+    }
+};
 
 const checkEventSaved = async (req, res) => {
     try {
@@ -7367,4 +7402,5 @@ module.exports = { getPurchasedProducts,
     bookhotel,
     bookflight,
     shareactivtybyemail,
+    cancelSavedEvent
 };

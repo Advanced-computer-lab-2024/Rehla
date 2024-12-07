@@ -1582,6 +1582,18 @@ export const cancelOrder = async (cancelData) => {
         throw error;  // Propagate the error so that it can be handled in the calling code
     }
 };
+export const cancelSavedEvent = async (eventData) => {
+    try {
+        const response = await axios.delete(`${API_URL}/cancelSavedEvent`, {
+            data: eventData // Pass data in the request body
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error canceling saved event:', error);
+        throw error;
+    }
+};
+
 export const viewSavedActivities = async (touristEmail) => {
     try {
         // Make the POST request with touristEmail in the body

@@ -190,6 +190,7 @@ const {createUserAdmin,
   bookhotel,
   bookflight,
   shareactivtybyemail,
+  cancelSavedEvent
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -469,3 +470,4 @@ cron.schedule('*/30 * * * * *', async () => {
 
 app.post('/bookhotel', bookhotel);
 app.post('/bookflight', bookflight);
+app.delete('/cancelSavedEvent',cancelSavedEvent);
