@@ -377,14 +377,17 @@ const handleCheckout = async () => {
                     <Link to="/" className="text-lg font-medium text-white hover:text-blue-500">
                         Home
                     </Link>
-                    <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-blue-500">
+                    <Link to="/UpcomingActivities" className="text-lg font-medium text-white hover:text-blue-500">
                         Activities
                     </Link>
-                    <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-blue-500">
+                    <Link to="/UpcomingItineraries" className="text-lg font-medium text-white hover:text-blue-500">
                         Itineraries
                     </Link>
-                    <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-blue-500">
+                    <Link to="/HistoricalPlaces" className="text-lg font-medium text-white hover:text-blue-500">
                         Historical Places
+                    </Link>
+                    <Link to="/Museums" className="text-lg font-medium text-white hover:text-blue-500">
+                        Museums
                     </Link>
                     <Link to="/Wishlist" className="text-lg font-medium text-white hover:text-blue-500">
                         Wishlist

@@ -183,13 +183,13 @@ const UpcomingItineraries = () => {
                     <Link to="/UpcomingItineraries" className="text-lg font-medium text-logoOrange">
                         Itineraries
                     </Link>
-                    <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-logoOrange">
+                    <Link to="/HistoricalPlaces" className="text-lg font-medium text-white hover:text-logoOrange">
                         Historical Places
                     </Link>
-                    <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-logoOrange">
+                    <Link to="/Museums" className="text-lg font-medium text-white hover:text-logoOrange">
                         Museums
                     </Link>
-                    <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-logoOrange">
+                    <Link to="/products" className="text-lg font-medium text-white hover:text-logoOrange">
                         Gift Shop
                     </Link>
                     <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-logoOrange">

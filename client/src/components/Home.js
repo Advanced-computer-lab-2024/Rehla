@@ -253,10 +253,10 @@ const Home = () => {
                     <Link to="/UpcomingItineraries" className="text-lg font-medium text-white hover:text-logoOrange">
                         Itineraries
                     </Link>
-                    <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-logoOrange">
+                    <Link to="/HistoricalPlaces" className="text-lg font-medium text-white hover:text-logoOrange">
                         Historical Places
                     </Link>
-                    <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-logoOrange">
+                    <Link to="/Museums" className="text-lg font-medium text-white hover:text-logoOrange">
                         Museums
                     </Link>
                     <Link to="/products" className="text-lg font-medium text-white hover:text-logoOrange">
@@ -732,7 +732,7 @@ const Home = () => {
                         <div
                         key={place._id}
                         className="card w-96 bg-white rounded-lg shadow-lg overflow-hidden flex flex-col"
-                        onClick={() => handleActivityClick(place)}
+                       /* onClick={() => handleActivityClick(place)}*/
                         >
                         <img
                             src={place.Pictures}
