@@ -1205,16 +1205,23 @@ const TourGuideHome = () => {
         <div>
             <h2>Itinerary Report</h2>
             <ul>
-                {itineraryReport.itineraryDetails.map((itinerary, index) => (
-                    <li key={index}>
-                        {itinerary.itineraryName} (Date: {new Date(itinerary.Available_Date_Time).toLocaleDateString()}): {itinerary.attendeesCount} attendees
-                    </li>
-                ))}
+                {itineraryReport.itineraryDetails.map((itinerary, index) => {
+                    const date = new Date(itinerary.itineraryDate);
+                    const formattedDate = date instanceof Date && !isNaN(date) ? date.toLocaleDateString() : 'Invalid Date';
+
+                    return (
+                        <li key={index}>
+                            {itinerary.itineraryName} (Date: {formattedDate}): {itinerary.attendeesCount} attendees
+                        </li>
+                    );
+                })}
             </ul>
             <p><strong>Total Attendees:</strong> {itineraryReport.totalAttendees}</p>
         </div>
     )}
 </div>
+
+
 
 <footer className="bg-black shadow m-0">
                 <div className="w-full mx-auto md:py-8">
