@@ -39,6 +39,8 @@ import Cart from './components/Cart.js';
 import ProductInfo from './components/ProductInfo.js'; 
 import UpcomingActivities from './components/UpcomingActivities.js'; 
 import UpcomingItineraries from './components/UpcomingItineraries.js';
+import HistoricalPlaces from './components/HistoricalPlaces.js';
+import Museums from './components/Museums.js';
 
 
 
@@ -90,6 +92,8 @@ function App() {
                 <Route path="/ProductInfo" element={<ProductInfo />} />
                 <Route path="/UpcomingActivities" element={<UpcomingActivities/>} />
                 <Route path="/UpcomingItineraries" element={<UpcomingItineraries/>} />
+                <Route path="/HistoricalPlaces" element={<HistoricalPlaces/>} />
+                <Route path="/Museums" element={<Museums/>} />
 
 
  
