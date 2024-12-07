@@ -407,8 +407,8 @@ app.post('/testNotification',testNotification);
 app.post('/requestNotificationForEvent', requestNotificationForEvent);
 
 app.post('/notifyForAvailableBookings',notifyForAvailableBookings);
-app.get('/view-report', viewTotalAttendees);
-app.get('/viewTotalAttendeesForItineraries', viewTotalAttendeesForItineraries);
+app.post('/view-report', viewTotalAttendees);
+app.post('/viewTotalAttendeesForItineraries', viewTotalAttendeesForItineraries);
 
 
 app.post('/notifyForFlaggedActivities',notifyForFlaggedActivities)
