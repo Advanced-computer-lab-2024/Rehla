@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getTouristProfile, updateTouristProfile, uploadProfilePicture , requestDeleteProfile
   ,addDeliveryAddress,viewComplaintByEmail,createComplaint,viewSavedActivities,viewSavedItineraries,createPreference,
-  redeemPoints
+  redeemPoints, getAllNotifications, markAsSeen, searchEventsPlaces
 } from '../services/api'; // Import your new upload function
 import { Link } from 'react-router-dom';
-import logo from '../images/logo.png';
+import logo from '../images/logoWhite.png';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faShoppingCart,faBell  } from '@fortawesome/free-solid-svg-icons';
+
 import Level1 from '../images/Level1.jpg';
 import Level2 from '../images/Level2.jpg';
 import Level3 from '../images/Level3.jpg';
@@ -59,6 +62,14 @@ const TouristProfile = () => {
   const [complaintTitle, setComplaintTitle] = useState('');
   const [complaintBody, setComplaintBody] = useState('');
   const [error, setError] = useState(null);
+
+  const [notifications, setNotifications] = useState([]); // State for notifications
+  const [unreadCount, setUnreadCount] = useState(0); // State for unread notifications
+  const [showModal, setShowModal] = useState(false); // State to show/hide the modal
+
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchResults, setSearchResults] = useState({});
+  const [isSearched, setIsSearched] = useState(false);
 
      // bto3 el view activity
  const [succesViewActivity,setSuccessViewActivity]=useState('');
@@ -332,6 +343,42 @@ const handleUploadProfilePicture = async () => {
     }
 };
 
+const handleNotificationClick = async () => {
+  setShowModal(true); // Show the modal when the notification icon is clicked
+
+  try {
+      const storedEmail = localStorage.getItem('email'); // Retrieve the signed-in user's email
+      if (!storedEmail) {
+          throw new Error("User email not found in local storage.");
+      }
+
+      // Mark all unseen notifications for the user as seen
+      for (const notification of notifications) {
+          if (!notification.seen) {
+              await markAsSeen(notification._id); // Mark as seen
+          }
+      }
+
+      // Refresh the notifications for the signed-in user
+      const updatedNotifications = await getAllNotifications(storedEmail);
+      setNotifications(updatedNotifications); // Set updated notifications
+  } catch (error) {
+      console.error("Error marking notifications as seen:", error);
+  }
+};
+
+// Handle search submission
+const handleSearch = async (e) => {
+  e.preventDefault();
+  try {
+      const result = await searchEventsPlaces(searchTerm);
+      setSearchResults(result);
+      setIsSearched(true);
+  } catch (err) {
+      setError('Search failed. Please try again later.');
+  }
+};
+
 const handleRedeemPoints = async () => {
   try {
     const email = localStorage.getItem('email');
@@ -361,20 +408,113 @@ if (!tourist) {
 return (
 
   <div className="min-h-screen flex flex-col justify-between w-full">
-     <div className="w-full mx-auto px-6 py-4 h-20 bg-brandBlue shadow flex justify-between items-center sticky z-50 top-1 -mt-1">
-                {/* Logo */}
-                <img src={logo} alt="Logo" className="w-20" />
+     <div className="w-full mx-auto px-6 py-1 bg-black shadow flex flex-col sticky z-50 top-0">
+                <div className="flex items-center">                
+                    {/* Logo */}
+                    <img src={logo} alt="Logo" className="w-44" />
+
+                    {/* Search Form */}
+                    <form onSubmit={handleSearch} className="flex items-center ml-4">
+                    <input
+                        type="text"
+                        placeholder="Search"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="border border-gray-300 rounded-full px-72 py-2 w-full max-w-2xl text-sm pl-2"
+                    />
+
+                        <button type="submit" className="bg-white text-black rounded-full ml-2 p-2">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-5 w-5"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                />
+                            </svg>
+                        </button>
+                    </form>
+                    <div className="flex items-center ml-auto">
+                        <nav className="flex space-x-4 ml-2"> {/* Reduced ml-4 to ml-2 and space-x-6 to space-x-4 */}
+                            <Link to="/Cart">
+                                <FontAwesomeIcon icon={faShoppingCart} />
+                            </Link>
+                        </nav>
+                        {/* Notification Icon */}
+                        <nav className="flex space-x-4 ml-2"> {/* Reduced ml-4 to ml-2 and space-x-6 to space-x-4 */}
+                            <div className="relative ml-2"> {/* Reduced ml-4 to ml-2 */}
+                                <FontAwesomeIcon
+                                    icon={faBell}
+                                    size="1x" // Increased the size to 2x
+                                    onClick={handleNotificationClick}
+                                    className="cursor-pointer text-white" // Added text-white to make the icon white
+                                />
+                                {unreadCount > 0 && (
+                                    <span className="absolute top-0 -right-1 bg-red-500 text-white text-xs rounded-full w-3 h-3 flex items-center justify-center">
+                                        {unreadCount}
+                                    </span>
+                                )}
+                            </div>
+                        </nav>
+                        <nav className="flex space-x-4 ml-2"> {/* Reduced ml-4 to ml-2 and space-x-6 to space-x-4 */}
+                            <Link to="/TouristHome/TouristProfile">
+                                {/* Profile Picture */}
+                                <div className="">
+                                    {formData.Profile_Pic ? (
+                                        <img
+                                            src={formData.Profile_Pic}
+                                            alt={`${formData.Name}'s profile`}
+                                            className="w-14 h-14 rounded-full object-cover border-2 border-white"
+                                        />
+                                    ) : (
+                                        <div className="w-16 h-16 rounded-full bg-black text-white text-center flex items-center justify-center border-4 border-white">
+                                            <span className="text-4xl font-bold">{formData.Username.charAt(0)}</span>
+                                        </div>
+                                    )}
+                                </div>
+                            </Link>
+                        </nav>
+                    </div>
+
+
+                </div>
 
                 {/* Main Navigation */}
                 <nav className="flex space-x-6">
-                </nav>
-
-                {/* Sign In/Sign Up Navigation */}
-                <nav className="flex space-x-6">
-                    <Link to="/" className="text-lg font-medium text-white-700 hover:text-blue-500">
-                        Signout
+                    <Link to="/" className="text-lg font-medium text-logoOrange hover:text-blue-500">
+                        Home
                     </Link>
-                </nav>
+                    <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-blue-500">
+                        Activities
+                    </Link>
+                    <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-blue-500">
+                        Itineraries
+                    </Link>
+                    <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-blue-500">
+                        Historical Places
+                    </Link>
+                    <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-blue-500">
+                        Museums
+                    </Link>
+                    <Link to="/products" className="text-lg font-medium text-white hover:text-blue-500">
+                        Gift Shop
+                    </Link>
+                    <Link to="/MyEvents" className="text-lg font-medium text-white hover:text-blue-500">
+                        MyEvents
+                    </Link>
+                    <Link to="/Flights" className="text-lg font-medium text-white hover:text-blue-500">
+                        Flights
+                    </Link>
+                    <Link to="/Hotels" className="text-lg font-medium text-white hover:text-blue-500">
+                        Hotels
+                    </Link>
+                </nav>            
             </div>
     <div className="flex flex-wrap w-full">
       {/* Profile Section */}
