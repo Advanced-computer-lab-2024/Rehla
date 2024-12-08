@@ -5922,8 +5922,8 @@ const createPromoCode = async (req, res) => {
 }
 const cancelOrder = async (req, res) => {
     try {
-        const { email, cartNum } = req.body;  // Destructure email and cartNum from the request body
-        
+        const { email, cartNum } = req.body; // Destructure email and cartNum from the request body
+
         // Validate inputs
         if (!email) {
             return res.status(400).json({ message: "Email is required" });
@@ -5957,10 +5957,29 @@ const cancelOrder = async (req, res) => {
             }
         }
 
-        // Return a success response with the updated cart items
+        // Update the Tourist table: Increment the Cart_Num by 1 for the given email
+        const tourist = await Tourist.findOneAndUpdate(
+            { Email: email }, // Find the tourist by email
+            { $inc: { Cart_Num: 1 } }, // Increment Cart_Num by 1
+            { new: true } // Return the updated document
+        );
+
+        if (!tourist) {
+            return res.status(404).json({ message: "Tourist not found" });
+        }
+
+        // Delete the order from the Order table
+        const deletedOrder = await order.findOneAndDelete({ Email: email, Cart_Num: cartNum });
+        if (!deletedOrder) {
+            return res.status(404).json({ message: "Order not found in the database" });
+        }
+
+        // Return a success response with the updated cart items and tourist information
         return res.status(200).json({
-            message: "Order canceled, product quantities updated, and sales adjusted successfully",
-            updatedCart: cartItems
+            message: "Order canceled, product quantities updated, sales adjusted, cart number incremented, and order removed",
+            updatedCart: cartItems,
+            updatedTourist: tourist,
+            deletedOrder: deletedOrder
         });
 
     } catch (error) {
