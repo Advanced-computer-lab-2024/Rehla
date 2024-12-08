@@ -264,31 +264,33 @@ const TourisimGovernerHome = () => {
             <h1 className="text-3xl font-bold mb-8 text-center">Tourism Governor Home</h1>
             <section>
                 <h2 className="text-2xl font-semibold text-gray-800 mb-4">Historical Places</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 bg-white rounded-lg shadow-lg p-4">
-                    {data.historicalPlaces.map((place) => (
-                        <div
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-6 py-4">
+                        {data.historicalPlaces.map((place) => (
+                            <div
                             key={place._id}
-                            className="bg-blue-50 rounded-lg shadow-md overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-lg"
+                            className="card bg-white rounded-lg shadow-lg overflow-hidden flex flex-col"
                             onClick={() => handleHistoricalPlaceClick(place)}
-                        >
+                            >
                             <img
                                 src={place.Pictures}
                                 alt={place.Name}
-                                className="w-full h-40 object-cover"
+                                className="w-full h-48 object-cover transition-transform duration-300 ease-in-out hover:scale-105"
                             />
-                            <div className="p-4">
-                                <h3 className="text-lg font-semibold text-gray-700">{place.Name}</h3>
+                            <div className="p-4 flex flex-col justify-between flex-grow">
+                                <h3 className="text-lg font-semibold text-gray-800">{place.Name}</h3>
                             </div>
+                            </div>
+                        ))}
+
+                        {/* Add New Place Button */}
+                        <div
+                            onClick={togglePlaceModal}
+                            className="flex items-center justify-center p-4 bg-white border-2 border-dashed border-gray-300 rounded-lg shadow-md cursor-pointer hover:bg-gray-100"
+                        >
+                            <span className="text-4xl font-bold text-gray-500">+</span>
                         </div>
-                    ))}
-                    {/* Add New Place Button */}
-                    <div
-                        onClick={togglePlaceModal}
-                        className="flex items-center justify-center p-4 bg-gray-200 rounded-md shadow-sm hover:bg-gray-300 cursor-pointer"
-                    >
-                        <span className="text-3xl font-bold text-gray-500">+</span>
-                    </div>
                 </div>
+
             </section>
 
 
@@ -296,32 +298,33 @@ const TourisimGovernerHome = () => {
 
             <section>
                 <h2 className="text-2xl font-semibold text-gray-800 mb-4">Museums</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 bg-white rounded-lg shadow-lg p-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-6 py-4">
                     {data.museums.map((museum) => (
                         <div
-                            key={museum._id}
-                            className="bg-blue-50 rounded-lg shadow-md overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-lg cursor-pointer"
-                            onClick={() => handleMuseumClick(museum)} // Add click handler
+                        key={museum._id}
+                        className="card bg-white rounded-lg shadow-lg overflow-hidden flex flex-col cursor-pointer"
+                        onClick={() => handleMuseumClick(museum)} // Click handler for museums
                         >
-                            <img
-                                src={museum.pictures}
-                                alt={museum.Name}
-                                className="w-full h-40 object-cover"
-                            />
-                            <div className="p-4">
-                                <h3 className="text-lg font-semibold text-gray-700">{museum.Name}</h3>
-                            </div>
+                        <img
+                            src={museum.pictures}
+                            alt={museum.Name}
+                            className="w-full h-48 object-cover transition-transform duration-300 ease-in-out hover:scale-105"
+                        />
+                        <div className="p-4 flex flex-col justify-between flex-grow">
+                            <h3 className="text-lg font-semibold text-gray-800">{museum.Name}</h3>
+                        </div>
                         </div>
                     ))}
 
                     {/* Add New Museum Button */}
                     <div
                         onClick={toggleModal}
-                        className="flex items-center justify-center p-4 bg-gray-200 rounded-md shadow-sm hover:bg-gray-300 cursor-pointer"
+                        className="flex items-center justify-center p-4 bg-white border-2 border-dashed border-gray-300 rounded-lg shadow-md cursor-pointer hover:bg-gray-100"
                     >
-                        <span className="text-3xl font-bold text-gray-500">+</span>
+                        <span className="text-4xl font-bold text-gray-500">+</span>
                     </div>
-                </div>
+                    </div>
+
             </section>
 
 
