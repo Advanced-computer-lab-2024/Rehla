@@ -484,7 +484,7 @@ app.get ('/viewUserStats',viewUserStats);
 
 // Schedule the checkAndSendReminders function to run every 30 seconds
 
-cron.schedule('*/30 * * * * *', async () => {
+cron.schedule('*/10 * * * *', async () => {
   console.log('Running scheduled task to check and send reminders');
   //await checkAndSendRemindersforEvents();
   //await checkAndSendRemindersforItinerary();
