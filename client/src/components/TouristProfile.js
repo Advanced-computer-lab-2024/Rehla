@@ -487,31 +487,31 @@ return (
 
                 {/* Main Navigation */}
                 <nav className="flex space-x-6">
-                    <Link to="/" className="text-lg font-medium text-logoOrange hover:text-blue-500">
+                    <Link to="/" className="text-lg font-medium text-white hover:text-logoOrange">
                         Home
                     </Link>
-                    <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-blue-500">
+                    <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-logoOrange">
                         Activities
                     </Link>
-                    <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-blue-500">
+                    <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-logoOrange">
                         Itineraries
                     </Link>
-                    <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-blue-500">
+                    <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-logoOrange">
                         Historical Places
                     </Link>
-                    <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-blue-500">
+                    <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-logoOrange">
                         Museums
                     </Link>
-                    <Link to="/products" className="text-lg font-medium text-white hover:text-blue-500">
+                    <Link to="/products" className="text-lg font-medium text-white hover:text-logoOrange">
                         Gift Shop
                     </Link>
-                    <Link to="/MyEvents" className="text-lg font-medium text-white hover:text-blue-500">
+                    <Link to="/MyEvents" className="text-lg font-medium text-white hover:text-logoOrange">
                         MyEvents
                     </Link>
-                    <Link to="/Flights" className="text-lg font-medium text-white hover:text-blue-500">
+                    <Link to="/Flights" className="text-lg font-medium text-white hover:text-logoOrange">
                         Flights
                     </Link>
-                    <Link to="/Hotels" className="text-lg font-medium text-white hover:text-blue-500">
+                    <Link to="/Hotels" className="text-lg font-medium text-white hover:text-logoOrange">
                         Hotels
                     </Link>
                 </nav>            
