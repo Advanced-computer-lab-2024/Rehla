@@ -41,6 +41,7 @@ import UpcomingActivities from './components/UpcomingActivities.js';
 import UpcomingItineraries from './components/UpcomingItineraries.js';
 import HistoricalPlaces from './components/HistoricalPlaces.js';
 import Museums from './components/Museums.js';
+import TReport from './components/TourGuideReport.js'
 
 
 
@@ -75,6 +76,7 @@ function App() {
                 <Route path="/AdvertiserHome/AdvertiserProfile" element={<AdvertiserProfile />} />
                 <Route path="/TourGuideHome" element={<TourGuideHome />} />
                 <Route path="/TourGuideHome/TourGuideProfile" element={<TourGuideProfile />} />
+                <Route path="/TourGuideHome/TourGuideReport" element={<TReport />} />
                 <Route path="/TourisimGovernerHome" element={<TourisimGovernerHome />} />
                 <Route path="/activity-details/:activityName" element={<ActivityDetails />} />
                 <Route path="/TouristHome/activity-details/:activityName" element={<ActivityDetails />} />

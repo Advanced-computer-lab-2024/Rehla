@@ -132,7 +132,7 @@ function Content() {
 
         {/* Main Navigation */}
         <nav className="flex space-x-6">
-            <Link to="/" className="text-lg font-medium text-logoOrange">
+            <Link to="/" className="text-lg font-medium text-white hover:logoOrange">
                 Home
             </Link>
             <Link to="/UpcomingActivities" className="text-lg font-medium text-white hover:text-logoOrange">
@@ -232,31 +232,31 @@ function Content() {
 
         {/* Main Navigation */}
         <nav className="flex space-x-6">
-            <Link to="/" className="text-lg font-medium text-logoOrange hover:text-blue-500">
+            <Link to="/" className="text-lg font-medium text-white hover:logoOrange">
                 Home
             </Link>
-            <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-blue-500">
+            <Link to="/eventsplaces" className="text-lg font-medium text-white hover:logoOrange">
                 Activities
             </Link>
-            <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-blue-500">
+            <Link to="/eventsplaces" className="text-lg font-medium text-white hover:logoOrange">
                 Itineraries
             </Link>
-            <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-blue-500">
+            <Link to="/eventsplaces" className="text-lg font-medium text-white hover:logoOrange">
                 Historical Places
             </Link>
-            <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-blue-500">
+            <Link to="/eventsplaces" className="text-lg font-medium text-white hover:logoOrange">
                 Museums
             </Link>
-            <Link to="/products" className="text-lg font-medium text-white hover:text-blue-500">
+            <Link to="/products" className="text-lg font-medium text-white hover:logoOrange">
                 Gift Shop
             </Link>
-            <Link to="/MyEvents" className="text-lg font-medium text-white hover:text-blue-500">
+            <Link to="/MyEvents" className="text-lg font-medium text-white hover:logoOrange">
                 MyEvents
             </Link>
-            <Link to="/Flights" className="text-lg font-medium text-white hover:text-blue-500">
+            <Link to="/Flights" className="text-lg font-medium text-white hover:logoOrange">
                 Flights
             </Link>
-            <Link to="/Hotels" className="text-lg font-medium text-white hover:text-blue-500">
+            <Link to="/Hotels" className="text-lg font-medium text-white hover:logoOrange">
                 Hotels
             </Link>
         </nav>            
@@ -544,9 +544,11 @@ const ActivityDetails = () => {
                                 </button>
                                 <button
                                     onClick={handleSaveEvent}
-                                    className={`bg-white p-3 rounded-full ${isSaved ? 'bg-red-500' : 'bg-gray-200'}`}
+                                    className={`p-3 rounded-full ${isSaved ? 'bg-red-500' : 'bg-white'}`}
                                 >
-                                    <HeartIcon className={`w-6 h-6 ${isSaved ? 'text-white' : 'text-gray-600'}`} />
+                                    <HeartIcon
+                                        className={`w-6 h-6 ${isSaved ? 'text-white' : 'text-gray-500'} fill-current`}
+                                    />
                                 </button>
                             </div>
                         </div>
