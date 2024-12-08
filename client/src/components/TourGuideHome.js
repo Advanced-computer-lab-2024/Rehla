@@ -452,7 +452,7 @@ const TourGuideHome = () => {
                         <a onClick={openCreateModal} href="#uh" className="text-lg font-medium font-family-cursive text-white hover:text-blue-500">
                             Create
                         </a>
-                        <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-blue-500">
+                        <Link to="/TourGuideHome/TourGuideReport" className="text-lg font-medium text-white hover:text-blue-500">
                             Reports
                         </Link>
                     </nav>
@@ -1066,162 +1066,127 @@ const TourGuideHome = () => {
             )}
         
         <div>
-            <h1>Advertiser Dashboard</h1>
-            {email ? (
-                <div>
-                    <p>Signed in as: <strong>{email}</strong></p>
-                    <button onClick={handleCalculateRevenue} disabled={loadingg}>
-                        {loadingg ? 'Calculating...' : 'Calculate Itinerary Revenue'}
-                    </button>
-                    {errorr && <p style={{ color: 'red' }}>{errorr}</p>}
-                    {itineraryDataa && (
-                        <div>
-                            <h2>Total Revenue: ${itineraryDataa.totalRevenue.toFixed(2)}</h2>
-                            <h3>Itinerary Details</h3>
-                            <ul>
-                                {itineraryDataa.itineraryDetails.map((itinerary, index) => (
-                                    <li key={index}>
-                                        <strong>{itinerary.itineraryName}</strong> - 
-                                        Price per unit: ${itinerary.tourPrice.toFixed(2)}, 
-                                        Paid bookings: {itinerary.paidCount}, 
-                                        Revenue: ${itinerary.revenue.toFixed(2)}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    )}
-                    {!itineraryDataa && !loadingg && (
-                        <p>No revenue data available. Click "Calculate Itinerary Revenue" to fetch data.</p>
-                    )}
-                </div>
-            ) : (
-                <p style={{ color: 'red' }}>Please sign in to access this feature.</p>
-            )}
-        </div>
-        
-        <div>
-    <h1>Tour Guide Home</h1>
-    {loading && <p>Loading itineraries...</p>}
-    {error && <p>Error: {error.message}</p>}
-    {messagee && <p>{messagee}</p>}
+        {loading && <p>Loading itineraries...</p>}
+        {error && <p>Error: {error.message}</p>}
+        {messagee && <p>{messagee}</p>}
 
-    {/* Filter Section */}
-    <div>
-        <h2>Filter Sales Reports</h2>
+        {/* Filter Section */}
         <div>
-            <label htmlFor="itineraryFilter">Itinerary:</label>
-            <input
-                type="text"
-                id="itineraryFilter"
-                value={itineraryFilter}
-                onChange={(e) => setItineraryFilter(e.target.value)}
-                placeholder="Enter itinerary name"
-                style={{ margin: "5px", padding: "5px" }}
-            />
-        </div>
-        <div>
-            <label htmlFor="startDate">Start Date:</label>
-            <input
-                type="date"
-                id="startDate"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                style={{ margin: "5px", padding: "5px" }}
-            />
-        </div>
-        <div>
-            <label htmlFor="endDate">End Date:</label>
-            <input
-                type="date"
-                id="endDate"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                style={{ margin: "5px", padding: "5px" }}
-            />
-        </div>
-        <div>
-            <label htmlFor="month">Month:</label>
-            <input
-                type="month"
-                id="month"
-                value={month}
-                onChange={(e) => setMonth(e.target.value)}
-                style={{ margin: "5px", padding: "5px" }}
-            />
-        </div>
-        <button
-            onClick={handleFilterFetchSalesReports}
-            style={{
-                marginTop: "10px",
-                padding: "10px 15px",
-                backgroundColor: "#007bff",
-                color: "white",
-                border: "none",
-                cursor: "pointer",
-            }}
-        >
-            Apply Filters
-        </button>
-    </div>
-
-    {/* Itineraries Section */}
-    <div>
-        <h2>Sales Reports - Itineraries</h2>
-        <button
-            onClick={handleFetchSalesReports}
-            style={{
-                marginBottom: "10px",
-                padding: "10px 15px",
-                backgroundColor: "#007bff",
-                color: "white",
-                border: "none",
-                cursor: "pointer",
-            }}
-        >
-            Fetch All Itinerary Reports
-        </button>
-        {salesReports.length > 0 ? (
-            <table
+            <h2>Filter Sales Reports</h2>
+            <div>
+                <label htmlFor="itineraryFilter">Itinerary:</label>
+                <input
+                    type="text"
+                    id="itineraryFilter"
+                    value={itineraryFilter}
+                    onChange={(e) => setItineraryFilter(e.target.value)}
+                    placeholder="Enter itinerary name"
+                    style={{ margin: "5px", padding: "5px" }}
+                />
+            </div>
+            <div>
+                <label htmlFor="startDate">Start Date:</label>
+                <input
+                    type="date"
+                    id="startDate"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    style={{ margin: "5px", padding: "5px" }}
+                />
+            </div>
+            <div>
+                <label htmlFor="endDate">End Date:</label>
+                <input
+                    type="date"
+                    id="endDate"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    style={{ margin: "5px", padding: "5px" }}
+                />
+            </div>
+            <div>
+                <label htmlFor="month">Month:</label>
+                <input
+                    type="month"
+                    id="month"
+                    value={month}
+                    onChange={(e) => setMonth(e.target.value)}
+                    style={{ margin: "5px", padding: "5px" }}
+                />
+            </div>
+            <button
+                onClick={handleFilterFetchSalesReports}
                 style={{
-                    width: "100%",
-                    borderCollapse: "collapse",
-                    margin: "20px 0",
-                    fontSize: "1rem",
-                    textAlign: "left",
+                    marginTop: "10px",
+                    padding: "10px 15px",
+                    backgroundColor: "#007bff",
+                    color: "white",
+                    border: "none",
+                    cursor: "pointer",
                 }}
             >
-                <thead>
-                    <tr>
-                        <th style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f4f4f4" }}>Itinerary</th>
-                        <th style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f4f4f4" }}>Revenue</th>
-                        <th style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f4f4f4" }}>Sales</th>
-                        <th style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f4f4f4" }}>Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {salesReports.map((report) => (
-                        <tr
-                            key={report.Report_no}
-                            style={{
-                                border: "1px solid #ddd",
-                                backgroundColor: report.Report_no % 2 === 0 ? "#f9f9f9" : "white",
-                            }}
-                        >
-                            <td style={{ border: "1px solid #ddd", padding: "8px" }}>{report.Itinerary}</td>
-                            <td style={{ border: "1px solid #ddd", padding: "8px" }}>${report.Revenue}</td>
-                            <td style={{ border: "1px solid #ddd", padding: "8px" }}>{report.Sales}</td>
-                            <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                                {new Date(report.createdAt).toLocaleDateString()}
-                            </td>
+                Apply Filters
+            </button>
+        </div>
+
+        {/* Itineraries Section */}
+        <div>
+            <h2>Sales Reports - Itineraries</h2>
+            <button
+                onClick={handleFetchSalesReports}
+                style={{
+                    marginBottom: "10px",
+                    padding: "10px 15px",
+                    backgroundColor: "#007bff",
+                    color: "white",
+                    border: "none",
+                    cursor: "pointer",
+                }}
+            >
+                Fetch All Itinerary Reports
+            </button>
+            {salesReports.length > 0 ? (
+                <table
+                    style={{
+                        width: "100%",
+                        borderCollapse: "collapse",
+                        margin: "20px 0",
+                        fontSize: "1rem",
+                        textAlign: "left",
+                    }}
+                >
+                    <thead>
+                        <tr>
+                            <th style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f4f4f4" }}>Itinerary</th>
+                            <th style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f4f4f4" }}>Revenue</th>
+                            <th style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f4f4f4" }}>Sales</th>
+                            <th style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f4f4f4" }}>Date</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
-        ) : (
-            <p>No sales reports available.</p>
-        )}
+                    </thead>
+                    <tbody>
+                        {salesReports.map((report) => (
+                            <tr
+                                key={report.Report_no}
+                                style={{
+                                    border: "1px solid #ddd",
+                                    backgroundColor: report.Report_no % 2 === 0 ? "#f9f9f9" : "white",
+                                }}
+                            >
+                                <td style={{ border: "1px solid #ddd", padding: "8px" }}>{report.Itinerary}</td>
+                                <td style={{ border: "1px solid #ddd", padding: "8px" }}>${report.Revenue}</td>
+                                <td style={{ border: "1px solid #ddd", padding: "8px" }}>{report.Sales}</td>
+                                <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+                                    {new Date(report.createdAt).toLocaleDateString()}
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            ) : (
+                <p>No sales reports available.</p>
+            )}
+        </div>
     </div>
-</div>
 
             <div>
             
@@ -1322,7 +1287,7 @@ const TourGuideHome = () => {
 
 
 
-<footer className="bg-black shadow m-0">
+            <footer className="bg-black shadow m-0">
                 <div className="w-full mx-auto md:py-8">
                     <div className="sm:flex sm:items-center sm:justify-between">
                         <a href="/" className="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
