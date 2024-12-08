@@ -18,7 +18,8 @@ import {
     getNotificationsForTourGuidet,
     markAsSeennt,
     fetchItineraryReport,
-    getTourGuideProfile
+    getTourGuideProfile,
+    notifyForFlaggedItins
 } from '../services/api';
 
 const TourGuideHome = () => {
@@ -89,6 +90,27 @@ const TourGuideHome = () => {
     const [showModal, setShowModal] = useState(false);
     const [itineraryReport, setItineraryReport] = useState(null);
     const [erro, setErro] = useState(null); // State to handle any errors
+    const [notificationError, setNotificationError] = useState(null); // State for notification errors
+    const [notificationSuccess, setNotificationSuccess] = useState(null); // State for notification success
+    const [emaill, setEmaill] = useState('');
+
+    useEffect(() => {
+        const storedEmail = localStorage.getItem('email');
+        if (storedEmail) {
+            setEmaill(storedEmail);
+    
+            const handleNotifyForBookings = async () => {
+                try {
+                    const response = await notifyForFlaggedItins(storedEmail); // Pass email to notify function
+                    setNotificationSuccess(response.message || 'Notifications processed successfully.');
+                } catch (err) {
+                    setNotificationError(err.message || 'Failed to process notifications.');
+                }
+            };
+    
+            handleNotifyForBookings();
+        }
+    }, []); // This runs only once when the component mounts
 
     const handleViewItineraryReport = async () => {
         try {
@@ -400,9 +422,9 @@ const TourGuideHome = () => {
                         <Link to="/TourGuideHome" className="text-lg font-medium text-logoOrange hover:text-blue-500">
                             Home
                         </Link>
-                        <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-blue-500">
+                        <a onClick={openCreateModal} href="#uh" className="text-lg font-medium font-family-cursive text-white hover:text-blue-500">
                             Create
-                        </Link>
+                        </a>
                         <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-blue-500">
                             Reports
                         </Link>
@@ -546,8 +568,8 @@ const TourGuideHome = () => {
                                         className="absolute top-4 right-4 p-2 focus:outline-none"
                                     >
                                         <div className="relative w-5 h-8">
-                                            <div className="absolute w-full h-1 bg-brandBlue transform rotate-45" />
-                                            <div className="absolute w-full h-1 bg-brandBlue transform -rotate-45" />
+                                            <div className="absolute w-full h-1 bg-black transform rotate-45" />
+                                            <div className="absolute w-full h-1 bg-black transform -rotate-45" />
                                         </div>
                                     </button>
                                     {/* Modal Content */}
@@ -619,7 +641,7 @@ const TourGuideHome = () => {
                                     <div className="flex justify-end mt-6 gap-4">
                                         <button
                                             onClick={() => openEditModal(selectedItinerary)}
-                                            className="bg-brandBlue text-white px-4 py-2 rounded"
+                                            className="bg-black text-white px-4 py-2 rounded"
                                         >
                                             Edit Itinerary
                                         </button>
@@ -638,7 +660,7 @@ const TourGuideHome = () => {
                                                     window.location.reload(); // Refresh the page; // Pass the desired value directly
                                                 });
                                             }}
-                                            className="bg-brandBlue text-white px-4 py-2 rounded"
+                                            className="bg-black text-white px-4 py-2 rounded"
                                         >
                                             {selectedItinerary.isActive ? "Deactivate Itinerary" : "Activate Itinerary"}
                                         </button>
@@ -661,8 +683,8 @@ const TourGuideHome = () => {
                         type="button"
                     >
                         <div className="relative w-5 h-8">
-                            <div className="absolute w-full h-1 bg-brandBlue transform rotate-45" />
-                            <div className="absolute w-full h-1 bg-brandBlue transform -rotate-45" />
+                            <div className="absolute w-full h-1 bg-black transform rotate-45" />
+                            <div className="absolute w-full h-1 bg-black transform -rotate-45" />
                         </div>
                     </button>
                     <form onSubmit={handleUpdateItinerary}>
@@ -821,7 +843,7 @@ const TourGuideHome = () => {
                         <div className="flex justify-end gap-2 mt-4">
                             <button
                                 type="submit"
-                                className="bg-brandBlue text-white px-4 py-2 rounded"
+                                className="bg-black text-white px-4 py-2 rounded"
                             >
                                 Update Itinerary
                             </button>
@@ -835,8 +857,8 @@ const TourGuideHome = () => {
 
             {/* Create Activity Modal */}
             {isCreateModalOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 mt-24">
-                <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-5xl relative">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center mt-28">
+                <div className="bg-white p-6 shadow-lg w-full relative min-h-[600px]">
                     <h2 className="text-xl font-bold mb-4">Create Itinerary</h2>
                     <form onSubmit={handleCreateItinerary}>
                         <div className="grid grid-cols-3 gap-4">
@@ -994,7 +1016,7 @@ const TourGuideHome = () => {
                         <div className="flex justify-end gap-2 mt-4">
                             <button
                                 type="submit"
-                                className="bg-brandBlue text-white px-4 py-2 rounded"
+                                className="bg-black text-white px-4 py-2 rounded"
                             >
                                 Create Itinerary
                             </button>
@@ -1004,8 +1026,8 @@ const TourGuideHome = () => {
                                 type="button"
                             >
                                 <div className="relative w-5 h-8">
-                                    <div className="absolute w-full h-1 bg-brandBlue transform rotate-45" />
-                                    <div className="absolute w-full h-1 bg-brandBlue transform -rotate-45" />
+                                    <div className="absolute w-full h-1 bg-black transform rotate-45" />
+                                    <div className="absolute w-full h-1 bg-black transform -rotate-45" />
                                 </div>
                             </button>
                         </div>

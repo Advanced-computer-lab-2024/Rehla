@@ -1900,6 +1900,7 @@ export const fetchItineraryReport = async (email) => {
     }
 };
 
+<<<<<<< HEAD
 export const addToCart = async (email, productName) => {
     try {
         const response = await axios.post(`${API_URL}/addToCart`, { email, productName });
@@ -1915,3 +1916,66 @@ export const addToCart = async (email, productName) => {
     }};
 
 
+=======
+// Function to create notifications for out-of-stock products
+export const createOutOfStockNotifications = async (email) => {
+    try {
+        const response = await axios.post(`${API_URL}/createOutOfStockNotifications`, { email });
+        return response.data;
+    } catch (error) {
+        console.error("Error creating out-of-stock notifications:", error.response?.data || error.message);
+        throw error.response?.data || error.message;
+    }
+};
+
+// Mark a notification as seen
+export const markAsSeenns = async (id) => {
+    try {
+        const response = await axios.post(`${API_URL}/markAsSeenns`, { id });
+        return response.data;
+    } catch (error) {
+        console.error("Error marking notification as seen:", error);
+        throw error;
+    }
+};
+export const getNotificationsForseller = async (email) => {
+    try {
+        const response = await axios.get(`${API_URL}/getNotificationsForseller/${email}`);
+        return response.data.notifications; // Handle the notifications as needed
+    } catch (error) {
+        console.error("Error fetching notifications:", error);
+        throw error;
+    }
+};
+
+// Function to create notifications for out-of-stock products
+export const createOutOfStockNotificationsadmin = async (email) => {
+    try {
+        const response = await axios.post(`${API_URL}/createOutOfStockNotificationsadmin`, { email });
+        return response.data;
+    } catch (error) {
+        console.error("Error creating out-of-stock notifications:", error.response?.data || error.message);
+        throw error.response?.data || error.message;
+    }
+};
+
+// Mark a notification as seen
+export const markAsSeenna = async (id) => {
+    try {
+        const response = await axios.post(`${API_URL}/markAsSeenna`, { id });
+        return response.data;
+    } catch (error) {
+        console.error("Error marking notification as seen:", error);
+        throw error;
+    }
+};
+export const getNotificationsForadmin = async (email) => {
+    try {
+        const response = await axios.get(`${API_URL}/getNotificationsForadmin/${email}`);
+        return response.data.notifications; // Handle the notifications as needed
+    } catch (error) {
+        console.error("Error fetching notifications:", error);
+        throw error;
+    }
+};
+>>>>>>> 719b68297ea8d38b4a19d0b656b6be9bef8dadd4

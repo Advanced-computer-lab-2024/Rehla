@@ -375,28 +375,28 @@ const handleAddToCart = async (productName) => {
 
                 {/* Main Navigation */}
                 <nav className="flex space-x-6">
-                    <Link to="/" className="text-lg font-medium text-white hover:text-blue-500">
+                    <Link to="/" className="text-lg font-medium text-white hover:text-logoOrange">
                         Home
                     </Link>
-                    <Link to="/UpcomingActivities" className="text-lg font-medium text-white hover:text-blue-500">
+                    <Link to="/UpcomingActivities" className="text-lg font-medium text-white hover:text-logoOrange">
                         Activities
                     </Link>
-                    <Link to="/UpcomingItineraries" className="text-lg font-medium text-white hover:text-blue-500">
+                    <Link to="/UpcomingItineraries" className="text-lg font-medium text-white hover:text-LogoOrange">
                         Itineraries
                     </Link>
-                    <Link to="/HistoricalPlaces" className="text-lg font-medium text-white hover:text-blue-500">
+                    <Link to="/HistoricalPlaces" className="text-lg font-medium text-white hover:text-logoOrange">
                         Historical Places
                     </Link>
-                    <Link to="/Museums" className="text-lg font-medium text-white hover:text-blue-500">
+                    <Link to="/Museums" className="text-lg font-medium text-white hover:text-logoOrange">
                         Museums
                     </Link>
-                    <Link to="/Wishlist" className="text-lg font-medium text-white hover:text-blue-500">
+                    <Link to="/Wishlist" className="text-lg font-medium text-white hover:text-logoOrange">
                         Wishlist
                     </Link>
-                    <Link to="/products" className="text-lg font-medium text-logoOrange hover:text-blue-500">
+                    <Link to="/products" className="text-lg font-medium text-logoOrange">
                         Gift Shop
                     </Link>
-                    <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-blue-500">
+                    <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-logoOrange">
                         Transportation
                     </Link>
                 </nav>            
@@ -471,6 +471,7 @@ const handleAddToCart = async (productName) => {
 
             {/* Conditionally Render Products */}
             {isSearched ? (
+<<<<<<< HEAD
                 <div className="mt-8">
                     <h3 className="text-2xl font-semibold mb-4">Search Results:</h3>
                     {searchResults.length > 0 ? (
@@ -612,6 +613,94 @@ const handleAddToCart = async (productName) => {
                     ))}
                 </div>
             )}
+=======
+    <div className="mt-8">
+        <h3 className="text-2xl font-semibold mb-4">Search Results:</h3>
+        {searchResults.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {searchResults.map(product => (
+                    <div key={product._id} className="bg-white shadow-lg rounded-lg p-6 transform hover:scale-105 transition-transform duration-300 cursor-pointer">
+                        <h3 className="text-xl font-medium">{product.Product_Name}</h3>
+                        <img 
+                            src={product.Picture} 
+                            alt={product.Product_Name} 
+                            className="w-full h-48 object-cover rounded-lg mt-4"
+                        />
+                        <p className="mt-2 text-lg font-semibold">{convertPrice(product.Price)} {currency}</p>
+                        <p className="text-gray-600 mt-2">{product.Description}</p>
+                    </div>
+                ))}
+            </div>
+        ) : (
+            <p>No products found with the name "{searchTerm}".</p>
+        )}
+    </div>
+                ) : isFiltered ? (
+                    <div className="mt-8">
+                        <h3 className="text-2xl font-semibold mb-4">Filtered Products:</h3>
+                        {filteredProducts.length > 0 ? (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                                {filteredProducts.map(product => (
+                                    <div key={product._id} className="bg-white shadow-lg rounded-lg p-6 transform hover:scale-105 transition-transform duration-300 cursor-pointer">
+                                        <h3 className="text-xl font-medium">{product.Product_Name}</h3>
+                                        <img 
+                                            src={product.Picture} 
+                                            alt={product.Product_Name} 
+                                            className="w-full h-48 object-cover rounded-lg mt-4"
+                                        />
+                                        <p className="mt-2 text-lg font-semibold">{convertPrice(product.Price)} {currency}</p>
+                                        <p className="text-gray-600 mt-2">{product.Description}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <p>No products found within the specified price range.</p>
+                        )}
+                    </div>
+                ) : isSorted ? (
+                    <div className="mt-8">
+                        <h3 className="text-2xl font-semibold mb-4">Sorted Products by Rating:</h3>
+                        {sortedProducts.length > 0 ? (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                                {sortedProducts.map(product => (
+                                    <div key={product._id} className="bg-white shadow-lg rounded-lg p-6 transform hover:scale-105 transition-transform duration-300 cursor-pointer">
+                                        <h3 className="text-xl font-medium">{product.Product_Name}</h3>
+                                        <img 
+                                            src={product.Picture} 
+                                            alt={product.Product_Name} 
+                                            className="w-full h-48 object-cover rounded-lg mt-4"
+                                        />
+                                        <p className="mt-2 text-lg font-semibold">{convertPrice(product.Price)} {currency}</p>
+                                        <p className="text-gray-600 mt-2">{product.Description}</p>
+                                        <p className="text-yellow-500 font-bold mt-2">Rating: {product.Rating}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <p>No products available for sorting by rating.</p>
+                        )}
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                        {products.map(product => (
+                            <div key={product._id} className="bg-white shadow-lg rounded-lg p-6 transform hover:scale-105 transition-transform duration-300 cursor-pointer" onClick={() => handleProductClick(product)}>
+                                <h3 className="text-xl font-medium">{product.Product_Name}</h3>
+                                <img src={product.Picture} alt={product.Product_Name} className="w-full h-48 object-cover rounded-lg mt-4" />
+                                <p className="mt-2 text-lg font-semibold">{convertPrice(product.Price)} {currency}</p>
+                                <p className="text-gray-600 mt-2">{product.Description}</p>
+                                {/* Heart Button */}
+                                <button onClick={handleAddToWishlist} className="mt-4 w-full py-2 px-4 flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className={`h-6 w-6 ${isInWishlist ? 'text-red-500' : 'text-gray-400'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                                    </svg>
+                                    <span className="ml-2">{isInWishlist ? 'In Wishlist' : 'Add to Wishlist'}</span>
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                )}
+
+>>>>>>> 719b68297ea8d38b4a19d0b656b6be9bef8dadd4
 
         </div>
         {/* Review Form */}

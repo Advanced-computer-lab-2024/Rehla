@@ -233,10 +233,10 @@ const Home = () => {
 
                         {/* Sign In/Sign Up Navigation */}
                         <nav className="flex space-x-6 ml-4">
-                            <Link to="/signin" className="text-lg font-medium text-white hover:text-blue-500">
+                            <Link to="/signin" className="text-lg font-medium text-white hover:text-logoOrange">
                                 Sign in
                             </Link>
-                            <Link to="/signup" className="text-lg font-medium text-white hover:text-blue-500">
+                            <Link to="/signup" className="text-lg font-medium text-white hover:text-logoOrange">
                                 Sign up
                             </Link>
                         </nav>

@@ -6387,6 +6387,8 @@ const checkandsendBirthdayPromoCode = async () => {
         const today = new Date();
         const todayMonth = today.getMonth() + 1; // Months are 0-based in JavaScript
         const todayDay = today.getDate();
+
+        // Find tourists whose birthdays match today's date
         const tourists = await Tourist.find({
             $expr: {
                 $and: [
@@ -6394,24 +6396,52 @@ const checkandsendBirthdayPromoCode = async () => {
                     { $eq: [{ $dayOfMonth: "$DOB" }, todayDay] }
                 ]
             }
-        });        console.log('tourists:', tourists);
+        });
+
+        console.log('Tourists with birthdays today:', tourists);
 
         for (const tourist of tourists) {
+            // Create a promo code for the tourist
             const promoCode = await createBirthdayPromoCode(tourist.Email);
+
             if (promoCode) {
+                // Send an email with the promo code
                 const mailOptions = {
                     from: 'rehlanotification@gmail.com', // Sender address
-                    to: tourist.Email,                       // List of receivers
-                    subject: `Happy Birthday, ${tourist.Username}!`,   // Subject line
-                    text: `Happy Birthday, ${tourist.Username}! Use the promo code ${promoCode} to get 50% off on your next purchase.` // Plain text body
+                    to: tourist.Email,                 // Recipient email
+                    subject: `Happy Birthday, ${tourist.Username}!`, // Subject line
+                    text: `Happy Birthday, ${tourist.Username}! Use the promo code ${promoCode} to get 50% off on your next purchase.` // Email body
                 };
                 await transporter.sendMail(mailOptions);
+
+                // Check if the notification already exists
+                const notificationMessage = `Happy Birthday, ${tourist.Username}! Use the promo code ${promoCode} to get 50% off on your next purchase.`;
+                const existingNotification = await Notifications.findOne({
+                    user: tourist.Email,
+                    title: "Happy Birthday!",
+                    message: notificationMessage
+                });
+
+                if (!existingNotification) {
+                    // Create a new notification if it does not exist
+                    const notification = new Notifications({
+                        user: tourist.Email, // Assuming 'user' references the tourist's email
+                        title: "Happy Birthday!",
+                        message: notificationMessage,
+                        date: new Date(),
+                        seen: false
+                    });
+
+                    // Save the notification to the database
+                    await notification.save();
+                }
             }
         }
-    }catch (error) {
+    } catch (error) {
         console.error('Error checking and sending birthday promo codes:', error);
     }
 };
+
 
 
 // Function to view the report of total attendees for activities created by a specific email
@@ -7088,38 +7118,59 @@ const notifyForFlaggedActivities = async (req, res) => {
 
         // Fetch activities where Flagged is true and match the email
         const activities = await activity.find({ 
-            'Flagged': true, // Flagged activities
-            'Created_By': email // Activities that belong to the given email
+            Flagged: true, // Flagged activities
+            Created_By: email // Activities that belong to the given email
         });
 
         if (!activities || activities.length === 0) {
             return res.status(404).json({ message: "No flagged activities found for the given email." });
         }
 
-        // Loop through each flagged activity and create a notification
-        for (const activity of activities) {
-            // Create a notification for the user about the flagged activity
-            const notificationMessage = `The activity "${activity.Name}" has been flagged!`;
+        // Loop through each flagged activity
+        const notifications = [];
+        for (const activityItem of activities) {
+            const notificationMessage = `The activity "${activityItem.Name}" has been flagged!`;
 
-            const notification = new Notificationtour({
-                message: notificationMessage,
-                user: email, // Assuming email is used to reference the user
-                seen: false, // Notifications are initially unseen
-                date: new Date(),
-                title: "Activity Flagged"
+            // Check if the notification already exists
+            const existingNotification = await Notificationtour.findOne({
+                user: email,
+                title: "Activity Flagged",
+                message: notificationMessage
             });
 
-            // Save the notification to the database
-            await notification.save();
+            if (!existingNotification) {
+                // Create a new notification if it doesn't exist
+                notifications.push({
+                    message: notificationMessage,
+                    user: email, // Assuming email is used to reference the user
+                    seen: false, // Notifications are initially unseen
+                    date: new Date(),
+                    title: "Activity Flagged"
+                });
+            }
         }
 
-        res.status(200).json({ message: "Notifications for flagged activities created successfully." });
+        // Save new notifications to the database
+        if (notifications.length > 0) {
+            await Notificationtour.insertMany(notifications);
+        }
+
+        res.status(200).json({ 
+            message: notifications.length > 0
+                ? "Notifications for flagged activities created successfully."
+                : "All notifications for flagged activities already exist.",
+            notifications
+        });
 
     } catch (err) {
         console.error("Error notifying for flagged activities:", err);
-        res.status(500).json({ message: "An error occurred while creating notifications.", error: err.message });
+        res.status(500).json({ 
+            message: "An error occurred while creating notifications.", 
+            error: err.message 
+        });
     }
 };
+
 
 // Function to get all notifications for a specific tour guide
 const getNotificationsForTourGuide = async (req, res) => {
@@ -7166,7 +7217,7 @@ const markAsSeenn = async (req, res) => {
     }
 };
 
-// Function to fetch flagged activities and create notifications
+// Function to fetch flagged itineraries and create notifications
 const notifyForFlaggedItins = async (req, res) => {
     try {
         const { email } = req.body; // Extract email from request body
@@ -7175,40 +7226,61 @@ const notifyForFlaggedItins = async (req, res) => {
             return res.status(400).json({ message: "Email is required." });
         }
 
-        // Fetch activities where Flagged is true and match the email
-        const activities = await itinerarym.find({ 
-            'Flagged': true, // Flagged activities
-            'Created_By': email // Activities that belong to the given email
+        // Fetch itineraries where Flagged is true and match the email
+        const itineraries = await itinerarym.find({ 
+            Flagged: true, // Flagged itineraries
+            Created_By: email // Itineraries that belong to the given email
         });
 
-        if (!activities || activities.length === 0) {
-            return res.status(404).json({ message: "No flagged Itinerary found for the given email." });
+        if (!itineraries || itineraries.length === 0) {
+            return res.status(404).json({ message: "No flagged itineraries found for the given email." });
         }
 
-        // Loop through each flagged activity and create a notification
-        for (const activity of activities) {
-            // Create a notification for the user about the flagged activity
-            const notificationMessage = `The Itinerary "${activity.Itinerary_Name}" has been flagged!`;
+        // Loop through each flagged itinerary
+        const notifications = [];
+        for (const itinerary of itineraries) {
+            const notificationMessage = `The Itinerary "${itinerary.Itinerary_Name}" has been flagged!`;
 
-            const notification = new Notitour({
-                message: notificationMessage,
-                user: email, // Assuming email is used to reference the user
-                seen: false, // Notifications are initially unseen
-                date: new Date(),
-                title: "Itinerary Flagged"
+            // Check if the notification already exists
+            const existingNotification = await Notitour.findOne({
+                user: email,
+                title: "Itinerary Flagged",
+                message: notificationMessage
             });
 
-            // Save the notification to the database
-            await notification.save();
+            if (!existingNotification) {
+                // Create a new notification if it doesn't exist
+                notifications.push({
+                    message: notificationMessage,
+                    user: email, // Assuming email is used to reference the user
+                    seen: false, // Notifications are initially unseen
+                    date: new Date(),
+                    title: "Itinerary Flagged"
+                });
+            }
         }
 
-        res.status(200).json({ message: "Notifications for flagged activities created successfully." });
+        // Save new notifications to the database
+        if (notifications.length > 0) {
+            await Notitour.insertMany(notifications);
+        }
+
+        res.status(200).json({ 
+            message: notifications.length > 0
+                ? "Notifications for flagged itineraries created successfully."
+                : "All notifications for flagged itineraries already exist.",
+            notifications
+        });
 
     } catch (err) {
-        console.error("Error notifying for flagged activities:", err);
-        res.status(500).json({ message: "An error occurred while creating notifications.", error: err.message });
+        console.error("Error notifying for flagged itineraries:", err);
+        res.status(500).json({ 
+            message: "An error occurred while creating notifications.", 
+            error: err.message 
+        });
     }
 };
+
 
 // Function to get all notifications for a specific tour guide
 const getNotificationsForTourGuidet = async (req, res) => {
@@ -7402,20 +7474,38 @@ const createOutOfStockNotifications = async (req, res) => {
             return res.status(200).json({ message: "No out-of-stock products found." });
         }
 
-        // Create notifications for out-of-stock products
-        const notifications = outOfStockProducts.map(product => ({
-            user: username,
-            title: "Out of Stock Alert",
-            message: `Your product "${product.Product_Name}" is out of stock.`,
-            date: new Date(),
-            seen: false
-        }));
+        // Process each out-of-stock product
+        const notifications = [];
+        for (const product of outOfStockProducts) {
+            // Check if a notification for this product already exists
+            const existingNotification = await Notiseller.findOne({
+                user: username,
+                title: "Out of Stock Alert",
+                message: `Your product "${product.Product_Name}" is out of stock.`
+            });
 
-        // Save notifications to the database
-        await Notiseller.insertMany(notifications);
+            if (!existingNotification) {
+                // Create a new notification if it does not exist
+                notifications.push({
+                    user: username,
+                    email: email,
+                    title: "Out of Stock Alert",
+                    message: `Your product "${product.Product_Name}" is out of stock.`,
+                    date: new Date(),
+                    seen: false
+                });
+            }
+        }
+
+        if (notifications.length > 0) {
+            // Save new notifications to the database
+            await Notiseller.insertMany(notifications);
+        }
 
         return res.status(200).json({
-            message: "Notifications created for out-of-stock products.",
+            message: notifications.length > 0
+                ? "Notifications created for out-of-stock products."
+                : "All notifications for out-of-stock products already exist.",
             notifications
         });
     } catch (error) {
@@ -7427,12 +7517,184 @@ const createOutOfStockNotifications = async (req, res) => {
     }
 };
 
+const markAsSeenns = async (req, res) => {
+    try {
+        const { id } = req.body; // Take id from request body
+        if (!id) {
+            return res.status(400).json({ message: "Notification ID is required." });
+        }
+
+        const notification = await Notiseller.findById(id);
+        if (!notification) {
+            return res.status(404).json({ message: "Notification not found." });
+        }
+
+        notification.seen = true;
+        await notification.save();
+        res.status(200).json({ message: "Notification marked as seen." });
+    } catch (err) {
+        console.error("Error marking notification as seen:", err);
+        res.status(500).json({ message: "An error occurred while marking the notification as seen.", error: err.message });
+    }
+};
+
+
+// Function to get all notifications for a specific tour guide
+const getNotificationsForseller = async (req, res) => {
+    try {
+        const { email } = req.params; // Extract email from request parameters
+
+        if (!email) {
+            return res.status(400).json({ message: "Email is required." });
+        }
+
+        // Fetch all notifications for the specific tour guide (based on email)
+        const notifications = await Notiseller.find({ 'email': email });
+
+        if (!notifications || notifications.length === 0) {
+            return res.status(404).json({ message: "No notifications found for this seller." });
+        }
+
+        // Respond with the notifications data
+        res.status(200).json({ notifications });
+    } catch (err) {
+        console.error("Error fetching notifications for tour guide:", err);
+        res.status(500).json({ message: "An error occurred while fetching notifications.", error: err.message });
+    }
+};
+
+// Function to create notifications for products with Quantity = 0
+const createOutOfStockNotificationsadmin = async (req, res) => {
+    try {
+        const { email } = req.body; // Extract email from the request body
+
+        // Validate input: Check if email is provided
+        if (!email) {
+            return res.status(400).json({ message: "Email is required." });
+        }
+
+        // Fetch the seller's username using their email
+        const sellerData = await Admin.findOne({ Email: email });
+
+        if (!sellerData) {
+            return res.status(404).json({ message: "Admin not found with the provided email." });
+        }
+
+        const username = sellerData.Username;
+
+        // Fetch all products associated with the seller's username
+        const products = await Product.find({ Seller_Name: username });
+
+        if (!products || products.length === 0) {
+            return res.status(404).json({ message: "No products found for the admin." });
+        }
+
+        // Filter products with Quantity = 0
+        const outOfStockProducts = products.filter(p => p.Quantity === 0);
+
+        if (outOfStockProducts.length === 0) {
+            return res.status(200).json({ message: "No out-of-stock products found." });
+        }
+
+        // Process each out-of-stock product
+        const notifications = [];
+        for (const product of outOfStockProducts) {
+            // Check if a notification for this product already exists
+            const existingNotification = await Notiseller.findOne({
+                user: username,
+                title: "Out of Stock Alert",
+                message: `Your product "${product.Product_Name}" is out of stock.`
+            });
+
+            if (!existingNotification) {
+                // Create a new notification if it does not exist
+                notifications.push({
+                    user: username,
+                    email: email,
+                    title: "Out of Stock Alert",
+                    message: `Your product "${product.Product_Name}" is out of stock.`,
+                    date: new Date(),
+                    seen: false
+                });
+            }
+        }
+
+        if (notifications.length > 0) {
+            // Save new notifications to the database
+            await Notiseller.insertMany(notifications);
+        }
+
+        return res.status(200).json({
+            message: notifications.length > 0
+                ? "Notifications created for out-of-stock products."
+                : "All notifications for out-of-stock products already exist.",
+            notifications
+        });
+    } catch (error) {
+        console.error("Error creating notifications:", error.message);
+        res.status(500).json({
+            message: "Error creating notifications.",
+            error: error.message
+        });
+    }
+};
+
+const markAsSeenna = async (req, res) => {
+    try {
+        const { id } = req.body; // Take id from request body
+        if (!id) {
+            return res.status(400).json({ message: "Notification ID is required." });
+        }
+
+        const notification = await Notiseller.findById(id);
+        if (!notification) {
+            return res.status(404).json({ message: "Notification not found." });
+        }
+
+        notification.seen = true;
+        await notification.save();
+        res.status(200).json({ message: "Notification marked as seen." });
+    } catch (err) {
+        console.error("Error marking notification as seen:", err);
+        res.status(500).json({ message: "An error occurred while marking the notification as seen.", error: err.message });
+    }
+};
+
+
+// Function to get all notifications for a specific tour guide
+const getNotificationsForadmin = async (req, res) => {
+    try {
+        const { email } = req.params; // Extract email from request parameters
+
+        if (!email) {
+            return res.status(400).json({ message: "Email is required." });
+        }
+
+        // Fetch all notifications for the specific tour guide (based on email)
+        const notifications = await Notiseller.find({ 'email': email });
+
+        if (!notifications || notifications.length === 0) {
+            return res.status(404).json({ message: "No notifications found for this seller." });
+        }
+
+        // Respond with the notifications data
+        res.status(200).json({ notifications });
+    } catch (err) {
+        console.error("Error fetching notifications for tour guide:", err);
+        res.status(500).json({ message: "An error occurred while fetching notifications.", error: err.message });
+    }
+};
 
 
 // ----------------- Activity Category CRUD -------------------
 
 module.exports = { getPurchasedProducts,
     createOutOfStockNotifications,
+    markAsSeenns,
+    getNotificationsForseller,
+    createOutOfStockNotificationsadmin,
+    markAsSeenna,
+    getNotificationsForadmin,
     viewmyproducts,
     createUserAdmin, 
     deleteUserAdmin,
