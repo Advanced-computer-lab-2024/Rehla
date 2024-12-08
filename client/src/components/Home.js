@@ -8,6 +8,8 @@ import img2 from '../images/img4.jpg';
 import img3 from '../images/img3.jpg';
 import { set } from 'mongoose';
 import Homet2 from '../components/Homet2.js';
+import Joyride from "react-joyride";
+
 
 
 const Home = () => {
@@ -53,6 +55,39 @@ const Home = () => {
     const [itineraryfilterOptions] = useState(['price', 'rating', 'Preference Tag', 'date']);
 
     const [expandedCard, setExpandedCard] = useState(null);
+
+    const [isTourOpen, setIsTourOpen] = useState(false);
+
+    const steps = [
+        {
+            target: '#sign-in-button', // Target sign-in button
+            content: 'Click here to sign in to start planning your vacation.',
+        },
+        {
+            target: "#search-form",
+            content: "Use this form to search for activities and itineraries.",
+        },
+        {
+            target: '#filter-itinerary', // Target itinerary filter section
+            content: 'Use the filter options to narrow down your preferred itineraries.',
+        },
+        {
+            target: '#view-details', // Target the view details button
+            content: 'Click here to view more details of a specific itinerary.',
+        },
+        {
+            target: '#museum-section', // Target the museums section
+            content: 'Explore fascinating museums and historical places here.',
+        },
+        {
+            target: '#footer', // Target the footer links
+            content: 'Find more information about the company and contact us from the footer.',
+        },
+    ];
+
+    const handleStartTour = () => {
+        setIsTourOpen(true);
+    };
 
     useEffect(() => {
         // Remove 'email' from localStorage when the component is mounted
@@ -198,7 +233,7 @@ const Home = () => {
                     <img src={logo} alt="Logo" className="w-44" />
 
                     {/* Search Form */}
-                    <form className="flex items-center ml-4">
+                    <form id="search-form" className="flex items-center ml-4">
                     <input
                         type="text"
                         placeholder="Search"
@@ -222,6 +257,24 @@ const Home = () => {
                             </svg>
                         </button>
                     </form>
+                    {/* Button to start the demo */}
+            <button onClick={handleStartTour} className="start-tour-button">
+                Start Demo
+            </button>
+                    <Joyride
+                steps={steps}
+                run={isTourOpen}
+                continuous={true}
+                scrollToFirstStep={true}
+                showSkipButton={true}
+                styles={{
+                    options: {
+                        zIndex: 10000,
+                    },
+                }}
+            />
+
+            
                     <div className="flex items-center ml-auto">
                         <select 
                             value={currency} 
@@ -235,9 +288,10 @@ const Home = () => {
                             <option value="CAD" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">CAD</option>
                             <option value="AUD" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">AUD</option>
                         </select>
+                        
 
                         {/* Sign In/Sign Up Navigation */}
-                        <nav className="flex space-x-6 ml-4">
+                        <nav id="sign-in-button"className="text-lg font-medium text-white hover:text-logoOrange">
                             <Link to="/signin" className="text-lg font-medium text-white hover:text-logoOrange">
                                 Sign in
                             </Link>
@@ -419,7 +473,7 @@ const Home = () => {
             <section className="mb-10">
                 <h2 className="text-2xl font-semibold mb-4 ml-10">Create Unforgettable Memories with Our Itineraries</h2>
                 <form onSubmit={handleFilterItineraries} className="mb-4 mr-10 ml-auto">
-                <div className="flex items-center justify-end space-x-4">
+                <div id="filter-itinerary"className="flex items-center justify-end space-x-4">
                     <select
                         value={itineraryFilterType}
                         onChange={handleItineraryFilterChange}
@@ -514,7 +568,7 @@ const Home = () => {
                                     <div className="mt-1">Language: {itinerary.Language}</div>
                                 </div>
                                 <button 
-                                    onClick={() => handleItineraryClick(itinerary)} 
+                                    onClick={() => handleItineraryClick(itinerary)} id="view-details"
                                     className="mt-4 bg-black text-white rounded-full py-2 px-4 w-full hover:bg-gray-700"
                                 >
                                     View Details
@@ -538,12 +592,12 @@ const Home = () => {
                     </p>
                 </div>
             </section>
-            <div className="flex overflow-x-auto scrollbar-hide px-6 py-4">
+            <div id="museum-section" className="flex overflow-x-auto scrollbar-hide px-6 py-4">
             {filteredPlacesAndMuseums && (
-                <section className="mb-10 w-full">
+                <section  className="mb-10 w-full">
                     <h2 className="text-2xl font-semibold mb-4 text-center">
                     Museums and Historical Places
-                    </h2>
+                    </h2>
 
                     {/* Museums and Historical Places Filter Form */}
                     <form onSubmit={handleFilterPlacesAndMuseums} className="mb-4 flex justify-end gap-4">
@@ -842,6 +896,10 @@ const Home = () => {
                         ))}
                         </div>
 
+                        <div className="home-container">
+            
+        </div>
+
                 </section>
                 )}
 
@@ -849,8 +907,8 @@ const Home = () => {
 
         
 
-            <footer className="bg-black shadow m-0">
-                <div className="w-full mx-auto md:py-8">
+<footer className="bg-black shadow m-0">
+                <div id="footer" className="w-full mx-auto md:py-8">
                     <div className="sm:flex sm:items-center sm:justify-between">
                         <a href="/" className="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
                             <img src={logo} className="w-44" alt="Flowbite Logo" />
