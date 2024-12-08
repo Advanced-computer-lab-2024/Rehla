@@ -96,6 +96,22 @@ const sendEmail = async (to, subject, text) => {
     }
 };
 
+const sendemailoutofstock = async (to , productname) => {
+    const mailOptions = {
+        from: 'rehlanotification@gmail.com', // Sender address
+        to: to,                       // List of receivers
+        subject: 'Product out of stock',   // Subject line
+        text: `The product ${productname} is out of stock. Please check back later.` // Plain text body
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log('Email sent successfully');
+    } catch (error) {
+        console.error('Error sending email:', error);
+    }
+};
+
 const shareactivtybyemail = async (req, res) => {
     try {
         const { to, link} = req.body;
