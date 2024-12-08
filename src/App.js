@@ -185,6 +185,7 @@ const {createUserAdmin,
   getNotificationsForTourGuide,
   markAsSeenn,
   markAsSeennt,
+  markAsSeenns,
   notifyForFlaggedItins,
   getNotificationsForTourGuidet,
   remindUpcomingPaidActivities,checkEventSaved,
@@ -192,7 +193,8 @@ const {createUserAdmin,
   bookflight,
   shareactivtybyemail,
   cancelSavedEvent,
-  createOutOfStockNotifications
+  createOutOfStockNotifications,
+  getNotificationsForseller
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -399,6 +401,8 @@ app.get('/getNotifications',getNotifications);
 app.post('/markAsSeen',markAsSeen);
 app.post('/markAsSeenn',markAsSeenn);
 app.post('/markAsSeennt',markAsSeennt);
+app.post('/markAsSeenns',markAsSeenns);
+
 
 
 app.post('/createNotification',createNotification);
@@ -414,6 +418,8 @@ app.post('/viewTotalAttendeesForItineraries', viewTotalAttendeesForItineraries);
 
 app.post('/notifyForFlaggedActivities',notifyForFlaggedActivities)
 app.get('/getNotificationsForTourGuide/:email', getNotificationsForTourGuide);
+app.get('/getNotificationsForseller/:email', getNotificationsForseller);
+
 
 app.post('/notifyForFlaggedItins',notifyForFlaggedItins)
 app.get('/getNotificationsForTourGuidet/:email', getNotificationsForTourGuidet);
