@@ -587,12 +587,12 @@ const Home = () => {
                     </button>
                     </form>
 
-                    <div className="flex overflow-x-auto scrollbar-hide px-6 py-4 gap-6">
+                    <div className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide px-6 py-4 gap-6">
                     {filteredPlacesAndMuseums.map((place) => (
                         <div 
                         key={place._id} 
-                        className={`card snap-start ${
-                            expandedCard === place._id ? 'h-auto w-full p-6' : 'h-96 w-96'
+                        className={`card flex-none snap-start ${
+                            expandedCard === place._id ? 'w-2/3 p-6' : 'w-96'
                         } bg-white rounded-lg shadow-lg overflow-hidden flex flex-col transition-all duration-300`}
                         onClick={() => setExpandedCard(expandedCard === place._id ? null : place._id)} 
                         >
@@ -613,52 +613,50 @@ const Home = () => {
                             <div className="mt-1">
                                 <span className="font-semibold">Opening Hours: </span>
                                 {place.Opening_Hours !== null && place.Opening_Hours !== undefined
-                                    ? place.Opening_Hours
-                                    : (place.Opens_At && place.Closes_At) 
-                                        ? `${place.Opens_At} - ${place.Closes_At}` 
-                                        : 'N/A'}
+                                ? place.Opening_Hours
+                                : (place.Opens_At && place.Closes_At) 
+                                    ? `${place.Opens_At} - ${place.Closes_At}` 
+                                    : 'N/A'}
                             </div>
-
                             <div className="mt-1">
                                 <span className="font-semibold">Starting Prices: </span>
                                 {place.S_Tickets_Prices !== null && place.S_Tickets_Prices !== undefined
-                                    ? convertPrice(place.S_Tickets_Prices)
-                                    : (place.S_Ticket_Prices !== null && place.S_Ticket_Prices !== undefined 
-                                        ? convertPrice(place.S_Ticket_Prices)
-                                        : 'N/A')}
+                                ? convertPrice(place.S_Tickets_Prices)
+                                : (place.S_Ticket_Prices !== null && place.S_Ticket_Prices !== undefined 
+                                    ? convertPrice(place.S_Ticket_Prices)
+                                    : 'N/A')}
                                 {currency}
                             </div>
 
                             {expandedCard === place._id && (
-                            <div className="mt-4">
+                                <div className="mt-4">
                                 <p className="text-sm text-gray-600">
-                                {place.description || place.Description || 'No additional description available.'}
+                                    {place.description || place.Description || 'No additional description available.'}
                                 </p>
                                 <div className="mt-1">
-                                <span className="font-semibold">Foreigner Ticket: </span>
-                                {place.F_Tickets_Prices !== null && place.F_Tickets_Prices !== undefined
+                                    <span className="font-semibold">Foreigner Ticket: </span>
+                                    {place.F_Tickets_Prices !== null && place.F_Tickets_Prices !== undefined
                                     ? convertPrice(place.F_Tickets_Prices)
                                     : place.F_Ticket_Prices !== null && place.F_Ticket_Prices !== undefined
                                     ? convertPrice(place.F_Ticket_Prices)
                                     : 'N/A'}
-                                {currency}
+                                    {currency}
                                 </div>
                                 <div className="mt-1">
-                                <span className="font-semibold">Native Ticket: </span>
-                                {place.N_Tickets_Prices !== null && place.N_Tickets_Prices !== undefined
+                                    <span className="font-semibold">Native Ticket: </span>
+                                    {place.N_Tickets_Prices !== null && place.N_Tickets_Prices !== undefined
                                     ? convertPrice(place.N_Tickets_Prices)
                                     : place.N_Ticket_Prices !== null && place.N_Ticket_Prices !== undefined
                                     ? convertPrice(place.N_Ticket_Prices)
                                     : 'N/A'}
-                                {currency}
+                                    {currency}
                                 </div>
                                 <div className="mt-1">
-                                <span className="font-semibold">Tag: </span>
-                                {place.Tag || place.Type || 'N/A'}
+                                    <span className="font-semibold">Tag: </span>
+                                    {place.Tag || place.Type || 'N/A'}
                                 </div>
-                            </div>
+                                </div>
                             )}
-
                             </div>
                         </div>
                         </div>
@@ -666,6 +664,7 @@ const Home = () => {
                     </div>
                 </section>
                 )}
+
 
             </div>
 
@@ -679,7 +678,7 @@ const Home = () => {
                     {/* Museums and Historical Places Filter Form */}
                     <form 
                     onSubmit={handleFilterPlacesAndMuseums} 
-                    className="mb-4 flex justify-center gap-4"
+                    className="mb-4 flex justify-end gap-4"
                     >
                     <select
                         name="category"
@@ -726,119 +725,118 @@ const Home = () => {
                     </button>
                     </form>
 
-                    <div className="flex overflow-x-auto scrollbar-hide px-6 py-4 gap-6">
-                    {/* Render Museums - Limited to 4 */}
-                    {data.museums.map((museum) => (
-                        <div 
-                        key={museum._id} 
-                        className={`card ${
-                          expandedCard === museum._id ? 'w-full h-auto p-6' : 'w-96'
-                        } bg-white rounded-lg shadow-lg overflow-hidden flex flex-col transition-all duration-300`}
-                        onClick={() => setExpandedCard(expandedCard === museum._id ? null : museum._id)}
-                      >
-                        <img 
-                            src={museum.pictures} 
-                            alt={museum.Name} 
-                            className={`w-full object-cover transition-all duration-300 ${expandedCard === museum._id ? 'h-64' : 'h-48'}`}
-                        />
-
-                        <div className="p-4 flex flex-col justify-between flex-grow">
-                            <div className="text-lg font-semibold text-gray-800">
-                            {museum.Name}
-                            </div>
-                            <div className="text-sm text-gray-600 mt-2">
-                            <div>
-                                <span className="font-semibold">Location: </span>
-                                {museum.location}
-                            </div>
-                            <div className="mt-1">
-                                <span className="font-semibold">Opening Hours: </span>
-                                {museum.Opening_Hours}
-                            </div>
-                            <div className="mt-1">
-                                <span className="font-semibold">Starting Prices: </span>
-                                {convertPrice(museum.S_Tickets_Prices)} {currency}
-                            </div>
-                            </div>
-                            {expandedCard === museum._id && (
-                            <div className="mt-4">
-                            <p className="text-sm text-gray-600">
-                                {museum.description}
-                            </p>
-                            <div className="mt-1">
-                                <span className="font-semibold">Foreigner Ticket: </span>
-                                {convertPrice(museum.F_Tickets_Prices)} {currency}
-                            </div>
-                            <div className="mt-1">
-                                <span className="font-semibold">Native Ticket: </span>
-                                {convertPrice(museum.N_Tickets_Prices)} {currency}
-                            </div>
-                            <div>
-                                <span className="font-semibold">Tag: </span>
-                                {museum.Tag}
-                            </div>
-                            </div>
-                        )}
-                           
-                        </div>
-                        </div>
-                    ))}
-
-                    {data.historicalPlaces.map((place) => (
-                       <div 
-                       key={place._id} 
-                       className={`card ${
-                         expandedCard === place._id ? 'w-full h-auto p-6' : 'w-96'
-                       } bg-white rounded-lg shadow-lg overflow-hidden flex flex-col transition-all duration-300`}
-                       onClick={() => setExpandedCard(expandedCard === place._id ? null : place._id)}
-                     >
-                         <img 
-                            src={place.pictures || place.Pictures} 
-                            alt={place.Name} 
-                            className={`w-full object-cover transition-all duration-300 ${expandedCard === place._id ? 'h-64' : 'h-48'}`}
+                    <div className="overflow-x-scroll flex gap-4 p-4 scrollbar-hide">
+                        {data.museums.map((museum) => (
+                            <div 
+                            key={museum._id} 
+                            className={`card flex-none ${
+                                expandedCard === museum._id ? 'w-2/3 p-6' : 'w-96'
+                            } bg-white rounded-lg shadow-lg overflow-hidden flex flex-col transition-all duration-300`}
+                            onClick={() => setExpandedCard(expandedCard === museum._id ? null : museum._id)}
+                            >
+                            <img 
+                                src={museum.pictures} 
+                                alt={museum.Name} 
+                                className={`w-full object-cover transition-all duration-300 ${expandedCard === museum._id ? 'h-64' : 'h-48'}`}
                             />
-                        <div className="p-4 flex flex-col justify-between flex-grow">
-                            <div className="text-lg font-semibold text-gray-800">
-                            {place.Name}
-                            </div>
-                            <div className="text-sm text-gray-600 mt-2">
-                            <div>
-                                <span className="font-semibold">Location: </span>
-                                {place.Location}
-                            </div>
-                            <div className="mt-1">
-                                <span className="font-semibold">Opening Hours: </span>
-                                {place.Opens_At} - {place.Closes_At}
-                            </div>
-                            <div className="mt-1">
-                                <span className="font-semibold">Starting Price: </span>
-                                {convertPrice(place.S_Ticket_Prices)} {currency}
-                            </div>
-                            </div>
-                            {expandedCard === place._id && (
+
+                            <div className="p-4 flex flex-col justify-between flex-grow">
+                                <div className="text-lg font-semibold text-gray-800">
+                                {museum.Name}
+                                </div>
+                                <div className="text-sm text-gray-600 mt-2">
+                                <div>
+                                    <span className="font-semibold">Location: </span>
+                                    {museum.location}
+                                </div>
+                                <div className="mt-1">
+                                    <span className="font-semibold">Opening Hours: </span>
+                                    {museum.Opening_Hours}
+                                </div>
+                                <div className="mt-1">
+                                    <span className="font-semibold">Starting Prices: </span>
+                                    {convertPrice(museum.S_Tickets_Prices)} {currency}
+                                </div>
+                                </div>
+                                {expandedCard === museum._id && (
                                 <div className="mt-4">
-                                <p className="text-sm text-gray-600">
+                                    <p className="text-sm text-gray-600">
+                                    {museum.description}
+                                    </p>
+                                    <div className="mt-1">
+                                    <span className="font-semibold">Foreigner Ticket: </span>
+                                    {convertPrice(museum.F_Tickets_Prices)} {currency}
+                                    </div>
+                                    <div className="mt-1">
+                                    <span className="font-semibold">Native Ticket: </span>
+                                    {convertPrice(museum.N_Tickets_Prices)} {currency}
+                                    </div>
+                                    <div>
+                                    <span className="font-semibold">Tag: </span>
+                                    {museum.Tag}
+                                    </div>
+                                </div>
+                                )}
+                            </div>
+                            </div>
+                        ))}
+
+                        {data.historicalPlaces.map((place) => (
+                            <div 
+                            key={place._id} 
+                            className={`card flex-none ${
+                                expandedCard === place._id ? 'w-2/3 p-6' : 'w-96'
+                            } bg-white rounded-lg shadow-lg overflow-hidden flex flex-col transition-all duration-300`}
+                            onClick={() => setExpandedCard(expandedCard === place._id ? null : place._id)}
+                            >
+                            <img 
+                                src={place.pictures || place.Pictures} 
+                                alt={place.Name} 
+                                className={`w-full object-cover transition-all duration-300 ${expandedCard === place._id ? 'h-64' : 'h-48'}`}
+                            />
+                            <div className="p-4 flex flex-col justify-between flex-grow">
+                                <div className="text-lg font-semibold text-gray-800">
+                                {place.Name}
+                                </div>
+                                <div className="text-sm text-gray-600 mt-2">
+                                <div>
+                                    <span className="font-semibold">Location: </span>
+                                    {place.Location}
+                                </div>
+                                <div className="mt-1">
+                                    <span className="font-semibold">Opening Hours: </span>
+                                    {place.Opens_At} - {place.Closes_At}
+                                </div>
+                                <div className="mt-1">
+                                    <span className="font-semibold">Starting Price: </span>
+                                    {convertPrice(place.S_Ticket_Prices)} {currency}
+                                </div>
+                                </div>
+                                {expandedCard === place._id && (
+                                <div className="mt-4">
+                                    <p className="text-sm text-gray-600">
                                     <span className="font-semibold">Description: </span>
                                     {place.Description}
-                                </p>
-                                <div className="mt-1">
-                                <span className="font-semibold">Foreigner Ticket: </span>
-                                {convertPrice(place.F_Ticket_Prices)} {currency}
-                                 </div>
-                                 <div className="mt-1">
-                                <span className="font-semibold">Native Ticket: </span>
-                                {convertPrice(place.N_Ticket_Prices)} {currency}
-                                 </div>
-                                 <div>
-                                <span className="font-semibold">Tag: </span>
-                                {place.Type}
-                            </div>
+                                    </p>
+                                    <div className="mt-1">
+                                    <span className="font-semibold">Foreigner Ticket: </span>
+                                    {convertPrice(place.F_Ticket_Prices)} {currency}
+                                    </div>
+                                    <div className="mt-1">
+                                    <span className="font-semibold">Native Ticket: </span>
+                                    {convertPrice(place.N_Ticket_Prices)} {currency}
+                                    </div>
+                                    <div>
+                                    <span className="font-semibold">Tag: </span>
+                                    {place.Type}
+                                    </div>
                                 </div>
-                            )}
+                                )}
+                            </div>
+                            </div>
+                        ))}
                         </div>
-                        </div>
-                    ))}
-                    </div>
+
                 </section>
                 )}
 
