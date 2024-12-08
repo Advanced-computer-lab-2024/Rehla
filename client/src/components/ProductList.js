@@ -636,7 +636,7 @@ const handleAddToCart = async (productName) => {
             <p>No products found with the name "{searchTerm}".</p>
         )}
     </div>
-                ) : isFiltered ? (
+                 : isFiltered ? (
                     <div className="mt-8">
                         <h3 className="text-2xl font-semibold mb-4">Filtered Products:</h3>
                         {filteredProducts.length > 0 ? (
@@ -699,7 +699,7 @@ const handleAddToCart = async (productName) => {
                             </div>
                         ))}
                     </div>
-                )};
+                );
 
 
         </div>
