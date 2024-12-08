@@ -3,7 +3,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import logo from '../images/logoWhite.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart, faBell } from '@fortawesome/free-solid-svg-icons';
-import { getProducts, getProductsSortedByRating, productRateReview, createwishlistItem, checkoutOrder, getTouristProfile, viewOrderDetails ,addToCart} from '../services/api';const Header = () => (
+import { getProducts, getProductsSortedByRating, productRateReview, createwishlistItem, checkoutOrder, getTouristProfile, viewOrderDetails ,addToCart} from '../services/api';
+
+const Header = () => (
     <div className="NavBar">
     <img src={logo} alt="Logo" />
     <nav className="main-nav">
@@ -612,7 +614,7 @@ const handleAddToCart = async (productName) => {
                     ))}
                 </div>
             )}
-=======
+        
     <div className="mt-8">
         <h3 className="text-2xl font-semibold mb-4">Search Results:</h3>
         {searchResults.length > 0 ? (
@@ -697,7 +699,7 @@ const handleAddToCart = async (productName) => {
                             </div>
                         ))}
                     </div>
-                )}
+                )};
 
 
         </div>
@@ -921,8 +923,6 @@ const Footer = () => (
         </div>
       </div>
     </footer>
-  );
-
-
+);
 
 export default ProductList;
