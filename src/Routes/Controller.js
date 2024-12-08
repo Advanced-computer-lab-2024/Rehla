@@ -6393,6 +6393,12 @@ const createBirthdayPromoCode = async (Tourist_Email) => {
         // create a promo code for the tourist's birthday cotains tourist Username and 50% discount
         const promoCode = `${tourist.Username}HappyBirthday`;
 
+        // Check if the promo code already exists
+        const existingPromoCode = await promocodem.findOne({ Code: promoCode , Tourist_Email: Tourist_Email });
+        if (existingPromoCode) {
+            return 
+        }
+
         // Calculate the expiration date (valid for one month)
         const now = new Date();
         const expiryDate = new Date(now.getFullYear(), now.getMonth() + 1, now.getDate());
