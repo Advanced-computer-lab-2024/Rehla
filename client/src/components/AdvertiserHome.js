@@ -386,32 +386,33 @@ const AdvertiserHome = () => {
                 {!loading && !error && (
                     <>
                         <h2 className="text-xl">Activities</h2>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 bg-white rounded-lg shadow-lg p-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-6 py-4">
                             {data.activities.map((activity) => (
                                 <div
                                 key={activity._id}
-                                className="bg-blue-50 rounded-lg shadow-md overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-lg"
-                                
-                            >
+                                className="card bg-white rounded-lg shadow-lg overflow-hidden flex flex-col cursor-pointer transform transition duration-300 hover:scale-105 hover:shadow-xl"
+                                onClick={() => openEditModal(activity)} // Click handler to open the edit modal
+                                >
                                 <img
                                     src={activity.Picture}
                                     alt={activity.Name}
-                                    className="w-full h-40 object-cover"
-                                    onClick={() => openEditModal(activity)}
+                                    className="w-full h-48 object-cover transition-transform duration-300 ease-in-out hover:scale-105"
                                 />
-                                <div className="p-4">
-                                    <h3 className="text-lg font-semibold text-gray-700">{activity.Name}</h3>
+                                <div className="p-4 flex flex-col justify-between flex-grow">
+                                    <h3 className="text-lg font-semibold text-gray-800">{activity.Name}</h3>
                                 </div>
-                            </div>
+                                </div>
                             ))}
-                            {/* Add New Place Button */}
+
+                            {/* Add New Activity Button */}
                             <div
                                 onClick={openCreateModal}
-                                className="flex items-center justify-center p-4 bg-gray-200 rounded-md shadow-sm hover:bg-gray-300 cursor-pointer"
+                                className="flex items-center justify-center p-4 bg-white border-2 border-dashed border-gray-300 rounded-lg shadow-md cursor-pointer hover:bg-gray-100"
                             >
-                                <span className="text-3xl font-bold text-gray-500">+</span>
+                                <span className="text-4xl font-bold text-gray-500">+</span>
                             </div>
-                        </div>
+                            </div>
+
 
                         {selectedActivity && (
                             <div className="mt-8 border rounded-lg p-4">
