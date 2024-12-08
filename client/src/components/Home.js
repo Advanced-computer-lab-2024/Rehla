@@ -55,6 +55,11 @@ const Home = () => {
     const [expandedCard, setExpandedCard] = useState(null);
 
     useEffect(() => {
+        // Remove 'email' from localStorage when the component is mounted
+        localStorage.removeItem('email');
+      }, []); 
+
+    useEffect(() => {
         const fetchData = async () => {
             try {
                 const result = await getAllUpcomingEventsAndPlaces();
