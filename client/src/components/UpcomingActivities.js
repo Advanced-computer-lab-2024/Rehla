@@ -265,35 +265,38 @@ const UpcomingActivities = () => {
 </form>
 
 
-        <div className="flex overflow-x-auto scrollbar-hide px-6 py-4 gap-6">
-                {activitiesToDisplay.map((activity) => (
-                    <div
-                        key={activity._id}
-                        className="card w-96 h-auto bg-white rounded-lg shadow-lg overflow-hidden flex flex-col"
-                        onClick={() => handleActivityClick(activity)}
-                    >
-                        <img
-                            src={activity.Picture}
-                            alt={activity.Name}
-                            className="w-full h-48 object-cover"
-                        />
-                        <div className="p-4 flex flex-col justify-between flex-grow">
-                            <div className="text-lg font-semibold text-gray-800">{activity.Name}</div>
-                            <div className="text-sm text-gray-600 mt-2">
-                                <span className="font-semibold">{convertPrice(activity.Price)} {currency}</span>
-                                <div className="mt-1">Rating: {activity.Rating}</div>
-                                <div className="mt-1">Location: {activity.Location}</div>
-                            </div>
-                            <button 
-                                onClick={() => handleActivityClick(activity)} 
-                                className="mt-4 bg-black text-white rounded-full py-2 px-4 w-full hover:bg-gray-700"
-                            >
-                                View Details
-                            </button>
-                        </div>
-                    </div>
-                ))}
-            </div>
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-6 py-4">
+  {activitiesToDisplay.map((activity) => (
+    <div
+      key={activity._id}
+      className="card bg-white rounded-lg shadow-lg overflow-hidden flex flex-col h-auto"
+      onClick={() => handleActivityClick(activity)}
+    >
+      <img
+        src={activity.Picture}
+        alt={activity.Name}
+        className="w-full h-48 object-cover"
+      />
+      <div className="p-4 flex flex-col justify-between flex-grow">
+        <div className="text-lg font-semibold text-gray-800">
+          {activity.Name}
+        </div>
+        <div className="text-sm text-gray-600 mt-2">
+          <span className="font-semibold">{convertPrice(activity.Price)} {currency}</span>
+          <div className="mt-1">Rating: {activity.Rating}</div>
+          <div className="mt-1">Location: {activity.Location}</div>
+        </div>
+        <button 
+          onClick={() => handleActivityClick(activity)} 
+          className="mt-4 bg-black text-white rounded-full py-2 px-4 w-full hover:bg-gray-700"
+        >
+          View Details
+        </button>
+      </div>
+    </div>
+  ))}
+</div>
+
 
 
             </section>

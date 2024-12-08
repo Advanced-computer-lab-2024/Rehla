@@ -276,35 +276,36 @@ const UpcomingItineraries = () => {
                 </div>
             </form>
 
-                <div className="flex overflow-x-auto scrollbar-hide px-6 py-4 gap-6">
-                    {itinerariesToDisplay.map((itinerary) => (
-                        <div
-                        key={itinerary._id}
-                        className="card w-96 h-auto bg-white rounded-lg shadow-lg overflow-hidden flex flex-col"
-                        onClick={() => handleItineraryClick(itinerary)}
-                        >
-                        <img
-                            src={itinerary.Picture}
-                            alt={itinerary.Itinerary_Name}
-                            className="w-full h-48 object-cover"
-                        />
-                       <div className="p-4 flex flex-col justify-between flex-grow">
-                            <div className="text-lg font-semibold text-gray-800">{itinerary.Itinerary_NameName}</div>
-                                <div className="text-sm text-gray-600 mt-2">
-                                    <span className="font-semibold">{convertPrice(itinerary.Tour_Price)} {currency}</span>
-                                    <div className="mt-1">Rating: {itinerary.Rating}</div>
-                                    <div className="mt-1">Language: {itinerary.Language}</div>
-                                </div>
-                                <button 
-                                    onClick={() => handleItineraryClick(itinerary)} 
-                                    className="mt-4 bg-black text-white rounded-full py-2 px-4 w-full hover:bg-gray-700"
-                                >
-                                    View Details
-                                </button>
-                        </div>
-                        </div>
-                    ))}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 px-6 py-4">
+            {itinerariesToDisplay.map((itinerary) => (
+                <div
+                key={itinerary._id}
+                className="card bg-white rounded-lg shadow-lg overflow-hidden flex flex-col"
+                onClick={() => handleItineraryClick(itinerary)}
+                >
+                <img
+                    src={itinerary.Picture}
+                    alt={itinerary.Itinerary_Name}
+                    className="w-full h-48 object-cover"
+                />
+                <div className="p-4 flex flex-col justify-between flex-grow">
+                    <div className="text-lg font-semibold text-gray-800">{itinerary.Itinerary_Name}</div>
+                    <div className="text-sm text-gray-600 mt-2">
+                    <span className="font-semibold">{convertPrice(itinerary.Tour_Price)} {currency}</span>
+                    <div className="mt-1">Rating: {itinerary.Rating}</div>
+                    <div className="mt-1">Language: {itinerary.Language}</div>
+                    </div>
+                    <button 
+                    onClick={() => handleItineraryClick(itinerary)} 
+                    className="mt-4 bg-black text-white rounded-full py-2 px-4 w-full hover:bg-gray-700"
+                    >
+                    View Details
+                    </button>
                 </div>
+                </div>
+            ))}
+            </div>
+
             </section>
            
 
