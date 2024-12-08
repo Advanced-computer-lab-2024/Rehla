@@ -488,6 +488,7 @@ cron.schedule('*/30 * * * * *', async () => {
   //await checkAndSendRemindersforItinerary();
   await checkandsendBirthdayPromoCode();
 });
+app.post('/checkandsendBirthdayPromoCode',checkandsendBirthdayPromoCode);
 
 app.post('/bookhotel', bookhotel);
 app.post('/bookflight', bookflight);
