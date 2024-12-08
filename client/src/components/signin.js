@@ -74,7 +74,7 @@ const SignIn = () => {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header */}
-      <div className="w-full mx-auto px-6 py-1 bg-black shadow flex flex-col">
+      <div className="w-full mx-auto px-6 py-1 bg-black shadow-md flex justify-center">
         <div className="flex items-center">
           <img src={logo} alt="Logo" className="w-44" />
         </div>
@@ -99,61 +99,61 @@ const SignIn = () => {
 
 
        {/* Right Section with Sign-In Form */}
-<div className="w-1/2 flex items-center justify-center bg-gray-100">
-  <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
-    <h2 className="text-4xl font-extrabold text-gray-800 text-center mb-6">
-      Welcome Back!
-    </h2>
-    <p className="text-gray-500 text-center mb-8">
-      Please sign in to continue
-    </p>
-    <form onSubmit={handleSubmit}>
-      <div className="mb-6">
-        <label className="block text-gray-700 text-sm font-medium mb-2">
-          Email
-        </label>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
-          placeholder="Enter your email"
-        />
-      </div>
-      <div className="mb-6">
-        <label className="block text-gray-700 text-sm font-medium mb-2">
-          Password
-        </label>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
-          placeholder="Enter your password"
-        />
-      </div>
-      {error && <p className="text-red-500 text-sm mb-6 text-center">{error}</p>}
-      <div className="flex items-center justify-between mb-6">
-        <button
-          type="submit"
-          className="w-full bg-black text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300"
-        >
-          Sign In
-        </button>
-      </div>
-      <div className="text-center">
-        <a
-          href="/forgot-password"
-          className="text-sm text-blue-500 hover:underline"
-        >
-          Forgot Password?
-        </a>
-      </div>
-    </form>
-  </div>
-</div>
+        <div className="w-1/2 flex items-center justify-center bg-gray-100">
+          <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
+            <h2 className="text-4xl font-extrabold text-gray-800 text-center mb-6">
+              Welcome Back!
+            </h2>
+            <p className="text-gray-500 text-center mb-8">
+              Please sign in to continue
+            </p>
+            <form onSubmit={handleSubmit}>
+              <div className="mb-6">
+                <label className="block text-gray-700 text-sm font-medium mb-2">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+                  placeholder="Enter your email"
+                />
+              </div>
+              <div className="mb-6">
+                <label className="block text-gray-700 text-sm font-medium mb-2">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+                  placeholder="Enter your password"
+                />
+              </div>
+              {error && <p className="text-red-500 text-sm mb-6 text-center">{error}</p>}
+              <div className="flex items-center justify-between mb-6">
+                <button
+                  type="submit"
+                  className="w-full bg-black text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300"
+                >
+                  Sign In
+                </button>
+              </div>
+              <div className="text-center">
+                <a
+                  href="/forgot-password"
+                  className="text-sm text-blue-500 hover:underline"
+                >
+                  Forgot Password?
+                </a>
+              </div>
+            </form>
+          </div>
+        </div>
 
       </div>
 
