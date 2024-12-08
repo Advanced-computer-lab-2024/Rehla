@@ -147,11 +147,11 @@ const TouristHome = () => {
     };
 
     const handleActivityClick = (activity) => {
-        navigate(`/activity-details/${encodeURIComponent(activity.Name)}`); // Encode to make the URL safe
+        navigate(`/TouristHome/activity-details/${encodeURIComponent(activity.Name)}`); // Encode to make the URL safe
     };
 
     const handleItineraryClick = (itinerary) => {
-        navigate(`/itinerary-details/${encodeURIComponent(itinerary.Itinerary_Name)}`); // Encode to make the URL safe
+        navigate(`/TouristHome/itinerary-details/${encodeURIComponent(itinerary.Itinerary_Name)}`); // Encode to make the URL safe
     };
 
     const handleFilterActivities = async (e) => {

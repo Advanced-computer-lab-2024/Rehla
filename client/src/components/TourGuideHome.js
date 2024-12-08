@@ -19,7 +19,8 @@ import {
     markAsSeennt,
     fetchItineraryReport,
     getTourGuideProfile,
-    notifyForFlaggedItins
+    notifyForFlaggedItins,
+    filterItineraryAttendeesByMonth 
 } from '../services/api';
 
 const TourGuideHome = () => {
@@ -90,6 +91,8 @@ const TourGuideHome = () => {
     const [showModal, setShowModal] = useState(false);
     const [itineraryReport, setItineraryReport] = useState(null);
     const [erro, setErro] = useState(null); // State to handle any errors
+    const [filteredItineraryReport, setFilteredItineraryReport] = useState(null); // State for the filtered report
+    const [monthh, setMonthh] = useState(''); // State to store the selected month
     const [notificationError, setNotificationError] = useState(null); // State for notification errors
     const [notificationSuccess, setNotificationSuccess] = useState(null); // State for notification success
     const [emaill, setEmaill] = useState('');
@@ -112,9 +115,10 @@ const TourGuideHome = () => {
         }
     }, []); // This runs only once when the component mounts
 
+    // Function to fetch the general itinerary report
     const handleViewItineraryReport = async () => {
         try {
-            setErro(null);
+            setErro(null); // Reset errors
             const email = localStorage.getItem('email');
             if (!email) {
                 setErro("No email found. Please sign in.");
@@ -122,8 +126,31 @@ const TourGuideHome = () => {
             }
             const data = await fetchItineraryReport(email);
             setItineraryReport(data);
+            setFilteredItineraryReport(null); // Hide the filtered report
         } catch (err) {
             setErro("An error occurred while fetching the itinerary report.");
+            console.error(err);
+        }
+    };
+
+    // Function to filter itineraries by month
+    const handleFilterItineraryByMonth = async () => {
+        try {
+            setErro(null); // Reset errors
+            const email = localStorage.getItem('email');
+            if (!email) {
+                setErro("No email found. Please sign in.");
+                return;
+            }
+            if (!monthh || monthh < 1 || monthh > 12) {
+                setErro("Please enter a valid month (1-12).");
+                return;
+            }
+            const data = await filterItineraryAttendeesByMonth(email, parseInt(monthh, 10));
+            setFilteredItineraryReport(data);
+            setItineraryReport(null); // Hide the general report
+        } catch (err) {
+            setErro("An error occurred while filtering itineraries.");
             console.error(err);
         }
     };
@@ -1223,31 +1250,75 @@ const TourGuideHome = () => {
             {!loading && !error && reports.length === 0 && <p>No reports found.</p>}
         </div>
         <div>
-    {/* Button to fetch and view itinerary report */}
-    <button onClick={handleViewItineraryReport}>
-        View Itinerary Report
-    </button>
+            {/* Button to fetch and view the general itinerary report */}
+            <button onClick={handleViewItineraryReport}>
+                View Itinerary Report
+            </button>
 
-    {/* Display the report if available */}
-    {itineraryReport && (
-        <div>
-            <h2>Itinerary Report</h2>
-            <ul>
-                {itineraryReport.itineraryDetails.map((itinerary, index) => {
-                    const date = new Date(itinerary.itineraryDate);
-                    const formattedDate = date instanceof Date && !isNaN(date) ? date.toLocaleDateString() : 'Invalid Date';
+            {/* Input and button to filter itineraries by month */}
+            <div>
+                <label>
+                    Filter by Month (1-12):
+                    <input
+                        type="number"
+                        value={monthh}
+                        onChange={(e) => setMonthh(e.target.value)}
+                        min="1"
+                        max="12"
+                    />
+                </label>
+                <button onClick={handleFilterItineraryByMonth}>
+                    Filter Itineraries by Month
+                </button>
+            </div>
 
-                    return (
-                        <li key={index}>
-                            {itinerary.itineraryName} (Date: {formattedDate}): {itinerary.attendeesCount} attendees
-                        </li>
-                    );
-                })}
-            </ul>
-            <p><strong>Total Attendees:</strong> {itineraryReport.totalAttendees}</p>
+            {/* Display any errors */}
+            {erro && <p style={{ color: 'red' }}>{erro}</p>}
+
+            {/* Display the general itinerary report */}
+            {itineraryReport && (
+                <div>
+                    <h2>Itinerary Report</h2>
+                    <ul>
+                        {itineraryReport.itineraryDetails.map((itinerary, index) => {
+                            const date = new Date(itinerary.itineraryDate);
+                            const formattedDate = date instanceof Date && !isNaN(date)
+                                ? date.toLocaleDateString()
+                                : 'Invalid Date';
+
+                            return (
+                                <li key={index}>
+                                    {itinerary.itineraryName} (Date: {formattedDate}): {itinerary.attendeesCount} attendees
+                                </li>
+                            );
+                        })}
+                    </ul>
+                    <p><strong>Total Attendees:</strong> {itineraryReport.totalAttendees}</p>
+                </div>
+            )}
+
+            {/* Display the filtered itinerary report */}
+            {filteredItineraryReport && (
+                <div>
+                    <h2>Filtered Itinerary Report</h2>
+                    <ul>
+                        {filteredItineraryReport.filteredItineraryDetails.map((itinerary, index) => {
+                            const date = new Date(itinerary.itineraryDate);
+                            const formattedDate = date instanceof Date && !isNaN(date)
+                                ? date.toLocaleDateString()
+                                : 'Invalid Date';
+
+                            return (
+                                <li key={index}>
+                                    {itinerary.itineraryName} (Date: {formattedDate}): {itinerary.attendeesCount} attendees
+                                </li>
+                            );
+                        })}
+                    </ul>
+                    <p><strong>Total Attendees:</strong> {filteredItineraryReport.totalFilteredAttendees}</p>
+                </div>
+            )}
         </div>
-    )}
-</div>
 
 
 

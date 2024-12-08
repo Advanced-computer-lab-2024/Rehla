@@ -1978,3 +1978,25 @@ export const getNotificationsForadmin = async (email) => {
         throw error;
     }
 };
+
+// Function to fetch filtered activity attendees report by month
+export const filterActivityAttendeesByMonth = async (email, month) => {
+    try {
+        const response = await axios.post(`${API_URL}/filterAttendeesForActivitiesByMonth`, { email, month });
+        return response.data; // Return the filtered activity report
+    } catch (error) {
+        console.error("Error fetching filtered activity attendees report:", error.response?.data || error.message);
+        throw error; // Re-throw the error for the caller to handle
+    }
+};
+
+// Function to fetch filtered itinerary attendees report by month
+export const filterItineraryAttendeesByMonth = async (email, month) => {
+    try {
+        const response = await axios.post(`${API_URL}/filterAttendeesByMonth`, { email, month });
+        return response.data; // Return the filtered itinerary report
+    } catch (error) {
+        console.error("Error fetching filtered itinerary attendees report:", error.response?.data || error.message);
+        throw error; // Re-throw the error for the caller to handle
+    }
+};

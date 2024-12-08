@@ -11,7 +11,7 @@ import {
     getAllCreatedByEmail,
     calculateActivityRevenue, fetchAllSalesReportsemail,
     fetchFilteredAdvertiserSalesReport,
-    getNotificationsForTourGuide ,markAsSeenn,fetchActivityReport,notifyForFlaggedActivities
+    getNotificationsForTourGuide ,markAsSeenn,fetchActivityReport,notifyForFlaggedActivities,filterActivityAttendeesByMonth
 } from '../services/api';
 
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -60,28 +60,51 @@ const AdvertiserHome = () => {
     const [showModal, setShowModal] = useState(false);
     const [activityReport, setActivityReport] = useState(null); // State to store the report data
     const [erro, setErro] = useState(null); // State to handle any errors
+    const [filteredActivityReport, setFilteredActivityReport] = useState(null); // State to store the filtered report data
+    const [monthh, setMonthh] = useState(''); // State to store the selected month
     const [notificationError, setNotificationError] = useState(null); // State for notification errors
     const [notificationSuccess, setNotificationSuccess] = useState(null); // State for notification success
     const [emaill, setEmaill] = useState('');
+    // Function to fetch the general activity report
     const handleViewActivityReport = async () => {
         try {
             setErro(null); // Reset errors
-    
-            // Retrieve email from localStorage
             const email = localStorage.getItem('email');
             if (!email) {
                 setErro("No email found. Please sign in.");
                 return;
             }
-    
-            // Fetch the report with the user's email
             const data = await fetchActivityReport(email);
-            setActivityReport(data); // Set the report data
+            setActivityReport(data);
+            setFilteredActivityReport(null); // Hide the filtered report
         } catch (err) {
-            setErro(err.message); // Handle errors
+            setErro(err.message);
             console.error("Error fetching activity report:", err);
         }
     };
+
+    // Function to filter activity attendees by month
+    const handleFilterActivityByMonth = async () => {
+        try {
+            setErro(null); // Reset errors
+            const email = localStorage.getItem('email');
+            if (!email) {
+                setErro("No email found. Please sign in.");
+                return;
+            }
+            if (!monthh || monthh < 1 || monthh > 12) {
+                setErro("Please enter a valid month (1-12).");
+                return;
+            }
+            const data = await filterActivityAttendeesByMonth(email, parseInt(monthh, 10));
+            setFilteredActivityReport(data);
+            setActivityReport(null); // Hide the general report
+        } catch (err) {
+            setErro(err.message);
+            console.error("Error filtering activity attendees by month:", err);
+        }
+    };
+
 
 
     useEffect(() => {
@@ -939,26 +962,56 @@ const AdvertiserHome = () => {
             {!loading && !error && reports.length === 0 && <p>No reports found.</p>}
         </div>
         <div>
-    {/* Button to fetch and view activity report */}
-    <button onClick={handleViewActivityReport}>
-        View Activity Report
-    </button>
+            <button onClick={handleViewActivityReport}>
+                View Activity Report
+            </button>
 
-    {/* Display the report if available */}
-    {activityReport && (
-        <div>
-            <h2>Activity Report</h2>
-            <ul>
-                {activityReport.activityDetails.map((activity, index) => (
-                    <li key={index}>
-                        {activity.activityName} (Date: {new Date(activity.date).toLocaleDateString()}): {activity.attendeesCount} attendees
-                    </li>
-                ))}
-            </ul>
-            <p><strong>Total Attendees:</strong> {activityReport.totalAttendees}</p>
+            <div>
+                <label>
+                    Filter by Month (1-12):
+                    <input
+                        type="number"
+                        value={monthh}
+                        onChange={(e) => setMonthh(e.target.value)}
+                        min="1"
+                        max="12"
+                    />
+                </label>
+                <button onClick={handleFilterActivityByMonth}>
+                    Filter Activities by Month
+                </button>
+            </div>
+
+            {erro && <p style={{ color: 'red' }}>{erro}</p>}
+
+            {activityReport && (
+                <div>
+                    <h2>Activity Report</h2>
+                    <ul>
+                        {activityReport.activityDetails.map((activity, index) => (
+                            <li key={index}>
+                                {activity.activityName} (Date: {new Date(activity.date).toLocaleDateString()}): {activity.attendeesCount} attendees
+                            </li>
+                        ))}
+                    </ul>
+                    <p><strong>Total Attendees:</strong> {activityReport.totalAttendees}</p>
+                </div>
+            )}
+
+            {filteredActivityReport && (
+                <div>
+                    <h2>Filtered Activity Report</h2>
+                    <ul>
+                        {filteredActivityReport.filteredActivityDetails.map((activity, index) => (
+                            <li key={index}>
+                                {activity.activityName} (Date: {new Date(activity.activityDate).toLocaleDateString()}): {activity.attendeesCount} attendees
+                            </li>
+                        ))}
+                    </ul>
+                    <p><strong>Total Attendees:</strong> {filteredActivityReport.totalFilteredAttendees}</p>
+                </div>
+            )}
         </div>
-    )}
-</div>
 
 
 
