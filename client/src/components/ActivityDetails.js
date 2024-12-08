@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { readActivity, shareactivtybyemail,createTouristActivity, saveEvent, checkIfEventSaved,requestNotificationForEvent } from '../services/api'; // Import the necessary functions
 import logo from '../images/logo.png';
-import { HeartIcon } from '@heroicons/react/24/outline';
+import { HeartIcon,ShareIcon  } from '@heroicons/react/24/outline';
 
 const ActivityDetails = () => {
     const { activityName } = useParams(); // Extract activity name from the URL
@@ -17,6 +17,8 @@ const ActivityDetails = () => {
     const [isSaved, setIsSaved] = useState(null);
     const [message, setMessage] = useState("");
     const [recipientEmail, setRecipientEmail] = useState(''); // State for recipient email
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
     
     const [notificationError, setNotificationError] = useState(null); // State for notification errors
     const [notificationSuccess, setNotificationSuccess] = useState(null); // State for notification success
@@ -53,6 +55,10 @@ const ActivityDetails = () => {
 
         try {
             const email = localStorage.getItem('email');
+            if (!email) {
+                alert('Cannot save event without logging');
+              }
+
             const eventType = 'Activity'; // Always set to 'Activity'
             const eventName = activityDetails.Name; // Use activity name from the API
 
@@ -98,6 +104,10 @@ const ActivityDetails = () => {
 
     const handleJoinActivity = async () => {
         try {
+            const email = localStorage.getItem('email');
+            if (!email) {
+                alert('Cannot join event without logging');
+            }
             setJoinError(null); // Clear any previous errors
             setJoinSuccess(null); // Clear previous success messages
             const response = await createTouristActivity(email, activityDetails.Name);
@@ -109,6 +119,10 @@ const ActivityDetails = () => {
 
     const handleNotificationRequest = async () => {
         try {
+            const email = localStorage.getItem('email');
+            if (!email) {
+                alert('Cannot request notification without logging');
+            }
             setNotificationError(null); // Clear previous errors
             setNotificationSuccess(null); // Clear previous success messages
 
@@ -136,6 +150,9 @@ const ActivityDetails = () => {
                 alert(err.message || 'Failed to send email.');
             });
     };
+
+    const handleOpenModal = () => setIsModalOpen(true);
+    const handleCloseModal = () => setIsModalOpen(false);
 
     if (loading) return <p className="text-center text-blue-500">Loading...</p>;
 
@@ -165,11 +182,11 @@ const ActivityDetails = () => {
                     {activityDetails ? (
                         <div className="p-6 bg-white rounded-lg w-full max-w-none flex flex-col lg:flex-row relative">
                             {/* Image Section */}
-                            <div className="lg:w-1/2 flex-shrink-0 relative">
+                            <div className="lg:w-1/2 mb-6 lg:mb-0 lg:mr-6">
                                 <img
                                     src={activityDetails.Picture}
                                     alt={activityDetails.Name}
-                                    className="w-full h-96 object-cover rounded mb-6 lg:mb-0"
+                                    className="w-full h-[400px] object-cover rounded-lg mt-4"
                                 />
                                 <p className="text-gray-700 mt-4 text-lg text-center">
                                     <span className="font-semibold">Created By: </span>
@@ -177,102 +194,135 @@ const ActivityDetails = () => {
                                 </p>
                             </div>
 
-                            {/* Details Section */}
-                            <div className="lg:w-1/2 lg:pl-6">
+                            {/* Details Section (two columns layout) */}
+                            <div className="lg:w-1/2 mt-10">
                                 <h1 className="text-4xl font-bold mb-6 text-center lg:text-left text-gray-800">
                                     {activityDetails.Name}
                                 </h1>
-                                <p className="text-gray-700 mb-4 text-lg">
-                                    <span className="font-semibold">Rating: </span>
-                                    {activityDetails.Rating}
-                                </p>
-                                <p className="text-gray-700 mb-4 text-lg">
-                                    <span className="font-semibold">Available Spots: </span>
-                                    {activityDetails.Available_Spots}
-                                </p>
-                                <p className="text-gray-700 mb-4 text-lg">
-                                    <span className="font-semibold">Location: </span>
-                                    {activityDetails.Location}
-                                </p>
-                                <p className="text-gray-700 mb-4 text-lg">
-                                    <span className="font-semibold">Time: </span>
-                                    {activityDetails.Time}
-                                </p>
-                                <p className="text-gray-700 mb-4 text-lg">
-                                    <span className="font-semibold">Duration: </span>
-                                    {activityDetails.Duration}
-                                </p>
-                                <p className="text-gray-700 mb-4 text-lg">
-                                    <span className="font-semibold">Date: </span>
-                                    {new Date(activityDetails.Date).toISOString().split("T")[0]}
-                                </p>
-                                <p className="text-gray-700 mb-4 text-lg">
-                                    <span className="font-semibold">Discount Percent: </span>
-                                    {activityDetails.Discount_Percent}%
-                                </p>
-
-                                <p className="absolute bottom-4 right-4 bg-white bg-opacity-80 text-lg lg:text-2xl font-bold text-gray-800 px-4 py-2 rounded-lg">
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+                                    <p className="text-gray-700 text-lg">
+                                        <span className="font-semibold">Rating: </span>
+                                        {activityDetails.Rating}
+                                    </p>
+                                    <p className="text-gray-700 text-lg">
+                                        <span className="font-semibold">Available Spots: </span>
+                                        {activityDetails.Available_Spots}
+                                    </p>
+                                    <p className="text-gray-700 text-lg">
+                                        <span className="font-semibold">Location: </span>
+                                        {activityDetails.Location}
+                                    </p>
+                                    <p className="text-gray-700 text-lg">
+                                        <span className="font-semibold">Time: </span>
+                                        {activityDetails.Time}
+                                    </p>
+                                    <p className="text-gray-700 text-lg">
+                                        <span className="font-semibold">Duration: </span>
+                                        {activityDetails.Duration}
+                                    </p>
+                                    <p className="text-gray-700 text-lg">
+                                        <span className="font-semibold">Date: </span>
+                                        {new Date(activityDetails.Date).toISOString().split("T")[0]}
+                                    </p>
+                                    <p className="text-gray-700 text-lg">
+                                    <span className="font-semibold">Price: </span>
                                     {activityDetails.Price} {activityDetails.Currency}
                                 </p>
+                                    <p className="text-gray-700 text-lg">
+                                        <span className="font-semibold">Discount Percent: </span>
+                                        {activityDetails.Discount_Percent}%
+                                    </p>
+                                </div>
 
-                                <div className="mt-6 flex gap-4 justify-start">
-                                <button
-                                    onClick={handleJoinActivity}
-                                    className="bg-logoOrange text-white px-6 py-3 rounded"
-                                >
-                                    Join Activity
-                                </button>
-                                <button
-                                    onClick={handleNotificationRequest}
-                                    className="bg-blue-500 text-white px-6 py-3 ml-4 rounded hover:bg-blue-600"
-                                >
-                                    Request Notification
-                                </button>
-                                <button
-                                    onClick={handleCopyLink}
-                                    className="bg-brandBlue text-white px-4 py-2 rounded"
-                                >
-                                    Copy Link
-                                </button>
-                                <input
-                                    type="email"
-                                    placeholder="Enter recipient's email"
-                                    value={recipientEmail}
-                                    onChange={(e) => setRecipientEmail(e.target.value)}
-                                    className="border border-gray-300 rounded px-4 py-2"
-                                />
-                                <button
-                                    onClick={handleShareViaEmail}
-                                    className="bg-brandBlue text-white px-4 py-2 rounded"
-                                >
-                                    Share via Email
-                                </button>
-                                <button
-                                    onClick={handleSaveEvent}
-                                    className={`flex items-center space-x-2 px-4 py-2 rounded ${
-                                        isSaved ? 'bg-red-500' : 'bg-gray-200'
-                                    }`}
-                                >
-                                    <HeartIcon
-                                        className={`w-6 h-6 ${isSaved ? 'text-white' : 'text-gray-600'}`}
-                                    />
-                                    <span className={`text-lg ${isSaved ? 'text-white' : 'text-gray-800'}`}>
-                                        {isSaved ? 'Saved' : 'Save'}
-                                    </span>
-                                </button>
-                            </div>
-                            {notificationError && (
+
+                                {/* Buttons Section */}
+                                <div className="mt-20 flex gap-4 justify-end flex-col lg:flex-row">
+                                    <button
+                                        onClick={handleJoinActivity}
+                                        className="bg-black text-white px-6 py-3 rounded-full"
+                                    >
+                                        Join Activity
+                                    </button>
+                                    <button
+                                        onClick={handleNotificationRequest}
+                                        className="bg-black text-white px-6 py-3 mt-4 lg:mt-0 lg:ml-4 rounded-full"
+                                    >
+                                        Request Notification
+                                    </button>
+                                </div>
+
+                                {/* Notification messages */}
+                                {notificationError && (
                                     <p className="text-red-500 mt-4">{notificationError}</p>
                                 )}
                                 {notificationSuccess && (
                                     <p className="text-green-500 mt-4">{notificationSuccess}</p>
                                 )}
-                             </div>
-                             </div>
+                            </div>
+
+                            {/* Icons for Share and Save in the Top Right Corner */}
+                            <div className="absolute top-4 right-4 flex flex-col space-y-4">
+                                <button
+                                    onClick={handleOpenModal}
+                                    className="bg-black text-white p-3 rounded-full"
+                                >
+                                    <ShareIcon className="w-6 h-6" />
+                                </button>
+                                <button
+                                    onClick={handleSaveEvent}
+                                    className={`bg-white p-3 rounded-full ${isSaved ? 'bg-red-500' : 'bg-gray-200'}`}
+                                >
+                                    <HeartIcon className={`w-6 h-6 ${isSaved ? 'text-white' : 'text-gray-600'}`} />
+                                </button>
+                            </div>
+                        </div>
                     ) : (
                         <p className="text-red-500">Activity details not found.</p>
                     )}
-                </div>
+
+                        {/* Modal for Share */}
+                        {isModalOpen && (
+                            <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
+                                <div className="bg-white p-6 rounded-lg max-w-sm w-full relative">
+                                    {/* Close Button (X) */}
+                                    <button
+                                        onClick={handleCloseModal}
+                                        className="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
+                                    >
+                                        <span className="text-2xl">×</span>
+                                    </button>
+
+                                    <h2 className="text-2xl font-bold mb-4 text-center">Share Activity</h2>
+
+                                    <div className="mb-4">
+                                        <button
+                                            onClick={handleCopyLink}
+                                            className="bg-brandBlue text-white px-4 py-2 w-full rounded-full mb-4"
+                                        >
+                                            Copy Link
+                                        </button>
+                                    </div>
+
+                                    <div className="mb-4">
+                                        <input
+                                            type="email"
+                                            placeholder="Enter recipient's email"
+                                            value={recipientEmail}
+                                            onChange={(e) => setRecipientEmail(e.target.value)}
+                                            className="border border-gray-300 rounded-full px-4 py-2 w-full"
+                                        />
+                                    </div>
+                                    <button
+                                        onClick={handleShareViaEmail}
+                                        className="bg-brandBlue text-white px-4 py-2 w-full rounded-full"
+                                    >
+                                        Share via Email
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
             </div>
 
             <footer className="bg-brandBlue shadow dark:bg-brandBlue m-0">
