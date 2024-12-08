@@ -92,11 +92,11 @@ const AdvertiserHome = () => {
                 setErro("No email found. Please sign in.");
                 return;
             }
-            if (!month || month < 1 || month > 12) {
+            if (!monthh || monthh < 1 || monthh > 12) {
                 setErro("Please enter a valid month (1-12).");
                 return;
             }
-            const data = await filterActivityAttendeesByMonth(email, parseInt(month, 10));
+            const data = await filterActivityAttendeesByMonth(email, parseInt(monthh, 10));
             setFilteredActivityReport(data);
             setActivityReport(null); // Hide the general report
         } catch (err) {
@@ -971,8 +971,8 @@ const AdvertiserHome = () => {
                     Filter by Month (1-12):
                     <input
                         type="number"
-                        value={month}
-                        onChange={(e) => setMonth(e.target.value)}
+                        value={monthh}
+                        onChange={(e) => setMonthh(e.target.value)}
                         min="1"
                         max="12"
                     />
