@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { readActivity, shareactivtybyemail,createTouristActivity, saveEvent, checkIfEventSaved,requestNotificationForEvent } from '../services/api'; // Import the necessary functions
-import logo from '../images/logo.png';
+import { readActivity, shareactivtybyemail,createTouristActivity, saveEvent, 
+        checkIfEventSaved,requestNotificationForEvent, getTouristProfile,
+        searchEventsPlaces } from '../services/api'; // Import the necessary functions
+import logo from '../images/logoWhite.png';
 import { HeartIcon,ShareIcon  } from '@heroicons/react/24/outline';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faShoppingCart,faBell  } from '@fortawesome/free-solid-svg-icons';
+
 
 const ActivityDetails = () => {
     const { activityName } = useParams(); // Extract activity name from the URL
@@ -18,6 +23,30 @@ const ActivityDetails = () => {
     const [message, setMessage] = useState("");
     const [recipientEmail, setRecipientEmail] = useState(''); // State for recipient email
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [searchResults, setSearchResults] = useState({});
+    const [isSearched, setIsSearched] = useState(false);
+    const [currency, setCurrency] = useState('USD');
+    const [conversionRates] = useState({
+        USD: 1,
+        EUR: 0.85,
+        GBP: 0.75,
+        JPY: 110,
+        CAD: 1.25,
+        AUD: 1.35
+    });
+
+    const [formData, setFormData] = useState({
+        Email: '',
+        Username: '',
+        Password: '',
+        Mobile_Number: '',
+        Nationality: '',
+        Job_Student: '',
+        Type: '',
+        Points: 0, 
+        Badge: '',
+      });
 
     
     const [notificationError, setNotificationError] = useState(null); // State for notification errors
@@ -30,6 +59,20 @@ const ActivityDetails = () => {
         if (storedEmail) {
             setEmail(storedEmail);
         }
+    }, []);
+
+    useEffect(() => {
+        const fetchProfile = async () => {
+          try {
+            const email = localStorage.getItem('email');
+            const profileData = await getTouristProfile({ Email: email });
+            //setTourist(profileData);
+            setFormData(profileData);
+          } catch (error) {
+            console.error("Error fetching profile:", error);
+          }
+        };
+        fetchProfile();
     }, []);
 
 
@@ -48,6 +91,27 @@ const ActivityDetails = () => {
         handleCheckEvent();  // Call the function when the component mounts
 
     }, [activityDetails?.Name]);
+    
+
+    // Handle search submission
+    const handleSearch = async (e) => {
+        e.preventDefault();
+        try {
+            const result = await searchEventsPlaces(searchTerm);
+            setSearchResults(result);
+            setIsSearched(true);
+        } catch (err) {
+            setError('Search failed. Please try again later.');
+        }
+    };
+
+    const convertPrice = (price) => {
+        return (price * conversionRates[currency]).toFixed(2);
+    };
+
+    const handleCurrencyChange = (e) => {
+        setCurrency(e.target.value);
+    };
 
     // Handle saving the event (bookmarking)
     const handleSaveEvent = async (e) => {
@@ -160,24 +224,194 @@ const ActivityDetails = () => {
 
     return (
         <div>
-            <div className="container mx-auto px-6 py-10">
-                <div className="NavBar">
-                    <img src={logo} alt="Logo" />
-                    <nav className="main-nav">
-                        <ul className="nav-links">
-                            <Link to="/">Home</Link>
-                            <Link to="/products">Products</Link>
-                            <Link to="/MyEvents">Events/Places</Link>
-                            <Link to="/Flights">Flights</Link>
-                            <Link to="/Hotels">Hotels</Link>
-                        </ul>
-                    </nav>
+            <div className="w-full mx-auto px-6 py-1 bg-black shadow flex flex-col sticky z-50 top-0">
+                <div className="flex items-center">                
+                    {/* Logo */}
+                    <img src={logo} alt="Logo" className="w-44" />
 
-                    <nav className="signing">
-                        <Link to="/TouristHome/TouristProfile">My Profile</Link>
-                    </nav>
+                    {/* Search Form */}
+                    <form onSubmit={handleSearch} className="flex items-center ml-4">
+                    <input
+                        type="text"
+                        placeholder="Search"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="border border-gray-300 rounded-full px-72 py-2 w-full max-w-2xl text-sm pl-2"
+                    />
+
+                        <button type="submit" className="bg-white text-black rounded-full ml-2 p-2">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-5 w-5"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                />
+                            </svg>
+                        </button>
+                    </form>
+                    <div className="flex items-center ml-auto">
+                        <select 
+                            value={currency} 
+                            onChange={handleCurrencyChange} 
+                            className="rounded p-1 mx-2 bg-transparent text-white"
+                        >
+                            <option value="USD" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">USD</option>
+                            <option value="EUR" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">EUR</option>
+                            <option value="GBP" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">GBP</option>
+                            <option value="JPY" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">JPY</option>
+                            <option value="CAD" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">CAD</option>
+                            <option value="AUD" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">AUD</option>
+                        </select>
+                        <nav className="flex space-x-4 ml-2"> {/* Reduced ml-4 to ml-2 and space-x-6 to space-x-4 */}
+                            <Link to="/Cart">
+                                <FontAwesomeIcon icon={faShoppingCart} />
+                            </Link>
+                        </nav>
+                        
+                        <nav className="flex space-x-4 ml-2"> {/* Reduced ml-4 to ml-2 and space-x-6 to space-x-4 */}
+                            <Link to="/TouristHome/TouristProfile">
+                                {/* Profile Picture */}
+                                <div className="">
+                                    {formData.Profile_Pic ? (
+                                        <img
+                                            src={formData.Profile_Pic}
+                                            alt={`${formData.Name}'s profile`}
+                                            className="w-14 h-14 rounded-full object-cover border-2 border-white"
+                                        />
+                                    ) : (
+                                        <div className="w-16 h-16 rounded-full bg-black text-white text-center flex items-center justify-center border-4 border-white">
+                                            <span className="text-4xl font-bold">{formData.Username.charAt(0)}</span>
+                                        </div>
+                                    )}
+                                </div>
+                            </Link>
+                        </nav>
+                    </div>
+
+
                 </div>
 
+                {/* Main Navigation */}
+                <nav className="flex space-x-6">
+                    <Link to="/" className="text-lg font-medium text-logoOrange hover:text-blue-500">
+                        Home
+                    </Link>
+                    <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-blue-500">
+                        Activities
+                    </Link>
+                    <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-blue-500">
+                        Itineraries
+                    </Link>
+                    <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-blue-500">
+                        Historical Places
+                    </Link>
+                    <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-blue-500">
+                        Museums
+                    </Link>
+                    <Link to="/products" className="text-lg font-medium text-white hover:text-blue-500">
+                        Gift Shop
+                    </Link>
+                    <Link to="/MyEvents" className="text-lg font-medium text-white hover:text-blue-500">
+                        MyEvents
+                    </Link>
+                    <Link to="/Flights" className="text-lg font-medium text-white hover:text-blue-500">
+                        Flights
+                    </Link>
+                    <Link to="/Hotels" className="text-lg font-medium text-white hover:text-blue-500">
+                        Hotels
+                    </Link>
+                </nav>            
+            </div>
+            <div className="w-full mx-auto px-6 py-1 bg-black shadow flex flex-col sticky z-50 top-0">
+                <div className="flex items-center">                
+                    {/* Logo */}
+                    <img src={logo} alt="Logo" className="w-44" />
+
+                    {/* Search Form */}
+                    <form className="flex items-center ml-4">
+                    <input
+                        type="text"
+                        placeholder="Search"
+                        className="border border-gray-300 rounded-full px-72 py-2 w-full max-w-2xl text-sm pl-2"
+                    />
+
+                        <button type="submit" className="bg-white text-black rounded-full ml-2 p-2">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-5 w-5"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                />
+                            </svg>
+                        </button>
+                    </form>
+                    <div className="flex items-center ml-auto">
+                        <select 
+                            value={currency} 
+                            onChange={handleCurrencyChange} 
+                            className="rounded p-1 mx-2 bg-transparent text-white"
+                        >
+                            <option value="USD" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">USD</option>
+                            <option value="EUR" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">EUR</option>
+                            <option value="GBP" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">GBP</option>
+                            <option value="JPY" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">JPY</option>
+                            <option value="CAD" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">CAD</option>
+                            <option value="AUD" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">AUD</option>
+                        </select>
+
+                        {/* Sign In/Sign Up Navigation */}
+                        <nav className="flex space-x-6 ml-4">
+                            <Link to="/signin" className="text-lg font-medium text-white hover:text-logoOrange">
+                                Sign in
+                            </Link>
+                            <Link to="/signup" className="text-lg font-medium text-white hover:text-logoOrange">
+                                Sign up
+                            </Link>
+                        </nav>
+                    </div>
+
+                </div>
+
+                {/* Main Navigation */}
+                <nav className="flex space-x-6">
+                    <Link to="/" className="text-lg font-medium text-logoOrange">
+                        Home
+                    </Link>
+                    <Link to="/UpcomingActivities" className="text-lg font-medium text-white hover:text-logoOrange">
+                        Activities
+                    </Link>
+                    <Link to="/UpcomingItineraries" className="text-lg font-medium text-white hover:text-logoOrange">
+                        Itineraries
+                    </Link>
+                    <Link to="/HistoricalPlaces" className="text-lg font-medium text-white hover:text-logoOrange">
+                        Historical Places
+                    </Link>
+                    <Link to="/Museums" className="text-lg font-medium text-white hover:text-logoOrange">
+                        Museums
+                    </Link>
+                    <Link to="/products" className="text-lg font-medium text-white hover:text-logoOrange">
+                        Gift Shop
+                    </Link>
+                    <Link to="/eventsplaces" className="text-lg font-medium text-white hover:text-logoOrange">
+                        Transportation
+                    </Link>
+                </nav>            
+            </div>
+            <div className="container mx-auto px-6 py-10">
                 <div className="mt-10 flex justify-center">
                     {activityDetails ? (
                         <div className="p-6 bg-white rounded-lg w-full max-w-none flex flex-col lg:flex-row relative">
