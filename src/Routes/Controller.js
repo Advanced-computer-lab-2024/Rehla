@@ -7491,6 +7491,128 @@ const getNotificationsForseller = async (req, res) => {
     }
 };
 
+// Function to create notifications for products with Quantity = 0
+const createOutOfStockNotificationsadmin = async (req, res) => {
+    try {
+        const { email } = req.body; // Extract email from the request body
+
+        // Validate input: Check if email is provided
+        if (!email) {
+            return res.status(400).json({ message: "Email is required." });
+        }
+
+        // Fetch the seller's username using their email
+        const sellerData = await Admin.findOne({ Email: email });
+
+        if (!sellerData) {
+            return res.status(404).json({ message: "Admin not found with the provided email." });
+        }
+
+        const username = sellerData.Username;
+
+        // Fetch all products associated with the seller's username
+        const products = await Product.find({ Seller_Name: username });
+
+        if (!products || products.length === 0) {
+            return res.status(404).json({ message: "No products found for the admin." });
+        }
+
+        // Filter products with Quantity = 0
+        const outOfStockProducts = products.filter(p => p.Quantity === 0);
+
+        if (outOfStockProducts.length === 0) {
+            return res.status(200).json({ message: "No out-of-stock products found." });
+        }
+
+        // Process each out-of-stock product
+        const notifications = [];
+        for (const product of outOfStockProducts) {
+            // Check if a notification for this product already exists
+            const existingNotification = await Notiseller.findOne({
+                user: username,
+                title: "Out of Stock Alert",
+                message: `Your product "${product.Product_Name}" is out of stock.`
+            });
+
+            if (!existingNotification) {
+                // Create a new notification if it does not exist
+                notifications.push({
+                    user: username,
+                    email: email,
+                    title: "Out of Stock Alert",
+                    message: `Your product "${product.Product_Name}" is out of stock.`,
+                    date: new Date(),
+                    seen: false
+                });
+            }
+        }
+
+        if (notifications.length > 0) {
+            // Save new notifications to the database
+            await Notiseller.insertMany(notifications);
+        }
+
+        return res.status(200).json({
+            message: notifications.length > 0
+                ? "Notifications created for out-of-stock products."
+                : "All notifications for out-of-stock products already exist.",
+            notifications
+        });
+    } catch (error) {
+        console.error("Error creating notifications:", error.message);
+        res.status(500).json({
+            message: "Error creating notifications.",
+            error: error.message
+        });
+    }
+};
+
+const markAsSeenna = async (req, res) => {
+    try {
+        const { id } = req.body; // Take id from request body
+        if (!id) {
+            return res.status(400).json({ message: "Notification ID is required." });
+        }
+
+        const notification = await Notiseller.findById(id);
+        if (!notification) {
+            return res.status(404).json({ message: "Notification not found." });
+        }
+
+        notification.seen = true;
+        await notification.save();
+        res.status(200).json({ message: "Notification marked as seen." });
+    } catch (err) {
+        console.error("Error marking notification as seen:", err);
+        res.status(500).json({ message: "An error occurred while marking the notification as seen.", error: err.message });
+    }
+};
+
+
+// Function to get all notifications for a specific tour guide
+const getNotificationsForadmin = async (req, res) => {
+    try {
+        const { email } = req.params; // Extract email from request parameters
+
+        if (!email) {
+            return res.status(400).json({ message: "Email is required." });
+        }
+
+        // Fetch all notifications for the specific tour guide (based on email)
+        const notifications = await Notiseller.find({ 'email': email });
+
+        if (!notifications || notifications.length === 0) {
+            return res.status(404).json({ message: "No notifications found for this seller." });
+        }
+
+        // Respond with the notifications data
+        res.status(200).json({ notifications });
+    } catch (err) {
+        console.error("Error fetching notifications for tour guide:", err);
+        res.status(500).json({ message: "An error occurred while fetching notifications.", error: err.message });
+    }
+};
+
 
 // ----------------- Activity Category CRUD -------------------
 
@@ -7498,6 +7620,9 @@ module.exports = { getPurchasedProducts,
     createOutOfStockNotifications,
     markAsSeenns,
     getNotificationsForseller,
+    createOutOfStockNotificationsadmin,
+    markAsSeenna,
+    getNotificationsForadmin,
     viewmyproducts,
     createUserAdmin, 
     deleteUserAdmin,
