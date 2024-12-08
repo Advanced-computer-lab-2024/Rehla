@@ -117,7 +117,7 @@ const SignIn = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-black"
                   placeholder="Enter your email"
                 />
               </div>
@@ -130,7 +130,7 @@ const SignIn = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-black"
                   placeholder="Enter your password"
                 />
               </div>
@@ -138,7 +138,7 @@ const SignIn = () => {
               <div className="flex items-center justify-between mb-6">
                 <button
                   type="submit"
-                  className="w-full bg-black text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300"
+                  className="w-full bg-black text-white py-2 rounded-full hover:bg-opacity-90 transition duration-300"
                 >
                   Sign In
                 </button>
@@ -165,7 +165,7 @@ const SignIn = () => {
       {/* Terms Acceptance Modal */}
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+          <div className="bg-white p-6 rounded-full shadow-lg w-96">
             <h3 className="text-xl mb-4">Please Accept Terms and Conditions</h3>
             <div className="flex items-center">
               <input
@@ -179,7 +179,7 @@ const SignIn = () => {
               <button
                 onClick={handleAcceptTerms}
                 disabled={!termsAccepted}
-                className={`w-full bg-black text-white py-2 rounded-lg ${
+                className={`w-full bg-black text-white py-2 rounded-full ${
                   !termsAccepted ? "opacity-50" : "opacity-100"
                 }`}
               >
