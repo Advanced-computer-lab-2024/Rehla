@@ -11,7 +11,7 @@ import {
     getAllCreatedByEmail,
     calculateActivityRevenue, fetchAllSalesReportsemail,
     fetchFilteredAdvertiserSalesReport,
-    getNotificationsForTourGuide ,markAsSeenn,fetchActivityReport
+    getNotificationsForTourGuide ,markAsSeenn,fetchActivityReport,notifyForFlaggedActivities
 } from '../services/api';
 
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -60,6 +60,9 @@ const AdvertiserHome = () => {
     const [showModal, setShowModal] = useState(false);
     const [activityReport, setActivityReport] = useState(null); // State to store the report data
     const [erro, setErro] = useState(null); // State to handle any errors
+    const [notificationError, setNotificationError] = useState(null); // State for notification errors
+    const [notificationSuccess, setNotificationSuccess] = useState(null); // State for notification success
+    const [emaill, setEmaill] = useState('');
     const handleViewActivityReport = async () => {
         try {
             setErro(null); // Reset errors
@@ -79,6 +82,25 @@ const AdvertiserHome = () => {
             console.error("Error fetching activity report:", err);
         }
     };
+
+
+    useEffect(() => {
+        const storedEmail = localStorage.getItem('email');
+        if (storedEmail) {
+            setEmaill(storedEmail);
+    
+            const handleNotifyForBookings = async () => {
+                try {
+                    const response = await notifyForFlaggedActivities(storedEmail); // Pass email to notify function
+                    setNotificationSuccess(response.message || 'Notifications processed successfully.');
+                } catch (err) {
+                    setNotificationError(err.message || 'Failed to process notifications.');
+                }
+            };
+    
+            handleNotifyForBookings();
+        }
+    }, []); // This runs only once when the component mounts
     
 
     // Fetch notifications for flagged activities
