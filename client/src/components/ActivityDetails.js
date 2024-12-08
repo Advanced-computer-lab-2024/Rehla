@@ -72,7 +72,7 @@ function Content() {
     };
     const { activityName } = useParams(); // Extract activity name from the URL
     // Conditional rendering based on the URL
-    if (location.pathname === `/activity-details/${decodeURIComponent(activityName)}`){
+    if (localStorage.getItem('email') === null){
         return  <div className="w-full mx-auto px-6 py-1 bg-black shadow flex flex-col sticky z-50 top-0">
         <div className="flex items-center">                
             {/* Logo */}
@@ -155,7 +155,7 @@ function Content() {
             </Link>
         </nav>            
     </div>;
-    } else if (location.pathname === `/TouristHome/activity-details/${decodeURIComponent(activityName)}`) {
+    } else if (localStorage.getItem('email') != null) {
         return  <div className="w-full mx-auto px-6 py-1 bg-black shadow flex flex-col sticky z-50 top-0">
         <div className="flex items-center">                
             {/* Logo */}
