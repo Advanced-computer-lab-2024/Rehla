@@ -1900,7 +1900,7 @@ export const fetchItineraryReport = async (email) => {
     }
 };
 
-<<<<<<< HEAD
+
 export const addToCart = async (email, productName) => {
     try {
         const response = await axios.post(`${API_URL}/addToCart`, { email, productName });
@@ -1916,7 +1916,7 @@ export const addToCart = async (email, productName) => {
     }};
 
 
-=======
+
 // Function to create notifications for out-of-stock products
 export const createOutOfStockNotifications = async (email) => {
     try {
@@ -1978,4 +1978,3 @@ export const getNotificationsForadmin = async (email) => {
         throw error;
     }
 };
->>>>>>> 719b68297ea8d38b4a19d0b656b6be9bef8dadd4

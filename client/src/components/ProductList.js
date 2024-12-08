@@ -471,7 +471,6 @@ const handleAddToCart = async (productName) => {
 
             {/* Conditionally Render Products */}
             {isSearched ? (
-<<<<<<< HEAD
                 <div className="mt-8">
                     <h3 className="text-2xl font-semibold mb-4">Search Results:</h3>
                     {searchResults.length > 0 ? (
@@ -700,7 +699,6 @@ const handleAddToCart = async (productName) => {
                     </div>
                 )}
 
->>>>>>> 719b68297ea8d38b4a19d0b656b6be9bef8dadd4
 
         </div>
         {/* Review Form */}
