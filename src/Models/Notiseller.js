@@ -7,6 +7,11 @@ const notificationSchema = new Schema({
         ref: 'Tourist',
         required: true
     },
+    email: {
+        type: String,
+        //ref: 'Tourist',
+        required: true
+    },
     message: {
         type: String,
         required: true

@@ -1894,3 +1894,33 @@ export const fetchItineraryReport = async (email) => {
     }
 };
 
+// Function to create notifications for out-of-stock products
+export const createOutOfStockNotifications = async (email) => {
+    try {
+        const response = await axios.post(`${API_URL}/createOutOfStockNotifications`, { email });
+        return response.data;
+    } catch (error) {
+        console.error("Error creating out-of-stock notifications:", error.response?.data || error.message);
+        throw error.response?.data || error.message;
+    }
+};
+
+// Mark a notification as seen
+export const markAsSeenns = async (id) => {
+    try {
+        const response = await axios.post(`${API_URL}/markAsSeenns`, { id });
+        return response.data;
+    } catch (error) {
+        console.error("Error marking notification as seen:", error);
+        throw error;
+    }
+};
+export const getNotificationsForseller = async (email) => {
+    try {
+        const response = await axios.get(`${API_URL}/getNotificationsForseller/${email}`);
+        return response.data.notifications; // Handle the notifications as needed
+    } catch (error) {
+        console.error("Error fetching notifications:", error);
+        throw error;
+    }
+};
