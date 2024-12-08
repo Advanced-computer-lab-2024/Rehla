@@ -183,16 +183,16 @@ const ProductInfo = () => {
   </div>
 
           {/* Product Info and Buttons */}
-          <div className="flex-grow pl-8"> {/* Added padding-left for spacing */}
-    <h1 className="text-3xl font-bold text-gray-800 mb-4">{product.Product_Name}</h1>
-    <p className="text-gray-600 mb-4">{product.Description}</p>
-    <p className="text-2xl font-bold text-gray-800 mb-4">Price: ${product.Price}</p>
-    <p className="text-gray-600 mb-4">Quantity: {product.Quantity}</p>
-    <p className="text-gray-600 mb-4">Seller Name: {product.Seller_Name}</p>
-    <p className="text-gray-600 mb-4">Rating: {product.Rating}</p>
-    <p className="text-gray-600 mb-4">Reviews: {product.Reviews}</p>
-    <p className="text-gray-600 mb-4">Archived: {product.Archived ? 'Yes' : 'No'}</p>
-    <p className="text-gray-600 mb-4">Sold: {product.Saled}</p>
+          <div className="flex-grow pl-6"> {/* Added padding-left for spacing */}
+          <h1 className="text-4xl font-bold text-gray-800 mb-4">{product.Product_Name}</h1>
+<p className="text-lg text-gray-600 mb-4">{product.Description}</p>
+<p className="text-3xl font-bold text-gray-800 mb-4">Price: ${product.Price}</p>
+<p className="text-lg text-gray-600 mb-4">Quantity: {product.Quantity}</p>
+<p className="text-lg text-gray-600 mb-4">Seller Name: {product.Seller_Name}</p>
+<p className="text-lg text-gray-600 mb-4">Rating: {product.Rating}</p>
+<p className="text-lg text-gray-600 mb-4">Reviews: {product.Reviews}</p>
+<p className="text-lg text-gray-600 mb-4">Archived: {product.Archived ? 'Yes' : 'No'}</p>
+<p className="text-lg text-gray-600 mb-4">Sold: {product.Saled}</p>
 
     {/* Add to Cart Button */}
     <button
