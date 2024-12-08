@@ -77,7 +77,9 @@ function App() {
                 <Route path="/TourGuideHome/TourGuideProfile" element={<TourGuideProfile />} />
                 <Route path="/TourisimGovernerHome" element={<TourisimGovernerHome />} />
                 <Route path="/activity-details/:activityName" element={<ActivityDetails />} />
+                <Route path="/TouristHome/activity-details/:activityName" element={<ActivityDetails />} />
                 <Route path="/itinerary-details/:itineraryName" element={<ItineraryDetails />} />
+                <Route path="/TouristHome/itinerary-details/:itineraryName" element={<ItineraryDetails />} />
 
                 <Route path="/MyEvents" element={<MyEvents />} />
 
