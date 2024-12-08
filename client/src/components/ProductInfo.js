@@ -286,32 +286,6 @@ const handleAddToCart = async (productName) => {
           {/* Logo */}
           <img src={logo} alt="Logo" className="w-44" />
 
-          {/* Search Form */}
-          <form onSubmit={handleSearchProducts} className="flex items-center ml-4">
-            <input
-              type="text"
-              placeholder="Search"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="border border-gray-300 rounded-full px-72 py-2 w-full max-w-2xl text-sm pl-2"
-            />
-            <button type="submit" className="bg-white text-black rounded-full ml-2 p-2">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-            </button>
-          </form>
           <div className="flex items-center ml-auto">
             <select 
               value={currency} 
