@@ -190,7 +190,7 @@ const MyEvents = () => {
 
                 {/* Main Navigation */}
                 <nav className="flex space-x-6">
-                    <Link to="/" className="text-lg font-medium text-logoOrange ">
+                    <Link to="/" className="text-lg font-medium text-white hover:text-logoOrange ">
                         Home
                     </Link>
                     <Link to="/upcomingActivities" className="text-lg font-medium text-white hover:text-logoOrange">
@@ -208,7 +208,7 @@ const MyEvents = () => {
                     <Link to="/products" className="text-lg font-medium text-white hover:text-logoOrange">
                         Gift Shop
                     </Link>
-                    <Link to="/MyEvents" className="text-lg font-medium text-white hover:text-logoOrange">
+                    <Link to="/MyEvents" className="text-lg font-medium text-logoOrange">
                         MyEvents
                     </Link>
                     <Link to="/Flights" className="text-lg font-medium text-white hover:text-logoOrange">
