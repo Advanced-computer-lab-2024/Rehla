@@ -18,7 +18,8 @@ import {
     getNotificationsForTourGuidet,
     markAsSeennt,
     fetchItineraryReport,
-    getTourGuideProfile
+    getTourGuideProfile,
+    notifyForFlaggedItins
 } from '../services/api';
 
 const TourGuideHome = () => {
@@ -89,6 +90,27 @@ const TourGuideHome = () => {
     const [showModal, setShowModal] = useState(false);
     const [itineraryReport, setItineraryReport] = useState(null);
     const [erro, setErro] = useState(null); // State to handle any errors
+    const [notificationError, setNotificationError] = useState(null); // State for notification errors
+    const [notificationSuccess, setNotificationSuccess] = useState(null); // State for notification success
+    const [emaill, setEmaill] = useState('');
+
+    useEffect(() => {
+        const storedEmail = localStorage.getItem('email');
+        if (storedEmail) {
+            setEmaill(storedEmail);
+    
+            const handleNotifyForBookings = async () => {
+                try {
+                    const response = await notifyForFlaggedItins(storedEmail); // Pass email to notify function
+                    setNotificationSuccess(response.message || 'Notifications processed successfully.');
+                } catch (err) {
+                    setNotificationError(err.message || 'Failed to process notifications.');
+                }
+            };
+    
+            handleNotifyForBookings();
+        }
+    }, []); // This runs only once when the component mounts
 
     const handleViewItineraryReport = async () => {
         try {

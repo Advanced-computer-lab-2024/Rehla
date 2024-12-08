@@ -7088,38 +7088,59 @@ const notifyForFlaggedActivities = async (req, res) => {
 
         // Fetch activities where Flagged is true and match the email
         const activities = await activity.find({ 
-            'Flagged': true, // Flagged activities
-            'Created_By': email // Activities that belong to the given email
+            Flagged: true, // Flagged activities
+            Created_By: email // Activities that belong to the given email
         });
 
         if (!activities || activities.length === 0) {
             return res.status(404).json({ message: "No flagged activities found for the given email." });
         }
 
-        // Loop through each flagged activity and create a notification
-        for (const activity of activities) {
-            // Create a notification for the user about the flagged activity
-            const notificationMessage = `The activity "${activity.Name}" has been flagged!`;
+        // Loop through each flagged activity
+        const notifications = [];
+        for (const activityItem of activities) {
+            const notificationMessage = `The activity "${activityItem.Name}" has been flagged!`;
 
-            const notification = new Notificationtour({
-                message: notificationMessage,
-                user: email, // Assuming email is used to reference the user
-                seen: false, // Notifications are initially unseen
-                date: new Date(),
-                title: "Activity Flagged"
+            // Check if the notification already exists
+            const existingNotification = await Notificationtour.findOne({
+                user: email,
+                title: "Activity Flagged",
+                message: notificationMessage
             });
 
-            // Save the notification to the database
-            await notification.save();
+            if (!existingNotification) {
+                // Create a new notification if it doesn't exist
+                notifications.push({
+                    message: notificationMessage,
+                    user: email, // Assuming email is used to reference the user
+                    seen: false, // Notifications are initially unseen
+                    date: new Date(),
+                    title: "Activity Flagged"
+                });
+            }
         }
 
-        res.status(200).json({ message: "Notifications for flagged activities created successfully." });
+        // Save new notifications to the database
+        if (notifications.length > 0) {
+            await Notificationtour.insertMany(notifications);
+        }
+
+        res.status(200).json({ 
+            message: notifications.length > 0
+                ? "Notifications for flagged activities created successfully."
+                : "All notifications for flagged activities already exist.",
+            notifications
+        });
 
     } catch (err) {
         console.error("Error notifying for flagged activities:", err);
-        res.status(500).json({ message: "An error occurred while creating notifications.", error: err.message });
+        res.status(500).json({ 
+            message: "An error occurred while creating notifications.", 
+            error: err.message 
+        });
     }
 };
+
 
 // Function to get all notifications for a specific tour guide
 const getNotificationsForTourGuide = async (req, res) => {
@@ -7166,7 +7187,7 @@ const markAsSeenn = async (req, res) => {
     }
 };
 
-// Function to fetch flagged activities and create notifications
+// Function to fetch flagged itineraries and create notifications
 const notifyForFlaggedItins = async (req, res) => {
     try {
         const { email } = req.body; // Extract email from request body
@@ -7175,40 +7196,61 @@ const notifyForFlaggedItins = async (req, res) => {
             return res.status(400).json({ message: "Email is required." });
         }
 
-        // Fetch activities where Flagged is true and match the email
-        const activities = await itinerarym.find({ 
-            'Flagged': true, // Flagged activities
-            'Created_By': email // Activities that belong to the given email
+        // Fetch itineraries where Flagged is true and match the email
+        const itineraries = await itinerarym.find({ 
+            Flagged: true, // Flagged itineraries
+            Created_By: email // Itineraries that belong to the given email
         });
 
-        if (!activities || activities.length === 0) {
-            return res.status(404).json({ message: "No flagged Itinerary found for the given email." });
+        if (!itineraries || itineraries.length === 0) {
+            return res.status(404).json({ message: "No flagged itineraries found for the given email." });
         }
 
-        // Loop through each flagged activity and create a notification
-        for (const activity of activities) {
-            // Create a notification for the user about the flagged activity
-            const notificationMessage = `The Itinerary "${activity.Itinerary_Name}" has been flagged!`;
+        // Loop through each flagged itinerary
+        const notifications = [];
+        for (const itinerary of itineraries) {
+            const notificationMessage = `The Itinerary "${itinerary.Itinerary_Name}" has been flagged!`;
 
-            const notification = new Notitour({
-                message: notificationMessage,
-                user: email, // Assuming email is used to reference the user
-                seen: false, // Notifications are initially unseen
-                date: new Date(),
-                title: "Itinerary Flagged"
+            // Check if the notification already exists
+            const existingNotification = await Notitour.findOne({
+                user: email,
+                title: "Itinerary Flagged",
+                message: notificationMessage
             });
 
-            // Save the notification to the database
-            await notification.save();
+            if (!existingNotification) {
+                // Create a new notification if it doesn't exist
+                notifications.push({
+                    message: notificationMessage,
+                    user: email, // Assuming email is used to reference the user
+                    seen: false, // Notifications are initially unseen
+                    date: new Date(),
+                    title: "Itinerary Flagged"
+                });
+            }
         }
 
-        res.status(200).json({ message: "Notifications for flagged activities created successfully." });
+        // Save new notifications to the database
+        if (notifications.length > 0) {
+            await Notitour.insertMany(notifications);
+        }
+
+        res.status(200).json({ 
+            message: notifications.length > 0
+                ? "Notifications for flagged itineraries created successfully."
+                : "All notifications for flagged itineraries already exist.",
+            notifications
+        });
 
     } catch (err) {
-        console.error("Error notifying for flagged activities:", err);
-        res.status(500).json({ message: "An error occurred while creating notifications.", error: err.message });
+        console.error("Error notifying for flagged itineraries:", err);
+        res.status(500).json({ 
+            message: "An error occurred while creating notifications.", 
+            error: err.message 
+        });
     }
 };
+
 
 // Function to get all notifications for a specific tour guide
 const getNotificationsForTourGuidet = async (req, res) => {
