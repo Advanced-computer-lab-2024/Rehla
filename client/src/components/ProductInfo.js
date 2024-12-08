@@ -1,9 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import logo from '../images/logoWhite.png';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faShoppingCart, faBell } from '@fortawesome/free-solid-svg-icons';
-import { getProducts, getProductsSortedByRating, productRateReview, createwishlistItem, checkoutOrder, getTouristProfile, viewOrderDetails ,addToCart} from '../services/api';
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import logo from '../images/logo.png';
 
 const ProductInfo = () => {    
   const location = useLocation(); // Ensure this is called at the top level
