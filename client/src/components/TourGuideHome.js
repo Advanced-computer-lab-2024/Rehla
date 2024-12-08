@@ -501,33 +501,39 @@ const TourGuideHome = () => {
                     <>
                         <section>
                             <h2 className="text-2xl font-semibold text-gray-800 mb-4">My Created Itineraries</h2>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 bg-white rounded-lg p-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-6 py-4">
                                 {data.itineraries.map((itinerary) => (
                                     <div
-                                        key={itinerary._id}
-                                        className="rounded-lg overflow-hidden transform transition duration-300 hover:scale-105 cursor-pointer"
-                                        onClick={() => handleItineraryClick(itinerary)}
+                                    key={itinerary._id}
+                                    className="card bg-white rounded-lg shadow-lg overflow-hidden flex flex-col"
+                                    onClick={() => handleItineraryClick(itinerary)}
                                     >
-                                        {itinerary.Picture && (
-                                            <img
-                                                src={itinerary.Picture}
-                                                alt={itinerary.Itinerary_Name}
-                                                className="w-72 h-72 object-cover rounded duration-300 ease-in-out hover:scale-105"
-                                            />
-                                        )}
-                                        <div className="text-md font-medium text-center mt-2">
-                                            {itinerary.Itinerary_Name}
+                                    {itinerary.Picture && (
+                                        <img
+                                        src={itinerary.Picture}
+                                        alt={itinerary.Itinerary_Name}
+                                        className="w-full h-48 object-cover transition-transform duration-300 ease-in-out hover:scale-105"
+                                        />
+                                    )}
+                                    <div className="p-4 flex flex-col justify-between flex-grow">
+                                        <div className="text-lg font-semibold text-gray-800">{itinerary.Itinerary_Name}</div>
+                                        <div className="text-sm text-gray-600 mt-2">
+                                        <span className="font-semibold">{convertPrice(itinerary.Tour_Price)} {currency}</span>
+                                        <div className="mt-1">Rating: {itinerary.Rating}</div>
+                                        <div className="mt-1">Language: {itinerary.Language}</div>
                                         </div>
+                                        <button 
+                                        onClick={() => handleItineraryClick(itinerary)} 
+                                        className="mt-4 bg-black text-white rounded-full py-2 px-4 w-full hover:bg-gray-700"
+                                        >
+                                        View Details
+                                        </button>
+                                    </div>
                                     </div>
                                 ))}
-                                {/* Add New Itinerary Button */}
-                                <div
-                                    onClick={openCreateModal}
-                                    className="flex items-center justify-center p-4 bg-gray-200 rounded-md shadow-sm hover:bg-gray-300 cursor-pointer"
-                                >
-                                    <span className="text-3xl font-bold text-gray-500">+</span>
-                                </div>
                             </div>
+
+
                         </section>
 
                         {/*openItineraryModal*/}

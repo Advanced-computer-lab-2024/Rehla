@@ -191,7 +191,8 @@ const {createUserAdmin,
   bookhotel,
   bookflight,
   shareactivtybyemail,
-  cancelSavedEvent
+  cancelSavedEvent,
+  createOutOfStockNotifications
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -418,6 +419,8 @@ app.post('/notifyForFlaggedItins',notifyForFlaggedItins)
 app.get('/getNotificationsForTourGuidet/:email', getNotificationsForTourGuidet);
 
 app.post('/remindUpcomingPaidActivities', remindUpcomingPaidActivities);
+
+app.post('/createOutOfStockNotifications',createOutOfStockNotifications);
 
 
 

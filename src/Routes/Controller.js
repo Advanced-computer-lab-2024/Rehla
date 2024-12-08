@@ -51,6 +51,8 @@ const Notificationtour = require('../Models/Notificationtour.js');
 const Notitour = require('../Models/Notitour.js');
 const flightm = require('../Models/flights.js'); 
 const hotelm = require('../Models/hotels.js');
+const Notiseller = require ('../Models/Notiseller.js');
+
 
 
 
@@ -86,6 +88,22 @@ const sendEmail = async (to, subject, text) => {
         to: to,                       // List of receivers
         subject: subject,             // Subject line
         text: text                    // Plain text body
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log('Email sent successfully');
+    } catch (error) {
+        console.error('Error sending email:', error);
+    }
+};
+
+const sendemailoutofstock = async (to , productname) => {
+    const mailOptions = {
+        from: 'rehlanotification@gmail.com', // Sender address
+        to: to,                       // List of receivers
+        subject: 'Product out of stock',   // Subject line
+        text: `The product ${productname} is out of stock. Please check back later.` // Plain text body
     };
 
     try {
@@ -7351,10 +7369,70 @@ const bookflight = async (req, res) => {
     }
 };
 
+// Function to create notifications for products with Quantity = 0
+const createOutOfStockNotifications = async (req, res) => {
+    try {
+        const { email } = req.body; // Extract email from the request body
+
+        // Validate input: Check if email is provided
+        if (!email) {
+            return res.status(400).json({ message: "Email is required." });
+        }
+
+        // Fetch the seller's username using their email
+        const sellerData = await sellerm.findOne({ Email: email });
+
+        if (!sellerData) {
+            return res.status(404).json({ message: "Seller not found with the provided email." });
+        }
+
+        const username = sellerData.Username;
+
+        // Fetch all products associated with the seller's username
+        const products = await Product.find({ Seller_Name: username });
+
+        if (!products || products.length === 0) {
+            return res.status(404).json({ message: "No products found for the seller." });
+        }
+
+        // Filter products with Quantity = 0
+        const outOfStockProducts = products.filter(p => p.Quantity === 0);
+
+        if (outOfStockProducts.length === 0) {
+            return res.status(200).json({ message: "No out-of-stock products found." });
+        }
+
+        // Create notifications for out-of-stock products
+        const notifications = outOfStockProducts.map(product => ({
+            user: username,
+            title: "Out of Stock Alert",
+            message: `Your product "${product.Product_Name}" is out of stock.`,
+            date: new Date(),
+            seen: false
+        }));
+
+        // Save notifications to the database
+        await Notiseller.insertMany(notifications);
+
+        return res.status(200).json({
+            message: "Notifications created for out-of-stock products.",
+            notifications
+        });
+    } catch (error) {
+        console.error("Error creating notifications:", error.message);
+        res.status(500).json({
+            message: "Error creating notifications.",
+            error: error.message
+        });
+    }
+};
+
+
 
 // ----------------- Activity Category CRUD -------------------
 
 module.exports = { getPurchasedProducts,
+    createOutOfStockNotifications,
     viewmyproducts,
     createUserAdmin, 
     deleteUserAdmin,
