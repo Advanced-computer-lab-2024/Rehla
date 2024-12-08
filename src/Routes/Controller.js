@@ -6387,6 +6387,8 @@ const checkandsendBirthdayPromoCode = async () => {
         const today = new Date();
         const todayMonth = today.getMonth() + 1; // Months are 0-based in JavaScript
         const todayDay = today.getDate();
+
+        // Find tourists whose birthdays match today's date
         const tourists = await Tourist.find({
             $expr: {
                 $and: [
@@ -6394,24 +6396,52 @@ const checkandsendBirthdayPromoCode = async () => {
                     { $eq: [{ $dayOfMonth: "$DOB" }, todayDay] }
                 ]
             }
-        });        console.log('tourists:', tourists);
+        });
+
+        console.log('Tourists with birthdays today:', tourists);
 
         for (const tourist of tourists) {
+            // Create a promo code for the tourist
             const promoCode = await createBirthdayPromoCode(tourist.Email);
+
             if (promoCode) {
+                // Send an email with the promo code
                 const mailOptions = {
                     from: 'rehlanotification@gmail.com', // Sender address
-                    to: tourist.Email,                       // List of receivers
-                    subject: `Happy Birthday, ${tourist.Username}!`,   // Subject line
-                    text: `Happy Birthday, ${tourist.Username}! Use the promo code ${promoCode} to get 50% off on your next purchase.` // Plain text body
+                    to: tourist.Email,                 // Recipient email
+                    subject: `Happy Birthday, ${tourist.Username}!`, // Subject line
+                    text: `Happy Birthday, ${tourist.Username}! Use the promo code ${promoCode} to get 50% off on your next purchase.` // Email body
                 };
                 await transporter.sendMail(mailOptions);
+
+                // Check if the notification already exists
+                const notificationMessage = `Happy Birthday, ${tourist.Username}! Use the promo code ${promoCode} to get 50% off on your next purchase.`;
+                const existingNotification = await Notifications.findOne({
+                    user: tourist.Email,
+                    title: "Happy Birthday!",
+                    message: notificationMessage
+                });
+
+                if (!existingNotification) {
+                    // Create a new notification if it does not exist
+                    const notification = new Notifications({
+                        user: tourist.Email, // Assuming 'user' references the tourist's email
+                        title: "Happy Birthday!",
+                        message: notificationMessage,
+                        date: new Date(),
+                        seen: false
+                    });
+
+                    // Save the notification to the database
+                    await notification.save();
+                }
             }
         }
-    }catch (error) {
+    } catch (error) {
         console.error('Error checking and sending birthday promo codes:', error);
     }
 };
+
 
 
 // Function to view the report of total attendees for activities created by a specific email
