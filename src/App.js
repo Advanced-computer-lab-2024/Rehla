@@ -194,7 +194,10 @@ const {createUserAdmin,
   shareactivtybyemail,
   cancelSavedEvent,
   createOutOfStockNotifications,
-  getNotificationsForseller
+  getNotificationsForseller,
+  createOutOfStockNotificationsadmin,
+  markAsSeenna,
+  getNotificationsForadmin
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -402,6 +405,8 @@ app.post('/markAsSeen',markAsSeen);
 app.post('/markAsSeenn',markAsSeenn);
 app.post('/markAsSeennt',markAsSeennt);
 app.post('/markAsSeenns',markAsSeenns);
+app.post('/markAsSeenna',markAsSeenna);
+
 
 
 
@@ -427,6 +432,10 @@ app.get('/getNotificationsForTourGuidet/:email', getNotificationsForTourGuidet);
 app.post('/remindUpcomingPaidActivities', remindUpcomingPaidActivities);
 
 app.post('/createOutOfStockNotifications',createOutOfStockNotifications);
+app.post('/createOutOfStockNotificationsadmin',createOutOfStockNotificationsadmin);
+app.get('/getNotificationsForadmin/:email', getNotificationsForadmin);
+
+
 
 
 

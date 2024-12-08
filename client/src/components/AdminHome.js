@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBell  } from '@fortawesome/free-solid-svg-icons';
 import { 
     deleteUserAdmin, 
     createUserAdmin, 
@@ -28,7 +30,10 @@ import {
     viewUserStats,
     fetchAllSalesReports,fetchAllSalesReportsitin,fetchAllSalesReportsSeller,
     fetchFilteredSellerSalesReportad,
-    viewMyProducts
+    viewMyProducts,
+    createOutOfStockNotificationsadmin,
+    markAsSeenna,
+    getNotificationsForadmin,
 } from '../services/api'; // Import all API functions
 import '../css/Home.css';
 import logo from '../images/logo.png';
@@ -127,6 +132,85 @@ const AdminHome = () => {
     const [month, setMonth] = useState("");
 
     const [myProducts, setMyProducts] = useState([]); // New state for my products
+
+
+    const [notifications, setNotifications] = useState([]); // State for notifications
+    const [unreadCount, setUnreadCount] = useState(0); // State for unread notifications
+    const [showModall, setShowModall] = useState(false); // State to show/hide the modal
+    const [notificationError, setNotificationError] = useState(null); // State for notification errors
+    const [notificationSuccess, setNotificationSuccess] = useState(null); // State for notification success
+    const [emaill, setEmaill] = useState('');
+
+
+    useEffect(() => {
+        const storedEmail = localStorage.getItem('email');
+        if (storedEmail) {
+            setEmaill(storedEmail);
+    
+            const handleNotifyForBookings = async () => {
+                try {
+                    const response = await createOutOfStockNotificationsadmin(storedEmail); // Pass email to notify function
+                    setNotificationSuccess(response.message || 'Notifications processed successfully.');
+                } catch (err) {
+                    setNotificationError(err.message || 'Failed to process notifications.');
+                }
+            };
+    
+            handleNotifyForBookings();
+        }
+    }, []); // This runs only once when the component mounts
+
+    useEffect(() => {
+        const fetchNotifications = async () => {
+            try {
+                const storedEmail = localStorage.getItem('email'); // Retrieve the signed-in user's email
+                if (!storedEmail) {
+                    throw new Error("User email not found in local storage.");
+                }
+    
+                // Fetch notifications for the signed-in user
+                const data = await getNotificationsForadmin(storedEmail);
+                setNotifications(data); // Set notifications
+                const unread = data.filter((notification) => !notification.seen).length; // Count unread notifications
+                setUnreadCount(unread);
+            } catch (error) {
+                console.error("Error fetching notifications:", error);
+            }
+        };
+    
+        fetchNotifications();
+    }, []);
+    
+    const handleNotificationClick = async () => {
+        setShowModall(true); // Show the modal when the notification icon is clicked
+    
+        try {
+            const storedEmail = localStorage.getItem('email'); // Retrieve the signed-in user's email
+            if (!storedEmail) {
+                throw new Error("User email not found in local storage.");
+            }
+    
+            // Mark all unseen notifications for the user as seen
+            for (const notification of notifications) {
+                if (!notification.seen) {
+                    await markAsSeenna(notification._id); // Mark as seen
+                }
+            }
+    
+            // Refresh the notifications for the signed-in user
+            const updatedNotifications = await getNotificationsForadmin(storedEmail);
+            setNotifications(updatedNotifications); // Set updated notifications
+        } catch (error) {
+            console.error("Error marking notifications as seen:", error);
+        }
+    };
+    
+
+    const handleCloseModal = () => {
+        setShowModall(false); // Close the modal
+        setUnreadCount(0); // Reset the unread count when the modal is closed
+    };
+    
 
     const handleFilterFetchSalesReports = async () => {
         try {
@@ -626,7 +710,24 @@ const handleCreatePromoCode = async (e) => {
                     </li>
                    </ul>
                </nav>   
+               {/* Notification Icon */}
+           <nav className="signing">
+                    <div className="relative ml-4"> {/* Added margin-left for spacing */}
+                        <FontAwesomeIcon
+                            icon={faBell}
+                            size="2x" // Increased the size to 2x
+                            onClick={handleNotificationClick}
+                            className="cursor-pointer text-red-700" // Added text-white to make the icon white
+                        />
+                        {unreadCount > 0 && (
+                            <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                {unreadCount}
+                            </span>
+                        )}
+                    </div>
+                </nav>
             </div>
+            
             
             <br />
             <br></br>
@@ -832,6 +933,37 @@ const handleCreatePromoCode = async (e) => {
                         </div>
                     </div>
                 </>
+            )}
+                {/* Notification Modal */}
+                {showModall && (
+                <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
+                    <div className="bg-white p-6 rounded-lg w-96 relative">
+                        <button
+                            className="absolute top-2 right-2 text-xl text-gray-500"
+                            onClick={handleCloseModal}
+                        >
+                            &times;
+                        </button>
+                        <h2 className="text-xl font-semibold mb-4">Notifications</h2>
+                        <div className="max-h-60 overflow-y-auto">
+                            {notifications.length > 0 ? (
+                                notifications.map((notification) => (
+                                    <div
+                                        key={notification._id}
+                                        className={`p-3 mb-2 rounded-lg ${
+                                            notification.seen ? 'bg-gray-100' : 'bg-yellow-100'
+                                        }`}
+                                    >
+                                        <p className="font-semibold">{notification.title}</p>
+                                        <p>{notification.message}</p>
+                                    </div>
+                                ))
+                            ) : (
+                                <p>No notifications available.</p>
+                            )}
+                        </div>
+                    </div>
+                </div>
             )}
 
             </div>
