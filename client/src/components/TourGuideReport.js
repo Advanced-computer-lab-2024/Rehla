@@ -56,6 +56,8 @@ const TourGuideReport = () => {
             console.error("Error fetching profile:", error);
           }
         };
+        handleViewItineraryReport();
+        handleFetchSalesReports();
         fetchProfile();
     }, []);
 
@@ -120,20 +122,27 @@ const TourGuideReport = () => {
             setLoading(false);
         }
     };
-
     const handleFilterFetchSalesReports = async () => {
         try {
             setLoading(true);
             const email = localStorage.getItem('email');
             const reports = await fetchFilteredTourGuideSalesReport(email, itineraryFilter, startDate, endDate, month); // Send filters to API
-            setSalesReports(reports);
-            setLoading(false);
+    
+            if (reports.length === 0) {
+                setMessagee("No sales reports found for the given filters.");
+            } else {
+                setSalesReports(reports);
+                setMessagee(""); // Clear any previous error messages
+            }
         } catch (err) {
-            setMessagee("Error fetching filtered sales reports.");
-            setError(err);
+            setMessagee(err.response?.data?.message || "Error fetching filtered sales reports.");
+            console.error(err); // Log the full error for debugging
+        } finally {
             setLoading(false);
         }
     };
+    
+    
     const handleFetchSalesReports = async () => {
         try {
             const email = localStorage.getItem('email'); // Retrieve email from localStorage
@@ -210,196 +219,193 @@ const TourGuideReport = () => {
             
             <div className="p-6 bg-gray-50 min-h-screen">
 
-                {error && <p className="text-red-500 mb-4">Error: {error.message}</p>}
-                {messagee && <p className="text-green-500 mb-4">{messagee}</p>}
+                
 
                 {/* Filter Section */}
-                <div className="bg-white shadow-md p-6 rounded-md mb-8">
-                    <h2 className="text-xl font-semibold mb-4">Filter Sales Reports</h2>
+                <div className="bg-white p-6 rounded-md mb-8">
+                    <h2 className="text-xl font-semibold mb-4">Sales Reports</h2>
 
-                    <div className="flex flex-col gap-4">
-                    <div>
-                        <label htmlFor="itineraryFilter" className="block font-medium mb-1">Itinerary:</label>
-                        <input
-                        type="text"
-                        id="itineraryFilter"
-                        value={itineraryFilter}
-                        onChange={(e) => setItineraryFilter(e.target.value)}
-                        placeholder="Enter itinerary name"
-                        className="w-full p-2 border rounded-md"
-                        />
-                    </div>
+                    <div className="flex flex-wrap gap-4">
+                        <div className="w-full sm:w-1/5">
+                            <label htmlFor="itineraryFilter" className="block font-medium mb-1">Itinerary:</label>
+                            <input
+                                type="text"
+                                id="itineraryFilter"
+                                value={itineraryFilter}
+                                onChange={(e) => setItineraryFilter(e.target.value)}
+                                placeholder="Enter itinerary"
+                                className="w-full p-2 border rounded-full"
+                            />
+                        </div>
 
-                    <div>
-                        <label htmlFor="startDate" className="block font-medium mb-1">Start Date:</label>
-                        <input
-                        type="date"
-                        id="startDate"
-                        value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
-                        className="w-full p-2 border rounded-md"
-                        />
-                    </div>
+                        <div className="w-full sm:w-1/5">
+                            <label htmlFor="startDate" className="block font-medium mb-1">Start Date:</label>
+                            <input
+                                type="date"
+                                id="startDate"
+                                value={startDate}
+                                onChange={(e) => setStartDate(e.target.value)}
+                                className="w-full p-2 border rounded-full"
+                            />
+                        </div>
 
-                    <div>
-                        <label htmlFor="endDate" className="block font-medium mb-1">End Date:</label>
-                        <input
-                        type="date"
-                        id="endDate"
-                        value={endDate}
-                        onChange={(e) => setEndDate(e.target.value)}
-                        className="w-full p-2 border rounded-md"
-                        />
-                    </div>
+                        <div className="w-full sm:w-1/5">
+                            <label htmlFor="endDate" className="block font-medium mb-1">End Date:</label>
+                            <input
+                                type="date"
+                                id="endDate"
+                                value={endDate}
+                                onChange={(e) => setEndDate(e.target.value)}
+                                className="w-full p-2 border rounded-full"
+                            />
+                        </div>
 
-                    <div>
-                        <label htmlFor="month" className="block font-medium mb-1">Month:</label>
-                        <input
-                        type="month"
-                        id="month"
-                        value={month}
-                        onChange={(e) => setMonth(e.target.value)}
-                        className="w-full p-2 border rounded-md"
-                        />
-                    </div>
+                        <div className="w-full sm:w-1/5">
+                            <label htmlFor="month" className="block font-medium mb-1">Month:</label>
+                            <input
+                                type="month"
+                                id="month"
+                                value={month}
+                                onChange={(e) => setMonth(e.target.value)}
+                                className="w-full p-2 border rounded-full"
+                            />
+                        </div>
 
-                    <button
-                        onClick={handleFilterFetchSalesReports}
-                        className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-md"
-                    >
-                        Apply Filters
-                    </button>
+                        <div className="w-full sm:w-auto flex items-end">
+                            <button
+                                onClick={handleFilterFetchSalesReports}
+                                className="bg-logoOrange hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-full"
+                            >
+                                Apply Filters
+                            </button>
+                            <button
+                            onClick={fetchitinRevenue}
+                            className="bg-black ml-4 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-full"
+                            >
+                                Generate Report
+                            </button>
+                        </div>
                     </div>
                 </div>
+                {error && <p className="text-red-500 mb-4">Error: {error.message}</p>}
+                {messagee && <p className="text-green-500 mb-4">{messagee}</p>}
+                {/* Error State */}
+                {error && <p className="text-red-500">{messagee}</p>}
 
-                {/* Itineraries Section */}
-                <div className="bg-white shadow-md p-6 rounded-md mb-8">
-                    <h2 className="text-xl font-semibold mb-4">Sales Reports - Itineraries</h2>
-
-                    <button
-                    onClick={handleFetchSalesReports}
-                    className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-md mb-4"
-                    >
-                    Fetch All Itinerary Reports
-                    </button>
-
-                    {salesReports.length > 0 ? (
+                {/* Sales Reports Table */}
+                {salesReports.length > 0 ? (
                     <table className="w-full border-collapse border border-gray-200">
                         <thead>
-                        <tr className="bg-gray-100">
-                            <th className="border border-gray-200 p-3 text-left">Itinerary</th>
-                            <th className="border border-gray-200 p-3 text-left">Revenue</th>
-                            <th className="border border-gray-200 p-3 text-left">Sales</th>
-                            <th className="border border-gray-200 p-3 text-left">Date</th>
-                        </tr>
+                            <tr className="bg-gray-100">
+                                <th className="border border-gray-200 p-3 text-left">Itinerary</th>
+                                <th className="border border-gray-200 p-3 text-left">Revenue</th>
+                                <th className="border border-gray-200 p-3 text-left">Sales</th>
+                                <th className="border border-gray-200 p-3 text-left">Date</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        {salesReports.map((report) => (
-                            <tr key={report.Report_no} className="hover:bg-gray-50">
-                            <td className="border border-gray-200 p-3">{report.Itinerary}</td>
-                            <td className="border border-gray-200 p-3">${report.Revenue}</td>
-                            <td className="border border-gray-200 p-3">{report.Sales}</td>
-                            <td className="border border-gray-200 p-3">
-                                {new Date(report.createdAt).toLocaleDateString()}
-                            </td>
-                            </tr>
-                        ))}
+                            {salesReports.map((report) => (
+                                <tr key={report.Report_no} className="hover:bg-gray-50">
+                                    <td className="border border-gray-200 p-3">{report.Itinerary}</td>
+                                    <td className="border border-gray-200 p-3">${report.Revenue}</td>
+                                    <td className="border border-gray-200 p-3">{report.Sales}</td>
+                                    <td className="border border-gray-200 p-3">
+                                        {new Date(report.createdAt).toLocaleDateString()}
+                                    </td>
+                                </tr>
+                            ))}
                         </tbody>
                     </table>
-                    ) : (
-                    <p className="text-gray-500">No sales reports available.</p>
-                    )}
-                </div>
-
-                {/* Itinerary Revenue Reports */}
-                <div className="bg-white shadow-md p-6 rounded-md mb-8">
-                    <button
-                    onClick={fetchitinRevenue}
-                    className="bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded-md mb-4"
-                    >
-                    Report
-                    </button>
-
-                    {loading && <p className="text-gray-500">Loading Itinerary revenue...</p>}
-                    {error && <p className="text-red-500">{error}</p>}
-
-                    {!loading && !error && reports.length > 0 && (
-                    <div>
-                        <h2 className="text-xl font-semibold mb-4">Itinerary Revenue Reports</h2>
-                        <ul className="list-disc pl-5 space-y-4">
-                        {reports.map((report, index) => (
-                            <li key={index}>
-                            <p><strong>Itinerary:</strong> {report.Itinerary}</p>
-                            <p><strong>Revenue:</strong> ${report.Revenue.toFixed(2)}</p>
-                            <p><strong>Sales:</strong> {report.Sales}</p>
-                            <p><strong>Price:</strong> ${report.Price.toFixed(2)}</p>
-                            <p><strong>Report No:</strong> {report.Report_no}</p>
-                            </li>
-                        ))}
-                        </ul>
-                    </div>
-                    )}
-                    {!loading && !error && reports.length === 0 && <p className="text-gray-500">No reports found.</p>}
-                </div>
+                ) : (
+                    !loading && <p className="text-gray-500">No sales reports available.</p>
+                )}
 
                 {/* General Itinerary Report */}
                 <div className="bg-white shadow-md p-6 rounded-md">
-                    <button
-                    onClick={handleViewItineraryReport}
-                    className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-md mb-4"
-                    >
-                    View Itinerary Report
-                    </button>
-
-                    <div className="mb-4">
-                    <label className="block font-medium mb-1">
+                <div className="mb-4 flex items-end gap-2">
+                    <div className="w-1/3">
+                        <label className="block font-medium mb-1">
                         Filter by Month (1-12):
+                        </label>
                         <input
                         type="number"
                         value={monthh}
                         onChange={(e) => setMonthh(e.target.value)}
                         min="1"
                         max="12"
-                        className="w-full p-2 border rounded-md mt-2"
+                        className="w-full p-1 border rounded-md"
                         />
-                    </label>
+                    </div>
+
                     <button
                         onClick={handleFilterItineraryByMonth}
-                        className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-md"
+                        className="bg-black hover:bg-logoOrange text-white font-medium py-1 px-3 rounded-md"
                     >
-                        Filter Itineraries by Month
+                        Filter
                     </button>
                     </div>
+
 
                     {erro && <p className="text-red-500 mb-4">{erro}</p>}
 
                     {itineraryReport && (
                     <div>
                         <h2 className="text-xl font-semibold mb-4">Itinerary Report</h2>
-                        <ul className="list-disc pl-5 space-y-4">
-                        {itineraryReport.itineraryDetails.map((itinerary, index) => (
-                            <li key={index}>
-                            {itinerary.itineraryName} (Date: {new Date(itinerary.itineraryDate).toLocaleDateString()}): {itinerary.attendeesCount} attendees
-                            </li>
-                        ))}
-                        </ul>
-                        <p className="mt-4"><strong>Total Attendees:</strong> {itineraryReport.totalAttendees}</p>
+                        <table className="w-full border-collapse border border-gray-200">
+                        <thead>
+                            <tr className="bg-gray-100">
+                            <th className="border border-gray-200 p-2 text-left">Itinerary Name</th>
+                            <th className="border border-gray-200 p-2 text-left">Date</th>
+                            <th className="border border-gray-200 p-2 text-left">Attendees Count</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {itineraryReport.itineraryDetails.map((itinerary, index) => (
+                            <tr key={index} className="hover:bg-gray-50">
+                                <td className="border border-gray-200 p-2">{itinerary.itineraryName}</td>
+                                <td className="border border-gray-200 p-2">
+                                {new Date(itinerary.itineraryDate).toLocaleDateString()}
+                                </td>
+                                <td className="border border-gray-200 p-2">{itinerary.attendeesCount}</td>
+                            </tr>
+                            ))}
+                        </tbody>
+                        </table>
+                        <p className="mt-4 font-semibold">
+                        <strong>Total Attendees:</strong> {itineraryReport.totalAttendees}
+                        </p>
                     </div>
                     )}
 
                     {filteredItineraryReport && (
                     <div className="mt-6">
                         <h2 className="text-xl font-semibold mb-4">Filtered Itinerary Report</h2>
-                        <ul className="list-disc pl-5 space-y-4">
-                        {filteredItineraryReport.filteredItineraryDetails.map((itinerary, index) => (
-                            <li key={index}>
-                            {itinerary.itineraryName} (Date: {new Date(itinerary.itineraryDate).toLocaleDateString()}): {itinerary.attendeesCount} attendees
-                            </li>
-                        ))}
-                        </ul>
-                        <p className="mt-4"><strong>Total Attendees:</strong> {filteredItineraryReport.totalFilteredAttendees}</p>
+                        <table className="w-full border-collapse border border-gray-200">
+                        <thead>
+                            <tr className="bg-gray-100">
+                            <th className="border border-gray-200 p-2 text-left">Itinerary Name</th>
+                            <th className="border border-gray-200 p-2 text-left">Date</th>
+                            <th className="border border-gray-200 p-2 text-left">Attendees Count</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {filteredItineraryReport.filteredItineraryDetails.map((itinerary, index) => (
+                            <tr key={index} className="hover:bg-gray-50">
+                                <td className="border border-gray-200 p-2">{itinerary.itineraryName}</td>
+                                <td className="border border-gray-200 p-2">
+                                {new Date(itinerary.itineraryDate).toLocaleDateString()}
+                                </td>
+                                <td className="border border-gray-200 p-2">{itinerary.attendeesCount}</td>
+                            </tr>
+                            ))}
+                        </tbody>
+                        </table>
+                        <p className="mt-4 font-semibold">
+                        <strong>Total Attendees:</strong> {filteredItineraryReport.totalFilteredAttendees}
+                        </p>
                     </div>
                     )}
+
                 </div>
 
             </div>
