@@ -52,7 +52,7 @@ const {createUserAdmin,
   createTourGuideProfile,
   updateTourGuideProfile ,
   getTourGuideProfile,
-  checkoutOrder,
+  checkout,
   viewOrders,
   createItinerary,
   createUserAdvertiser,
@@ -384,7 +384,7 @@ app.post('/calculateActivityRevenue', calculateActivityRevenue);
 app.get('/advertiser_salesreport', getAllSalesReports);
 app.post('/calculateItineraryRevenue', calculateItineraryRevenue);
 app.get('/getAllSalesReportsitin', getAllSalesReportsitin);
-app.post('/checkout-order', checkoutOrder);
+app.post('/checkout-order', checkout);
 app.post('/view-orders', viewOrders);
 app.post('/createPromoCode', createPromoCode);
 app.post('/createwishlistItem', createwishlistItem);
@@ -406,6 +406,8 @@ app.post('/markAsSeenn',markAsSeenn);
 app.post('/markAsSeennt',markAsSeennt);
 app.post('/markAsSeenns',markAsSeenns);
 app.post('/markAsSeenna',markAsSeenna);
+
+
 
 
 
