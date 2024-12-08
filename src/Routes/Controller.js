@@ -6541,6 +6541,78 @@ const viewTotalAttendees = async (req, res) => {
     }
 };
 
+// Function to filter the report of total attendees for activities by month
+const filterAttendeesForActivitiesByMonth = async (req, res) => {
+    try {
+        const { email, month } = req.body; // Extract email and month from request body
+
+        // Validate input: Check if email and month are provided
+        if (!email) {
+            return res.status(400).json({ message: "Email is required." });
+        }
+        if (!month || month < 1 || month > 12) {
+            return res.status(400).json({ message: "Valid month (1-12) is required." });
+        }
+
+        // Fetch all activities created by the given email
+        const activities = await activity.find({ Created_By: email });
+
+        // If no activities found, return an appropriate message
+        if (!activities || activities.length === 0) {
+            return res.status(404).json({
+                message: "No activities found for the provided email."
+            });
+        }
+
+        // Prepare an array to store filtered activity details
+        const filteredActivityDetails = [];
+        let totalFilteredAttendees = 0;
+
+        // Loop through each activity and filter based on the month
+        for (const activityItem of activities) {
+            const activityDate = new Date(activityItem.Date);
+
+            if (activityDate.getMonth() + 1 === month) {
+                const count = await tourist_activities.countDocuments({
+                    Activity_Name: activityItem.Name,
+                    Attended: true
+                });
+
+                // Add the activity name, count, and date to the filtered details
+                filteredActivityDetails.push({
+                    activityName: activityItem.Name,
+                    attendeesCount: count,
+                    activityDate: activityDate.toISOString()
+                });
+
+                // Increment the total filtered attendees count
+                totalFilteredAttendees += count;
+            }
+        }
+
+        // If no activities match the filter, return a message
+        if (filteredActivityDetails.length === 0) {
+            return res.status(404).json({
+                message: `No activities found for the specified month (${month}).`
+            });
+        }
+
+        // Respond with the filtered report
+        res.status(200).json({
+            message: "Filtered report generated successfully.",
+            filteredActivityDetails,
+            totalFilteredAttendees
+        });
+    } catch (error) {
+        console.error("Error generating filtered report:", error.message);
+        res.status(500).json({
+            message: "Error generating filtered report.",
+            error: error.message
+        });
+    }
+};
+
+
 
 
 // Function to view the report of total attendees for itineraries created by a specific email
@@ -6606,6 +6678,78 @@ const viewTotalAttendeesForItineraries = async (req, res) => {
         });
     }
 };
+
+// Function to filter the report of total attendees for itineraries by month
+const filterAttendeesByMonth = async (req, res) => {
+    try {
+        const { email, month } = req.body; // Extract email and month from request body
+
+        // Validate input: Check if email and month are provided
+        if (!email) {
+            return res.status(400).json({ message: "Email is required." });
+        }
+        if (!month || month < 1 || month > 12) {
+            return res.status(400).json({ message: "Valid month (1-12) is required." });
+        }
+
+        // Fetch all itineraries created by the given email
+        const itineraries = await itinerarym.find({ Created_By: email });
+
+        // If no itineraries found, return an appropriate message
+        if (!itineraries || itineraries.length === 0) {
+            return res.status(404).json({
+                message: "No itineraries found for the provided email."
+            });
+        }
+
+        // Prepare an array to store filtered itinerary details
+        const filteredItineraryDetails = [];
+        let totalFilteredAttendees = 0;
+
+        // Loop through each itinerary and filter based on the month
+        for (const itineraryItem of itineraries) {
+            const itineraryDate = new Date(itineraryItem.Available_Date_Time);
+
+            if (itineraryDate.getMonth() + 1 === month) {
+                const count = await touristIteneraries.countDocuments({
+                    Itinerary_Name: itineraryItem.Itinerary_Name,
+                    Attended: true
+                });
+
+                // Add the itinerary name, count, and date to the filtered details
+                filteredItineraryDetails.push({
+                    itineraryName: itineraryItem.Itinerary_Name,
+                    attendeesCount: count,
+                    itineraryDate: itineraryDate.toISOString()
+                });
+
+                // Increment the total filtered attendees count
+                totalFilteredAttendees += count;
+            }
+        }
+
+        // If no itineraries match the filter, return a message
+        if (filteredItineraryDetails.length === 0) {
+            return res.status(404).json({
+                message: `No itineraries found for the specified month (${month}).`
+            });
+        }
+
+        // Respond with the filtered report
+        res.status(200).json({
+            message: "Filtered report generated successfully.",
+            filteredItineraryDetails,
+            totalFilteredAttendees
+        });
+    } catch (error) {
+        console.error("Error generating filtered report:", error.message);
+        res.status(500).json({
+            message: "Error generating filtered report.",
+            error: error.message
+        });
+    }
+};
+
 
 
 
@@ -7910,7 +8054,9 @@ module.exports = { getPurchasedProducts,
     requestNotificationForEvent,
     notifyForAvailableBookings,
     viewTotalAttendees,
+    filterAttendeesForActivitiesByMonth,
     viewTotalAttendeesForItineraries,
+    filterAttendeesByMonth,
     notifyForFlaggedActivities,
     getNotificationsForTourGuide,
     markAsSeenn,

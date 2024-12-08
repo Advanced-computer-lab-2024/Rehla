@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import {  Link,useLocation, useNavigate } from 'react-router-dom';
-
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import logo from '../images/logoWhite.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart, faBell } from '@fortawesome/free-solid-svg-icons';
 import { getProducts, getProductsSortedByRating, productRateReview, createwishlistItem, checkoutOrder, getTouristProfile, viewOrderDetails ,addToCart} from '../services/api';
-
 
 const ProductInfo = () => {    
   const location = useLocation(); // Ensure this is called at the top level
@@ -81,15 +79,12 @@ const ProductInfo = () => {
   const handleProductClick = (product) => {
       navigate('/productinfo', { state: { product } });
   };
-  
 
-  
   useEffect(() => {
       const fetchProfile = async () => {
         try {
           const email = localStorage.getItem('email');
           const profileData = await getTouristProfile({ Email: email });
-          //setTourist(profileData);
           setFormData(profileData);
         } catch (error) {
           console.error("Error fetching profile:", error);
@@ -97,7 +92,6 @@ const ProductInfo = () => {
       };
       fetchProfile();
   }, []);
-
 
   const convertPrice = (price) => {
       return (price * conversionRates[currency]).toFixed(2);
@@ -114,7 +108,7 @@ const ProductInfo = () => {
         [name]: value
       }));
     };
-  
+
     const handleSubmitReview = async (e) => {
       e.preventDefault();
       const Tourist_Email = localStorage.getItem('email');
@@ -122,14 +116,14 @@ const ProductInfo = () => {
         setError('You must be logged in to leave a review.');
         return;
       }
-  
+
       // Check if the product name exists in the products list
       const product = products.find(p => p.Product_Name === reviewData.productName);
       if (!product) {
         setError('Product not found. Please check the product name.');
         return;
       }
-  
+
       try {
         await productRateReview({
           Tourist_Email,
@@ -212,7 +206,6 @@ const handleCheckout = async () => {
   }
 };
 
-
 const handleAddToCart = async (productName) => {
   const email  = localStorage.getItem('email');
   // Get email from local storage
@@ -233,8 +226,6 @@ const handleAddToCart = async (productName) => {
       alert('There was an issue adding the product to your cart.');
   }
 };
-
-
 
   // Filter products by price
   const handleFilterProducts = (e) => {
@@ -282,59 +273,56 @@ const handleAddToCart = async (productName) => {
       return <div className="text-red-500 text-center py-10">{error}</div>;
   }
 
-
   if (!location.state || !location.state.product) {
     return <div>Product not found</div>;
   }
 
   const { product } = location.state;
-  
 
   return (
     <div>
-            <div className="w-full mx-auto px-6 py-1 bg-black shadow flex flex-col sticky z-50 top-0">
-                <div className="flex items-center">                
-                    {/* Logo */}
-                    <img src={logo} alt="Logo" className="w-44" />
+      <div className="w-full mx-auto px-6 py-1 bg-black shadow flex flex-col sticky z-50 top-0">
+        <div className="flex items-center">                
+          {/* Logo */}
+          <img src={logo} alt="Logo" className="w-44" />
 
-                    <div className="flex items-center ml-auto">
-                        <select 
-                            value={currency} 
-                            onChange={handleCurrencyChange} 
-                            className="rounded p-1 mx-2 bg-transparent text-white"
-                        >
-                            <option value="USD" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">USD</option>
-                            <option value="EUR" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">EUR</option>
-                            <option value="GBP" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">GBP</option>
-                            <option value="JPY" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">JPY</option>
-                            <option value="CAD" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">CAD</option>
-                            <option value="AUD" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">AUD</option>
-                        </select>
-                        <nav className="flex space-x-4 ml-2"> {/* Reduced ml-4 to ml-2 and space-x-6 to space-x-4 */}
-                            <Link to="/Cart">
-                                <FontAwesomeIcon icon={faShoppingCart} />
-                            </Link>
-                        </nav>
-                        
-                        <nav className="flex space-x-4 ml-2"> {/* Reduced ml-4 to ml-2 and space-x-6 to space-x-4 */}
-                            <Link to="/TouristHome/TouristProfile">
-                                {/* Profile Picture */}
-                                <div className="">
-                                    {formData.Profile_Pic ? (
-                                        <img
-                                            src={formData.Profile_Pic}
-                                            alt={`${formData.Name}'s profile`}
-                                            className="w-14 h-14 rounded-full object-cover border-2 border-white"
-                                        />
-                                    ) : (
-                                        <div className="w-16 h-16 rounded-full bg-black text-white text-center flex items-center justify-center border-4 border-white">
-                                            <span className="text-4xl font-bold">{formData.Username.charAt(0)}</span>
-                                        </div>
-                                    )}
-                                </div>
-                            </Link>
-                        </nav>
+          <div className="flex items-center ml-auto">
+            <select 
+              value={currency} 
+              onChange={handleCurrencyChange} 
+              className="rounded p-1 mx-2 bg-transparent text-white"
+            >
+              <option value="USD" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">USD</option>
+              <option value="EUR" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">EUR</option>
+              <option value="GBP" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">GBP</option>
+              <option value="JPY" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">JPY</option>
+              <option value="CAD" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">CAD</option>
+              <option value="AUD" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">AUD</option>
+            </select>
+            <nav className="flex space-x-4 ml-2">
+              <Link to="/Cart">
+                <FontAwesomeIcon icon={faShoppingCart} />
+              </Link>
+            </nav>
+            <nav className="flex space-x-4 ml-2">
+              <Link to="/TouristHome/TouristProfile">
+                {/* Profile Picture */}
+                <div className="">
+                  {formData.Profile_Pic ? (
+                    <img
+                      src={formData.Profile_Pic}
+                      alt={`${formData.Name}'s profile`}
+                      className="w-14 h-14 rounded-full object-cover border-2 border-white"
+                    />
+                  ) : (
+                    <div className="w-16 h-16 rounded-full bg-black text-white text-center flex items-center justify-center border-4 border-white">
+                      <span className="text-4xl font-bold">{formData.Username.charAt(0)}</span>
                     </div>
+                  )}
+                </div>
+              </Link>
+            </nav>
+          </div>
                     </div>
                 {/* Main Navigation */}
                 <nav className="flex space-x-6">
@@ -365,9 +353,8 @@ const handleAddToCart = async (productName) => {
                 </nav> 
 
 
-                    
-
-                </div>
+        
+      </div>
 
       {/* Main Content */}
       <div className="flex-grow max-w-full mx-auto p-24">
@@ -383,19 +370,18 @@ const handleAddToCart = async (productName) => {
             <p className="text-gray-600 mb-4">Reviews: {product.Reviews}</p>
             <p className="text-gray-600 mb-4">Archived: {product.Archived ? 'Yes' : 'No'}</p>
             <p className="text-gray-600 mb-4">Sold: {product.Saled}</p>
+            
           </div>
+
+          
+
         ) : (
           <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">No product details</h1>
         )}
       </div>
-      
-      
-        <Footer />
-        </div>
 
-    
-
-    
+      <Footer />
+    </div>
   );
 };
 
@@ -422,12 +408,11 @@ const Footer = () => (
           </ul>
         </div>
       </div>
-      <div className="mt-6"> {/* Added a new div to increase the spacing */}
+      <div className="mt-6">
         <span className="block text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2023 <a href="/" className="hover:underline">Rehla™</a>. All Rights Reserved.</span>
       </div>
     </div>
   </footer>
 );
-
 
 export default ProductInfo;

@@ -180,7 +180,9 @@ const {createUserAdmin,
   requestNotificationForEvent,
   notifyForAvailableBookings,
   viewTotalAttendees,
+  filterAttendeesForActivitiesByMonth,
   viewTotalAttendeesForItineraries,
+  filterAttendeesByMonth,
   notifyForFlaggedActivities,
   getNotificationsForTourGuide,
   markAsSeenn,
@@ -420,7 +422,9 @@ app.post('/requestNotificationForEvent', requestNotificationForEvent);
 
 app.post('/notifyForAvailableBookings',notifyForAvailableBookings);
 app.post('/view-report', viewTotalAttendees);
+app.post('/filterAttendeesForActivitiesByMonth',filterAttendeesForActivitiesByMonth);
 app.post('/viewTotalAttendeesForItineraries', viewTotalAttendeesForItineraries);
+app.post('/filterAttendeesByMonth',filterAttendeesByMonth);
 
 
 app.post('/notifyForFlaggedActivities',notifyForFlaggedActivities)
