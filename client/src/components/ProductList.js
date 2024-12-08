@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import logo from '../images/logoWhite.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart, faBell } from '@fortawesome/free-solid-svg-icons';
-import { getProducts, getProductsSortedByRating, productRateReview, createwishlistItem, checkoutOrder, getTouristProfile, viewOrderDetails } from '../services/api';const Header = () => (
+import { getProducts, getProductsSortedByRating, productRateReview, createwishlistItem, checkoutOrder, getTouristProfile, viewOrderDetails ,addToCart} from '../services/api';const Header = () => (
     <div className="NavBar">
     <img src={logo} alt="Logo" />
     <nav className="main-nav">
@@ -20,35 +20,6 @@ import { getProducts, getProductsSortedByRating, productRateReview, createwishli
 </div>
 );
 
-const Footer = () => (
-    <footer className="bg-black shadow dark:bg-black m-0">
-      <div className="w-full mx-auto md:py-8">
-        <div className="sm:flex sm:items-center sm:justify-between">
-          <a href="/" className="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
-          </a>
-          <div className="flex justify-center w-full">
-            <ul className="flex flex-wrap items-center mb-6 text-sm font-medium text-gray-500 sm:mb-0 dark:text-gray-400 -ml-14">
-              <li>
-                <a href="/" className="hover:underline me-4 md:me-6">About</a>
-              </li>
-              <li>
-                <a href="/" className="hover:underline me-4 md:me-6">Privacy Policy</a>
-              </li>
-              <li>
-                <a href="/" className="hover:underline me-4 md:me-6">Licensing</a>
-              </li>
-              <li>
-                <a href="/" className="hover:underline">Contact</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div className="mt-6"> {/* Added a new div to increase the spacing */}
-          <span className="block text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2023 <a href="/" className="hover:underline">Rehla™</a>. All Rights Reserved.</span>
-        </div>
-      </div>
-    </footer>
-  );
   
 
 const ProductList = () => {
@@ -227,7 +198,7 @@ const ProductList = () => {
 
         try {
         // Call the createWishlistItem function
-        await createwishlistItem({ Email: email, Productname: productName });
+        await createwishlistItem( email,productName );
         alert('Product added to wishlist!');
         } catch (error) {
         console.error('Error adding product to wishlist:', error);
@@ -238,7 +209,10 @@ const ProductList = () => {
  // Handle input changes
  const handleChange = (e) => {
     const { name, value } = e.target;
-    setOrderData({ ...orderData, [name]: value });
+    setOrderData(prevData => ({
+        ...prevData,
+        [name]: value
+    }));
 };
 
 // Function to handle order checkout
@@ -250,6 +224,28 @@ const handleCheckout = async () => {
     } catch (err) {
         setError(err.message); // Display error message
         setMessage(''); // Clear success message
+    }
+};
+
+
+const handleAddToCart = async (productName) => {
+    const email  = localStorage.getItem('email');
+    // Get email from local storage
+    if (!email) {
+        alert('You must be logged in to add to the cart.');
+        return;
+    }
+
+    try {
+        // Call the addToCart function
+        const response = await addToCart( email, productName );
+        if (response.error) {
+            throw new Error(response.error);
+        }
+        alert(response.message);
+    } catch (error) {
+        console.error('Error adding product to cart:', error.message);
+        alert('There was an issue adding the product to your cart.');
     }
 };
 
@@ -559,26 +555,59 @@ const handleCheckout = async () => {
                             <p className="mt-2 text-lg font-semibold">{convertPrice(product.Price)} {currency}</p>
                             <p className="text-gray-600 mt-2">{product.Description}</p>
                             {/* Heart Button */}
-            <button
-                onClick={handleAddToWishlist}
-                className="mt-4 w-full py-2 px-4 flex items-center justify-center"
-            >
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className={`h-6 w-6 ${isInWishlist ? 'text-red-500' : 'text-gray-400'}`}
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
+   
+                <button
+                    onClick={() => handleAddToWishlist(product.Product_Name)}
+                    className="mt-4 w-full py-2 px-4 flex items-center justify-center"
                 >
-                    <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-                    />
-                </svg>
-                <span className="ml-2">{isInWishlist ? 'In Wishlist' : 'Add to Wishlist'}</span>
-            </button>
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className={`h-6 w-6 ${isInWishlist ? 'text-red-500' : 'text-gray-400'}`}
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                    >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                        />
+                        <button
+                            onClick={() => handleAddToWishlist(product.Product_Name)}
+                            className="mt-4 w-full py-2 px-4 flex items-center justify-center"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className={`h-6 w-6 ${isInWishlist ? 'text-red-500' : 'text-gray-400'}`}
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                                />
+                            </svg>
+                        </button>
+                        <button
+                            onClick={() => handleAddToCart(product.Product_Name)}
+                            className="mt-4 w-full py-2 px-4 flex items-center justify-center"
+                        >
+                            <FontAwesomeIcon icon={faShoppingCart} />
+                        </button>
+                    </svg>
+                </button>
+                <button
+                    onClick={() => handleAddToCart(product.Product_Name)}
+                    className="mt-4 w-full py-2 px-4 flex items-center justify-center"
+                >
+                    <FontAwesomeIcon icon={faShoppingCart} />
+                </button>
+
+        
                         </div>
                     ))}
                 </div>
@@ -773,6 +802,40 @@ const handleCheckout = async () => {
         <Footer />
         </div>
     );
+
+    
 };
+
+const Footer = () => (
+    <footer className="bg-black shadow dark:bg-black m-0">
+      <div className="w-full mx-auto md:py-8">
+        <div className="sm:flex sm:items-center sm:justify-between">
+          <a href="/" className="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
+          </a>
+          <div className="flex justify-center w-full">
+            <ul className="flex flex-wrap items-center mb-6 text-sm font-medium text-gray-500 sm:mb-0 dark:text-gray-400 -ml-14">
+              <li>
+                <a href="/" className="hover:underline me-4 md:me-6">About</a>
+              </li>
+              <li>
+                <a href="/" className="hover:underline me-4 md:me-6">Privacy Policy</a>
+              </li>
+              <li>
+                <a href="/" className="hover:underline me-4 md:me-6">Licensing</a>
+              </li>
+              <li>
+                <a href="/" className="hover:underline">Contact</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div className="mt-6"> {/* Added a new div to increase the spacing */}
+          <span className="block text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2023 <a href="/" className="hover:underline">Rehla™</a>. All Rights Reserved.</span>
+        </div>
+      </div>
+    </footer>
+  );
+
+
 
 export default ProductList;
