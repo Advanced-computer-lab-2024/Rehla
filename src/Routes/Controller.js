@@ -4901,63 +4901,96 @@ const searchFlights = async (req, res) => {
       res.status(500).json({ error: error.message });
     }
 };
-const checkoutOrder = async (req, res) => {
+const checkout = async (req, res) => {
     try {
-        // Extract inputs from the request body
-        const { Email, Address, Payment_Method } = req.body;
+        const { Email, Cart_Num, Address, Payment_Method } = req.body;
 
         // Validate input
-        if (!Email || !Address || !Payment_Method) {
-            return res.status(400).json({ message: "All fields (Email, Address, Payment_Method) are required." });
+        if (!Email || !Cart_Num || !Address || !Payment_Method) {
+            return res.status(400).json({ message: "Email, Cart_Num, Address, and Payment_Method are required." });
         }
 
-        // Fetch the cart details for the given Email
-        const cart = await cartm.findOne({ Email });
-
-        // If no cart is found, respond with an error
-        if (!cart) {
-            return res.status(404).json({
-                message: "No cart found for the provided Email. Please add items to the cart first."
-            });
+        // Fetch cart items for the provided email and cart number
+        const cartItems = await cartm.find({ Email, Cart_Num });
+        if (!cartItems || cartItems.length === 0) {
+            return res.status(404).json({ message: "No cart items found for the provided email and cart number." });
         }
 
-        // Get the Cart_Num from the retrieved cart
-        const { Cart_Num } = cart.Cart_Num;
+        console.log("Cart Items:", cartItems);
 
-        // Create a new order with the fetched Cart_Num
+        // Process each cart item only once
+        const processedProducts = new Set(); // To prevent duplicate processing of the same product
+
+        for (const cartItem of cartItems) {
+            const { Productname, Quantity } = cartItem;
+
+            // Skip already processed products
+            if (processedProducts.has(Productname)) continue;
+
+            // Fetch product details
+            const product = await Product.findOne({ Product_Name: Productname });
+            if (!product) {
+                return res.status(404).json({ message: `Product '${Productname}' not found.` });
+            }
+
+            // Check stock availability
+            if (product.Quantity < Quantity) {
+                return res.status(400).json({
+                    message: `Insufficient stock for '${Productname}'. Available: ${product.Quantity}, Required: ${Quantity}.`,
+                });
+            }
+
+            // Update product inventory and sales (once per product)
+            product.Quantity -= Quantity; // Decrease stock by the cart quantity
+            product.Saled += Quantity; // Increment sales count by the cart quantity
+
+            // Save the updated product details
+            await product.save();
+
+            console.log(
+                `Updated '${Productname}' inventory: Quantity = ${product.Quantity}, Saled = ${product.Saled}`
+            );
+
+            // Mark the product as processed
+            processedProducts.add(Productname);
+        }
+
+        // Increment Cart_Num in the Tourist table based on the number of carts used
+        const tourist = await Tourist.findOne({ Email });
+        if (!tourist) {
+            return res.status(404).json({ message: `Tourist with email '${Email}' not found.` });
+        }
+
+        // Increment the Cart_Num for the tourist
+        tourist.Cart_Num += 1;
+        await tourist.save(); // Save the updated tourist document
+
+        console.log(`Tourist Cart_Num incremented by 1. New Cart_Num: ${tourist.Cart_Num}`);
+
+        // Add the order details to the Order table
         const newOrder = new order({
             Email,
             Cart_Num,
+            Status: "Pending", // Default status
             Address,
             Payment_Method,
-            Status: "Pending" // Status defaults to "Pending"
         });
 
-        // Save the order to the database
-        const savedOrder = await newOrder.save();
+        await newOrder.save(); // Save the order details
+
+        console.log(`Order created for Email: ${Email}, Cart_Num: ${Cart_Num}.`);
 
         // Respond with success
-        res.status(201).json({
-            message: "Order created successfully.",
-            order: savedOrder
+        res.status(200).json({
+            message: `Checkout completed successfully. Product quantities updated, and order created.`,
+            orderDetails: newOrder,
         });
     } catch (error) {
-        console.error("Error creating order:", error.message);
-
-        // Handle unique constraint error for Email (if duplicate Email is entered)
-        if (error.code === 11000 && error.keyPattern.Email) {
-            return res.status(409).json({
-                message: "An order already exists with this email. Please use a different email."
-            });
-        }
-
-        // Respond with generic error message
-        res.status(500).json({
-            message: "Error creating order.",
-            error: error.message
-        });
+        console.error("Error during checkout:", error.message);
+        res.status(500).json({ message: "An error occurred during checkout.", error: error.message });
     }
 };
+
 
 
 const viewOrders = async (req, res) => {
@@ -7862,7 +7895,7 @@ module.exports = { getPurchasedProducts,
     getAllSalesReportsemail,getAllSalesReportsitinemail,getAllSalesReportsselleremail,
     filterAdvertiserSalesReport, filterTourGuideSalesReport ,filterSellerSalesReport,
     filterSellerSalesReportad,
-    checkoutOrder,
+    checkout,
     viewOrders,
     viewOrderDetails,
     generateOTP,

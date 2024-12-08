@@ -1778,11 +1778,17 @@ export const createwishlistItem = async (wishlistData) => {
     try {
         const response = await axios.post(`${API_URL}/createwishlistItem`, wishlistData);
         return response.data; // Return the response data received from the backend
+   
     } catch (error) {
-        console.error('Error creating wishlist item:', error);
-        throw error; // Rethrow the error for handling in the calling component
-    }
-};
+        if (error.response && error.response.data) {
+            // Return the error message from backend if available
+            throw new Error(error.response.data.error);
+        } else {
+            console.error('Error 2:', error);
+            throw error;
+        }
+    }};
+
 
 // Function to remind the user of upcoming paid activities
 export const remindUpcomingPaidActivities = async (email) => {
@@ -1893,6 +1899,23 @@ export const fetchItineraryReport = async (email) => {
         throw error; // Re-throw the error for the caller to handle
     }
 };
+
+
+export const addToCart = async (email, productName) => {
+    try {
+        const response = await axios.post(`${API_URL}/addToCart`, { email, productName });
+        return response.data; // Return the response data from the server
+    } catch (error) {
+        if (error.response && error.response.data) {
+            // Return the error message from backend if available
+            throw new Error(error.response.data.error);
+        } else {
+            console.error('Error 2:', error);
+            throw error;
+        }
+    }};
+
+
 
 // Function to create notifications for out-of-stock products
 export const createOutOfStockNotifications = async (email) => {
