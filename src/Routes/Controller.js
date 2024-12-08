@@ -4952,9 +4952,7 @@ const checkout = async (req, res) => {
             console.log(`Updated '${Productname}' inventory: Quantity = ${product.Quantity}, Saled = ${product.Saled}`);
         }
 
-        // Cleanup: Optionally, remove processed cart items
-        await cartm.deleteMany({ Email, Cart_Num });
-
+        
         console.log(`Cart items for Email: ${Email}, Cart_Num: ${Cart_Num} have been cleared.`);
 
         // Increment Cart_Num in the Tourist table based on the number of cart items used
