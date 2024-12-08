@@ -2000,3 +2000,14 @@ export const filterItineraryAttendeesByMonth = async (email, month) => {
         throw error; // Re-throw the error for the caller to handle
     }
 };
+
+export const deleteProductFromMyWishList = async (mail, productname) => {
+    try {
+        const response = await axios.delete(`${API_URL}/deleteProductFromMyWishList`, mail, productname);
+        return response.data;  
+    } catch (error) {
+        console.error("Error removing product from wish list:", error);
+        throw error.response ? error.response.data : { message: "Network error" };
+    }
+};
+
