@@ -92,12 +92,6 @@ const Transportation = () => {
         category: '',
         value: ''
     });
-    const [activityFilterType, setActivityFilterType] = useState(''); // For activities
-    const [itineraryFilterType, setItineraryFilterType] = useState(''); // For itineraries
-    const [activityfilterOptions] = useState(['price', 'rating', 'category', 'date']); // Filter options
-    const [itineraryfilterOptions] = useState(['price', 'rating', 'Preference Tag', 'date']);
-
-    const [expandedCard, setExpandedCard] = useState(null);
 
     const [isTourOpen, setIsTourOpen] = useState(false);
 
@@ -181,89 +175,6 @@ const Transportation = () => {
             setEmail(storedEmail);
         }
     }, []);
-
-    const handleSortActivities = async (sortBy) => {
-        try {
-            const sorted = await sortActivities(sortBy);
-            setSortedActivities(sorted);
-        } catch (error) {
-            setError(error);
-        }
-    };
-
-    const handleSortItineraries = async (sortBy) => {
-        try {
-            const sorted = await sortItineraries(sortBy);
-            setSortedItineraries(sorted);
-        } catch (error) {
-            setError(error);
-        }
-    };
-
-    const handleActivityClick = (activity) => {
-        navigate(`/TouristHome/activity-details/${encodeURIComponent(activity.Name)}`); // Encode to make the URL safe
-    };
-
-    const handleItineraryClick = (itinerary) => {
-        navigate(`/TouristHome/itinerary-details/${encodeURIComponent(itinerary.Itinerary_Name)}`); // Encode to make the URL safe
-    };
-
-    const handleFilterActivities = async (e) => {
-        e.preventDefault();
-        try {
-            const filtered = await filterActivities(activityFilters);
-            setSortedActivities(filtered.activities); // Update the displayed activities
-        } catch (error) {
-            setError(error);
-        }
-    };
-
-    const handleFilterItineraries = async (e) => {
-        e.preventDefault();
-        try {
-            const filtered = await filterItineraries(itineraryFilters);
-            setSortedItineraries(filtered); // Update the displayed itineraries
-        } catch (error) {
-            setError(error);
-        }
-    };
-
-    const handleActivityFilterChange = (e) => {
-        setActivityFilterType(e.target.value);
-    };
-
-    const handleItineraryFilterChange = (e) => {
-        setItineraryFilterType(e.target.value);
-    };
-
-    const handleFilterPlacesAndMuseums = async (e) => {
-        e.preventDefault();
-        try {
-            console.log("Filters being used:", placesAndMuseumsFilters);
-            const filtered = await filterPlacesAndMuseums(placesAndMuseumsFilters);
-
-            if (filtered){
-                            // Ensure that filtered data contains the expected structure
-            console.log("Filtered Data:", filtered);
-    
-            // Setting the filtered results in state
-            setFilteredPlacesAndMuseums(filtered);
-    
-            // Log the filtered state to confirm it's set
-            console.log("State set for filtered places and museums:", filtered);
-            }else{
-                setFilteredPlacesAndMuseums(null);
-                console.log("No data found for the selected filters");
-                alert("No data found for the selected filters");
-            }
-    
-
-            
-        } catch (error) {
-            console.error("Error fetching filtered data:", error);
-           // setError(error);
-        }
-    };
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -352,13 +263,7 @@ const Transportation = () => {
     }, []);
     
     
-    const handleFilterChange = (e, setFilters) => {
-        const { name, value } = e.target;
-        setFilters((prevFilters) => ({
-            ...prevFilters,
-            [name]: value
-        }));
-    };
+  
 
     useEffect(() => {
         console.log("Updated filteredPlacesAndMuseums:", filteredPlacesAndMuseums);
@@ -371,12 +276,6 @@ const Transportation = () => {
     if (!data) {
         return <div className="text-center py-10">Loading...</div>;
     }
-
-    // Use sorted or original data based on sorting/filtering
-    const activitiesToDisplay = sortedActivities || data.upcomingActivities;
-    const itinerariesToDisplay = sortedItineraries || data.upcomingItineraries;
-    const museumsToDisplay = filteredPlacesAndMuseums?.museums || data?.museums || [];
-    const historicalPlacesToDisplay = filteredPlacesAndMuseums?.historicalPlaces || data?.historicalPlaces || [];
     
     const handleNotificationClick = async () => {
         setShowModal(true); // Show the modal when the notification icon is clicked
@@ -436,38 +335,6 @@ const Transportation = () => {
         }
     };
 
-    const handleSaveEvent = async (e) => {
-        e.preventDefault(); // Prevent default form submission
-    
-        try {
-            // Call the saveEvent API function with the necessary data
-            const response = await saveEvent({ 
-                email, 
-                type: eventType, 
-                name: eventName 
-            });
-    
-            // On success, update the success message
-            setSuccessEvent(`Event added successfully: ${eventName} (${eventType})`);
-            
-            // Clear the form inputs
-            setEmail('');
-            setEventType('');
-            setEventName('');
-        } catch (error) {
-            // Handle errors, log them, and update the error message
-            console.error('Failed to save event:', error);
-    
-            if (error.response && error.response.data && error.response.data.message) {
-                // Use the error message returned from the server, if available
-                setErrorEvent(`Error: ${error.response.data.message}`);
-            } else {
-                // Fallback to a generic error message
-                setErrorEvent('Failed to save event. Please try again.');
-            }
-        }
-    };
-
     const handleBooking = async (routeNumber) => {
         if (!email) {
             alert('Please provide your email before booking.');
@@ -491,38 +358,6 @@ const Transportation = () => {
             setIsSearched(true);
         } catch (err) {
             setError('Search failed. Please try again later.');
-        }
-    };
-
-    const handleCancelEvent = async (e) => {
-        e.preventDefault(); // Prevent default form submission
-    
-        try {
-            // Call the cancelSavedEvent API function with the necessary data
-            const response = await cancelSavedEvent({
-                email,
-                type: eventTypeCancel,
-                name: eventNameCancel,
-            });
-    
-            // On success, update the success message
-            setSuccessEventCancel(`Event canceled successfully: ${eventNameCancel} (${eventTypeCancel})`);
-    
-            // Clear the form inputs
-            setEmail('');
-            setEventTypeCancel('');
-            setEventNameCancel('');
-        } catch (error) {
-            // Handle errors, log them, and update the error message
-            console.error('Failed to cancel event:', error);
-    
-            if (error.response && error.response.data && error.response.data.message) {
-                // Use the error message returned from the server, if available
-                setErrorEventCancel(`Error: ${error.response.data.message}`);
-            } else {
-                // Fallback to a generic error message
-                setErrorEventCancel('Failed to cancel event. Please try again.');
-            }
         }
     };
     

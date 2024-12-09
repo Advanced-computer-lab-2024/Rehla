@@ -198,13 +198,13 @@ const Flights = () => {
                     <Link to="/MyEvents" className="text-lg font-medium text-white hover:text-logoOrange">
                         MyEvents
                     </Link>
-                    <Link to="/Flights" className="text-lg font-medium text-white hover:text-logoOrange">
+                    <Link to="/Flights" className="text-lg font-medium text-logoOrange">
                         Flights
                     </Link>
                     <Link to="/Hotels" className="text-lg font-medium text-white hover:text-logoOrange">
                         Hotels
                     </Link>
-                    <Link to="/Transportation" className="text-lg font-medium text-logoOrange">
+                    <Link to="/Transportation" className="text-lg font-medium text-white hover:text-logoOrange">
                         Transportation
                     </Link>
                 </nav>            
@@ -275,7 +275,7 @@ const Flights = () => {
 
         <button
           type="submit"
-          className="w-full py-3 text-white bg-black rounded-md hover:bg-logoOrange"
+          className="w-full py-3 text-white bg-black rounded-full hover:bg-logoOrange"
         >
           Search Flights
         </button>
@@ -314,7 +314,7 @@ const Flights = () => {
                 </div>
                 <button
                   onClick={() => handleBookFlight(flight)}
-                  className="mt-4 py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                  className="mt-4 py-2 px-4 bg-logoOrange text-white rounded-md"
                 >
                   Book Flight
                 </button>
