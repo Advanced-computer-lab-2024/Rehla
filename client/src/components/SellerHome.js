@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link,useNavigate } from 'react-router-dom';
-import logo from '../images/logo.png';
+import logo from '../images/logoWhite.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell  } from '@fortawesome/free-solid-svg-icons';
 import { getProducts, viewMyProducts, getProductsSortedByRating, addProduct, updateProduct,toggleProductArchiveStatus,uploadProductPicture,fetchSalesReport,getSellerProfile,fetchAllSalesReportsSelleremail ,fetchFilteredSellerSalesReport,createOutOfStockNotifications,markAsSeenns,getNotificationsForseller } from '../services/api';
@@ -23,7 +23,7 @@ const Header = () => (
 );
 
 const Footer = () => (
-    <footer className="bg-brandBlue shadow dark:bg-brandBlue m-0">
+    <footer className="bg-black shadow dark:bg-black m-0">
         <div className="w-full mx-auto md:py-8">
             <div className="sm:flex sm:items-center sm:justify-between">
                 <a href="/" className="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
@@ -72,20 +72,27 @@ const SellerHome = () => {
     const [messagee, setMessagee] = useState('');
     const [reports, setReports] = useState([]);
 
-    
     const [productFilter, setProductFilter] = useState("");
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
     const [month, setMonth] = useState("");
 
     const [myProducts, setMyProducts] = useState([]); // New state for my products
-
     const [notifications, setNotifications] = useState([]); // State for notifications
     const [unreadCount, setUnreadCount] = useState(0); // State for unread notifications
     const [showModal, setShowModal] = useState(false); // State to show/hide the modal
     const [notificationError, setNotificationError] = useState(null); // State for notification errors
     const [notificationSuccess, setNotificationSuccess] = useState(null); // State for notification success
     const [emaill, setEmail] = useState('');
+    const [formData, setFormData] = useState({
+        Username: '',
+        Email: '',
+        Password: '',
+        Shop_Name: '',
+        Description: '',
+        Shop_Location: '',
+        Type: ''
+    });
 
 
 
@@ -189,7 +196,7 @@ const SellerHome = () => {
             try {
                 const response = await getSellerProfile({ Email: email });
                 setSeller(response);
-                //setFormData(response); // Set form data for editing
+                setFormData(response); // Set form data for editing
             } catch (error) {
                 setError('Failed to fetch profile. Please try again later.');
             }
@@ -224,7 +231,7 @@ const SellerHome = () => {
                 }
                 const fetchedProducts = await viewMyProducts(email);
                 console.log(fetchedProducts);
-                setMyProducts(fetchedProducts);
+                setProducts(fetchedProducts);
             } catch (error) {
                 //setError('Failed to load my products');
                 console.error(error);
@@ -322,6 +329,8 @@ const SellerHome = () => {
         setUpdatedProduct(product);  // Pre-fill form with product data
         setIsEditing(true);
     };
+
+
     
     const handleUpdateProduct = async () => {
         try {
@@ -405,27 +414,94 @@ const SellerHome = () => {
 
     return (
         <div>
+            <div className="w-full mx-auto px-6 py-1 bg-black shadow flex flex-col sticky z-50 top-0">
+                <div className="flex items-center">                
+                    {/* Logo */}
+                    <img src={logo} alt="Logo" className="w-44" />
+
+                    {/* Search Form */}
+                    <form onSubmit={handleSearchProducts} className="flex items-center ml-4">
+                    <input
+                        type="text"
+                        placeholder="Search"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="border border-gray-300 rounded-full px-72 py-2 w-full max-w-2xl text-sm pl-2"
+                    />
+
+                        <button type="submit" className="bg-white text-black rounded-full ml-2 p-2">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-5 w-5"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                />
+                            </svg>
+                        </button>
+                    </form>
+                    <div className="flex items-center ml-auto">
+                        <nav className="flex space-x-4 ml-2"> {/* Reduced ml-4 to ml-2 and space-x-6 to space-x-4 */}
+                            <div className="relative ml-2"> {/* Reduced ml-4 to ml-2 */}
+                                <FontAwesomeIcon
+                                    icon={faBell}
+                                    size="1x" // Increased the size to 2x
+                                    onClick={handleNotificationClick}
+                                    className="cursor-pointer text-white" // Added text-white to make the icon white
+                                />
+                                {unreadCount > 0 && (
+                                    <span className="absolute top-0 -right-1 bg-red-500 text-white text-xs rounded-full w-3 h-3 flex items-center justify-center">
+                                        {unreadCount}
+                                    </span>
+                                )}
+                            </div>
+                        </nav>
+                        <nav className="flex space-x-4 ml-2"> {/* Reduced ml-4 to ml-2 and space-x-6 to space-x-4 */}
+                            <Link to="/TouristHome/TouristProfile">
+                                {/* Profile Picture */}
+                                <div className="">
+                                    {formData.Profile_Pic ? (
+                                        <img
+                                            src={formData.Profile_Pic}
+                                            alt={`${formData.Name}'s profile`}
+                                            className="w-14 h-14 rounded-full object-cover border-2 border-white"
+                                        />
+                                    ) : (
+                                        <div className="w-16 h-16 rounded-full bg-black text-white text-center flex items-center justify-center border-4 border-white">
+                                            <span className="text-4xl font-bold">{formData.Username.charAt(0)}</span>
+                                        </div>
+                                    )}
+                                </div>
+                            </Link>
+                        </nav>
+                    </div>
+
+
+                </div>
+
+                {/* Main Navigation */}
+                <nav className="flex space-x-6">
+                <Link to="/SellerHome" className="text-lg font-medium text-logoOrange hover:text-blue-500">
+                            My Products
+                        </Link>
+                        <a onClick={() => setIsAdding(true)} href="#uh" className="text-lg font-medium font-family-cursive text-white hover:text-blue-500">
+                            Create
+                        </a>
+                        <Link to="/TourGuideHome/TourGuideReport" className="text-lg font-medium text-white hover:text-blue-500">
+                            Reports
+                        </Link>
+                </nav>            
+            </div>
             <div className="container mx-auto px-4 py-10">
-                <Header />
-                <h1 className="text-4xl font-bold text-center mb-8">Products List</h1>
 
                 {/* Search, Filter, and Sort Section */}
                 <div className="mb-8">
-                    <form onSubmit={handleSearchProducts} className="flex flex-col items-center">
-                        {/* Search */}
-                        <div className="flex justify-center mb-4 w-full">
-                            <input
-                                type="text"
-                                placeholder="Search by product name"
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                className="border border-gray-300 rounded-full px-6 py-3 w-full max-w-3xl"
-                            />
-                            <button type="submit" className="bg-brandBlue text-white px-6 py-3 rounded-full ml-2">Search</button>
-                        </div>
-                    </form>
-
-
                     {/* Filter and Sort Section */}
                     <div className="flex space-x-4 items-center justify-center">
                         <div className="flex space-x-2 items-center">
@@ -451,7 +527,7 @@ const SellerHome = () => {
                         <button 
                             type="button" 
                             onClick={handleFilterProducts} 
-                            className="bg-brandBlue w-36 text-white px-6 py-2 rounded-lg"
+                            className="bg-black w-36 text-white px-6 py-2 rounded-lg"
                         >
                             Apply Filter
                         </button>
@@ -496,23 +572,6 @@ const SellerHome = () => {
                     </div>
                 </div>
             )}
-
-           {/* Notification Icon */}
-           <nav className="signing">
-                    <div className="relative ml-4"> {/* Added margin-left for spacing */}
-                        <FontAwesomeIcon
-                            icon={faBell}
-                            size="2x" // Increased the size to 2x
-                            onClick={handleNotificationClick}
-                            className="cursor-pointer text-red-700" // Added text-white to make the icon white
-                        />
-                        {unreadCount > 0 && (
-                            <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                                {unreadCount}
-                            </span>
-                        )}
-                    </div>
-                </nav>
             
 
                {/* Conditionally Render Products */}
@@ -623,7 +682,7 @@ const SellerHome = () => {
                                             type="file"
                                             accept="image/*"
                                             onChange={handleFileChange}
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
                                             />
                                             {preview && (
                                             <img src={preview} alt="Preview"   className="mt-2 w-32 h-32 rounded-full object-cover"/>
@@ -632,7 +691,7 @@ const SellerHome = () => {
                                             <button
                                             type="button"
                                             onClick={handleUploadProductPicture}
-                                            className="bg-brandBlue text-white px-6 py-2 rounded-lg"
+                                            className="bg-black text-white px-6 py-2 rounded-lg"
                                             >
                                             Upload Product Picture
                                             </button>
@@ -674,7 +733,7 @@ const SellerHome = () => {
                                         {/* Update Button */}
                                         <button 
                                             onClick={handleUpdateProduct} 
-                                            className="bg-brandBlue text-white px-6 py-2 rounded-lg"
+                                            className="bg-black text-white px-6 py-2 rounded-lg"
                                         >
                                             Update Product
                                         </button>
@@ -700,7 +759,7 @@ const SellerHome = () => {
 
                         <button 
                             onClick={() => setIsAdding(true)} 
-                            className="bg-brandBlue text-white px-6 py-2 rounded-lg mb-4"
+                            className="bg-black text-white px-6 py-2 rounded-lg mb-4"
                                 >
                             Add Product
                         </button>
@@ -785,7 +844,7 @@ const SellerHome = () => {
                             {/* Add and Cancel Buttons */}
                             <button 
                                 onClick={handleAddProduct} 
-                                className="bg-brandBlue text-white px-6 py-2 rounded-lg"
+                                className="bg-black text-white px-6 py-2 rounded-lg"
                             >
                                 Add Product
                             </button>
@@ -961,7 +1020,7 @@ const SellerHome = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {myProducts.map((product) => (
+                        {products.map((product) => (
                             <tr key={product._id.$oid}>
                                 <td className="py-2 px-4 border-b">{product.Product_Name}</td>
                                 <td className="py-2 px-4 border-b">
