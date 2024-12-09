@@ -298,7 +298,7 @@ const EventDetails = () => {
 
                 {/* Main Navigation */}
                 <nav className="flex space-x-6">
-                    <Link to="/" className="text-lg font-medium text-logoOrange ">
+                    <Link to="/TouristHome" className="text-lg font-medium text-logoOrange ">
                         Home
                     </Link>
                     <Link to="/upcomingActivities" className="text-lg font-medium text-white hover:text-logoOrange">
@@ -328,7 +328,7 @@ const EventDetails = () => {
                 </nav>            
             </div>
 
-      <main className="flex-grow flex items-center justify-center mt-32 w-full">
+      <main className="flex-grow flex items-center justify-center mt-6 w-full">
         <div className="p-6 bg-white shadow-lg rounded-lg w-3/4 flex flex-col lg:flex-row">
           <div className="lg:w-1/3 flex-shrink-0 flex flex-col items-center">
             <img
@@ -392,7 +392,7 @@ const EventDetails = () => {
                     {renderStars(rating, setRating)}
                     <button
                       onClick={handleSubmitRating}
-                      className="mt-4 bg-black text-white py-2 px-6 rounded-lg hover:bg-logoOrange transition duration-200"
+                      className="mt-4 bg-black text-white py-2 px-6 rounded-full hover:bg-logoOrange transition duration-200"
                     >
                       Submit Rating
                     </button>
@@ -407,7 +407,7 @@ const EventDetails = () => {
                     />
                     <button
                       onClick={handleSubmitComment}
-                      className="mt-4 bg-black text-white py-2 px-6 rounded-lg hover:bg-logoOrange transition duration-200"
+                      className="mt-4 bg-black text-white py-2 px-6 rounded-full hover:bg-logoOrange transition duration-200"
                     >
                       Submit Comment
                     </button>
@@ -420,7 +420,7 @@ const EventDetails = () => {
                     {renderStars(tourGuideRating, setTourGuideRating)}
                     <button
                       onClick={handleTourGuideRatingSubmit}
-                      className="mt-4 bg-black text-white py-2 px-6 rounded-lg hover:bg-logoOrange transition duration-200"
+                      className="mt-4 bg-black text-white py-2 px-6 rounded-full hover:bg-logoOrange transition duration-200"
                     >
                       Submit Tour Guide Rating
                     </button>
@@ -437,7 +437,7 @@ const EventDetails = () => {
                     />
                     <button
                       onClick={handleTourGuideCommentSubmit}
-                      className="mt-4 bg-black text-white py-2 px-6 rounded-lg hover:bg-logoOrange transition duration-200"
+                      className="mt-4 bg-black text-white py-2 px-6 rounded-full hover:bg-logoOrange transition duration-200"
                     >
                       Submit Tour Guide Comment
                     </button>
