@@ -2042,3 +2042,18 @@ export const getProductsInCart = async (email) => {
         throw error;
     }
 };
+
+
+export const updateCartItem = async (cartData) => {
+    try {
+      // Sending a POST request to update the cart item
+      const response = await axios.put(`${API_URL}/updateCartItem`, cartData);
+      
+      // Return the response data (successful update)
+      return response.data;
+    } catch (error) {
+      // Handle error (e.g., invalid request, server issues)
+      console.error('Error updating cart item:', error.message);
+      throw error; // Rethrow the error so it can be caught in the calling function
+    }
+  };
