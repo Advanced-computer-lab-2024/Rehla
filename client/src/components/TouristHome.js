@@ -1277,66 +1277,6 @@ const TouristHome = () => {
                 </section>
                 )}
 
-
-            <div className="w-full p-6 bg-white shadow-lg rounded-lg">
-            <h2 className="text-2xl font-semibold mb-4 text-center text-gray-800">Transportation List</h2>
-            {loadingtransportation && <p className="text-blue-500 text-center mb-4">Loading...</p>}
-            {errortransportation && <p className="text-red-500 text-center mb-4">{errortransportation}</p>}
-
-            {transportation.length > 0 ? (
-                <div className="overflow-x-auto">
-                    <table className="w-full bg-white border border-gray-300">
-                        <thead>
-                            <tr className="bg-gray-200">
-                                <th className="py-2 px-4 border">Route Number</th>
-                                <th className="py-2 px-4 border">Advertiser Name</th>
-                                <th className="py-2 px-4 border">Advertiser Email</th>
-                                <th className="py-2 px-4 border">Advertiser Phone</th>
-                                <th className="py-2 px-4 border">Pickup Location</th>
-                                <th className="py-2 px-4 border">Dropoff Location</th>
-                                <th className="py-2 px-4 border">Pickup Date</th>
-                                <th className="py-2 px-4 border">Pickup Time</th>
-                                <th className="py-2 px-4 border">Dropoff Time</th>
-                                <th className="py-2 px-4 border">Price</th>
-                                <th className="py-2 px-4 border">Available</th>
-                                <th className="py-2 px-4 border">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {transportation.map((item) => (
-                                <tr key={item._id} className="hover:bg-gray-100">
-                                    <td className="py-2 px-4 border">{item.Route_Number}</td>
-                                    <td className="py-2 px-4 border">{item.Advertiser_Name}</td>
-                                    <td className="py-2 px-4 border">{item.Advertiser_Email}</td>
-                                    <td className="py-2 px-4 border">{item.Advertiser_Phone}</td>
-                                    <td className="py-2 px-4 border">{item.Pickup_Location}</td>
-                                    <td className="py-2 px-4 border">{item.Dropoff_Location}</td>
-                                    <td className="py-2 px-4 border">{new Date(item.Pickup_Date).toLocaleDateString()}</td>
-                                    <td className="py-2 px-4 border">{item.Pickup_Time}</td>
-                                    <td className="py-2 px-4 border">{item.Droppff_Time}</td>
-                                    <td className="py-2 px-4 border">${item.Price}</td>
-                        
-                                    <td className="py-2 px-4 border">{item.Avilable ? 'Yes' : 'No'}</td>
-                                    <td className="py-2 px-4 border">
-                                        <button
-                                            onClick={() => handleBooking(item.Route_Number)} // Handle booking when the button is clicked
-                                            className="bg-black text-white px-3 py-1 rounded hover:bg-logoOrange"
-                                        >
-                                            Book Now
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-         
-            ) : (
-                <p className="text-gray-500 text-center mt-4">No transportation records found.</p>
-            )}
-        </div>
-
-
             {error && <div className="error-message" style={{ color: 'red' }}>{error}</div>}
 
             {isSearched && searchResults && (
