@@ -7033,33 +7033,35 @@ const viewOrderDetails = async (req, res) => {
             return res.status(400).json({ message: "Email is required." });
         }
 
-        // Fetch cart details for the provided Email (find the first cart with the email)
-        const cartDetails = await cartm.find({ Email });
+        // Fetch order details for the provided Email
+        const orderDetails = await order.find({ Email });
 
-        // If no cart details are found
-        if (!cartDetails || cartDetails.length === 0) {
+        // If no order details are found
+        if (!orderDetails || orderDetails.length === 0) {
             return res.status(404).json({
-                message: "No cart details found for the provided Email."
+                message: "No order details found for the provided Email."
             });
         }
 
-        // Respond with the cart details, including Cart_Num for each item
+        // Respond with the order details
         res.status(200).json({
-            message: "Cart details fetched successfully.",
-            cartDetails: cartDetails.map(item => ({
-                Cart_Num: item.Cart_Num,  // Include Cart_Num in the details
-                Productname: item.Productname,
-                Quantity: item.Quantity
+            message: "Order details fetched successfully.",
+            orderDetails: orderDetails.map(order => ({
+                Cart_Num: order.Cart_Num,  // Include Cart_Num for each order
+                Status: order.Status,     // Order status
+                Address: order.Address,   // Order address
+                Payment_Method: order.Payment_Method, // Payment method
             }))
         });
     } catch (error) {
-        console.error("Error fetching cart details:", error.message);
+        console.error("Error fetching order details:", error.message);
         res.status(500).json({
-            message: "Error fetching cart details.",
+            message: "Error fetching order details.",
             error: error.message
         });
     }
 };
+
 
 
 const filterSellerSalesReportad = async (req, res) => {
