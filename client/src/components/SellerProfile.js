@@ -111,19 +111,40 @@ const SellerProfile = () => {
 
     return (
         <div className="min-h-screen flex flex-col justify-between bg-gray-100">
-            {/* Navigation Bar */}
             <div className="w-full mx-auto px-6 py-1 bg-black shadow flex flex-col sticky z-50 top-0">
                 <div className="flex items-center">                
                     {/* Logo */}
                     <img src={logo} alt="Logo" className="w-44" />
+
+                    <div className="flex items-center ml-auto">
+                        <nav className="flex space-x-4 ml-2"> {/* Reduced ml-4 to ml-2 and space-x-6 to space-x-4 */}
+                            <Link to="/SellerHome/SellerProfile">
+                                {/* Profile Picture */}
+                                <div className="">
+                                    {formData.Profile_Pic ? (
+                                        <img
+                                            src={formData.Profile_Pic}
+                                            alt={`${formData.Name}'s profile`}
+                                            className="w-14 h-14 rounded-full object-cover border-2 border-white"
+                                        />
+                                    ) : (
+                                        <div className="w-16 h-16 rounded-full bg-black text-white text-center flex items-center justify-center border-4 border-white">
+                                            <span className="text-4xl font-bold">{formData.Username.charAt(0)}</span>
+                                        </div>
+                                    )}
+                                </div>
+                            </Link>
+                        </nav>
+                    </div>
+
+
                 </div>
 
                 {/* Main Navigation */}
                 <nav className="flex space-x-6">
-                    <Link to="/SellerHome" className="text-lg font-medium text-logoOrange ">
-                        Home
-                    </Link>
-                    
+                <Link to="/SellerHome" className="text-lg font-medium text-logoOrange hover:text-blue-500">
+                            Home
+                        </Link>
                 </nav>            
             </div>
 
@@ -302,8 +323,32 @@ const SellerProfile = () => {
 
 
             {/* Footer */}
-            <footer className="w-full bg-black py-4 text-center text-white mt-6">
-                <p>&copy; 2024 Seller Profile. All rights reserved.</p>
+            <footer id="footer" className="bg-black shadow m-0">
+                <div className="w-full mx-auto md:py-8">
+                    <div className="sm:flex sm:items-center sm:justify-between">
+                        <a href="/" className="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
+                            <img src={logo} className="w-44" alt="Flowbite Logo" />
+                        </a>
+                        <div className="flex justify-center w-full">
+                            <ul className="flex flex-wrap items-center mb-6 text-sm font-medium text-gray-500 sm:mb-0 dark:text-gray-400 -ml-14">
+                                <li>
+                                    <a href="/" className="hover:underline me-4 md:me-6">About</a>
+                                </li>
+                                <li>
+                                    <a href="/" className="hover:underline me-4 md:me-6">Privacy Policy</a>
+                                </li>
+                                <li>
+                                    <a href="/" className="hover:underline me-4 md:me-6">Licensing</a>
+                                </li>
+                                <li>
+                                    <a href="/" className="hover:underline">Contact</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <hr className="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
+                    <span className="block text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2023 <a href="/" className="hover:underline">Rehla™</a>. All Rights Reserved.</span>
+                </div>
             </footer>
         </div>
     );
