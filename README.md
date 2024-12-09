@@ -59,38 +59,61 @@ Embark on your next adventure with our comprehensive Travel Companion App. Desig
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
+### Prerequisites, Installations 
 
-### Prerequisites
+First off, you need to make sure that you have visual studio code. Then you will need to install the zipped folder of the code from github.
+Getting started with the MERN stack involves setting up the necessary software components and creating a basic project structure. Here's a brief summary of the steps to get started:
 
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
+Install Node.js and npm (Node Package Manager):
 
-### Installation
+Visit the official Node.js website (https://nodejs.org) and download the latest LTS (Long-Term Support) version for your operating system.
+The installation will also include npm, which is the package manager for Node.js.
+Install MongoDB:
 
-_Below is an example of how you can instruct your audience on installing and setting up your app. This template doesn't rely on any external dependencies or services._
+Visit the official MongoDB website (https://www.mongodb.com) and download the appropriate version for your operating system.
+Follow the installation instructions for your platform to set up MongoDB on your machine.
 
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
+Create a new project directory:
+
+Open a terminal or command prompt and navigate to the location where you want to create your project.
+Run the command mkdir mern-project to create a new directory for your MERN stack project.
+Navigate into the project directory using cd mern-project.
+Initialize a new Node.js project:
+
+In the project directory, run the command npm init -y to create a new package.json file, which will manage your project dependencies.
+Install the required dependencies:
+
+Install Express.js, the web application framework, using the command npm install express.
+Install Mongoose, the Object Document Mapping (ODM) library for MongoDB, using the command npm install mongoose.
+Install React, the front-end library, using the command npm install react.
+Install additional dependencies as needed, such as react-dom, react-scripts, and cors.
+Set up the project structure:
+
+Create a new directory called server for your back-end code.
+Create a new directory called client for your front-end code.
+In the server directory, create an index.js file to set up the Express.js server.
+In the client directory, create a new React app using create-react-app or a similar tool.
+Connect the back-end and front-end:
+
+In the server directory, configure the Express.js server to handle API requests and connect to the MongoDB database.
+In the client directory, create React components and use the appropriate API calls to interact with the back-end.
+Run the development environment:
+
+Start the MongoDB server.
+In the server directory, run node index.js to start the back-end server.
+In the client directory, run npm start to start the front-end development server.
+
+### Post Installations 
+
+This is a of list things you need to use the software and how to install them.
+
+1. Clone the repo
    ```sh
-   git clone https://github.com/github_username/repo_name.git
+   git clone https://github.com/Advanced-computer-lab-2024/Rehla.git
    ```
-3. Install NPM packages
+2. Install NPM packages
    ```sh
    npm install
-   ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
-   ```
-5. Change git remote url to avoid accidental pushes to base project
-   ```sh
-   git remote set-url origin github_username/repo_name
-   git remote -v # confirm the changes
    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
