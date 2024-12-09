@@ -71,10 +71,36 @@ const ProductList = () => {
     const [cartDetails, setCartDetails] = useState([]); // State for cart details
     const [errorr, setErrorr] = useState(null); // State for errors
     const [loadingg, setLoadingg] = useState(false); // State for loading status
+    const [address, setAddress] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("");
+  const [messagee, setMessagee] = useState("");
+  const [loadinggg, setLoadinggg] = useState(false);
 
     const email = localStorage.getItem('email'); // Assuming the email is stored in localStorage
 
     const navigate = useNavigate();
+
+    const handleCheckoutt = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        setMessage("");
+    
+        try {
+          const orderData = {
+            Email: email,
+            Address: address,
+            Payment_Method: paymentMethod,
+          };
+    
+          const response = await checkoutOrder(orderData);
+          setMessage(response.message);
+        } catch (error) {
+          setMessage(error.message);
+        } finally {
+          setLoading(false);
+        }
+      };
+    
 
     const handleViewOrderDetails = async () => {
         if (!email) {
@@ -217,17 +243,7 @@ const ProductList = () => {
     }));
 };
 
-// Function to handle order checkout
-const handleCheckout = async () => {
-    try {
-        const response = await checkoutOrder(orderData); // Call the API function
-        setMessage(response.message); // Display success message
-        setError(''); // Clear any existing errors
-    } catch (err) {
-        setError(err.message); // Display error message
-        setMessage(''); // Clear success message
-    }
-};
+
 
 
 const handleAddToCart = async (productName) => {
@@ -468,7 +484,9 @@ const handleAddToCart = async (productName) => {
                     {searchResults.length > 0 ? (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                             {searchResults.map(product => (
-                                <div key={product._id} className="bg-white shadow-lg rounded-lg p-6 transform hover:scale-105 transition-transform duration-300">
+                                <div key={product._id} 
+                                onClick={() => handleProductClick(product)}
+                                className="bg-white shadow-lg rounded-lg p-6 transform hover:scale-105 transition-transform duration-300">
                                     <h3 className="text-xl font-medium">{product.Product_Name}</h3>
                                     <img 
                                         src={product.Picture} 
@@ -490,7 +508,9 @@ const handleAddToCart = async (productName) => {
                     {filteredProducts.length > 0 ? (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                             {filteredProducts.map(product => (
-                                <div key={product._id} className="bg-white shadow-lg rounded-lg p-6 transform hover:scale-105 transition-transform duration-300">
+                                <div key={product._id} 
+                                onClick={() => handleProductClick(product)}
+                                className="bg-white shadow-lg rounded-lg p-6 transform hover:scale-105 transition-transform duration-300">
                                     <h3 className="text-xl font-medium">{product.Product_Name}</h3>
                                     <img 
                                         src={product.Picture} 
@@ -508,10 +528,13 @@ const handleAddToCart = async (productName) => {
                 </div>
             ) : isSorted ? (
                 <div className="mt-8">
+                  
                     {sortedProducts.length > 0 ? (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                             {sortedProducts.map(product => (
-                                <div key={product._id} className="bg-white shadow-lg rounded-lg p-6 transform hover:scale-105 transition-transform duration-300">
+                                <div key={product._id} 
+                                className="bg-white shadow-lg rounded-lg p-6 transform hover:scale-105 transition-transform duration-300"
+                                onClick={() => handleProductClick(product)}>
                                     <h3 className="text-xl font-medium">{product.Product_Name}</h3>
                                     <img 
                                         src={product.Picture} 
@@ -735,115 +758,7 @@ const handleAddToCart = async (productName) => {
         <div style={{ margin: '20px', padding: '20px', border: '1px solid #ddd', borderRadius: '5px' }}>
             <h1 style={{ textAlign: 'center', color: '#333' }}>checkout</h1>
             
-            {/* Checkout Section */}
-            <div style={{ marginTop: '30px', padding: '20px', border: '1px solid #ccc', borderRadius: '10px', backgroundColor: '#f9f9f9' }}>
-                <h3 style={{ textAlign: 'center', color: '#555' }}>Checkout Your Order</h3>
-                <form style={{ display: 'flex', flexDirection: 'column', gap: '15px', maxWidth: '400px', margin: '0 auto' }}>
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
-                        <label htmlFor="email" style={{ marginBottom: '5px', color: '#333' }}>Email:</label>
-                        <input
-                            id="email"
-                            type="email"
-                            name="Email"
-                            value={orderData.Email}
-                            onChange={handleChange}
-                            placeholder="Enter your email"
-                            style={{
-                                padding: '10px',
-                                border: '1px solid #ddd',
-                                borderRadius: '5px',
-                                outline: 'none',
-                                fontSize: '14px',
-                            }}
-                        />
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
-                        <label htmlFor="address" style={{ marginBottom: '5px', color: '#333' }}>Address:</label>
-                        <input
-                            id="address"
-                            type="text"
-                            name="Address"
-                            value={orderData.Address}
-                            onChange={handleChange}
-                            placeholder="Enter your address"
-                            style={{
-                                padding: '10px',
-                                border: '1px solid #ddd',
-                                borderRadius: '5px',
-                                outline: 'none',
-                                fontSize: '14px',
-                            }}
-                        />
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
-                        <label htmlFor="payment-method" style={{ marginBottom: '5px', color: '#333' }}>Payment Method:</label>
-                        <select
-                            id="payment-method"
-                            name="Payment_Method"
-                            value={orderData.Payment_Method}
-                            onChange={handleChange}
-                            style={{
-                                padding: '10px',
-                                border: '1px solid #ddd',
-                                borderRadius: '5px',
-                                outline: 'none',
-                                fontSize: '14px',
-                                backgroundColor: '#fff',
-                            }}
-                        >
-                            <option value="">Select Payment Method</option>
-                            <option value="Credit Card">Credit Card</option>
-                            <option value="PayPal">PayPal</option>
-                            <option value="Cash on Delivery">Cash on Delivery</option>
-                        </select>
-                    </div>
-                    <button
-                        type="button"
-                        onClick={handleCheckout}
-                        style={{
-                            padding: '10px 20px',
-                            backgroundColor: '#007BFF',
-                            color: '#fff',
-                            border: 'none',
-                            borderRadius: '5px',
-                            cursor: 'pointer',
-                            fontSize: '16px',
-                        }}
-                    >
-                        Checkout
-                    </button>
-                </form>
-
-                {/* Success or Error Messages */}
-                {message && (
-                    <div
-                        style={{
-                            marginTop: '20px',
-                            padding: '10px',
-                            backgroundColor: '#D4EDDA',
-                            color: '#155724',
-                            border: '1px solid #C3E6CB',
-                            borderRadius: '5px',
-                        }}
-                    >
-                        {message}
-                    </div>
-                )}
-                {error && (
-                    <div
-                        style={{
-                            marginTop: '20px',
-                            padding: '10px',
-                            backgroundColor: '#F8D7DA',
-                            color: '#721C24',
-                            border: '1px solid #F5C6CB',
-                            borderRadius: '5px',
-                        }}
-                    >
-                        {error}
-                    </div>
-                )}
-            </div>
+            
             <div>
             <button
                 onClick={handleViewOrderDetails}
@@ -869,6 +784,44 @@ const handleAddToCart = async (productName) => {
                 </div>
             )}
         </div>
+        <div className="checkout-container">
+      <h2 className="text-lg font-bold mb-4">Checkout</h2>
+      <form onSubmit={handleCheckoutt} className="checkout-form">
+        <div className="mb-4">
+          <label className="block text-sm font-medium mb-1">Address</label>
+          <input
+            type="text"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            className="border rounded w-full p-2"
+            placeholder="Enter your address"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium mb-1">Payment Method</label>
+          <select
+            value={paymentMethod}
+            onChange={(e) => setPaymentMethod(e.target.value)}
+            className="border rounded w-full p-2"
+            required
+          >
+            <option value="">Select Payment Method</option>
+            <option value="Credit Card">Credit Card</option>
+            <option value="PayPal">PayPal</option>
+            <option value="Cash on Delivery">Cash on Delivery</option>
+          </select>
+        </div>
+        <button
+          type="submit"
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          disabled={loading}
+        >
+          {loading ? "Processing..." : "Checkout"}
+        </button>
+      </form>
+      {message && <p className="mt-4 text-sm text-gray-700">{message}</p>}
+    </div>
         </div>
         <Footer />
         </div>
