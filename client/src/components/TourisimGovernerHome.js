@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../css/Home.css';
-import logo from '../images/logo.png';
+import logo from '../images/logoWhite.png';
 import {
     createMuseum,
     readMuseum,
@@ -49,8 +49,12 @@ const TourisimGovernerHome = () => {
 
     const handleHistoricalPlaceClick = (historicalPlace) => {
         setSelectedHistoricalPlace(historicalPlace);
-        setIsPlaceEditModalOpen(true);
     };
+
+    const openEditModal = (historicalPlace) =>{
+        setSelectedHistoricalPlace(historicalPlace);
+        setIsPlaceEditModalOpen(true);
+    }
 
     const togglePlaceEditModal = (HistoricalPlace) =>{
        
@@ -246,54 +250,126 @@ const TourisimGovernerHome = () => {
 
     return (
         <div>
-            <div className="NavBar">
-                <img src={logo} alt="" />
-                <nav className="main-nav">
-                    <ul className="nav-links">
-                        <Link to="/">Home</Link>
-                        <Link to="/CreateTag">Create Tag</Link>
-                        <Link to="/MyPlaces" style={{ textDecoration: 'none', color: 'aliceblue' }}>My Places</Link>
-                    </ul>
-                </nav>
-            </div>
-            <br></br>
-            <br></br>
-            <br></br>
-            <br></br>
+            <div className="w-full mx-auto px-6 py-1 bg-black shadow flex flex-col sticky z-50 top-0">
+                <div className="flex items-center">                
+                    {/* Logo */}
+                    <img src={logo} alt="Logo" className="w-44" />
 
-            <h1 className="text-3xl font-bold mb-8 text-center">Tourism Governor Home</h1>
+                    {/* Main Navigation */}
+                    <nav className="flex space-x-6">
+                        <Link to="/TourisimGovernerHome" className="text-lg font-medium text-logoOrange hover:text-blue-500">
+                            My LandMarks
+                        </Link>
+                        <Link to="/createTag" href="#uh" className="text-lg font-medium font-family-cursive text-white hover:text-blue-500">
+                            Create Tag
+                        </Link>
+                        
+                    </nav>
+                </div>            
+            </div>
             <section>
                 <h2 className="text-2xl font-semibold text-gray-800 mb-4">Historical Places</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-6 py-4">
-                        {data.historicalPlaces.map((place) => (
-                            <div
-                            key={place._id}
-                            className="card bg-white rounded-lg shadow-lg overflow-hidden flex flex-col"
-                            onClick={() => handleHistoricalPlaceClick(place)}
-                            >
-                            <img
-                                src={place.Pictures}
-                                alt={place.Name}
-                                className="w-full h-48 object-cover transition-transform duration-300 ease-in-out hover:scale-105"
-                            />
-                            <div className="p-4 flex flex-col justify-between flex-grow">
-                                <h3 className="text-lg font-semibold text-gray-800">{place.Name}</h3>
+                <section>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-6 py-4">
+                                {data.historicalPlaces.map((place) => (
+                                    <div
+                                    key={place._id}
+                                    className="card bg-white rounded-lg shadow-lg overflow-hidden flex flex-col object-cover transition-transform duration-300 ease-in-out hover:scale-105"
+                                    >
+                                    {place.Pictures && (
+                                        <img
+                                        src={place.Pictures}
+                                        alt={place.Name}
+                                        className="w-full h-48 "
+                                        />
+                                    )}
+                                    <div className="p-4 flex flex-col justify-between flex-grow">
+                                        <div className="text-lg font-semibold text-gray-800">{place.Name}</div>
+                                        <div className="text-sm text-gray-600 mt-2">
+                                        </div>
+                                        <button 
+                                        onClick={() => handleHistoricalPlaceClick(place)} 
+                                        className="mt-4 bg-black text-white rounded-full py-2 px-4 w-full hover:bg-gray-700"
+                                        >
+                                        View Details
+                                        </button>
+                                        
+                                    </div>
+                                    </div>
+                                ))}
                             </div>
-                            </div>
-                        ))}
 
-                        {/* Add New Place Button */}
-                        <div
-                            onClick={togglePlaceModal}
-                            className="flex items-center justify-center p-4 bg-white border-2 border-dashed border-gray-300 rounded-lg shadow-md cursor-pointer hover:bg-gray-100"
-                        >
-                            <span className="text-4xl font-bold text-gray-500">+</span>
-                        </div>
-                </div>
+
+                        </section>
 
             </section>
 
+            {selectedHistoricalPlace && (
+                            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+                                <div className="bg-white p-6 mt-20 rounded-lg shadow-lg w-full max-w-5xl relative">
+                                    {/* Close Button */}
+                                    <button
+                                        onClick={() => setSelectedHistoricalPlace(null)}
+                                        className="absolute top-4 right-4 p-2 focus:outline-none"
+                                    >
+                                        <div className="relative w-5 h-8">
+                                            <div className="absolute w-full h-1 bg-black transform rotate-45" />
+                                            <div className="absolute w-full h-1 bg-black transform -rotate-45" />
+                                        </div>
+                                    </button>
+                                    {/* Modal Content */}
+                                    <h3 className="text-2xl font-semibold mb-6 text-center">
+                                        {selectedHistoricalPlace.Name}
+                                    </h3>
 
+                                    {/* Flex Layout for Image and Details */}
+                                    <div className="flex flex-col md:flex-row gap-8">
+                                        {/* Styled Image */}
+                                        <div className="flex-shrink-0 w-full md:w-1/3">
+                                            <img
+                                                src={selectedHistoricalPlace.Pictures}
+                                                alt={selectedHistoricalPlace.Name}
+                                                className="w-full h-72 object-cover rounded-md shadow-md"
+                                            />
+                                        </div>
+
+                                        {/* Activity Details */}
+                                        <div className="flex-grow grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+                                            <div className="space-y-4">
+                                            <p><strong>Description:</strong> {selectedHistoricalPlace.Description}</p>
+                                            <p><strong>Location:</strong> {selectedHistoricalPlace.Location}</p>
+                                            <p><strong>Country:</strong> {selectedHistoricalPlace.Country}</p>
+                                            <p><strong>Opens_At:</strong> {selectedHistoricalPlace.Opens_At}</p>
+                                            <p><strong>Closes_At:</strong> {selectedHistoricalPlace.Closes_At}</p>
+                                            </div>
+                                            <div className="space-y-4">
+                                            <p><strong>S_Ticket_Prices:</strong> ${selectedHistoricalPlace.S_Ticket_Prices}</p>
+                                            <p><strong>F_Ticket_Prices:</strong> ${selectedHistoricalPlace.F_Ticket_Prices}</p>
+                                            <p><strong>N_Ticket_Prices:</strong> ${selectedHistoricalPlace.N_Ticket_Prices}</p>
+                                            <p><strong>Tag:</strong> {selectedHistoricalPlace.Type}</p>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    
+                                    {/* Footer Actions */}
+                                    <div className="flex justify-end mt-6 gap-4">
+                                        <button
+                                            onClick={() => openEditModal(selectedHistoricalPlace)}
+                                            className="bg-black text-white px-4 py-2 rounded"
+                                        >
+                                            Edit Activity
+                                        </button>
+                                        <button
+                                            onClick={selectedHistoricalPlace}
+                                            className="bg-logoOrange text-white px-4 py-2 rounded"
+                                        >
+                                            Delete Activity
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
 
 
             <section>
@@ -896,6 +972,33 @@ const TourisimGovernerHome = () => {
                     </table>
                 </div>
             )}
+            <footer className="bg-black shadow m-0">
+                <div className="w-full mx-auto md:py-8">
+                    <div className="sm:flex sm:items-center sm:justify-between">
+                        <a href="/" className="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
+                            <img src={logo} className="w-44" alt="Flowbite Logo" />
+                        </a>
+                        <div className="flex justify-center w-full">
+                            <ul className="flex flex-wrap items-center mb-6 text-sm font-medium text-gray-500 sm:mb-0 dark:text-gray-400 -ml-14">
+                                <li>
+                                    <a href="/" className="hover:underline me-4 md:me-6">About</a>
+                                </li>
+                                <li>
+                                    <a href="/" className="hover:underline me-4 md:me-6">Privacy Policy</a>
+                                </li>
+                                <li>
+                                    <a href="/" className="hover:underline me-4 md:me-6">Licensing</a>
+                                </li>
+                                <li>
+                                    <a href="/" className="hover:underline">Contact</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <hr className="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
+                    <span className="block text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2023 <a href="/" className="hover:underline">Rehla™</a>. All Rights Reserved.</span>
+                </div>
+            </footer>
 
         </div>
     );
