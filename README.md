@@ -20,8 +20,8 @@
     <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
+        <li><a href="#prerequisites,-installations ">Prerequisites and Installations </a></li>
+        <li><a href="#post-installation">Post Installation</a></li>
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
@@ -122,6 +122,8 @@ This is a of list things you need to use the software and how to install them.
 
 <!-- USAGE EXAMPLES -->
 ## Usage
+
+![alt text](image.png)
 
 Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
 
