@@ -755,288 +755,279 @@ const SellerHome = () => {
                                     </div>
                                 </div>
                        )}
-
-
-                        <button 
-                            onClick={() => setIsAdding(true)} 
-                            className="bg-black text-white px-6 py-2 rounded-lg mb-4"
-                                >
-                            Add Product
-                        </button>
-
-
                          {/* Add Product Form */}
                          {isAdding && (
-                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                        <div className="bg-white rounded-lg p-6 max-w-lg w-full pt-32 pb-4"> {/* Adjusted padding */}
-                            <h2 className="text-xl font-bold mb-4">Add New Product</h2>
-                            
-                            {/* Product Name Input */}
-                            <div className="mb-2">
-                                <label className="block font-medium">Product Name:</label>
-                                <input
-                                    type="text"
-                                    placeholder="Enter product name"
-                                    value={newProduct.Product_Name}
-                                    onChange={(e) => setNewProduct({ ...newProduct, Product_Name: e.target.value })}
-                                    className="border border-gray-300 rounded-lg px-4 py-2 w-full"
-                                />
+                            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                                <div className="bg-white rounded-lg p-6 max-w-lg w-full pt-32 pb-4"> {/* Adjusted padding */}
+                                    <h2 className="text-xl font-bold mb-4">Add New Product</h2>
+                                    
+                                    {/* Product Name Input */}
+                                    <div className="mb-2">
+                                        <label className="block font-medium">Product Name:</label>
+                                        <input
+                                            type="text"
+                                            placeholder="Enter product name"
+                                            value={newProduct.Product_Name}
+                                            onChange={(e) => setNewProduct({ ...newProduct, Product_Name: e.target.value })}
+                                            className="border border-gray-300 rounded-lg px-4 py-2 w-full"
+                                        />
+                                    </div>
+
+                                    {/* Product Picture Input */}
+                                    <div className="mb-2">
+                                        <label className="block font-medium">Product Picture:</label>
+                                        <input
+                                            type="text"
+                                            placeholder="Enter product picture URL"
+                                            value={newProduct.Picture}
+                                            onChange={(e) => setNewProduct({ ...newProduct, Picture: e.target.value })}
+                                            className="border border-gray-300 rounded-lg px-4 py-2 w-full"
+                                        />
+                                    </div>
+
+                                    {/* Price Input */}
+                                    <div className="mb-2">
+                                        <label className="block font-medium">Price:</label>
+                                        <input
+                                            type="number"
+                                            placeholder="Enter price"
+                                            value={newProduct.Price}
+                                            onChange={(e) => setNewProduct({ ...newProduct, Price: parseFloat(e.target.value) })}
+                                            className="border border-gray-300 rounded-lg px-4 py-2 w-full"
+                                        />
+                                    </div>
+
+                                    {/* Quantity Input */}
+                                    <div className="mb-2">
+                                        <label className="block font-medium">Quantity:</label>
+                                        <input
+                                            type="number"
+                                            placeholder="Enter quantity"
+                                            value={newProduct.Quantity}
+                                            onChange={(e) => setNewProduct({ ...newProduct, Quantity: parseFloat(e.target.value) })}
+                                            className="border border-gray-300 rounded-lg px-4 py-2 w-full"
+                                        />
+                                    </div>
+
+                                    {/* Seller Name Textarea */}
+                                    <div className="mb-2">
+                                        <label className="block font-medium">Seller Name:</label>
+                                        <textarea
+                                            placeholder="Enter seller name"
+                                            value={newProduct.Seller_Name}
+                                            onChange={(e) => setNewProduct({ ...newProduct, Seller_Name: e.target.value })}
+                                            className="border border-gray-300 rounded-lg px-4 py-2 w-full"
+                                        />
+                                    </div>
+
+                                    {/* Description Textarea */}
+                                    <div className="mb-2">
+                                        <label className="block font-medium">Description:</label>
+                                        <textarea
+                                            placeholder="Enter description"
+                                            value={newProduct.Description}
+                                            onChange={(e) => setNewProduct({ ...newProduct, Description: e.target.value })}
+                                            className="border border-gray-300 rounded-lg px-4 py-2 w-full"
+                                        />
+                                    </div>
+
+                                    {/* Add and Cancel Buttons */}
+                                    <button 
+                                        onClick={handleAddProduct} 
+                                        className="bg-black text-white px-6 py-2 rounded-lg"
+                                    >
+                                        Add Product
+                                    </button>
+                                    <button 
+                                        onClick={() => setIsAdding(false)} 
+                                        className="bg-red-500 text-white px-6 py-2 rounded-lg ml-2"
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
                             </div>
-
-                            {/* Product Picture Input */}
-                            <div className="mb-2">
-                                <label className="block font-medium">Product Picture:</label>
-                                <input
-                                    type="text"
-                                    placeholder="Enter product picture URL"
-                                    value={newProduct.Picture}
-                                    onChange={(e) => setNewProduct({ ...newProduct, Picture: e.target.value })}
-                                    className="border border-gray-300 rounded-lg px-4 py-2 w-full"
-                                />
-                            </div>
-
-                            {/* Price Input */}
-                            <div className="mb-2">
-                                <label className="block font-medium">Price:</label>
-                                <input
-                                    type="number"
-                                    placeholder="Enter price"
-                                    value={newProduct.Price}
-                                    onChange={(e) => setNewProduct({ ...newProduct, Price: parseFloat(e.target.value) })}
-                                    className="border border-gray-300 rounded-lg px-4 py-2 w-full"
-                                />
-                            </div>
-
-                            {/* Quantity Input */}
-                            <div className="mb-2">
-                                <label className="block font-medium">Quantity:</label>
-                                <input
-                                    type="number"
-                                    placeholder="Enter quantity"
-                                    value={newProduct.Quantity}
-                                    onChange={(e) => setNewProduct({ ...newProduct, Quantity: parseFloat(e.target.value) })}
-                                    className="border border-gray-300 rounded-lg px-4 py-2 w-full"
-                                />
-                            </div>
-
-                            {/* Seller Name Textarea */}
-                            <div className="mb-2">
-                                <label className="block font-medium">Seller Name:</label>
-                                <textarea
-                                    placeholder="Enter seller name"
-                                    value={newProduct.Seller_Name}
-                                    onChange={(e) => setNewProduct({ ...newProduct, Seller_Name: e.target.value })}
-                                    className="border border-gray-300 rounded-lg px-4 py-2 w-full"
-                                />
-                            </div>
-
-                            {/* Description Textarea */}
-                            <div className="mb-2">
-                                <label className="block font-medium">Description:</label>
-                                <textarea
-                                    placeholder="Enter description"
-                                    value={newProduct.Description}
-                                    onChange={(e) => setNewProduct({ ...newProduct, Description: e.target.value })}
-                                    className="border border-gray-300 rounded-lg px-4 py-2 w-full"
-                                />
-                            </div>
-
-                            {/* Add and Cancel Buttons */}
-                            <button 
-                                onClick={handleAddProduct} 
-                                className="bg-black text-white px-6 py-2 rounded-lg"
-                            >
-                                Add Product
-                            </button>
-                            <button 
-                                onClick={() => setIsAdding(false)} 
-                                className="bg-red-500 text-white px-6 py-2 rounded-lg ml-2"
-                            >
-                                Cancel
-                            </button>
-                        </div>
-                    </div>
-                )}
+                        )}
 
 
-<div>
-            <h1>Advertiser Home</h1>
-            <button onClick={handleFetchReport}>report</button>
-
-            {loading && <p>Loading Product revenue...</p>}
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-
-            {!loading && !error && reports.length > 0 && (
-                <div>
-                    <h2>Product Revenue Reports</h2>
-                    <ul>
-                        {reports.map((report, index) => (
-                            <li key={index}>
-                                <strong>Product:</strong> {report.Product} <br />
-                                <strong>Revenue:</strong> ${report.Revenue.toFixed(2)} <br />
-                                <strong>Sales:</strong> {report.Sales} <br />
-                                <strong>Price:</strong> ${report.Price.toFixed(2)} <br />
-                                <strong>Report No:</strong> {report.Report_no}
-                            </li>
-                        ))}
-                    </ul>
                 </div>
-            )}
-
-            {!loading && !error && reports.length === 0 && <p>No reports found.</p>}
-        </div>
-        <div>
-    <h1>Seller Home</h1>
-    {loading && <p>Loading Products...</p>}
-    {error && <p>Error: {error.message}</p>}
-    {messagee && <p>{messagee}</p>}
-
-    {/* Filter Section */}
-    <div>
-        <h2>Filter Sales Reports</h2>
-        <div>
-            <label htmlFor="productFilter">Product:</label>
-            <input
-                type="text"
-                id="productFilter"
-                value={productFilter}
-                onChange={(e) => setProductFilter(e.target.value)}
-                placeholder="Enter product name"
-                style={{ margin: "5px", padding: "5px" }}
-            />
-        </div>
-        <div>
-            <label htmlFor="startDate">Start Date:</label>
-            <input
-                type="date"
-                id="startDate"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                style={{ margin: "5px", padding: "5px" }}
-            />
-        </div>
-        <div>
-            <label htmlFor="endDate">End Date:</label>
-            <input
-                type="date"
-                id="endDate"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                style={{ margin: "5px", padding: "5px" }}
-            />
-        </div>
-        <div>
-            <label htmlFor="month">Month:</label>
-            <input
-                type="month"
-                id="month"
-                value={month}
-                onChange={(e) => setMonth(e.target.value)}
-                style={{ margin: "5px", padding: "5px" }}
-            />
-        </div>
-        <button
-            onClick={handleFilterFetchSalesReports}
-            style={{
-                marginTop: "10px",
-                padding: "10px 15px",
-                backgroundColor: "#007bff",
-                color: "white",
-                border: "none",
-                cursor: "pointer",
-            }}
-        >
-            Apply Filters
-        </button>
-    </div>
-            
-        <h2>Sales Reports - Products</h2>
-        <button
-            onClick={handleFetchSalesReports}
-            style={{
-                marginBottom: "10px",
-                padding: "10px 15px",
-                backgroundColor: "#007bff",
-                color: "white",
-                border: "none",
-                cursor: "pointer",
-            }}
-        >
-            Fetch All Sales Reports
-        </button>
-        {salesReports.length > 0 ? (
-            <table
-                style={{
-                    width: "100%",
-                    borderCollapse: "collapse",
-                    margin: "20px 0",
-                    fontSize: "1rem",
-                    textAlign: "left",
-                }}
-            >
-                <thead>
-                    <tr>
-                        <th style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f4f4f4" }}>Product</th>
-                        <th style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f4f4f4" }}>Revenue</th>
-                        <th style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f4f4f4" }}>Sales</th>
-                        <th style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f4f4f4" }}>Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {salesReports.map((report) => (
-                        <tr
-                            key={report.Report_no}
-                            style={{
-                                border: "1px solid #ddd",
-                                backgroundColor: report.Report_no % 2 === 0 ? "#f9f9f9" : "white",
-                            }}
+                <div className="p-6 bg-gray-50 min-h-screen">
+                    {/* Report Button and Error Message */}
+                    <div className="mb-8">
+                        <button
+                        onClick={handleFetchReport}
+                        className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md mb-4"
                         >
-                            <td style={{ border: "1px solid #ddd", padding: "8px" }}>{report.Product}</td>
-                            <td style={{ border: "1px solid #ddd", padding: "8px" }}>${report.Revenue}</td>
-                            <td style={{ border: "1px solid #ddd", padding: "8px" }}>{report.Sales}</td>
-                            <td style={{ border: "1px solid #ddd", padding: "8px" }}>{new Date(report.createdAt).toLocaleDateString()}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        ) : (
-            <p>No sales reports available.</p>
-        )}
-    </div>
-            </div>
-            {/* Products Table */}
-            <div className="overflow-x-auto">
-                <table className="min-w-full bg-white">
-                    <thead>
-                        <tr>
-                            <th className="py-2 px-4 border-b">Product Name</th>
-                            <th className="py-2 px-4 border-b">Picture</th>
-                            <th className="py-2 px-4 border-b">Price</th>
-                            <th className="py-2 px-4 border-b">Quantity</th>
-                            <th className="py-2 px-4 border-b">Seller Name</th>
-                            <th className="py-2 px-4 border-b">Description</th>
-                            <th className="py-2 px-4 border-b">Archived</th>
-                            <th className="py-2 px-4 border-b">Saled</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {products.map((product) => (
-                            <tr key={product._id.$oid}>
-                                <td className="py-2 px-4 border-b">{product.Product_Name}</td>
-                                <td className="py-2 px-4 border-b">
-                                    <img src={product.Picture} alt={product.Product_Name} className="w-16 h-16 object-cover" />
-                                </td>
-                                <td className="py-2 px-4 border-b">{product.Price}</td>
-                                <td className="py-2 px-4 border-b">{product.Quantity}</td>
-                                <td className="py-2 px-4 border-b">{product.Seller_Name}</td>
-                                <td className="py-2 px-4 border-b">{product.Description}</td>
-                                <td className="py-2 px-4 border-b">{product.Archived ? 'Yes' : 'No'}</td>
-                                <td className="py-2 px-4 border-b">{product.Saled}</td>
+                        Report
+                        </button>
+                        {error && <p className="text-red-500">{error}</p>}
+                    </div>
+
+                    {/* Reports Section */}
+                    {!loading && !error && reports.length > 0 && (
+                        <div className="mb-8">
+                        <h2 className="text-2xl font-bold mb-4">Product Revenue Reports</h2>
+                        <ul className="space-y-4">
+                            {reports.map((report, index) => (
+                            <li key={index} className="p-4 bg-white shadow-md rounded-md">
+                                <p><strong>Product:</strong> {report.Product}</p>
+                                <p><strong>Revenue:</strong> ${report.Revenue.toFixed(2)}</p>
+                                <p><strong>Sales:</strong> {report.Sales}</p>
+                                <p><strong>Price:</strong> ${report.Price.toFixed(2)}</p>
+                                <p><strong>Report No:</strong> {report.Report_no}</p>
+                            </li>
+                            ))}
+                        </ul>
+                        </div>
+                    )}
+
+                    {!loading && !error && reports.length === 0 && <p>No reports found.</p>}
+
+                    {/* Seller Home Section */}
+                    <div className="mb-12">
+                        <h1 className="text-3xl font-bold mb-6">Seller Home</h1>
+                        {loading && <p className="text-gray-600">Loading Products...</p>}
+                        {error && <p className="text-red-500">Error: {error.message}</p>}
+                        {messagee && <p className="text-green-500">{messagee}</p>}
+                    </div>
+
+                    {/* Filter Section */}
+                    <div className="mb-8 bg-white p-6 rounded-md shadow-md">
+                        <h2 className="text-2xl font-semibold mb-4">Filter Sales Reports</h2>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div>
+                            <label htmlFor="productFilter" className="block font-medium mb-1">
+                            Product:
+                            </label>
+                            <input
+                            type="text"
+                            id="productFilter"
+                            value={productFilter}
+                            onChange={(e) => setProductFilter(e.target.value)}
+                            placeholder="Enter product name"
+                            className="w-full p-2 border rounded-md"
+                            />
+                        </div>
+
+                        <div>
+                            <label htmlFor="startDate" className="block font-medium mb-1">
+                            Start Date:
+                            </label>
+                            <input
+                            type="date"
+                            id="startDate"
+                            value={startDate}
+                            onChange={(e) => setStartDate(e.target.value)}
+                            className="w-full p-2 border rounded-md"
+                            />
+                        </div>
+
+                        <div>
+                            <label htmlFor="endDate" className="block font-medium mb-1">
+                            End Date:
+                            </label>
+                            <input
+                            type="date"
+                            id="endDate"
+                            value={endDate}
+                            onChange={(e) => setEndDate(e.target.value)}
+                            className="w-full p-2 border rounded-md"
+                            />
+                        </div>
+
+                        <div>
+                            <label htmlFor="month" className="block font-medium mb-1">
+                            Month:
+                            </label>
+                            <input
+                            type="month"
+                            id="month"
+                            value={month}
+                            onChange={(e) => setMonth(e.target.value)}
+                            className="w-full p-2 border rounded-md"
+                            />
+                        </div>
+                        </div>
+
+                        <button
+                        onClick={handleFilterFetchSalesReports}
+                        className="mt-4 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md"
+                        >
+                        Apply Filters
+                        </button>
+                    </div>
+
+                    {/* Sales Reports Table */}
+                    <div>
+                        <h2 className="text-2xl font-bold mb-4">Sales Reports - Products</h2>
+                        <button
+                        onClick={handleFetchSalesReports}
+                        className="mb-4 bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-md"
+                        >
+                        Fetch All Sales Reports
+                        </button>
+
+                        {salesReports.length > 0 ? (
+                        <div className="overflow-x-auto">
+                            <table className="w-full table-auto border-collapse bg-white shadow-md rounded-md">
+                            <thead>
+                                <tr className="bg-gray-100">
+                                <th className="border p-3 text-left">Product</th>
+                                <th className="border p-3 text-left">Revenue</th>
+                                <th className="border p-3 text-left">Sales</th>
+                                <th className="border p-3 text-left">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {salesReports.map((report) => (
+                                <tr key={report.Report_no} className="hover:bg-gray-50">
+                                    <td className="border p-3">{report.Product}</td>
+                                    <td className="border p-3">${report.Revenue.toFixed(2)}</td>
+                                    <td className="border p-3">{report.Sales}</td>
+                                    <td className="border p-3">{new Date(report.createdAt).toLocaleDateString()}</td>
+                                </tr>
+                                ))}
+                            </tbody>
+                            </table>
+                        </div>
+                        ) : (
+                        <p className="text-gray-600">No sales reports available.</p>
+                        )}
+                    </div>
+                    </div>
+
+                {/* Products Table */}
+                <div className="overflow-x-auto">
+                    <table className="min-w-full bg-white">
+                        <thead>
+                            <tr>
+                                <th className="py-2 px-4 border-b">Product Name</th>
+                                <th className="py-2 px-4 border-b">Picture</th>
+                                <th className="py-2 px-4 border-b">Price</th>
+                                <th className="py-2 px-4 border-b">Quantity</th>
+                                <th className="py-2 px-4 border-b">Seller Name</th>
+                                <th className="py-2 px-4 border-b">Description</th>
+                                <th className="py-2 px-4 border-b">Archived</th>
+                                <th className="py-2 px-4 border-b">Saled</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody>
+                            {products.map((product) => (
+                                <tr key={product._id.$oid}>
+                                    <td className="py-2 px-4 border-b">{product.Product_Name}</td>
+                                    <td className="py-2 px-4 border-b">
+                                        <img src={product.Picture} alt={product.Product_Name} className="w-16 h-16 object-cover" />
+                                    </td>
+                                    <td className="py-2 px-4 border-b">{product.Price}</td>
+                                    <td className="py-2 px-4 border-b">{product.Quantity}</td>
+                                    <td className="py-2 px-4 border-b">{product.Seller_Name}</td>
+                                    <td className="py-2 px-4 border-b">{product.Description}</td>
+                                    <td className="py-2 px-4 border-b">{product.Archived ? 'Yes' : 'No'}</td>
+                                    <td className="py-2 px-4 border-b">{product.Saled}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             
             <Footer />
         </div>
