@@ -7942,6 +7942,74 @@ const getNotificationsForadmin = async (req, res) => {
     }
 };
 
+const getProductsInCart = async (req, res) => {
+    try {
+        // Step 1: Extract email from req.body
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(400).json({ message: "Email is required." });
+        }
+
+        // Step 2: Find the cart number for the given email from the Tourist collection
+        const tourist = await Tourist.findOne({ Email: email }, 'Cart_Num');
+        
+        if (!tourist) {
+            return res.status(404).json({ message: "Tourist not found." });
+        }
+
+        const cartNum = tourist.Cart_Num;
+
+        // Step 3: Find all products in the cart with the given email and cart number
+        const cartItems = await cartm.find({ Email: email, Cart_Num: cartNum }, 'Productname Quantity');
+        
+        if (!cartItems || cartItems.length === 0) {
+            return res.status(404).json({ message: "No products found in the cart." });
+        }
+
+        // Step 4: Extract all unique product names from the cart
+        const productNames = cartItems.map(item => item.Productname);
+
+        // Step 5: Find the product details from the Product collection
+        const products = await Product.find({ Product_Name: { $in: productNames } });
+
+        // Step 6: Combine the product details with the quantity from the Cart collection
+        const cartDetails = cartItems.map(cartItem => {
+            const productInfo = products.find(product => product.Product_Name === cartItem.Productname);
+            if (productInfo) {
+                return {
+                    Product_Name: productInfo.Product_Name,
+                    Picture: productInfo.Picture,
+                    Price: productInfo.Price,
+                    Quantity_Available: productInfo.Quantity,
+                    Quantity_In_Cart: cartItem.Quantity,
+                    Seller_Name: productInfo.Seller_Name,
+                    Description: productInfo.Description,
+                    Rating: productInfo.Rating,
+                    Reviews: productInfo.Reviews,
+                    Saled: productInfo.Saled,
+                    Archived: productInfo.Archived
+                };
+            }
+            return null;
+        }).filter(Boolean); // Remove any null entries where product details weren't found
+
+        return res.status(200).json({ cartDetails });
+
+    } catch (error) {
+        // Log error message and stack trace for debugging
+        console.error("Error fetching products in cart:", error.message, error.stack);
+
+        // Return error response with useful debug info
+        return res.status(500).json({ 
+            message: "An error occurred while fetching products in the cart.", 
+            error: error.message || "Unknown error",
+            stack: error.stack 
+        });
+    }
+};
+
+
 
 // ----------------- Activity Category CRUD -------------------
 
@@ -8143,5 +8211,6 @@ module.exports = { getPurchasedProducts,
     bookflight,
     shareactivtybyemail,
     cancelSavedEvent,
-    getProductDetailsFromWishList
+    getProductDetailsFromWishList,
+    getProductsInCart
 };

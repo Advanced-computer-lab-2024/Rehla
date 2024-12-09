@@ -200,7 +200,7 @@ const {createUserAdmin,
   createOutOfStockNotificationsadmin,
   markAsSeenna,
   getNotificationsForadmin,
-  getProductDetailsFromWishList
+  getProductDetailsFromWishList,getProductsInCart
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -501,3 +501,5 @@ app.post('/bookhotel', bookhotel);
 app.post('/bookflight', bookflight);
 app.delete('/cancelSavedEvent',cancelSavedEvent);
 app.get('/getProductDetailsFromWishList', getProductDetailsFromWishList);
+
+app.post('/getProductsInCart' , getProductsInCart);

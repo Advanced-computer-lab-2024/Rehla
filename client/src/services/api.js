@@ -2020,3 +2020,14 @@ export const getProductDetailsFromWishList = async (mail, productName) => {
         throw error.response ? error.response.data : { message: "Network error" };
     }
 };
+
+
+export const getProductsInCart = async (email) => {
+    try {
+        const response = await axios.post(`${API_URL}/getProductsInCart`, { email });
+        return response.data.cartDetails; // The array of products in the cart
+    } catch (error) {
+        console.error('Error fetching cart details:', error.response?.data || error.message);
+        throw error;
+    }
+};
