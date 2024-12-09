@@ -314,7 +314,7 @@ const MyEvents = () => {
                                 <div
                                     key={activity.Name}
                                     className="card w-96 h-auto bg-white rounded-lg shadow-lg overflow-hidden flex flex-col"
-                                    onClick={() => handleEventClick(activity.Name, 'activity')}
+                                    onClick={() => handleEventClick(activity.Activity_Name, 'activity')}
                                 >
                                     {/* Image Section */}
                                     <img
@@ -324,14 +324,6 @@ const MyEvents = () => {
                                     />
                                     <div className="p-4 flex flex-col justify-between flex-grow">
                                         <div className="text-lg font-semibold text-gray-800">{activity.Name}</div>
-                                        <div className="text-sm text-gray-600 mt-2">Location: {activity.Location}</div>
-                                        <div className="text-sm text-gray-600 mt-2">Time: {activity.Time}</div>
-                                        <div className="text-sm text-gray-600 mt-2">Duration: {activity.Duration}</div>
-                                        <div className="text-sm text-gray-600 mt-2">Price: ${activity.Price}</div>
-                                        <div className="text-sm text-gray-600 mt-2">Date: {new Date(activity.Date).toLocaleDateString()}</div>
-                                        <div className="text-sm text-gray-600 mt-2">Discount: {activity.Discount_Percent}%</div>
-                                        <div className="text-sm text-gray-600 mt-2">Available Spots: {activity.Available_Spots}</div>
-                                        <div className="text-sm text-gray-600 mt-2">Rating: {activity.Rating}</div>
                                     </div>
                                 </div>
                             ))}
