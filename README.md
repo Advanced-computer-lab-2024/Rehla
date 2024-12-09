@@ -8,27 +8,20 @@
 
 
 <!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites-and-installations ">Prerequisites and Installations </a></li>
-        <li><a href="#post-installation">Post Installation</a></li>
-      </ul>
-    </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ol>
-</details>
+## Table of Contents
+1. [About the Project](#about-the-project)
+   - [Built With](#built-with)
+   - [For Testing](#for-testing)
+2. [Getting Started](#getting-started)
+   - [Prerequisites and Installations](#prerequisites-and-installations)
+   - [Post Installation](#post-installation)
+   - [Environment Variables](#environment-variables)
+   - [Project Structure](#project-structure)
+3. [Usage](#usage)
+4. [Deployment](#deployment)
+5. [License](#license)
+6. [Contact](#contact)
+
 
 
 
@@ -128,7 +121,7 @@ Make sure to create a .env file in the root directory of the project and add the
 ## Project Structure
 
 The project follows a typical MERN stack structure with the following directories:
-
+```sh
 mern-project/
 ├── src/
 │   ├── uploads/
@@ -146,6 +139,7 @@ mern-project/
 │   └── package.json
 ├── package.json 
 └── .env
+```
 The src directory contains the back-end code, including controllers, models, and routes.
 The client directory contains the front-end code, including React components, pages, Redux store, and styles.
 The root directory contains the main package.json file and the .env file for environment variables.
