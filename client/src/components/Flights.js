@@ -1,9 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { bookFlight } from '../services/api';
-import logo from '../images/logo.png';
+import logo from '../images/logoWhite.png';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faShoppingCart,faBell  } from '@fortawesome/free-solid-svg-icons';
+
+import {
+  getTouristProfile ,markAsSeen , getAllNotifications } from '../services/api';
 
 const Flights = () => {
+
+  const handleNotificationClick = async () => {
+    setShowModal(true); // Show the modal when the notification icon is clicked
+
+    try {
+        const storedEmail = localStorage.getItem('email'); // Retrieve the signed-in user's email
+        if (!storedEmail) {
+            throw new Error("User email not found in local storage.");
+        }
+
+        // Mark all unseen notifications for the user as seen
+        for (const notification of notifications) {
+            if (!notification.seen) {
+                await markAsSeen(notification._id); // Mark as seen
+            }
+        }
+
+        // Refresh the notifications for the signed-in user
+        const updatedNotifications = await getAllNotifications(storedEmail);
+        setNotifications(updatedNotifications); // Set updated notifications
+    } catch (error) {
+        console.error("Error marking notifications as seen:", error);
+    }
+};
   const [origin, setOrigin] = useState('');
   const [destination, setDestination] = useState('');
   const [departureDate, setDepartureDate] = useState('');
@@ -12,6 +41,36 @@ const Flights = () => {
   const [flights, setFlights] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [formData, setFormData] = useState({
+    Email: '',
+    Username: '',
+    Password: '',
+    Mobile_Number: '',
+    Nationality: '',
+    Job_Student: '',
+    Type: '',
+    Points: 0, 
+    Badge: '',
+  });
+
+  const [notifications, setNotifications] = useState([]); // State for notifications
+  const [unreadCount, setUnreadCount] = useState(0); // State for unread notifications
+  const [showModal, setShowModal] = useState(false); // State to show/hide the modal
+
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const email = localStorage.getItem('email');
+        const profileData = await getTouristProfile({ Email: email });
+        //setTourist(profileData);
+        setFormData(profileData);
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+      }
+    };
+    fetchProfile();
+}, []);
 
   // Function to handle search
   const handleSearch = async (e) => {
@@ -66,15 +125,90 @@ const Flights = () => {
 
   return (
     <div>
-    <div className="NavBar">
-        <img src={logo} alt="Logo" />
-        <nav className="main-nav">
-            <ul className="nav-links">
-                <Link to="/TouristHome">Home</Link>
+    <div className="w-full mx-auto px-6 py-1 bg-black shadow flex flex-col sticky z-50 top-0">
+                <div className="flex items-center">                
+                    {/* Logo */}
+                    <img src={logo} alt="Logo" className="w-44" />
 
-            </ul>
-        </nav>
-    </div>
+                    <div className="flex items-center ml-auto">
+                        <nav id="cart" className="flex space-x-4 ml-2"> {/* Reduced ml-4 to ml-2 and space-x-6 to space-x-4 */}
+                            <Link to="/Cart">
+                                <FontAwesomeIcon icon={faShoppingCart} />
+                            </Link>
+                        </nav>
+                        {/* Notification Icon */}
+                        <nav className="flex space-x-4 ml-2"> {/* Reduced ml-4 to ml-2 and space-x-6 to space-x-4 */}
+                            <div id="notification" className="relative ml-2"> {/* Reduced ml-4 to ml-2 */}
+                                <FontAwesomeIcon
+                                    icon={faBell}
+                                    size="1x" // Increased the size to 2x
+                                    onClick={handleNotificationClick}
+                                    className="cursor-pointer text-white" // Added text-white to make the icon white
+                                />
+                                {unreadCount > 0 && (
+                                    <span className="absolute top-0 -right-1 bg-red-500 text-white text-xs rounded-full w-3 h-3 flex items-center justify-center">
+                                        {unreadCount}
+                                    </span>
+                                )}
+                            </div>
+                        </nav>
+                        <nav className="flex space-x-4 ml-2"> {/* Reduced ml-4 to ml-2 and space-x-6 to space-x-4 */}
+                            <Link to="/TouristHome/TouristProfile">
+                                {/* Profile Picture */}
+                                <div id="view-prof" className="">
+                                    {formData.Profile_Pic ? (
+                                        <img
+                                            src={formData.Profile_Pic}
+                                            alt={`${formData.Name}'s profile`}
+                                            className="w-14 h-14 rounded-full object-cover border-2 border-white"
+                                        />
+                                    ) : (
+                                        <div className="w-16 h-16 rounded-full bg-black text-white text-center flex items-center justify-center border-4 border-white">
+                                            <span className="text-4xl font-bold">{formData.Username.charAt(0)}</span>
+                                        </div>
+                                    )}
+                                </div>
+                            </Link>
+                        </nav>
+                    </div>
+
+
+                </div>
+
+                {/* Main Navigation */}
+                <nav className="flex space-x-6">
+                    <Link to="/" className="text-lg font-medium text-white hover:text-logoOrange ">
+                        Home
+                    </Link>
+                    <Link to="/UpcomingActivities" className="text-lg font-medium text-white hover:text-logoOrange">
+                        Activities
+                    </Link>
+                    <Link to="/UpcomingItineraries" className="text-lg font-medium text-white hover:text-logoOrange">
+                        Itineraries
+                    </Link>
+                    <Link to="/HistoricalPlaces" className="text-lg font-medium text-white hover:text-logoOrange">
+                        Historical Places
+                    </Link>
+                    <Link to="/Museums" className="text-lg font-medium text-white hover:text-logoOrange">
+                        Museums
+                    </Link>
+                    <Link to="/products" className="text-lg font-medium text-white hover:text-logoOrange">
+                        Gift Shop
+                    </Link>
+                    <Link to="/MyEvents" className="text-lg font-medium text-white hover:text-logoOrange">
+                        MyEvents
+                    </Link>
+                    <Link to="/Flights" className="text-lg font-medium text-white hover:text-logoOrange">
+                        Flights
+                    </Link>
+                    <Link to="/Hotels" className="text-lg font-medium text-white hover:text-logoOrange">
+                        Hotels
+                    </Link>
+                    <Link to="/Transportation" className="text-lg font-medium text-logoOrange">
+                        Transportation
+                    </Link>
+                </nav>            
+            </div>
     <div className="max-w-full mx-auto p-24">
       <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">Search Flights</h1>
 
@@ -141,7 +275,7 @@ const Flights = () => {
 
         <button
           type="submit"
-          className="w-full py-3 text-white bg-brandBlue rounded-md hover:bg-logoOrange"
+          className="w-full py-3 text-white bg-black rounded-md hover:bg-logoOrange"
         >
           Search Flights
         </button>
@@ -190,7 +324,7 @@ const Flights = () => {
         </div>
       ) : null}
     </div>
-    <footer className="bg-brandBlue shadow dark:bg-brandBlue m-0">
+    <footer className="bg-black shadow dark:bg-black m-0">
                 <div className="w-full mx-auto md:py-8">
                     <div className="sm:flex sm:items-center sm:justify-between">
                         <a href="/" className="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">

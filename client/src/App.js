@@ -42,6 +42,7 @@ import UpcomingItineraries from './components/UpcomingItineraries.js';
 import HistoricalPlaces from './components/HistoricalPlaces.js';
 import Museums from './components/Museums.js';
 import TReport from './components/TourGuideReport.js'
+import Transportation from './components/Transportation.js'
 
 
 
@@ -98,6 +99,7 @@ function App() {
                 <Route path="/UpcomingItineraries" element={<UpcomingItineraries/>} />
                 <Route path="/HistoricalPlaces" element={<HistoricalPlaces/>} />
                 <Route path="/Museums" element={<Museums/>} />
+                <Route path="/Transportation" element={<Transportation/>} />
 
 
  
