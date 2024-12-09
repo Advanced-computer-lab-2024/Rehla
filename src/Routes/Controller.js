@@ -2589,12 +2589,14 @@ const getPaidActivities = async (req, res) => {
             return res.status(404).json({ message: "No upcoming paid activities found." });
         }
 
-        res.status(200).json({ activities: upcomingActivities });
+        // get the details of the upcomingActivities for table activities
+        const activities = await activity.find({ Name: { $in: upcomingActivities.map(activity => activity.Activity_Name) } });
+        
+        res.status(200).json({ activities: activities });
     } catch (error) {
         console.error("Error fetching upcoming paid activities:", error);
         res.status(500).json({ message: "An error occurred while fetching upcoming paid activities.", error });
     }
-
 };
 
 const getPastPaidActivities = async (req, res) => {
@@ -5613,6 +5615,59 @@ const deleteProductFromMyWishList = async (req, res) => {
     }
 };
 
+const getProductDetailsFromWishList = async (req, res) => {
+    try {
+      const { mail, productName } = req.body;
+  
+      // Validate request
+      if (!mail || !productName) {
+        return res.status(400).json({ message: "Email and Product Name are required." });
+      }
+  
+      // Find the product in the wishlist
+      const wishlistItem = await wishlist.findOne({
+        Email: mail,
+        Productname: productName,
+      });
+  
+      if (!wishlistItem) {
+        return res.status(404).json({ message: "Product not found in wishlist." });
+      }
+  
+      // Find the product details from the products table
+      const product = await Product.findOne({ Product_Name: productName }, {
+        Product_Name: 1,
+        Picture: 1,
+        Price: 1,
+        Quantity: 1,
+        Description: 1,
+        Rating: 1,
+        Reviews: 1
+      });
+  
+      if (!product) {
+        return res.status(404).json({ message: "Product details not found." });
+      }
+  
+      res.status(200).json({
+        message: "Product details retrieved successfully.",
+        product: {
+          Product_Name: product.Product_Name,
+          Picture: product.Picture,
+          Price: product.Price,
+          Quantity: product.Quantity,
+          Description: product.Description,
+          Rating: product.Rating,
+          Reviews: product.Reviews
+        }
+      });
+    } catch (error) {
+      console.error('Error retrieving product details from wishlist:', error.message);
+      res.status(500).json({ error: "Error retrieving product details from wishlist", details: error.message });
+    }
+  };
+
+
 const addProductFromWishListToCart = async (req, res) => {
     try {
         const { mail, productName } = req.params;
@@ -8087,5 +8142,6 @@ module.exports = { getPurchasedProducts,
     bookhotel,
     bookflight,
     shareactivtybyemail,
-    cancelSavedEvent
+    cancelSavedEvent,
+    getProductDetailsFromWishList
 };
