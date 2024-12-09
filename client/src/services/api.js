@@ -2011,3 +2011,12 @@ export const deleteProductFromMyWishList = async (mail, productname) => {
     }
 };
 
+export const getProductDetailsFromWishList = async (mail, productName) => {
+    try {
+        const response = await axios.get(`${API_URL}/getProductDetailsFromWishList`, mail, productName);
+        return response.data;  
+    } catch (error) {
+        console.error("Error getting product from wish list:", error);
+        throw error.response ? error.response.data : { message: "Network error" };
+    }
+};

@@ -668,6 +668,9 @@ const TouristHome = () => {
                     <Link to="/Hotels" className="text-lg font-medium text-white hover:text-logoOrange">
                         Hotels
                     </Link>
+                    <Link to="/Transportation" className="text-lg font-medium text-white hover:text-logoOrange">
+                        Transportation
+                    </Link>
                 </nav>            
             </div>
 
@@ -1317,7 +1320,7 @@ const TouristHome = () => {
                                     <td className="py-2 px-4 border">
                                         <button
                                             onClick={() => handleBooking(item.Route_Number)} // Handle booking when the button is clicked
-                                            className="bg-brandBlue text-white px-3 py-1 rounded hover:bg-logoOrange"
+                                            className="bg-black text-white px-3 py-1 rounded hover:bg-logoOrange"
                                         >
                                             Book Now
                                         </button>

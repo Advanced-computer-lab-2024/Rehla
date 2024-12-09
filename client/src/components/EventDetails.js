@@ -10,12 +10,28 @@ import {
   rateTourGuide,
   commentTourGuide,
   deleteTouristItenrary,
-  deleteTouristActivity
+  deleteTouristActivity,getAllNotifications ,markAsSeen,getTouristProfile
 } from "../services/api";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import logo from "../images/logo.png";
+import logo from '../images/logoWhite.png';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faShoppingCart,faBell  } from '@fortawesome/free-solid-svg-icons';
 
 const EventDetails = () => {
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [formData, setFormData] = useState({
+    Email: '',
+    Username: '',
+    Password: '',
+    Mobile_Number: '',
+    Nationality: '',
+    Job_Student: '',
+    Type: '',
+    Points: 0, 
+    Badge: '',
+  });
+  const [notifications, setNotifications] = useState([]);
   const [name, setName] = useState("");
   const [type, setType] = useState("");
   const [details, setDetails] = useState(null);
@@ -28,9 +44,24 @@ const EventDetails = () => {
   const [tourGuideRating, setTourGuideRating] = useState(0);
   const [tourGuideComment, setTourGuideComment] = useState("");
   const [errorTourGuide, setErrorTourGuide] = useState("");
+  const [showModal, setShowModal] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const email = localStorage.getItem('email');
+        const profileData = await getTouristProfile({ Email: email });
+        //setTourist(profileData);
+        setFormData(profileData);
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+      }
+    };
+    fetchProfile();
+}, []);
 
   useEffect(() => {
     const storedEmail = localStorage.getItem("email");
@@ -39,6 +70,30 @@ const EventDetails = () => {
     const attended = params.get("attendedStatus");
     setAttendedStatus(attended === "true");
   }, [location]);
+
+  const handleNotificationClick = async () => {
+    setShowModal(true); // Show the modal when the notification icon is clicked
+
+    try {
+        const storedEmail = localStorage.getItem('email'); // Retrieve the signed-in user's email
+        if (!storedEmail) {
+            throw new Error("User email not found in local storage.");
+        }
+
+        // Mark all unseen notifications for the user as seen
+        for (const notification of notifications) {
+            if (!notification.seen) {
+                await markAsSeen(notification._id); // Mark as seen
+            }
+        }
+
+        // Refresh the notifications for the signed-in user
+        const updatedNotifications = await getAllNotifications(storedEmail);
+        setNotifications(updatedNotifications); // Set updated notifications
+    } catch (error) {
+        console.error("Error marking notifications as seen:", error);
+    }
+};
 
   const fetchDetails = async () => {
     try {
@@ -190,26 +245,90 @@ const EventDetails = () => {
   return (
     <div>
     <div className="min-h-screen flex flex-col items-center">
-      <header className="NavBar flex items-center justify-between p-4 bg-brandBlue shadow-md w-full">
-        <img src={logo} alt="Logo" className="h-12" />
-        <nav className="main-nav">
-          <ul className="nav-links flex space-x-6">
-            <Link to="/TouristHome" className="text-white font-medium hover:underline">
-              Home
-            </Link>
-          </ul>
-        </nav>
-        <nav className="signing">
-          <Link
-            to="/TourGuideHome/TourGuideProfile"
-            className="text-white font-medium hover:underline"
-          >
-            My Profile
-          </Link>
-        </nav>
-      </header>
+    <div className="w-full mx-auto px-6 py-1 bg-black shadow flex flex-col sticky z-50 top-0">
+                <div className="flex items-center">                
+                    {/* Logo */}
+                    <img src={logo} alt="Logo" className="w-44" />
 
-      <main className="flex-grow flex items-center justify-center mt-32 w-full">
+                    {/* Search Form */}
+                    <div className="flex items-center ml-auto">
+                        <nav className="flex space-x-4 ml-2"> {/* Reduced ml-4 to ml-2 and space-x-6 to space-x-4 */}
+                            <Link to="/Cart">
+                                <FontAwesomeIcon icon={faShoppingCart} />
+                            </Link>
+                        </nav>
+                        {/* Notification Icon */}
+                        <nav className="flex space-x-4 ml-2"> {/* Reduced ml-4 to ml-2 and space-x-6 to space-x-4 */}
+                            <div className="relative ml-2"> {/* Reduced ml-4 to ml-2 */}
+                                <FontAwesomeIcon
+                                    icon={faBell}
+                                    size="1x" // Increased the size to 2x
+                                    onClick={handleNotificationClick}
+                                    className="cursor-pointer text-white" // Added text-white to make the icon white
+                                />
+                                {unreadCount > 0 && (
+                                    <span className="absolute top-0 -right-1 bg-red-500 text-white text-xs rounded-full w-3 h-3 flex items-center justify-center">
+                                        {unreadCount}
+                                    </span>
+                                )}
+                            </div>
+                        </nav>
+                        <nav className="flex space-x-4 ml-2"> {/* Reduced ml-4 to ml-2 and space-x-6 to space-x-4 */}
+                            <Link to="/TouristHome/TouristProfile">
+                                {/* Profile Picture */}
+                                <div className="">
+                                    {formData.Profile_Pic ? (
+                                        <img
+                                            src={formData.Profile_Pic}
+                                            alt={`${formData.Name}'s profile`}
+                                            className="w-14 h-14 rounded-full object-cover border-2 border-white"
+                                        />
+                                    ) : (
+                                        <div className="w-16 h-16 rounded-full bg-black text-white text-center flex items-center justify-center border-4 border-white">
+                                            <span className="text-4xl font-bold">{formData.Username.charAt(0)}</span>
+                                        </div>
+                                    )}
+                                </div>
+                            </Link>
+                        </nav>
+                    </div>
+
+
+                </div>
+
+                {/* Main Navigation */}
+                <nav className="flex space-x-6">
+                    <Link to="/TouristHome" className="text-lg font-medium text-logoOrange ">
+                        Home
+                    </Link>
+                    <Link to="/upcomingActivities" className="text-lg font-medium text-white hover:text-logoOrange">
+                        Activities
+                    </Link>
+                    <Link to="/UpcomingItineraries" className="text-lg font-medium text-white hover:text-logoOrange">
+                        Itineraries
+                    </Link>
+                    <Link to="/HistoricalPlaces" className="text-lg font-medium text-white hover:text-logoOrange">
+                        Historical Places
+                    </Link>
+                    <Link to="/Museums" className="text-lg font-medium text-white hover:text-logoOrange">
+                        Museums
+                    </Link>
+                    <Link to="/products" className="text-lg font-medium text-white hover:text-logoOrange">
+                        Gift Shop
+                    </Link>
+                    <Link to="/MyEvents" className="text-lg font-medium text-white hover:text-logoOrange">
+                        MyEvents
+                    </Link>
+                    <Link to="/Flights" className="text-lg font-medium text-white hover:text-logoOrange">
+                        Flights
+                    </Link>
+                    <Link to="/Hotels" className="text-lg font-medium text-white hover:text-logoOrange">
+                        Hotels
+                    </Link>
+                </nav>            
+            </div>
+
+      <main className="flex-grow flex items-center justify-center mt-6 w-full">
         <div className="p-6 bg-white shadow-lg rounded-lg w-3/4 flex flex-col lg:flex-row">
           <div className="lg:w-1/3 flex-shrink-0 flex flex-col items-center">
             <img
@@ -273,7 +392,7 @@ const EventDetails = () => {
                     {renderStars(rating, setRating)}
                     <button
                       onClick={handleSubmitRating}
-                      className="mt-4 bg-brandBlue text-white py-2 px-6 rounded-lg hover:bg-logoOrange transition duration-200"
+                      className="mt-4 bg-black text-white py-2 px-6 rounded-full hover:bg-logoOrange transition duration-200"
                     >
                       Submit Rating
                     </button>
@@ -288,7 +407,7 @@ const EventDetails = () => {
                     />
                     <button
                       onClick={handleSubmitComment}
-                      className="mt-4 bg-brandBlue text-white py-2 px-6 rounded-lg hover:bg-logoOrange transition duration-200"
+                      className="mt-4 bg-black text-white py-2 px-6 rounded-full hover:bg-logoOrange transition duration-200"
                     >
                       Submit Comment
                     </button>
@@ -301,7 +420,7 @@ const EventDetails = () => {
                     {renderStars(tourGuideRating, setTourGuideRating)}
                     <button
                       onClick={handleTourGuideRatingSubmit}
-                      className="mt-4 bg-brandBlue text-white py-2 px-6 rounded-lg hover:bg-logoOrange transition duration-200"
+                      className="mt-4 bg-black text-white py-2 px-6 rounded-full hover:bg-logoOrange transition duration-200"
                     >
                       Submit Tour Guide Rating
                     </button>
@@ -318,7 +437,7 @@ const EventDetails = () => {
                     />
                     <button
                       onClick={handleTourGuideCommentSubmit}
-                      className="mt-4 bg-brandBlue text-white py-2 px-6 rounded-lg hover:bg-logoOrange transition duration-200"
+                      className="mt-4 bg-black text-white py-2 px-6 rounded-full hover:bg-logoOrange transition duration-200"
                     >
                       Submit Tour Guide Comment
                     </button>
@@ -330,7 +449,7 @@ const EventDetails = () => {
         </div>
       </main>
     </div>
-    <footer className="bg-brandBlue shadow dark:bg-brandBlue m-0 mt-10">
+    <footer className="bg-black shadow dark:bg-black m-0 mt-10">
     <div className="w-full mx-auto md:py-8">
         <div className="sm:flex sm:items-center sm:justify-between">
             <a href="/" className="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">

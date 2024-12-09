@@ -199,7 +199,8 @@ const {createUserAdmin,
   getNotificationsForseller,
   createOutOfStockNotificationsadmin,
   markAsSeenna,
-  getNotificationsForadmin
+  getNotificationsForadmin,
+  getProductDetailsFromWishList
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -499,3 +500,4 @@ cron.schedule('*/10 * * * *', async () => {
 app.post('/bookhotel', bookhotel);
 app.post('/bookflight', bookflight);
 app.delete('/cancelSavedEvent',cancelSavedEvent);
+app.get('/getProductDetailsFromWishList', getProductDetailsFromWishList);
