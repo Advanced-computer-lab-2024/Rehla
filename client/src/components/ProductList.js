@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import logo from '../images/logoWhite.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart, faBell } from '@fortawesome/free-solid-svg-icons';
-import { getProducts, getProductsSortedByRating, productRateReview, createwishlistItem, checkoutOrder, getTouristProfile, viewOrderDetails ,addToCart} from '../services/api';
+import { getProducts, getProductsSortedByRating, productRateReview, createwishlistItem, checkoutOrder, getTouristProfile, viewOrderDetails ,addToCart,getCartDetails} from '../services/api';
 
 const Header = () => (
     <div className="NavBar">
@@ -79,6 +79,26 @@ const ProductList = () => {
     const email = localStorage.getItem('email'); // Assuming the email is stored in localStorage
 
     const navigate = useNavigate();
+
+    const [cartNum, setCartNum] = useState(""); // State to store Cart_Num input
+    const [cartDetailss, setCartDetailss] = useState(null); // State to store fetched cart details
+
+    // Handle form submission to fetch cart details
+    const handleViewCart = async () => {
+        if (!email || !cartNum) {
+            setError("Please provide both email and cart number.");
+            return;
+        }
+
+        try {
+            setError(null); // Reset any previous errors
+            const data = await getCartDetails(email, cartNum);
+            setCartDetailss(data.cartItems); // Set the fetched cart items
+        } catch (err) {
+            setError("An error occurred while fetching the cart details.");
+            console.error(err);
+        }
+    };
 
     const handleCheckoutt = async (e) => {
         e.preventDefault();
@@ -776,6 +796,35 @@ const handleAddToCart = async (productName) => {
                                 <strong>Status:</strong> {order.Status} <br />
                                 <strong>Address:</strong> {order.Address} <br />
                                 <strong>Payment Method:</strong> {order.Payment_Method} <br />
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
+        </div>
+        <div>
+            <h2>View Cart Details</h2>
+            
+            {/* Input field for Cart_Num */}
+            <input 
+                type="number" 
+                placeholder="Enter Cart Number" 
+                value={cartNum} 
+                onChange={(e) => setCartNum(e.target.value)} 
+            />
+            <button onClick={handleViewCart}>View Cart</button>
+
+            {/* Error message */}
+            {error && <p style={{ color: 'red' }}>{error}</p>}
+
+            {/* Display the fetched cart details */}
+            {cartDetailss && (
+                <div>
+                    <h3>Cart Items:</h3>
+                    <ul>
+                        {cartDetailss.map((item, index) => (
+                            <li key={index}>
+                                Product: {item.Productname}, Quantity: {item.Quantity}
                             </li>
                         ))}
                     </ul>

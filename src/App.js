@@ -200,7 +200,7 @@ const {createUserAdmin,
   createOutOfStockNotificationsadmin,
   markAsSeenna,
   getNotificationsForadmin,
-  getProductDetailsFromWishList,getProductsInCart
+  getProductDetailsFromWishList,getProductsInCart,getCartDetails
 } = require("./Routes/Controller");
 
 const MongoURI = process.env.MONGO_URI;
@@ -444,6 +444,7 @@ app.get('/getNotificationsForadmin/:email', getNotificationsForadmin);
 
 
 
+app.post('/get-cart-details', getCartDetails); // Use POST method to send email and Cart_Num in the body
 
 
 

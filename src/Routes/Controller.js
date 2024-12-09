@@ -7062,6 +7062,37 @@ const viewOrderDetails = async (req, res) => {
     }
 };
 
+const getCartDetails = async (req, res) => {
+    try {
+        // Extract email and Cart_Num from the request body or query parameters
+        const { Email, Cart_Num } = req.body; // or req.query if you prefer
+
+        // Validate input
+        if (!Email || !Cart_Num) {
+            return res.status(400).json({ message: "Email and Cart_Num are required." });
+        }
+
+        // Fetch cart items for the provided email and cart number
+        const cartItems = await cartm.find({ Email, Cart_Num });
+
+        // If no cart items are found, return a 404 status
+        if (!cartItems || cartItems.length === 0) {
+            return res.status(404).json({ message: "No cart items found for the provided email and cart number." });
+        }
+
+        // Return the cart items
+        return res.status(200).json({
+            message: "Cart details fetched successfully.",
+            cartItems: cartItems, // Sending the cart items data in the response
+        });
+    } catch (error) {
+        console.error('Error fetching cart details:', error.message);
+        return res.status(500).json({
+            message: 'Error fetching cart details.',
+            error: error.message,
+        });
+    }
+};
 
 
 const filterSellerSalesReportad = async (req, res) => {
@@ -8214,5 +8245,6 @@ module.exports = { getPurchasedProducts,
     shareactivtybyemail,
     cancelSavedEvent,
     getProductDetailsFromWishList,
-    getProductsInCart
+    getProductsInCart,
+    getCartDetails
 };
