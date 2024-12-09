@@ -43,6 +43,7 @@ import HistoricalPlaces from './components/HistoricalPlaces.js';
 import Museums from './components/Museums.js';
 import TReport from './components/TourGuideReport.js'
 import Transportation from './components/Transportation.js'
+import AReport from './components/AdvertiserReport.js'
 
 
 
@@ -75,6 +76,7 @@ function App() {
                 <Route path="/SellerHome/SellerProfile" element={<SellerProfile />} />
                 <Route path="/AdvertiserHome" element={<AdvertiserHome />} />
                 <Route path="/AdvertiserHome/AdvertiserProfile" element={<AdvertiserProfile />} />
+                <Route path="/AdvertiserHome/AdvertiserGuideReport" element={<AReport />} />
                 <Route path="/TourGuideHome" element={<TourGuideHome />} />
                 <Route path="/TourGuideHome/TourGuideProfile" element={<TourGuideProfile />} />
                 <Route path="/TourGuideHome/TourGuideReport" element={<TReport />} />

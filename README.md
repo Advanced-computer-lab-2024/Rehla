@@ -8,29 +8,20 @@
 
 
 <!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites-and-installations ">Prerequisites and Installations </a></li>
-        <li><a href="#post-installation">Post Installation</a></li>
-      </ul>
-    </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ol>
-</details>
+## Table of Contents
+1. [About the Project](#about-the-project)
+   - [Built With](#built-with)
+   - [For Testing](#for-testing)
+2. [Getting Started](#getting-started)
+   - [Prerequisites and Installations](#prerequisites-and-installations)
+   - [Post Installation](#post-installation)
+   - [Environment Variables](#environment-variables)
+   - [Project Structure](#project-structure)
+3. [Usage](#usage)
+4. [Deployment](#deployment)
+5. [License](#license)
+6. [Contact](#contact)
+
 
 
 
@@ -127,6 +118,53 @@ AMADEUS_API_SECRET=9j75tRpG4ts0dw6f
 
 Make sure to create a .env file in the root directory of the project and add the necessary environment variables.
 
+## Project Structure
+
+The project follows a typical MERN stack structure with the following directories:
+```sh
+mern-project/
+├── src/
+│   ├── uploads/
+│   ├── models/
+│   ├── routes/
+│   └── App.js
+├── client/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── css/
+│   │   ├── images/
+│   │   ├── services/
+│   │   └── App.js
+│   ├── public/
+│   └── package.json
+├── package.json 
+└── .env
+```
+The src directory contains the back-end code, including controllers, models, and routes.
+The client directory contains the front-end code, including React components, pages, Redux store, and styles.
+The root directory contains the main package.json file and the .env file for environment variables.
+
+## Deployment
+
+To deploy the application, follow these steps:
+
+Start the Express.js server in production mode:
+```sh
+cd src
+```
+```sh
+node App.js
+```
+
+Build the production-ready React app:
+```sh
+cd client
+```
+```sh
+npm start
+```
+Configure your hosting platform to serve the built React app and the Express.js server.
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
@@ -151,47 +189,12 @@ On our website, you will be able to fulfill whatever you want and see what you s
 
 
 
-
-
-<!-- CONTRIBUTING -->
-## Contributing
-
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
-Don't forget to give the project a star! Thanks again!
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-### Top contributors:
-
-<a href="https://github.com/othneildrew/Best-README-Template/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=othneildrew/Best-README-Template" alt="contrib.rocks image" />
-</a>
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- LICENSE -->
-## License
-
-Distributed under the Unlicense License. See `LICENSE.txt` for more information.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@your_twitter](https://twitter.com/your_username) - email@example.com
+Rehla -  rehlanotification@gmail.com
 
-Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
+Project Link: [https://github.com/Advanced-computer-lab-2024/Rehla.git](https://github.com/Advanced-computer-lab-2024/Rehla.git)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
