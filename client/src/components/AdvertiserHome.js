@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import logo from '../images/logo.png';
+import logo from '../images/logoWhite.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell } from '@fortawesome/free-solid-svg-icons'; // Notification icon
 import {
@@ -11,7 +11,9 @@ import {
     getAllCreatedByEmail,
     calculateActivityRevenue, fetchAllSalesReportsemail,
     fetchFilteredAdvertiserSalesReport,
-    getNotificationsForTourGuide ,markAsSeenn,fetchActivityReport,notifyForFlaggedActivities,filterActivityAttendeesByMonth
+    getNotificationsForTourGuide ,markAsSeenn,
+    fetchActivityReport,notifyForFlaggedActivities,
+    filterActivityAttendeesByMonth, getAdvertiserProfile
 } from '../services/api';
 
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -82,6 +84,47 @@ const AdvertiserHome = () => {
             console.error("Error fetching activity report:", err);
         }
     };
+    const [formData, setFormData] = useState({
+        Username: '',
+        Email: '',
+        Password: '',
+        Mobile_Number: '',
+        Experience: '',
+        Previous_work: '',
+        Type: ''
+    });
+
+    const [currency, setCurrency] = useState('USD');
+    const [conversionRates] = useState({
+        USD: 1,
+        EUR: 0.85,
+        GBP: 0.75,
+        JPY: 110,
+        CAD: 1.25,
+        AUD: 1.35
+    });
+
+    const convertPrice = (price) => {
+        return (price * conversionRates[currency]).toFixed(2);
+    };
+
+    const handleCurrencyChange = (e) => {
+        setCurrency(e.target.value);
+    };
+
+    useEffect(() => {
+        const fetchProfile = async () => {
+          try {
+            const email = localStorage.getItem('email');
+            const profileData = await getAdvertiserProfile({ Email: email });
+            //setTourist(profileData);
+            setFormData(profileData);
+          } catch (error) {
+            console.error("Error fetching profile:", error);
+          }
+        };
+        fetchProfile();
+    }, []);
 
     // Function to filter activity attendees by month
     const handleFilterActivityByMonth = async () => {
@@ -191,13 +234,6 @@ const AdvertiserHome = () => {
             setLoading(false);
         }
     };
-
-    
-
-    
-
-    
-        
 
         const fetchActivityRevenue = async () => {
             try {
@@ -354,33 +390,63 @@ const AdvertiserHome = () => {
 
     return (
         <div>
-            <div className="NavBar">
-                <img src={logo} alt="Logo" />
-                <nav className="main-nav">
-                    <ul className="nav-links">
-                        <Link to="/">Home</Link>
-                    </ul>
-                </nav>
+            <div className="w-full mx-auto px-6 py-1 bg-black shadow flex flex-col sticky z-50 top-0">
+                <div className="flex items-center">                
+                    {/* Logo */}
+                    <img src={logo} alt="Logo" className="w-44" />
 
-                <nav className="signing">
-                    <Link to="/AdvertiserHome/AdvertiserProfile">My Profile</Link>
-                </nav>
-                {/* Notification Icon */}
-                <nav className="signing">
-                    <div className="relative ml-4"> {/* Added margin-left for spacing */}
-                        <FontAwesomeIcon
-                            icon={faBell}
-                            size="2x" // Increased the size to 2x
-                            onClick={handleNotificationClick}
-                            className="cursor-pointer text-white" // Added text-white to make the icon white
-                        />
-                        {unreadCount > 0 && (
-                            <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                                {unreadCount}
-                            </span>
-                        )}
+                    {/* Main Navigation */}
+                    <nav className="flex space-x-6">
+                        <Link to="/AdvertiserHome" className="text-lg font-medium text-logoOrange hover:text-blue-500">
+                            My Activities
+                        </Link>
+                        <a onClick={openCreateModal} href="#uh" className="text-lg font-medium font-family-cursive text-white hover:text-blue-500">
+                            Create
+                        </a>
+                        <Link to="/AdvertiserHome/AdvertiserGuideReport" className="text-lg font-medium text-white hover:text-blue-500">
+                            Reports
+                        </Link>
+                    </nav>
+
+                    <div className="flex items-center ml-auto">
+                        {/* Notification Icon */}
+                        <nav className="flex space-x-4 ml-2"> {/* Reduced ml-4 to ml-2 and space-x-6 to space-x-4 */}
+                            <div className="relative ml-2"> {/* Reduced ml-4 to ml-2 */}
+                                <FontAwesomeIcon
+                                    icon={faBell}
+                                    size="1x" // Increased the size to 2x
+                                    onClick={handleNotificationClick}
+                                    className="cursor-pointer text-white" // Added text-white to make the icon white
+                                />
+                                {unreadCount > 0 && (
+                                    <span className="absolute top-0 -right-1 bg-red-500 text-white text-xs rounded-full w-3 h-3 flex items-center justify-center">
+                                        {unreadCount}
+                                    </span>
+                                )}
+                            </div>
+                        </nav>
+                        <nav className="flex space-x-4 ml-2"> {/* Reduced ml-4 to ml-2 and space-x-6 to space-x-4 */}
+                            <Link to="/TourGuideHome/TourGuideProfile">
+                                {/* Profile Picture */}
+                                <div className="">
+                                    {formData.Profile_Pic ? (
+                                        <img
+                                            src={formData.Profile_Pic}
+                                            alt={`${formData.Name}'s profile`}
+                                            className="w-14 h-14 rounded-full object-cover border-2 border-white"
+                                        />
+                                    ) : (
+                                        <div className="w-14 h-14 rounded-full bg-black text-white text-center flex items-center justify-center border-2 border-white">
+                                            <span className="text-4xl font-bold">{formData.Username.charAt(0)}</span>
+                                        </div>
+                                    )}
+                                </div>
+                            </Link>
+                        </nav>
                     </div>
-                </nav>
+
+
+                </div>            
             </div>
 
             {/* Notification Modal */}
@@ -414,78 +480,117 @@ const AdvertiserHome = () => {
                     </div>
                 </div>
             )}
-
-            {/* Main content */}
-            <div className="content">
-                <h1>Welcome to the Home Page!</h1>
-                {/* Other content goes here */}
-            </div>
             
 
-            <div className="mt-24">
-                <h1 className="text-2xl font-bold">My Created Activities</h1>
-
+            <div className="mt-4">
                 {loading && <div>Loading...</div>}
                 {error && <div>Error: {error.message}</div>}
 
                 {!loading && !error && (
                     <>
-                        <h2 className="text-xl">Activities</h2>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-6 py-4">
-                            {data.activities.map((activity) => (
-                                <div
-                                key={activity._id}
-                                className="card bg-white rounded-lg shadow-lg overflow-hidden flex flex-col cursor-pointer transform transition duration-300 hover:scale-105 hover:shadow-xl"
-                                onClick={() => openEditModal(activity)} // Click handler to open the edit modal
-                                >
-                                <img
-                                    src={activity.Picture}
-                                    alt={activity.Name}
-                                    className="w-full h-48 object-cover transition-transform duration-300 ease-in-out hover:scale-105"
-                                />
-                                <div className="p-4 flex flex-col justify-between flex-grow">
-                                    <h3 className="text-lg font-semibold text-gray-800">{activity.Name}</h3>
-                                </div>
-                                </div>
-                            ))}
-
-                            {/* Add New Activity Button */}
-                            <div
-                                onClick={openCreateModal}
-                                className="flex items-center justify-center p-4 bg-white border-2 border-dashed border-gray-300 rounded-lg shadow-md cursor-pointer hover:bg-gray-100"
-                            >
-                                <span className="text-4xl font-bold text-gray-500">+</span>
+                        <section>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-6 py-4">
+                                {data.activities.map((activity) => (
+                                    <div
+                                    key={activity._id}
+                                    className="card bg-white rounded-lg shadow-lg overflow-hidden flex flex-col object-cover transition-transform duration-300 ease-in-out hover:scale-105"
+                                    >
+                                    {activity.Picture && (
+                                        <img
+                                        src={activity.Picture}
+                                        alt={activity.Name}
+                                        className="w-full h-48 "
+                                        />
+                                    )}
+                                    <div className="p-4 flex flex-col justify-between flex-grow">
+                                        <div className="text-lg font-semibold text-gray-800">{activity.Name}</div>
+                                        <div className="text-sm text-gray-600 mt-2">
+                                        <span className="font-semibold">{convertPrice(activity.Price)} {currency}</span>
+                                        <div className="mt-1">Rating: {activity.Rating}</div>
+                                        <div className="mt-1">Language: {activity.Language}</div>
+                                        </div>
+                                        <button 
+                                        onClick={() => handleActivityClick(activity)} 
+                                        className="mt-4 bg-black text-white rounded-full py-2 px-4 w-full hover:bg-gray-700"
+                                        >
+                                        View Details
+                                        </button>
+                                        
+                                    </div>
+                                    </div>
+                                ))}
                             </div>
-                            </div>
 
 
+                        </section>
+                        {/*openActivityModal*/}
                         {selectedActivity && (
-                            <div className="mt-8 border rounded-lg p-4">
-                                <h3 className="text-xl font-semibold">{selectedActivity.Name}</h3>
-                                <p><strong>Location:</strong> {selectedActivity.Location}</p>
-                                <p><strong>Time:</strong> {selectedActivity.Time}</p>
-                                <p><strong>Duration:</strong> {selectedActivity.Duration}</p>
-                                <p><strong>Price:</strong> ${selectedActivity.Price}</p>
-                                <p><strong>Date:</strong> {selectedActivity.Date}</p>
-                                <p><strong>Discount Percent:</strong> {selectedActivity.Discount_Percent}%</p>
-                                <p><strong>Booking Available:</strong> {selectedActivity.Booking_Available ? 'Yes' : 'No'}</p>
-                                <p><strong>Available Spots:</strong> {selectedActivity.Available_Spots}</p>
-                                <p><strong>Booked Spots:</strong> {selectedActivity.Booked_Spots}</p>
-                                <p><strong>Rating:</strong> {selectedActivity.Rating}</p>
-                                <p><strong>Category:</strong> {selectedActivity.Category}</p>
-                                <p><strong>Tag:</strong> {selectedActivity.Tag}</p>
-                                <button
-                                    onClick={() => openEditModal(selectedActivity)}
-                                    className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
-                                >
-                                    Edit Activity
-                                </button>
-                                <button
-                                    onClick={handleDeleteActivity}
-                                    className="mt-4 ml-2 bg-red-500 text-white px-4 py-2 rounded"
-                                >
-                                    Delete Activity
-                                </button>
+                            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+                                <div className="bg-white p-6 mt-20 rounded-lg shadow-lg w-full max-w-5xl relative">
+                                    {/* Close Button */}
+                                    <button
+                                        onClick={() => setSelectedActivity(null)}
+                                        className="absolute top-4 right-4 p-2 focus:outline-none"
+                                    >
+                                        <div className="relative w-5 h-8">
+                                            <div className="absolute w-full h-1 bg-black transform rotate-45" />
+                                            <div className="absolute w-full h-1 bg-black transform -rotate-45" />
+                                        </div>
+                                    </button>
+                                    {/* Modal Content */}
+                                    <h3 className="text-2xl font-semibold mb-6 text-center">
+                                        {selectedActivity.Name}
+                                    </h3>
+
+                                    {/* Flex Layout for Image and Details */}
+                                    <div className="flex flex-col md:flex-row gap-8">
+                                        {/* Styled Image */}
+                                        <div className="flex-shrink-0 w-full md:w-1/3">
+                                            <img
+                                                src={selectedActivity.Picture}
+                                                alt={selectedActivity.Name}
+                                                className="w-full h-72 object-cover rounded-md shadow-md"
+                                            />
+                                        </div>
+
+                                        {/* Activity Details */}
+                                        <div className="flex-grow grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+                                            <div className="space-y-4">
+                                            <p><strong>Location:</strong> {selectedActivity.Location}</p>
+                                            <p><strong>Time:</strong> {selectedActivity.Time}</p>
+                                            <p><strong>Duration:</strong> {selectedActivity.Duration}</p>
+                                            <p><strong>Price:</strong> ${selectedActivity.Price}</p>
+                                            <p><strong>Date:</strong> {selectedActivity.Date}</p>
+                                            <p><strong>Discount Percent:</strong> {selectedActivity.Discount_Percent}%</p>
+                                            </div>
+                                            <div className="space-y-4">
+                                            <p><strong>Booking Available:</strong> {selectedActivity.Booking_Available ? 'Yes' : 'No'}</p>
+                                            <p><strong>Available Spots:</strong> {selectedActivity.Available_Spots}</p>
+                                            <p><strong>Booked Spots:</strong> {selectedActivity.Booked_Spots}</p>
+                                            <p><strong>Rating:</strong> {selectedActivity.Rating}</p>
+                                            <p><strong>Category:</strong> {selectedActivity.Category}</p>
+                                            <p><strong>Tag:</strong> {selectedActivity.Tag}</p>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    
+                                    {/* Footer Actions */}
+                                    <div className="flex justify-end mt-6 gap-4">
+                                        <button
+                                            onClick={() => openEditModal(selectedActivity)}
+                                            className="bg-black text-white px-4 py-2 rounded"
+                                        >
+                                            Edit Activity
+                                        </button>
+                                        <button
+                                            onClick={handleDeleteActivity}
+                                            className="bg-logoOrange text-white px-4 py-2 rounded"
+                                        >
+                                            Delete Activity
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         )}
                     </>
@@ -495,9 +600,10 @@ const AdvertiserHome = () => {
             {/* Edit Activity Modal */}
             {isEditModalOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 mt-24">
-                    <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md h-5/6 overflow-auto">
+                <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-5xl overflow-auto relative">
                         <h2 className="text-xl font-bold mb-4">Edit Activity</h2>
                         <form onSubmit={handleUpdateActivity}>
+                        <div className="grid grid-cols-3 gap-4">
                             <label className="block mb-2">
                                 Activity Name:
                                 <input
@@ -648,19 +754,25 @@ const AdvertiserHome = () => {
                                     className="border rounded w-full px-2 py-1"
                                 />
                             </label>
+                            </div>
+                            <div className="flex justify-end gap-2 mt-4">
                             <button
                                 type="submit"
-                                className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
+                                className="bg-black text-white px-4 py-2 rounded"
                             >
                                 Update Activity
                             </button>
                             <button
                                 onClick={closeEditModal}
-                                className="mt-4 ml-2 bg-gray-500 text-white px-4 py-2 rounded"
+                                className="absolute top-4 right-4 p-2 focus:outline-none"
                                 type="button"
                             >
-                                Close
+                                <div className="relative w-5 h-8">
+                                    <div className="absolute w-full h-1 bg-black transform rotate-45" />
+                                    <div className="absolute w-full h-1 bg-black transform -rotate-45" />
+                                </div>
                             </button>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -668,10 +780,11 @@ const AdvertiserHome = () => {
 
             {/* Create Activity Modal */}
             {isCreateModalOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 mt-24">
-                    <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md h-5/6 overflow-auto">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center mt-28">
+                    <div className="bg-white p-6 shadow-lg w-full relative min-h-[600px]">
                         <h2 className="text-xl font-bold mb-4">Create Activity</h2>
                         <form onSubmit={handleCreateActivity}>
+                        <div className="grid grid-cols-3 gap-4">
                             <label className="block mb-2">
                                 Activity Name:
                                 <input
@@ -792,228 +905,56 @@ const AdvertiserHome = () => {
                                     required
                                 />
                             </label>
-                            
+                            </div>
+                            <div className="flex justify-end gap-2 mt-4">
                             <button
                                 type="submit"
-                                className="mt-4 bg-green-500 text-white px-4 py-2 rounded"
+                                className="bg-black text-white px-4 py-2 rounded-full"
                             >
                                 Create Activity
                             </button>
                             <button
                                 onClick={closeCreateModal}
-                                className="mt-4 ml-2 bg-gray-500 text-white px-4 py-2 rounded"
+                                className="absolute top-4 right-4 p-2 focus:outline-none"
                                 type="button"
                             >
-                                Close
+                                <div className="relative w-5 h-8">
+                                    <div className="absolute w-full h-1 bg-black transform rotate-45" />
+                                    <div className="absolute w-full h-1 bg-black transform -rotate-45" />
+                                </div>
                             </button>
+                            </div>
                         </form>
                     </div>
                 </div>
-            )}
- <div>
-    <h1>Advertiser Home</h1>
-    {loading && <p>Loading activities...</p>}
-    {error && <p>Error: {error.message}</p>}
-    {messagee && <p>{messagee}</p>}
-
-    {/* Filter Section */}
-    <div>
-        <h2>Filter Sales Reports</h2>
-        <div>
-            <label htmlFor="activityFilter">Activity:</label>
-            <input
-                type="text"
-                id="activityFilter"
-                value={activityFilter}
-                onChange={(e) => setActivityFilter(e.target.value)}
-                placeholder="Enter activity name"
-                style={{ margin: "5px", padding: "5px" }}
-            />
-        </div>
-        <div>
-            <label htmlFor="startDate">Start Date:</label>
-            <input
-                type="date"
-                id="startDate"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                style={{ margin: "5px", padding: "5px" }}
-            />
-        </div>
-        <div>
-            <label htmlFor="endDate">End Date:</label>
-            <input
-                type="date"
-                id="endDate"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                style={{ margin: "5px", padding: "5px" }}
-            />
-        </div>
-        <div>
-            <label htmlFor="month">Month:</label>
-            <input
-                type="month"
-                id="month"
-                value={month}
-                onChange={(e) => setMonth(e.target.value)}
-                style={{ margin: "5px", padding: "5px" }}
-            />
-        </div>
-        <button
-            onClick={handleFilterFetchSalesReports}
-            style={{
-                marginTop: "10px",
-                padding: "10px 15px",
-                backgroundColor: "#007bff",
-                color: "white",
-                border: "none",
-                cursor: "pointer",
-            }}
-        >
-            Apply Filters
-        </button>
-    </div>
-
-    {/* Activities Section */}
-    <div>
-        <h2>Sales Reports - Activities</h2>
-        <button
-            onClick={handleFetchSalesReports}
-            style={{
-                marginBottom: "10px",
-                padding: "10px 15px",
-                backgroundColor: "#007bff",
-                color: "white",
-                border: "none",
-                cursor: "pointer",
-            }}
-        >
-            Fetch All Activity Reports
-        </button>
-        {salesReports.length > 0 ? (
-            <table
-                style={{
-                    width: "100%",
-                    borderCollapse: "collapse",
-                    margin: "20px 0",
-                    fontSize: "1rem",
-                    textAlign: "left",
-                }}
-            >
-                <thead>
-                    <tr>
-                        <th style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f4f4f4" }}>Activity</th>
-                        <th style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f4f4f4" }}>Revenue</th>
-                        <th style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f4f4f4" }}>Sales</th>
-                        <th style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f4f4f4" }}>Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {salesReports.map((report) => (
-                        <tr
-                            key={report.Report_no}
-                            style={{
-                                border: "1px solid #ddd",
-                                backgroundColor: report.Report_no % 2 === 0 ? "#f9f9f9" : "white",
-                            }}
-                        >
-                            <td style={{ border: "1px solid #ddd", padding: "8px" }}>{report.Activity}</td>
-                            <td style={{ border: "1px solid #ddd", padding: "8px" }}>${report.Revenue}</td>
-                            <td style={{ border: "1px solid #ddd", padding: "8px" }}>{report.Sales}</td>
-                            <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                                {new Date(report.createdAt).toLocaleDateString()}
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        ) : (
-            <p>No sales reports available.</p>
-        )}
-    </div>
-</div>
-
-
-        <div>
-            <h1>Advertiser Home</h1>
-            <button onClick={fetchActivityRevenue}>report</button>
-
-            {loading && <p>Loading activity revenue...</p>}
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-
-            {!loading && !error && reports.length > 0 && (
-                <div>
-                    <h2>Activity Revenue Reports</h2>
-                    <ul>
-                        {reports.map((report, index) => (
-                            <li key={index}>
-                                <strong>Activity:</strong> {report.Activity} <br />
-                                <strong>Revenue:</strong> ${report.Revenue.toFixed(2)} <br />
-                                <strong>Sales:</strong> {report.Sales} <br />
-                                <strong>Price:</strong> ${report.Price.toFixed(2)} <br />
-                                <strong>Report No:</strong> {report.Report_no}
-                            </li>
-                        ))}
-                    </ul>
+            )}        
+        <footer className="bg-black shadow m-0">
+                <div className="w-full mx-auto md:py-8">
+                    <div className="sm:flex sm:items-center sm:justify-between">
+                        <a href="/" className="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
+                            <img src={logo} className="w-44" alt="Flowbite Logo" />
+                        </a>
+                        <div className="flex justify-center w-full">
+                            <ul className="flex flex-wrap items-center mb-6 text-sm font-medium text-gray-500 sm:mb-0 dark:text-gray-400 -ml-14">
+                                <li>
+                                    <a href="/" className="hover:underline me-4 md:me-6">About</a>
+                                </li>
+                                <li>
+                                    <a href="/" className="hover:underline me-4 md:me-6">Privacy Policy</a>
+                                </li>
+                                <li>
+                                    <a href="/" className="hover:underline me-4 md:me-6">Licensing</a>
+                                </li>
+                                <li>
+                                    <a href="/" className="hover:underline">Contact</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <hr className="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
+                    <span className="block text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2023 <a href="/" className="hover:underline">Rehla™</a>. All Rights Reserved.</span>
                 </div>
-            )}
-
-            {!loading && !error && reports.length === 0 && <p>No reports found.</p>}
-        </div>
-        <div>
-            <button onClick={handleViewActivityReport}>
-                View Activity Report
-            </button>
-
-            <div>
-                <label>
-                    Filter by Month (1-12):
-                    <input
-                        type="number"
-                        value={monthh}
-                        onChange={(e) => setMonthh(e.target.value)}
-                        min="1"
-                        max="12"
-                    />
-                </label>
-                <button onClick={handleFilterActivityByMonth}>
-                    Filter Activities by Month
-                </button>
-            </div>
-
-            {erro && <p style={{ color: 'red' }}>{erro}</p>}
-
-            {activityReport && (
-                <div>
-                    <h2>Activity Report</h2>
-                    <ul>
-                        {activityReport.activityDetails.map((activity, index) => (
-                            <li key={index}>
-                                {activity.activityName} (Date: {new Date(activity.date).toLocaleDateString()}): {activity.attendeesCount} attendees
-                            </li>
-                        ))}
-                    </ul>
-                    <p><strong>Total Attendees:</strong> {activityReport.totalAttendees}</p>
-                </div>
-            )}
-
-            {filteredActivityReport && (
-                <div>
-                    <h2>Filtered Activity Report</h2>
-                    <ul>
-                        {filteredActivityReport.filteredActivityDetails.map((activity, index) => (
-                            <li key={index}>
-                                {activity.activityName} (Date: {new Date(activity.activityDate).toLocaleDateString()}): {activity.attendeesCount} attendees
-                            </li>
-                        ))}
-                    </ul>
-                    <p><strong>Total Attendees:</strong> {filteredActivityReport.totalFilteredAttendees}</p>
-                </div>
-            )}
-        </div>
-
-
+            </footer>
 
 
 
