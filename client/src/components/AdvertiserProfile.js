@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { getAdvertiserProfile, updateAdvertiserProfile,requestDeleteProfile ,uploadadvertiserLogo} from '../services/api'; // Import the API functions
+import { getAdvertiserProfile, updateAdvertiserProfile,requestDeleteProfile ,
+        uploadadvertiserLogo, getNotificationsForTourGuide, markAsSeenn} from '../services/api'; // Import the API functions
 import { Link } from 'react-router-dom';
-import logo from '../images/logo.png';
+import logo from '../images/logoWhite.png';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBell } from '@fortawesome/free-solid-svg-icons'; // Notification icon
+
 
 const AdvertiserProfile = () => {
     const [advertiser, setAdvertiser] = useState(null); // State to store advertiser profile
@@ -27,6 +31,10 @@ const AdvertiserProfile = () => {
     const [file, setFile] = useState(null);
     const [preview, setPreview] = useState(null);
 
+    const [notifications, setNotifications] = useState([]);
+    const [unreadCount, setUnreadCount] = useState(0);
+    const [showModal, setShowModal] = useState(false);
+
     const handleDeleteRequest = async () => {
         try {
             // Call the requestDeleteProfile function from api.js
@@ -41,6 +49,23 @@ const AdvertiserProfile = () => {
         }
     };
 
+    const handleNotificationClick = async () => {
+        setShowModal(true); // Show the modal when the notification icon is clicked
+        
+        // Mark all notifications as seen when the icon is clicked
+        try {
+            for (const notification of notifications) {
+                if (!notification.seen) {
+                    await markAsSeenn(notification._id); // Mark as seen
+                }
+            }
+            // Refresh the notifications to show the updated status
+            const updatedNotifications = await getNotificationsForTourGuide();
+            setNotifications(updatedNotifications); // Set updated notifications
+        } catch (error) {
+            console.error("Error marking notifications as seen:", error);
+        }
+    };
     // Fetch the advertiser profile on component load
     useEffect(() => {
         const fetchProfile = async () => {
@@ -108,12 +133,60 @@ const AdvertiserProfile = () => {
 
     return (
         <div className="min-h-screen flex flex-col justify-between bg-gray-100">
-            {/* Navigation bar */}
-            <div className="w-full bg-brandBlue shadow-md p-4 flex justify-between items-center">
-                <img src={logo} alt="Logo" className="w-16" />
-                <Link to="/AdvertiserHome" className="text-lg font-medium text-white hover:text-blue-500">
-                    Home
-                </Link>
+            <div className="w-full mx-auto px-6 py-1 bg-black shadow flex flex-col sticky z-50 top-0">
+                <div className="flex items-center">                
+                    {/* Logo */}
+                    <img src={logo} alt="Logo" className="w-44" />
+
+                    {/* Main Navigation */}
+                    <nav className="flex space-x-6">
+                        <Link to="/AdvertiserHome" className="text-lg font-medium text-logoOrange hover:text-blue-500">
+                            My Activities
+                        </Link>
+                        <Link to="/AdvertiserHome/AdvertiserGuideReport" className="text-lg font-medium text-white hover:text-blue-500">
+                            Reports
+                        </Link>
+                    </nav>
+
+                    <div className="flex items-center ml-auto">
+                        {/* Notification Icon */}
+                        <nav className="flex space-x-4 ml-2"> {/* Reduced ml-4 to ml-2 and space-x-6 to space-x-4 */}
+                            <div className="relative ml-2"> {/* Reduced ml-4 to ml-2 */}
+                                <FontAwesomeIcon
+                                    icon={faBell}
+                                    size="1x" // Increased the size to 2x
+                                    onClick={handleNotificationClick}
+                                    className="cursor-pointer text-white" // Added text-white to make the icon white
+                                />
+                                {unreadCount > 0 && (
+                                    <span className="absolute top-0 -right-1 bg-red-500 text-white text-xs rounded-full w-3 h-3 flex items-center justify-center">
+                                        {unreadCount}
+                                    </span>
+                                )}
+                            </div>
+                        </nav>
+                        <nav className="flex space-x-4 ml-2"> {/* Reduced ml-4 to ml-2 and space-x-6 to space-x-4 */}
+                            <Link to="/AdvertiserHome/AdvertiserProfile">
+                                {/* Profile Picture */}
+                                <div className="">
+                                    {formData.Profile_Pic ? (
+                                        <img
+                                            src={formData.Profile_Pic}
+                                            alt={`${formData.Name}'s profile`}
+                                            className="w-14 h-14 rounded-full object-cover border-2 border-white"
+                                        />
+                                    ) : (
+                                        <div className="w-14 h-14 rounded-full bg-black text-white text-center flex items-center justify-center border-2 border-white">
+                                            <span className="text-4xl font-bold">{formData.Username.charAt(0)}</span>
+                                        </div>
+                                    )}
+                                </div>
+                            </Link>
+                        </nav>
+                    </div>
+
+
+                </div>            
             </div>
 
                         {/* Main profile section */}
@@ -128,14 +201,14 @@ const AdvertiserProfile = () => {
                             <img src={formData.Logo} alt={`${formData.Company_Name}'s profile`} className="mt-2 w-32 h-32 rounded-full object-cover" />
                             
                         ) :
-                        (<div className="w-32 h-32 rounded-full bg-brandBlue text-white text-center flex items-center justify-center mb-4">
+                        (<div className="w-32 h-32 rounded-full bg-black text-white text-center flex items-center justify-center mb-4">
                         <span className="text-2xl font-bold">{formData.Company_Name.charAt(0)}</span>
                         </div>
                     )}
-                        <h2 className="text-3xl font-bold text-brandBlue mb-2">{advertiser.Company_Name}</h2>
+                        <h2 className="text-3xl font-bold text-black mb-2">{advertiser.Company_Name}</h2>
                         <p className="text-gray-600 mb-4">{advertiser.Link_to_website}</p>
                         <button
-                            className="bg-brandBlue text-white py-2 px-4 rounded-lg hover:bg-opacity-90 transition duration-300"
+                            className="bg-black text-white py-2 px-4 rounded-lg hover:bg-opacity-90 transition duration-300"
                             onClick={handleEdit}
                         >
                             Edit Profile
@@ -154,7 +227,7 @@ const AdvertiserProfile = () => {
                                             name="Username"
                                             value={formData.Username}
                                             onChange={handleChange}
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
                                         />
                                     </div>
                                     <div>
@@ -165,7 +238,7 @@ const AdvertiserProfile = () => {
                                             value={formData.Email}
                                             onChange={handleChange}
                                             disabled
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue bg-gray-100"
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black bg-gray-100"
                                         />
                                     </div>
                                 </div>
@@ -178,7 +251,7 @@ const AdvertiserProfile = () => {
                                             name="Password"
                                             value={formData.Password}
                                             onChange={handleChange}
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
                                         />
                                     </div>
                                     <div>
@@ -188,7 +261,7 @@ const AdvertiserProfile = () => {
                                             name="Link_to_website"
                                             value={formData.Link_to_website}
                                             onChange={handleChange}
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
                                         />
                                     </div>
                                 </div>
@@ -201,7 +274,7 @@ const AdvertiserProfile = () => {
                                             name="Hotline"
                                             value={formData.Hotline}
                                             onChange={handleChange}
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
                                         />
                                     </div>
                                     <div>
@@ -211,7 +284,7 @@ const AdvertiserProfile = () => {
                                             name="Company_Profile"
                                             value={formData.Company_Profile}
                                             onChange={handleChange}
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
                                         />
                                     </div>
                                 </div>
@@ -223,7 +296,7 @@ const AdvertiserProfile = () => {
                                     type="file"
                                     accept="image/*"
                                     onChange={handleFileChange}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
                                     />
                                     {preview && (
                                     <img src={preview} alt="Preview" className="mt-2 w-32 h-32 rounded-full object-cover" />
@@ -234,7 +307,7 @@ const AdvertiserProfile = () => {
                                 <button
                                 type="button"
                                 onClick={handleUploadLogo}
-                                className="w-full bg-brandBlue text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300 mt-2"
+                                className="w-full bg-black text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300 mt-2"
                                 >
                                 Upload Company LOGO 
                                 </button>
@@ -242,7 +315,7 @@ const AdvertiserProfile = () => {
                                 <button
                                 type="button"
                                 onClick={() => window.location.reload()}
-                                className="w-full bg-brandBlue text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300 mt-2"
+                                className="w-full bg-black text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300 mt-2"
                                 >
                                 Cancel
                                 </button>
@@ -250,7 +323,7 @@ const AdvertiserProfile = () => {
                                 <button
                                     type="button"
                                     onClick={handleSave}
-                                    className="w-full bg-brandBlue text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300"
+                                    className="w-full bg-black text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300"
                                 >
                                     Save Profile
                                 </button>
@@ -283,7 +356,7 @@ const AdvertiserProfile = () => {
  
 
             {/* Footer */}
-            <footer className="w-full bg-brandBlue py-4 text-center text-white mt-6">
+            <footer className="w-full bg-black py-4 text-center text-white mt-6">
                 <p>&copy; 2024 Advertiser Profile. All rights reserved.</p>
             </footer>
         </div>

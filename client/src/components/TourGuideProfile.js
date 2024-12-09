@@ -109,7 +109,7 @@ const TourGuideProfile = () => {
     return (
         <div className="min-h-screen flex flex-col justify-between bg-gray-100">
             {/* Navigation Bar */}
-            <div className="w-full bg-brandBlue shadow-md p-4 flex justify-between items-center">
+            <div className="w-full bg-black shadow-md p-4 flex justify-between items-center">
                 <img src={logo} alt="Logo" className="w-16" />
                 <Link to="/TourGuideHome" className="text-lg font-medium text-white hover:text-blue-500">
                     Home
@@ -125,13 +125,13 @@ const TourGuideProfile = () => {
                     <img src={formData.Pic} alt={`${formData.Name}'s profile`} className="mt-2 w-32 h-32 rounded-full object-cover" />
                    
                 ) :
-              (<div className="w-32 h-32 rounded-full bg-brandBlue text-white text-center flex items-center justify-center mb-4">
+              (<div className="w-32 h-32 rounded-full bg-black text-white text-center flex items-center justify-center mb-4">
                 <span className="text-2xl font-bold">{formData.Username.charAt(0)}</span>
               </div>
             )}
-                        <h2 className="text-3xl font-bold text-brandBlue mb-2">{tourGuide.Username}</h2> {/* Replaced Email with Username */}
+                        <h2 className="text-3xl font-bold text-black mb-2">{tourGuide.Username}</h2> {/* Replaced Email with Username */}
                         <button
-                            className="bg-brandBlue text-white py-2 px-4 rounded-lg hover:bg-opacity-90 transition duration-300"
+                            className="bg-black text-white py-2 px-4 rounded-lg hover:bg-opacity-90 transition duration-300"
                             onClick={handleEdit}
                         >
                             Edit Profile
@@ -149,7 +149,7 @@ const TourGuideProfile = () => {
                                         name="Username"
                                         value={formData.Username}
                                         onChange={handleChange}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
                                     />
                                 </div>
                                 <div>
@@ -159,7 +159,7 @@ const TourGuideProfile = () => {
                                         name="Email"
                                         value={formData.Email}
                                         onChange={handleChange}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
                                     />
                                 </div>
                             </div>
@@ -172,7 +172,7 @@ const TourGuideProfile = () => {
                                         name="Password"
                                         value={formData.Password}
                                         onChange={handleChange}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
                                     />
                                 </div>
                                 <div>
@@ -182,7 +182,7 @@ const TourGuideProfile = () => {
                                         name="Mobile_Number"
                                         value={formData.Mobile_Number}
                                         onChange={handleChange}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
                                     />
                                 </div>
                             </div>
@@ -195,7 +195,7 @@ const TourGuideProfile = () => {
                                         name="Experience"
                                         value={formData.Experience}
                                         onChange={handleChange}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
                                     />
                                 </div>
                                 <div>
@@ -204,7 +204,7 @@ const TourGuideProfile = () => {
                                         name="Previous_work"
                                         value={formData.Previous_work}
                                         onChange={handleChange}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
                                     />
                                 </div>
                             </div>
@@ -217,7 +217,7 @@ const TourGuideProfile = () => {
                                         name="Type"
                                         value={formData.Type}
                                         onChange={handleChange}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
                                     />
                                 </div>
                             </div>
@@ -230,7 +230,7 @@ const TourGuideProfile = () => {
                       type="file"
                       accept="image/*"
                       onChange={handleFileChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
                     />
                     {preview && (
                       <img src={preview} alt="Preview" className="mt-2 w-32 h-32 rounded-full object-cover" />
@@ -241,7 +241,7 @@ const TourGuideProfile = () => {
                             <button
                             type="button"
                             onClick={handleUploadProfilePicture}
-                            className="w-full bg-brandBlue text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300 mt-2"
+                            className="w-full bg-black text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300 mt-2"
                             >
                             Upload Profile Picture
                             </button>
@@ -249,7 +249,7 @@ const TourGuideProfile = () => {
                             <button
                             type="button"
                             onClick={() => window.location.reload()}
-                            className="w-full bg-brandBlue text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300 mt-2"
+                            className="w-full bg-black text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300 mt-2"
                             >
                             Cancel
                             </button>
@@ -258,7 +258,7 @@ const TourGuideProfile = () => {
                             <button
                                 type="button"
                                 onClick={handleSave}
-                                className="w-full bg-brandBlue text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300"
+                                className="w-full bg-black text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300"
                             >
                                 Save Profile
                             </button>
@@ -291,7 +291,7 @@ const TourGuideProfile = () => {
       
 
             {/* Footer */}
-            <footer className="w-full bg-brandBlue py-4 text-center text-white mt-6">
+            <footer className="w-full bg-black py-4 text-center text-white mt-6">
                 <p>&copy; 2024 Tour Guide Profile. All rights reserved.</p>
             </footer>
         </div>

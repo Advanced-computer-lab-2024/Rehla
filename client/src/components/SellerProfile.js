@@ -112,7 +112,7 @@ const SellerProfile = () => {
     return (
         <div className="min-h-screen flex flex-col justify-between bg-gray-100">
             {/* Navigation Bar */}
-            <div className="w-full bg-brandBlue shadow-md p-4 flex justify-between items-center">
+            <div className="w-full bg-black shadow-md p-4 flex justify-between items-center">
                 <img src={logo} alt="Logo" className="w-16" />
                 <div className="space-x-4">
                     <Link to="/SellerHome" className="text-lg font-medium text-white hover:text-blue-500">
@@ -132,13 +132,13 @@ const SellerProfile = () => {
                    <img src={formData.Logo} alt={`${formData.Shop_Name}'s profile`} className="mt-2 w-32 h-32 rounded-full object-cover" />
                   
                ) :
-             (<div className="w-32 h-32 rounded-full bg-brandBlue text-white text-center flex items-center justify-center mb-4">
+             (<div className="w-32 h-32 rounded-full bg-black text-white text-center flex items-center justify-center mb-4">
               <span className="text-2xl font-bold">
                     {formData.Shop_Name && formData.Shop_Name.charAt(0)}
                 </span>
              </div>
            )}
-                        <h2 className="text-3xl font-bold text-brandBlue mb-1">{seller.Shop_Name}</h2>
+                        <h2 className="text-3xl font-bold text-black mb-1">{seller.Shop_Name}</h2>
                     </div>
 
                     {!isEditing ? (
@@ -151,7 +151,7 @@ const SellerProfile = () => {
                             <p><strong>Type:</strong> {seller.Type}</p>
                             <button
                                 onClick={() => setIsEditing(true)}
-                                className="bg-brandBlue text-white py-2 px-4 rounded-lg hover:bg-opacity-90 transition duration-300"
+                                className="bg-black text-white py-2 px-4 rounded-lg hover:bg-opacity-90 transition duration-300"
                             >
                                 Edit Profile
                             </button>
@@ -167,7 +167,7 @@ const SellerProfile = () => {
                                         name="Username"
                                         value={formData.Username}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
                                         required
                                     />
                                 </div>
@@ -190,7 +190,7 @@ const SellerProfile = () => {
                                         name="Password"
                                         value={formData.Password}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
                                         required
                                     />
                                 </div>
@@ -201,7 +201,7 @@ const SellerProfile = () => {
                                         name="Shop_Name"
                                         value={formData.Shop_Name}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
                                         required
                                     />
                                 </div>
@@ -213,7 +213,7 @@ const SellerProfile = () => {
                                         name="Description"
                                         value={formData.Description}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
                                         required
                                     />
                                 </div>
@@ -224,7 +224,7 @@ const SellerProfile = () => {
                                         name="Shop_Location"
                                         value={formData.Shop_Location}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
                                         required
                                     />
                                 </div>
@@ -236,7 +236,7 @@ const SellerProfile = () => {
                                     name="Type"
                                     value={formData.Type}
                                     onChange={handleChange}
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
                                     required
                                 />
                             </div>
@@ -248,7 +248,7 @@ const SellerProfile = () => {
                                 type="file"
                                 accept="image/*"
                                 onChange={handleFileChange}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brandBlue"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
                                 />
                                 {preview && (
                                 <img src={preview} alt="Preview" className="mt-2 w-32 h-32 rounded-full object-cover" />
@@ -259,7 +259,7 @@ const SellerProfile = () => {
                             <button
                             type="button"
                             onClick={handleUploadLogo}
-                            className="w-full bg-brandBlue text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300 mt-2"
+                            className="w-full bg-black text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300 mt-2"
                             >
                             Upload Company Logo
                             </button>
@@ -267,14 +267,14 @@ const SellerProfile = () => {
                             <div className="flex flex-col space-y-4">
                                 <button
                                     type="submit"
-                                    className="w-full bg-brandBlue text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300"
+                                    className="w-full bg-black text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300"
                                 >
                                     Save Changes
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => setIsEditing(false)}
-                                    className="w-full bg-brandBlue text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300"
+                                    className="w-full bg-black text-white py-2 rounded-lg hover:bg-opacity-90 transition duration-300"
                                 >
                                     Cancel
                                 </button>
@@ -296,7 +296,7 @@ const SellerProfile = () => {
 
 
             {/* Footer */}
-            <footer className="w-full bg-brandBlue py-4 text-center text-white mt-6">
+            <footer className="w-full bg-black py-4 text-center text-white mt-6">
                 <p>&copy; 2024 Seller Profile. All rights reserved.</p>
             </footer>
         </div>

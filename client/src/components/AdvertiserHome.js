@@ -426,7 +426,7 @@ const AdvertiserHome = () => {
                             </div>
                         </nav>
                         <nav className="flex space-x-4 ml-2"> {/* Reduced ml-4 to ml-2 and space-x-6 to space-x-4 */}
-                            <Link to="/TourGuideHome/TourGuideProfile">
+                            <Link to="/AdvertiserHome/AdvertiserProfile">
                                 {/* Profile Picture */}
                                 <div className="">
                                     {formData.Profile_Pic ? (
