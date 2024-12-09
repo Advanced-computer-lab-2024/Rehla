@@ -2589,12 +2589,14 @@ const getPaidActivities = async (req, res) => {
             return res.status(404).json({ message: "No upcoming paid activities found." });
         }
 
-        res.status(200).json({ activities: upcomingActivities });
+        // get the details of the upcomingActivities for table activities
+        const activities = await activity.find({ Name: { $in: upcomingActivities.map(activity => activity.Activity_Name) } });
+        
+        res.status(200).json({ activities: activities });
     } catch (error) {
         console.error("Error fetching upcoming paid activities:", error);
         res.status(500).json({ message: "An error occurred while fetching upcoming paid activities.", error });
     }
-
 };
 
 const getPastPaidActivities = async (req, res) => {
