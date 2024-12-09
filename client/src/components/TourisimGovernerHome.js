@@ -358,13 +358,13 @@ const TourisimGovernerHome = () => {
                                             onClick={() => openEditModal(selectedHistoricalPlace)}
                                             className="bg-black text-white px-4 py-2 rounded"
                                         >
-                                            Edit Activity
+                                            Edit Place
                                         </button>
                                         <button
                                             onClick={selectedHistoricalPlace}
                                             className="bg-logoOrange text-white px-4 py-2 rounded"
                                         >
-                                            Delete Activity
+                                            Delete Place
                                         </button>
                                     </div>
                                 </div>
