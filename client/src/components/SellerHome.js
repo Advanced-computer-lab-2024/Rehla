@@ -493,7 +493,7 @@ const SellerHome = () => {
                         <a onClick={() => setIsAdding(true)} href="#uh" className="text-lg font-medium font-family-cursive text-white hover:text-blue-500">
                             Create
                         </a>
-                        <Link to="/TourGuideHome/TourGuideReport" className="text-lg font-medium text-white hover:text-blue-500">
+                        <Link to="/SellerHome" className="text-lg font-medium text-white hover:text-blue-500">
                             Reports
                         </Link>
                 </nav>            
