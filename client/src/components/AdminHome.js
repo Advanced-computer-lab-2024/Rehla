@@ -36,7 +36,7 @@ import {
     getNotificationsForadmin,
 } from '../services/api'; // Import all API functions
 import '../css/Home.css';
-import logo from '../images/logo.png';
+import logo from '../images/logoWhite.png';
 
 
 
@@ -684,15 +684,18 @@ const handleCreatePromoCode = async (e) => {
 
     return (
         <div>
-           <div className="NavBar">
-               <img src={logo} alt="logo" />
-               <nav className="main-nav">
-                   <ul className="nav-links">
-                       <Link to="/">Home</Link>
-                       <Link to="/Adminproducts">Products</Link>
-                       <li>
+
+<div className="w-full mx-auto px-6 py-1 bg-black shadow flex flex-col sticky z-50 top-0">
+                <div className="flex items-center">                
+                    {/* Logo */}
+                    <img src={logo} alt="Logo" className="w-44" />
+
+                    {/* Main Navigation */}
+                    <nav className="flex space-x-6">
+                        <Link to="/">Home</Link>
+                        <Link to="/Adminproducts">Products</Link>
                         <a 
-                            href="#" 
+                            href="#a" 
                             onClick={() => setIsModalOpen(true)} 
                             className="text-white hover:underline"
                         >
@@ -700,32 +703,35 @@ const handleCreatePromoCode = async (e) => {
                         </a>
 
                         <a 
-                            href="#" 
+                            href="#u" 
                             onClick={() => setUserModalOpen(true)} 
                             className="text-white hover:underline"
                         >
                             users Management
                         </a>
+                    </nav>
 
-                    </li>
-                   </ul>
-               </nav>   
-               {/* Notification Icon */}
-           <nav className="signing">
-                    <div className="relative ml-4"> {/* Added margin-left for spacing */}
-                        <FontAwesomeIcon
-                            icon={faBell}
-                            size="2x" // Increased the size to 2x
-                            onClick={handleNotificationClick}
-                            className="cursor-pointer text-red-700" // Added text-white to make the icon white
-                        />
-                        {unreadCount > 0 && (
-                            <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                                {unreadCount}
-                            </span>
-                        )}
+                    <div className="flex items-center ml-auto">
+                        {/* Notification Icon */}
+                        <nav className="flex space-x-4 ml-2"> {/* Reduced ml-4 to ml-2 and space-x-6 to space-x-4 */}
+                            <div className="relative ml-2"> {/* Reduced ml-4 to ml-2 */}
+                                <FontAwesomeIcon
+                                    icon={faBell}
+                                    size="1x" // Increased the size to 2x
+                                    onClick={handleNotificationClick}
+                                    className="cursor-pointer text-white" // Added text-white to make the icon white
+                                />
+                                {unreadCount > 0 && (
+                                    <span className="absolute top-0 -right-1 bg-red-500 text-white text-xs rounded-full w-3 h-3 flex items-center justify-center">
+                                        {unreadCount}
+                                    </span>
+                                )}
+                            </div>
+                        </nav>
                     </div>
-                </nav>
+
+
+                </div>            
             </div>
             
             
@@ -754,7 +760,7 @@ const handleCreatePromoCode = async (e) => {
                                     required
                                     className="border border-gray-300 p-2 rounded w-full"
                                 />
-                                <button type="submit" className="mt-2 bg-brandBlue text-white rounded-md px-4 py-2">
+                                <button type="submit" className="mt-2 bg-black text-white rounded-md px-4 py-2">
                                     Add Category
                                 </button>
                             </form>
@@ -783,7 +789,7 @@ const handleCreatePromoCode = async (e) => {
                                     required
                                     className="border border-gray-300 p-2 rounded w-full"
                                 />
-                                <button type="submit" className="mt-2 bg-brandBlue text-white rounded-md px-4 py-2">
+                                <button type="submit" className="mt-2 bg-black text-white rounded-md px-4 py-2">
                                     Update Category
                                 </button>
                             </form>
@@ -823,7 +829,7 @@ const handleCreatePromoCode = async (e) => {
                                     required
                                     className="border border-gray-300 p-2 rounded w-full"
                                 />
-                                <button type="submit" className="mt-2 bg-brandBlue text-white rounded-md px-4 py-2">
+                                <button type="submit" className="mt-2 bg-black text-white rounded-md px-4 py-2">
                                     Add Tag
                                 </button>
                             </form>
@@ -852,7 +858,7 @@ const handleCreatePromoCode = async (e) => {
                                     required
                                     className="border border-gray-300 p-2 rounded w-full"
                                 />
-                                <button type="submit" className="mt-2 bg-brandBlue text-white rounded-md px-4 py-2">
+                                <button type="submit" className="mt-2 bg-black text-white rounded-md px-4 py-2">
                                     Update Tag
                                 </button>
                             </form>
@@ -970,7 +976,7 @@ const handleCreatePromoCode = async (e) => {
 
             <div className="p-6 bg-gray-50 mt-[-80px]">
                 <h1 className="text-2xl font-bold text-center mb-6">Admin Home</h1>
-                <h1 className="text-3xl font-extrabold text-center mb-8 mt-8 text-brandBlue">Users Requests</h1>
+                <h1 className="text-3xl font-extrabold text-center mb-8 mt-8 text-black">Users Requests</h1>
 
                 {/* Loading indicator */}
                 {loading && <p className="text-gray-500 text-center">Loading requests...</p>}
@@ -1007,7 +1013,7 @@ const handleCreatePromoCode = async (e) => {
                                         <td className="py-2 px-6 border-t">
                                             <button 
                                                 onClick={() => handleProcessRequest(request.Email)} 
-                                                className="text-logoOrange hover:text-brandBlue font-semibold"
+                                                className="text-logoOrange hover:text-black font-semibold"
                                             >
                                                 Process Request
                                             </button>
@@ -1015,7 +1021,7 @@ const handleCreatePromoCode = async (e) => {
                                         <td className="py-2 px-6 border-t">
                                             <button 
                                                 onClick={() => handleDeleteRequest(request.Email)} 
-                                                className="text-red hover:text-brandBlue font-semibold"
+                                                className="text-red hover:text-black font-semibold"
                                             >
                                                 Delete Request
                                             </button>
@@ -1080,7 +1086,7 @@ const handleCreatePromoCode = async (e) => {
                     <div className="flex space-x-4">
                         <button 
                             type="submit" 
-                            className="bg-brandBlue text-white rounded-md px-4 py-2 transition duration-200 "
+                            className="bg-black text-white rounded-md px-4 py-2 transition duration-200 "
                         >
                             Create User
                         </button>
@@ -1121,7 +1127,7 @@ const handleCreatePromoCode = async (e) => {
     </>
 )}
 
-  <h1 className="text-3xl font-extrabold text-center mb-8 mt-10 text-brandBlue">
+  <h1 className="text-3xl font-extrabold text-center mb-8 mt-10 text-black">
     Tourist Complaints</h1>
         <div>
             {loadingg && <p>Loading complaints...</p>}
@@ -1141,7 +1147,7 @@ const handleCreatePromoCode = async (e) => {
                     />
                     <button
                         onClick={handleSearchComplaints}
-                        className="bg-brandBlue text-white rounded-full px-4 py-2 transition duration-200 hover:bg-logoOrange" // More rounded
+                        className="bg-black text-white rounded-full px-4 py-2 transition duration-200 hover:bg-logoOrange" // More rounded
                     >
                         Search
                     </button>
@@ -1159,7 +1165,7 @@ const handleCreatePromoCode = async (e) => {
                     <button
                         onClick={handleFilterComplaintsByStatus}
                         disabled={isLoadingFiltered}
-                        className="bg-brandBlue text-white rounded-full px-4 py-2 transition duration-200 hover:bg-logoOrange" // More rounded
+                        className="bg-black text-white rounded-full px-4 py-2 transition duration-200 hover:bg-logoOrange" // More rounded
                     >
                         {isLoadingFiltered ? 'Loading...' : 'Filter Complaints'}
                     </button>
@@ -1168,7 +1174,7 @@ const handleCreatePromoCode = async (e) => {
                     <button
                         onClick={fetchSortedComplaints}
                         disabled={loadingSortedComplaints}
-                        className="bg-brandBlue text-white rounded-full px-4 py-2 transition duration-200 hover:bg-logoOrange" // More rounded
+                        className="bg-black text-white rounded-full px-4 py-2 transition duration-200 hover:bg-logoOrange" // More rounded
                     >
                         Sort Complaints by Date
                     </button>
@@ -1206,7 +1212,7 @@ const handleCreatePromoCode = async (e) => {
                                                 setComplaintEmail(complaint.Tourist_Email);
                                                 setShowreplyModal(true);
                                             }}
-                                            className="bg-brandBlue text-white rounded-md px-2 py-1 transition duration-200 hover:bg-logoOrange"
+                                            className="bg-black text-white rounded-md px-2 py-1 transition duration-200 hover:bg-logoOrange"
                                         >
                                             Reply
                                         </button>
@@ -1214,7 +1220,7 @@ const handleCreatePromoCode = async (e) => {
                                     <td className="py-2 px-4 border">
                                         <button
                                             onClick={() => handleComplaintStatus(complaint.Tourist_Email, complaint.Title)}
-                                            className="bg-brandBlue text-white rounded-md px-2 py-1 transition duration-200 hover:bg-logoOrange"
+                                            className="bg-black text-white rounded-md px-2 py-1 transition duration-200 hover:bg-logoOrange"
                                         >
                                             Resolve
                                         </button>
@@ -1255,7 +1261,7 @@ const handleCreatePromoCode = async (e) => {
                         <button
                             onClick={handleReplyToComplaint}
                             disabled={isSendingReply}
-                            className="bg-brandBlue text-white rounded-md px-4 py-2 mr-2 transition duration-200 hover:bg-logoOrange"
+                            className="bg-black text-white rounded-md px-4 py-2 mr-2 transition duration-200 hover:bg-logoOrange"
                         >
                             {isSendingReply ? 'Sending...' : 'Send Reply'}
                         </button>
@@ -1296,7 +1302,7 @@ const handleCreatePromoCode = async (e) => {
                                         <td className="py-2 px-4 border">{request.Email}</td>
                                         <td className="py-2 px-4 border">
                                             <button 
-                                                className="bg-logoOrange text-white rounded-md px-2 py-1 transition duration-200 hover:brandBlue"
+                                                className="bg-logoOrange text-white rounded-md px-2 py-1 transition duration-200 hover:black"
                                             >
                                                 Delete User
                                             </button>
@@ -1318,7 +1324,7 @@ const handleCreatePromoCode = async (e) => {
            <br />
            <div>
 
-<h1 className="text-3xl font-extrabold text-center mb-8 mt-8 text-brandBlue">Create Promo Code</h1>
+<h1 className="text-3xl font-extrabold text-center mb-8 mt-8 text-black">Create Promo Code</h1>
 <form onSubmit={handleCreatePromoCode} className="mb-4">
     <label className="block mb-2">Promo Code:</label>
     <input
@@ -1357,7 +1363,7 @@ const handleCreatePromoCode = async (e) => {
         <option value="Activity">Activity</option>
         <option value="All">All</option>
 </select>
-    <button type="submit" className="bg-brandBlue text-white rounded-md px-4 py-2 transition duration-200">
+    <button type="submit" className="bg-black text-white rounded-md px-4 py-2 transition duration-200">
         Create Promo Code
     </button>
 </form>
@@ -1650,7 +1656,7 @@ const handleCreatePromoCode = async (e) => {
                 </table>
             </div>
             
-        <footer className="bg-brandBlue shadow dark:bg-brandBlue m-0">
+        <footer className="bg-black shadow dark:bg-black m-0">
                 <div className="w-full mx-auto md:py-8">
                     <div className="sm:flex sm:items-center sm:justify-between">
                         <a href="/" className="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
