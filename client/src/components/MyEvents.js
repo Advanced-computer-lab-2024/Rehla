@@ -312,18 +312,18 @@ const MyEvents = () => {
                         <div className="flex overflow-x-auto scrollbar-hide gap-6">
                             {paidActivities.map((activity) => (
                                 <div
-                                    key={activity.Name}
+                                    key={activity.Activity_Name}
                                     className="card w-96 h-auto bg-white rounded-lg shadow-lg overflow-hidden flex flex-col"
                                     onClick={() => handleEventClick(activity.Activity_Name, 'activity')}
                                 >
                                     {/* Image Section */}
                                     <img
                                         src={activity.Picture}
-                                        alt={activity.Name}
+                                        alt={activity.Activity_Name}
                                         className="w-full h-48 object-cover"
                                     />
                                     <div className="p-4 flex flex-col justify-between flex-grow">
-                                        <div className="text-lg font-semibold text-gray-800">{activity.Name}</div>
+                                        <div className="text-lg font-semibold text-gray-800">{activity.Activity_Name}</div>
                                     </div>
                                 </div>
                             ))}
