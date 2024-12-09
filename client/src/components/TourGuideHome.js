@@ -389,12 +389,12 @@ const TourGuideHome = () => {
     };
 
     // Handle form submission to activate or deactivate itinerary
-    const handleSubmit = async (accessibility) => {
+    const handleSubmit = async (itinerary,accessibility) => {
         // Convert 'activated' / 'deactivated' to boolean
         const accessibilityValue = accessibility === "activated";
     
         try {
-            const response = await Itineraryactivation(selectedItinerary.Itinerary_Name, accessibilityValue);
+            const response = await Itineraryactivation(itinerary.Itinerary_Name, accessibilityValue);
             setMessageee(response.message); // Display success message from the API
         } catch (error) {
             setMessageee("Error updating itinerary");
@@ -447,7 +447,7 @@ const TourGuideHome = () => {
                     {/* Main Navigation */}
                     <nav className="flex space-x-6">
                         <Link to="/TourGuideHome" className="text-lg font-medium text-logoOrange hover:text-blue-500">
-                            Home
+                            My Itineraries
                         </Link>
                         <a onClick={openCreateModal} href="#uh" className="text-lg font-medium font-family-cursive text-white hover:text-blue-500">
                             Create
@@ -549,19 +549,17 @@ const TourGuideHome = () => {
                 {!loading && !error && (
                     <>
                         <section>
-                            <h2 className="text-2xl font-semibold text-gray-800 mb-4">My Created Itineraries</h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-6 py-4">
                                 {data.itineraries.map((itinerary) => (
                                     <div
                                     key={itinerary._id}
-                                    className="card bg-white rounded-lg shadow-lg overflow-hidden flex flex-col"
-                                    onClick={() => handleItineraryClick(itinerary)}
+                                    className="card bg-white rounded-lg shadow-lg overflow-hidden flex flex-col object-cover transition-transform duration-300 ease-in-out hover:scale-105"
                                     >
                                     {itinerary.Picture && (
                                         <img
                                         src={itinerary.Picture}
                                         alt={itinerary.Itinerary_Name}
-                                        className="w-full h-48 object-cover transition-transform duration-300 ease-in-out hover:scale-105"
+                                        className="w-full h-48 "
                                         />
                                     )}
                                     <div className="p-4 flex flex-col justify-between flex-grow">
@@ -576,6 +574,19 @@ const TourGuideHome = () => {
                                         className="mt-4 bg-black text-white rounded-full py-2 px-4 w-full hover:bg-gray-700"
                                         >
                                         View Details
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={async () => {
+                                                const newAccessibility = itinerary.isActive ? "deactivated" : "activated";
+                                                setAccessibilitye(newAccessibility); // Update the state for potential UI sync
+                                                await handleSubmit(itinerary,newAccessibility).then(() => {
+                                                    window.location.reload(); // Refresh the page; // Pass the desired value directly
+                                                });
+                                            }}
+                                            className="bg-logoOrange text-white px-4 py-2 rounded-full mt-2"
+                                        >
+                                            {itinerary.isActive ? "Deactivate Itinerary" : "Activate Itinerary"}
                                         </button>
                                     </div>
                                     </div>
@@ -677,19 +688,6 @@ const TourGuideHome = () => {
                                             className="bg-logoOrange text-white px-4 py-2 rounded"
                                         >
                                             Delete Itinerary
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={async () => {
-                                                const newAccessibility = selectedItinerary.isActive ? "deactivated" : "activated";
-                                                setAccessibilitye(newAccessibility); // Update the state for potential UI sync
-                                                await handleSubmit(newAccessibility).then(() => {
-                                                    window.location.reload(); // Refresh the page; // Pass the desired value directly
-                                                });
-                                            }}
-                                            className="bg-black text-white px-4 py-2 rounded"
-                                        >
-                                            {selectedItinerary.isActive ? "Deactivate Itinerary" : "Activate Itinerary"}
                                         </button>
                                     </div>
                                 </div>
@@ -1043,7 +1041,7 @@ const TourGuideHome = () => {
                         <div className="flex justify-end gap-2 mt-4">
                             <button
                                 type="submit"
-                                className="bg-black text-white px-4 py-2 rounded"
+                                className="bg-black text-white px-4 py-2 rounded-full"
                             >
                                 Create Itinerary
                             </button>
@@ -1065,224 +1063,7 @@ const TourGuideHome = () => {
             
             )}
         
-        <div>
-        {loading && <p>Loading itineraries...</p>}
-        {error && <p>Error: {error.message}</p>}
-        {messagee && <p>{messagee}</p>}
-
-        {/* Filter Section */}
-        <div>
-            <h2>Filter Sales Reports</h2>
-            <div>
-                <label htmlFor="itineraryFilter">Itinerary:</label>
-                <input
-                    type="text"
-                    id="itineraryFilter"
-                    value={itineraryFilter}
-                    onChange={(e) => setItineraryFilter(e.target.value)}
-                    placeholder="Enter itinerary name"
-                    style={{ margin: "5px", padding: "5px" }}
-                />
-            </div>
-            <div>
-                <label htmlFor="startDate">Start Date:</label>
-                <input
-                    type="date"
-                    id="startDate"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                    style={{ margin: "5px", padding: "5px" }}
-                />
-            </div>
-            <div>
-                <label htmlFor="endDate">End Date:</label>
-                <input
-                    type="date"
-                    id="endDate"
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                    style={{ margin: "5px", padding: "5px" }}
-                />
-            </div>
-            <div>
-                <label htmlFor="month">Month:</label>
-                <input
-                    type="month"
-                    id="month"
-                    value={month}
-                    onChange={(e) => setMonth(e.target.value)}
-                    style={{ margin: "5px", padding: "5px" }}
-                />
-            </div>
-            <button
-                onClick={handleFilterFetchSalesReports}
-                style={{
-                    marginTop: "10px",
-                    padding: "10px 15px",
-                    backgroundColor: "#007bff",
-                    color: "white",
-                    border: "none",
-                    cursor: "pointer",
-                }}
-            >
-                Apply Filters
-            </button>
-        </div>
-
-        {/* Itineraries Section */}
-        <div>
-            <h2>Sales Reports - Itineraries</h2>
-            <button
-                onClick={handleFetchSalesReports}
-                style={{
-                    marginBottom: "10px",
-                    padding: "10px 15px",
-                    backgroundColor: "#007bff",
-                    color: "white",
-                    border: "none",
-                    cursor: "pointer",
-                }}
-            >
-                Fetch All Itinerary Reports
-            </button>
-            {salesReports.length > 0 ? (
-                <table
-                    style={{
-                        width: "100%",
-                        borderCollapse: "collapse",
-                        margin: "20px 0",
-                        fontSize: "1rem",
-                        textAlign: "left",
-                    }}
-                >
-                    <thead>
-                        <tr>
-                            <th style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f4f4f4" }}>Itinerary</th>
-                            <th style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f4f4f4" }}>Revenue</th>
-                            <th style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f4f4f4" }}>Sales</th>
-                            <th style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f4f4f4" }}>Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {salesReports.map((report) => (
-                            <tr
-                                key={report.Report_no}
-                                style={{
-                                    border: "1px solid #ddd",
-                                    backgroundColor: report.Report_no % 2 === 0 ? "#f9f9f9" : "white",
-                                }}
-                            >
-                                <td style={{ border: "1px solid #ddd", padding: "8px" }}>{report.Itinerary}</td>
-                                <td style={{ border: "1px solid #ddd", padding: "8px" }}>${report.Revenue}</td>
-                                <td style={{ border: "1px solid #ddd", padding: "8px" }}>{report.Sales}</td>
-                                <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                                    {new Date(report.createdAt).toLocaleDateString()}
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            ) : (
-                <p>No sales reports available.</p>
-            )}
-        </div>
-    </div>
-
-            <div>
-            
-            <button onClick={fetchitinRevenue}>report</button>
-
-            {loading && <p>Loading Itinerary revenue...</p>}
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-
-            {!loading && !error && reports.length > 0 && (
-                <div>
-                    <h2>Itinerary Revenue Reports</h2>
-                    <ul>
-                        {reports.map((report, index) => (
-                            <li key={index}>
-                                <strong>Itinerary:</strong> {report.Itinerary} <br />
-                                <strong>Revenue:</strong> ${report.Revenue.toFixed(2)} <br />
-                                <strong>Sales:</strong> {report.Sales} <br />
-                                <strong>Price:</strong> ${report.Price.toFixed(2)} <br />
-                                <strong>Report No:</strong> {report.Report_no}
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            )}
-
-            {!loading && !error && reports.length === 0 && <p>No reports found.</p>}
-        </div>
-        <div>
-            {/* Button to fetch and view the general itinerary report */}
-            <button onClick={handleViewItineraryReport}>
-                View Itinerary Report
-            </button>
-
-            {/* Input and button to filter itineraries by month */}
-            <div>
-                <label>
-                    Filter by Month (1-12):
-                    <input
-                        type="number"
-                        value={monthh}
-                        onChange={(e) => setMonthh(e.target.value)}
-                        min="1"
-                        max="12"
-                    />
-                </label>
-                <button onClick={handleFilterItineraryByMonth}>
-                    Filter Itineraries by Month
-                </button>
-            </div>
-
-            {/* Display any errors */}
-            {erro && <p style={{ color: 'red' }}>{erro}</p>}
-
-            {/* Display the general itinerary report */}
-            {itineraryReport && (
-                <div>
-                    <h2>Itinerary Report</h2>
-                    <ul>
-                        {itineraryReport.itineraryDetails.map((itinerary, index) => {
-                            const date = new Date(itinerary.itineraryDate);
-                            const formattedDate = date instanceof Date && !isNaN(date)
-                                ? date.toLocaleDateString()
-                                : 'Invalid Date';
-
-                            return (
-                                <li key={index}>
-                                    {itinerary.itineraryName} (Date: {formattedDate}): {itinerary.attendeesCount} attendees
-                                </li>
-                            );
-                        })}
-                    </ul>
-                    <p><strong>Total Attendees:</strong> {itineraryReport.totalAttendees}</p>
-                </div>
-            )}
-
-            {/* Display the filtered itinerary report */}
-            {filteredItineraryReport && (
-                <div>
-                    <h2>Filtered Itinerary Report</h2>
-                    <ul>
-                        {filteredItineraryReport.filteredItineraryDetails.map((itinerary, index) => {
-                            const date = new Date(itinerary.itineraryDate);
-                            const formattedDate = date instanceof Date && !isNaN(date)
-                                ? date.toLocaleDateString()
-                                : 'Invalid Date';
-
-                            return (
-                                <li key={index}>
-                                    {itinerary.itineraryName} (Date: {formattedDate}): {itinerary.attendeesCount} attendees
-                                </li>
-                            );
-                        })}
-                    </ul>
-                    <p><strong>Total Attendees:</strong> {filteredItineraryReport.totalFilteredAttendees}</p>
-                </div>
-            )}
+        <div>        
         </div>
 
 

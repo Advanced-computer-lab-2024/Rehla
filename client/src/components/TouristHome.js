@@ -13,6 +13,7 @@ import { searchEventsPlaces ,getAllTransportation,bookTransportation,
         getAllUpcomingEventsAndPlaces, sortItineraries, sortActivities,
         filterActivities, filterItineraries, filterPlacesAndMuseums } from '../services/api'; // Import the commentOnEvent function
 import Homet2 from '../components/Homet2.js';
+import Joyride from "react-joyride";
 
 const TouristHome = () => {
     //const [tourist, setTourist] = useState(null);
@@ -97,6 +98,59 @@ const TouristHome = () => {
     const [itineraryfilterOptions] = useState(['price', 'rating', 'Preference Tag', 'date']);
 
     const [expandedCard, setExpandedCard] = useState(null);
+
+    const [isTourOpen, setIsTourOpen] = useState(false);
+
+    const steps = [
+        {
+            target: '#view-prof', // Target sign-in button
+            content: 'Click here to view and edit your profile.',
+        },
+        {
+            target: "#search-form",
+            content: "Use this form to search for activities and itineraries.",
+        },
+        {
+            target: "#notification",
+            content: "Click here to see all your notifications.",
+        },
+        {
+            target: "#cart",
+            content: "Click here to see all your cart items.",
+        },
+        {
+            target: "#curr",
+            content: "Click here to switch between currencies.",
+        },
+        {
+            target: '#filter-act', // Target itinerary filter section
+            content: 'Use the filter options to narrow down your preferred activities.',
+        },
+        {
+            target: '#view-detailsact', // Target the view details button
+            content: 'Click here to view more details of a specific activities.',
+        },
+        {
+            target: '#filter-itinerary', // Target itinerary filter section
+            content: 'Use the filter options to narrow down your preferred itineraries.',
+        },
+        {
+            target: '#view-details', // Target the view details button
+            content: 'Click here to view more details of a specific itinerary.',
+        },
+        {
+            target: '#museum-section', // Target the museums section
+            content: 'Explore fascinating museums and historical places here.',
+        },
+        {
+            target: '#footer', // Target the footer links
+            content: 'Find more information about the company and contact us from the footer.',
+        },
+    ];
+
+    const handleStartTour = () => {
+        setIsTourOpen(true);
+    };
 
     const convertPrice = (price) => {
         return (price * conversionRates[currency]).toFixed(2);
@@ -481,7 +535,7 @@ const TouristHome = () => {
                     <img src={logo} alt="Logo" className="w-44" />
 
                     {/* Search Form */}
-                    <form onSubmit={handleSearch} className="flex items-center ml-4">
+                    <form id="search-form" onSubmit={handleSearch} className="flex items-center ml-4">
                     <input
                         type="text"
                         placeholder="Search"
@@ -507,8 +561,29 @@ const TouristHome = () => {
                             </svg>
                         </button>
                     </form>
+                    {/* Button to start the demo */}
+<button
+    onClick={handleStartTour}
+    className="bg-white text-black font-medium px-6 py-2 rounded-full shadow hover:bg-gray-100 transition"
+>
+    Start Demo
+</button>
+<Joyride
+                steps={steps}
+                run={isTourOpen}
+                continuous={true}
+                scrollToFirstStep={true}
+                showSkipButton={true}
+                styles={{
+                    options: {
+                        zIndex: 10000,
+                    },
+                }}
+            />
+
+
                     <div className="flex items-center ml-auto">
-                        <select 
+                        <select id="curr"
                             value={currency} 
                             onChange={handleCurrencyChange} 
                             className="rounded p-1 mx-2 bg-transparent text-white"
@@ -520,14 +595,14 @@ const TouristHome = () => {
                             <option value="CAD" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">CAD</option>
                             <option value="AUD" className="bg-black hover:bg-gray-700 px-4 py-2 rounded">AUD</option>
                         </select>
-                        <nav className="flex space-x-4 ml-2"> {/* Reduced ml-4 to ml-2 and space-x-6 to space-x-4 */}
+                        <nav id="cart" className="flex space-x-4 ml-2"> {/* Reduced ml-4 to ml-2 and space-x-6 to space-x-4 */}
                             <Link to="/Cart">
                                 <FontAwesomeIcon icon={faShoppingCart} />
                             </Link>
                         </nav>
                         {/* Notification Icon */}
                         <nav className="flex space-x-4 ml-2"> {/* Reduced ml-4 to ml-2 and space-x-6 to space-x-4 */}
-                            <div className="relative ml-2"> {/* Reduced ml-4 to ml-2 */}
+                            <div id="notification" className="relative ml-2"> {/* Reduced ml-4 to ml-2 */}
                                 <FontAwesomeIcon
                                     icon={faBell}
                                     size="1x" // Increased the size to 2x
@@ -544,7 +619,7 @@ const TouristHome = () => {
                         <nav className="flex space-x-4 ml-2"> {/* Reduced ml-4 to ml-2 and space-x-6 to space-x-4 */}
                             <Link to="/TouristHome/TouristProfile">
                                 {/* Profile Picture */}
-                                <div className="">
+                                <div id="view-prof" className="">
                                     {formData.Profile_Pic ? (
                                         <img
                                             src={formData.Profile_Pic}
@@ -569,7 +644,7 @@ const TouristHome = () => {
                     <Link to="/" className="text-lg font-medium text-logoOrange ">
                         Home
                     </Link>
-                    <Link to="/upcomingActivities" className="text-lg font-medium text-white hover:text-logoOrange">
+                    <Link to="/UpcomingActivities" className="text-lg font-medium text-white hover:text-logoOrange">
                         Activities
                     </Link>
                     <Link to="/UpcomingItineraries" className="text-lg font-medium text-white hover:text-logoOrange">
@@ -644,7 +719,7 @@ const TouristHome = () => {
             <section className="mb-10">
             <h2 className="text-2xl font-semibold mb-4 ml-10">Discover Your Next Adventure</h2>
             <form onSubmit={handleFilterActivities} className="mb-4 mr-10 ml-auto">
-            <div className="flex items-center justify-end space-x-4">
+            <div id="filter-act"className="flex items-center justify-end space-x-4">
                 <select
                     value={activityFilterType}
                     onChange={handleActivityFilterChange}
@@ -746,7 +821,7 @@ const TouristHome = () => {
                                 <div className="mt-1">Location: {activity.Location}</div>
                             </div>
                             <button 
-                                onClick={() => handleActivityClick(activity)} 
+                                onClick={() => handleActivityClick(activity)} id="view-detailsact"
                                 className="mt-4 bg-black text-white rounded-full py-2 px-4 w-full hover:bg-gray-700"
                             >
                                 View Details
@@ -773,7 +848,7 @@ const TouristHome = () => {
             <section className="mb-10">
                 <h2 className="text-2xl font-semibold mb-4 ml-10">Create Unforgettable Memories with Our Itineraries</h2>
                 <form onSubmit={handleFilterItineraries} className="mb-4 mr-10 ml-auto">
-                <div className="flex items-center justify-end space-x-4">
+                <div id="filter-itinerary"className="flex items-center justify-end space-x-4">
                     <select
                         value={itineraryFilterType}
                         onChange={handleItineraryFilterChange}
@@ -868,7 +943,7 @@ const TouristHome = () => {
                                     <div className="mt-1">Language: {itinerary.Language}</div>
                                 </div>
                                 <button 
-                                    onClick={() => handleItineraryClick(itinerary)} 
+                                    onClick={() => handleItineraryClick(itinerary)} id="view-details"
                                     className="mt-4 bg-black text-white rounded-full py-2 px-4 w-full hover:bg-gray-700"
                                 >
                                     View Details
@@ -892,9 +967,9 @@ const TouristHome = () => {
                     </p>
                 </div>
             </section>
-            <div className="flex overflow-x-auto scrollbar-hide px-6 py-4">
+            <div id="museum-section"className="flex overflow-x-auto scrollbar-hide px-6 py-4">
             {filteredPlacesAndMuseums && (
-                <section className="mb-10 w-full">
+                <section  className="mb-10 w-full">
                     <h2 className="text-2xl font-semibold mb-4 text-center">
                     Museums and Historical Places
                     </h2>
@@ -1415,7 +1490,7 @@ const TouristHome = () => {
     {errorEventCancel && <p style={{ color: 'red' }}>{errorEventCancel}</p>}
 </div>
 
-            <footer className="bg-black shadow m-0">
+            <footer id="footer" className="bg-black shadow m-0">
                 <div className="w-full mx-auto md:py-8">
                     <div className="sm:flex sm:items-center sm:justify-between">
                         <a href="/" className="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">

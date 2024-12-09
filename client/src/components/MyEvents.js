@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getAttendedItineraries, getAttendedActivities, getPaidActivities, getPastPaidActivities,getPaidItineraries, getPastPaidItineraries } from '../services/api'; // Adjust the import based on your file structure
-import logo from '../images/logo.png';
+import { getAttendedItineraries, getAttendedActivities, getPaidActivities, getPastPaidActivities,getPaidItineraries, getPastPaidItineraries,
+    getAllNotifications ,markAsSeen,getTouristProfile
+ } from '../services/api'; // Adjust the import based on your file structure
+import logo from '../images/logoWhite.png';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faShoppingCart,faBell  } from '@fortawesome/free-solid-svg-icons';
 
 const MyEvents = () => {
     const [attendedItineraries, setAttendedItineraries] = useState([]);
@@ -11,6 +16,21 @@ const MyEvents = () => {
     const [paidItineraries, setPaidItineraries] = useState([]);
     const [pastPaidItineraries, setPastPaidItineraries] = useState([]);
     const [email, setEmail] = useState('');
+    const [notifications, setNotifications] = useState([]);
+    const [unreadCount, setUnreadCount] = useState(0);
+    const [formData, setFormData] = useState({
+        Email: '',
+        Username: '',
+        Password: '',
+        Mobile_Number: '',
+        Nationality: '',
+        Job_Student: '',
+        Type: '',
+        Points: 0, 
+        Badge: '',
+      });
+
+      const [showModal, setShowModal] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -18,6 +38,20 @@ const MyEvents = () => {
         if (storedEmail) {
             setEmail(storedEmail);
         }
+    }, []);
+
+    useEffect(() => {
+        const fetchProfile = async () => {
+          try {
+            const email = localStorage.getItem('email');
+            const profileData = await getTouristProfile({ Email: email });
+            //setTourist(profileData);
+            setFormData(profileData);
+          } catch (error) {
+            console.error("Error fetching profile:", error);
+          }
+        };
+        fetchProfile();
     }, []);
 
     useEffect(() => {
@@ -77,76 +111,171 @@ const MyEvents = () => {
         localStorage.setItem('attendedStatus', attendedStatus);
         navigate(`/event-details/${type}/${name}?attendedStatus=${attendedStatus}`);
     };
+    const handleNotificationClick = async () => {
+        setShowModal(true); // Show the modal when the notification icon is clicked
+    
+        try {
+            const storedEmail = localStorage.getItem('email'); // Retrieve the signed-in user's email
+            if (!storedEmail) {
+                throw new Error("User email not found in local storage.");
+            }
+    
+            // Mark all unseen notifications for the user as seen
+            for (const notification of notifications) {
+                if (!notification.seen) {
+                    await markAsSeen(notification._id); // Mark as seen
+                }
+            }
+    
+            // Refresh the notifications for the signed-in user
+            const updatedNotifications = await getAllNotifications(storedEmail);
+            setNotifications(updatedNotifications); // Set updated notifications
+        } catch (error) {
+            console.error("Error marking notifications as seen:", error);
+        }
+    };
 
     return (
         <div className="bg-white shadow-md">
-            <div className="w-full mx-auto px-6 py-4 h-20 bg-brandBlue shadow flex justify-between items-center">
-                <img src={logo} alt="Logo" className="w-20" />
+              <div className="w-full mx-auto px-6 py-1 bg-black shadow flex flex-col sticky z-50 top-0">
+                <div className="flex items-center">                
+                    {/* Logo */}
+                    <img src={logo} alt="Logo" className="w-44" />
+
+                    {/* Search Form */}
+                    <div className="flex items-center ml-auto">
+                        <nav className="flex space-x-4 ml-2"> {/* Reduced ml-4 to ml-2 and space-x-6 to space-x-4 */}
+                            <Link to="/Cart">
+                                <FontAwesomeIcon icon={faShoppingCart} />
+                            </Link>
+                        </nav>
+                        {/* Notification Icon */}
+                        <nav className="flex space-x-4 ml-2"> {/* Reduced ml-4 to ml-2 and space-x-6 to space-x-4 */}
+                            <div className="relative ml-2"> {/* Reduced ml-4 to ml-2 */}
+                                <FontAwesomeIcon
+                                    icon={faBell}
+                                    size="1x" // Increased the size to 2x
+                                    onClick={handleNotificationClick}
+                                    className="cursor-pointer text-white" // Added text-white to make the icon white
+                                />
+                                {unreadCount > 0 && (
+                                    <span className="absolute top-0 -right-1 bg-red-500 text-white text-xs rounded-full w-3 h-3 flex items-center justify-center">
+                                        {unreadCount}
+                                    </span>
+                                )}
+                            </div>
+                        </nav>
+                        <nav className="flex space-x-4 ml-2"> {/* Reduced ml-4 to ml-2 and space-x-6 to space-x-4 */}
+                            <Link to="/TouristHome/TouristProfile">
+                                {/* Profile Picture */}
+                                <div className="">
+                                    {formData.Profile_Pic ? (
+                                        <img
+                                            src={formData.Profile_Pic}
+                                            alt={`${formData.Name}'s profile`}
+                                            className="w-14 h-14 rounded-full object-cover border-2 border-white"
+                                        />
+                                    ) : (
+                                        <div className="w-16 h-16 rounded-full bg-black text-white text-center flex items-center justify-center border-4 border-white">
+                                            <span className="text-4xl font-bold">{formData.Username.charAt(0)}</span>
+                                        </div>
+                                    )}
+                                </div>
+                            </Link>
+                        </nav>
+                    </div>
+
+
+                </div>
+
+                {/* Main Navigation */}
                 <nav className="flex space-x-6">
-                    <Link to="/TouristHome" className="text-lg font-medium text-white-700 hover:text-blue-500">
+                    <Link to="/" className="text-lg font-medium text-white hover:text-logoOrange ">
                         Home
                     </Link>
-                </nav>
-                <nav className="signing">
-                    <Link to="/TouristHome/TouristProfile">My Profile</Link>
-                </nav>
+                    <Link to="/upcomingActivities" className="text-lg font-medium text-white hover:text-logoOrange">
+                        Activities
+                    </Link>
+                    <Link to="/UpcomingItineraries" className="text-lg font-medium text-white hover:text-logoOrange">
+                        Itineraries
+                    </Link>
+                    <Link to="/HistoricalPlaces" className="text-lg font-medium text-white hover:text-logoOrange">
+                        Historical Places
+                    </Link>
+                    <Link to="/Museums" className="text-lg font-medium text-white hover:text-logoOrange">
+                        Museums
+                    </Link>
+                    <Link to="/products" className="text-lg font-medium text-white hover:text-logoOrange">
+                        Gift Shop
+                    </Link>
+                    <Link to="/MyEvents" className="text-lg font-medium text-logoOrange">
+                        MyEvents
+                    </Link>
+                    <Link to="/Flights" className="text-lg font-medium text-white hover:text-logoOrange">
+                        Flights
+                    </Link>
+                    <Link to="/Hotels" className="text-lg font-medium text-white hover:text-logoOrange">
+                        Hotels
+                    </Link>
+                </nav>            
             </div>
 
-            {/* Display Attended Itineraries */}
+           {/* Display Itineraries as Cards */}
             <div className="px-6 py-4">
                 <h2 className="text-xl font-semibold mb-4">Itineraries</h2>
-                <ul className="flex flex-wrap list-none">
+                <div className="flex overflow-x-auto scrollbar-hide gap-6">
                     {attendedItineraries.map((itinerary) => (
-                        <li
+                        <div
                             key={itinerary.Itinerary_Name}
-                            className="flex items-start mb-4 w-1/2 p-2 cursor-pointer"
+                            className="card w-96 h-auto bg-white rounded-lg shadow-lg overflow-hidden flex flex-col"
                             onClick={() => handleEventClick(itinerary.Itinerary_Name, 'itinerary', itinerary.Attended)}
                         >
-                            <div className="flex items-start bg-gray-100 p-4 rounded-lg shadow-md w-full">
-                                <img
-                                    src={itinerary.Picture}
-                                    alt={itinerary.Itinerary_Name}
-                                    className="w-32 h-32 object-cover mr-4 rounded"
-                                />
-                                <div className="flex-1">
-                                    <span className="font-medium text-lg">{itinerary.Itinerary_Name}</span> -{' '}
+                            <img
+                                src={itinerary.Picture}
+                                alt={itinerary.Itinerary_Name}
+                                className="w-full h-48 object-cover"
+                            />
+                            <div className="p-4 flex flex-col justify-between flex-grow">
+                                <div className="text-lg font-semibold text-gray-800">{itinerary.Itinerary_Name}</div>
+                                <div className="text-sm text-gray-600 mt-2">
                                     <span className={`font-medium ${itinerary.Attended ? 'text-green-500' : 'text-red-500'}`}>
-                                        {itinerary.Attended ? ' Attended' : ' Not Attended'}
+                                        {itinerary.Attended ? 'Attended' : 'Not Attended'}
                                     </span>
                                 </div>
                             </div>
-                        </li>
+                        </div>
                     ))}
-                </ul>
+                </div>
             </div>
 
-            {/* Display Attended Activities */}
+            {/* Display Attended Activities as Cards */}
             <div className="px-6 py-4">
                 <h2 className="text-xl font-semibold mb-4">Activities</h2>
-                <ul className="flex flex-wrap list-none">
+                <div className="flex overflow-x-auto scrollbar-hide gap-6">
                     {attendedActivities.map((activity) => (
-                        <li
+                        <div
                             key={activity.Activity_Name}
-                            className="flex items-start mb-4 w-1/2 p-2 cursor-pointer"
+                            className="card w-96 h-auto bg-white rounded-lg shadow-lg overflow-hidden flex flex-col"
                             onClick={() => handleEventClick(activity.Activity_Name, 'activity', activity.Attended)}
                         >
-                            <div className="flex items-start bg-gray-100 p-4 rounded-lg shadow-md w-full">
-                                <img
-                                    src={activity.Picture}
-                                    alt={activity.Activity_Name}
-                                    className="w-32 h-32 object-cover mr-4 rounded"
-                                />
-                                <div className="flex-1">
-                                    <span className="font-medium text-lg">{activity.Activity_Name}</span> -{' '}
+                            <img
+                                src={activity.Picture}
+                                alt={activity.Activity_Name}
+                                className="w-full h-48 object-cover"
+                            />
+                            <div className="p-4 flex flex-col justify-between flex-grow">
+                                <div className="text-lg font-semibold text-gray-800">{activity.Activity_Name}</div>
+                                <div className="text-sm text-gray-600 mt-2">
                                     <span className={`font-medium ${activity.Attended ? 'text-green-500' : 'text-red-500'}`}>
-                                        {activity.Attended ? ' Attended' : ' Not Attended'}
+                                        {activity.Attended ? 'Attended' : 'Not Attended'}
                                     </span>
                                 </div>
                             </div>
-                        </li>
+                        </div>
                     ))}
-                </ul>
+                </div>
             </div>
+
 
             {/* Buttons to Fetch Activities */}
             <div className="px-6 py-4">
@@ -176,80 +305,139 @@ const MyEvents = () => {
                 </button>
             </div>
 
-            {/* Display Paid Activities */}
-            {paidActivities.length > 0 && (
-                <div className="px-6 py-4">
-                    <h2 className="text-xl font-semibold mb-4">Paid Activities</h2>
-                    <ul className="flex flex-wrap list-none">
-                        {paidActivities.map((activity) => (
-                            <li key={activity.Activity_Name} className="flex items-start mb-4 w-1/2 p-2">
-                                <div className="flex items-start bg-gray-100 p-4 rounded-lg shadow-md w-full">
-                                    <div className="flex-1">
-                                        <span className="font-medium text-lg">{activity.Activity_Name}</span> -{' '}
-                                        <span className="font-medium">{new Date(activity.Date).toLocaleDateString()}</span>
+           {/* Display Paid Activities as Cards */}
+                {paidActivities.length > 0 && (
+                    <div className="px-6 py-4">
+                        <h2 className="text-xl font-semibold mb-4">Paid Activities</h2>
+                        <div className="flex overflow-x-auto scrollbar-hide gap-6">
+                            {paidActivities.map((activity) => (
+                                <div
+                                    key={activity.Activity_Name}
+                                    className="card w-96 h-auto bg-white rounded-lg shadow-lg overflow-hidden flex flex-col"
+                                    onClick={() => handleEventClick(activity.Activity_Name, 'activity')}
+                                >
+                                    {/* Image Section */}
+                                    <img
+                                        src={activity.Picture}
+                                        alt={activity.Activity_Name}
+                                        className="w-full h-48 object-cover"
+                                    />
+                                    <div className="p-4 flex flex-col justify-between flex-grow">
+                                        <div className="text-lg font-semibold text-gray-800">{activity.Activity_Name}</div>
                                     </div>
                                 </div>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            )}
+                            ))}
+                        </div>
+                    </div>
+                )}
 
-            {/* Display Past Paid Activities */}
-            {pastPaidActivities.length > 0 && (
-                <div className="px-6 py-4">
-                    <h2 className="text-xl font-semibold mb-4">Past Paid Activities</h2>
-                    <ul className="flex flex-wrap list-none">
-                        {pastPaidActivities.map((activity) => (
-                            <li key={activity.Activity_Name} className="flex items-start mb-4 w-1/2 p-2">
-                                <div className="flex items-start bg-gray-100 p-4 rounded-lg shadow-md w-full">
-                                    <div className="flex-1">
-                                        <span className="font-medium text-lg">{activity.Activity_Name}</span> -{' '}
-                                        <span className="font-medium">{new Date(activity.Date).toLocaleDateString()}</span>
+                {/* Display Past Paid Activities as Cards */}
+                {pastPaidActivities.length > 0 && (
+                    <div className="px-6 py-4">
+                        <h2 className="text-xl font-semibold mb-4">Past Paid Activities</h2>
+                        <div className="flex overflow-x-auto scrollbar-hide gap-6">
+                            {pastPaidActivities.map((activity) => (
+                                <div
+                                    key={activity.Activity_Name}
+                                    className="card w-96 h-auto bg-white rounded-lg shadow-lg overflow-hidden flex flex-col"
+                                    onClick={() => handleEventClick(activity.Activity_Name, 'activity')}
+                                >
+                                    {/* Image Section */}
+                                    <img
+                                        src={activity.Picture}
+                                        alt={activity.Activity_Name}
+                                        className="w-full h-48 object-cover"
+                                    />
+                                    <div className="p-4 flex flex-col justify-between flex-grow">
+                                        <div className="text-lg font-semibold text-gray-800">{activity.Activity_Name}</div>
                                     </div>
                                 </div>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            )}
-                        {/* Display Paid Itineraries */}
-                        {paidItineraries.length > 0 && (
-                <div className="px-6 py-4">
-                    <h2 className="text-xl font-semibold mb-4">Paid Itineraries</h2>
-                    <ul className="flex flex-wrap list-none">
-                        {paidItineraries.map((itinerary) => (
-                            <li key={itinerary.Itinerary_Name} className="flex items-start mb-4 w-1/2 p-2">
-                                <div className="flex items-start bg-gray-100 p-4 rounded-lg shadow-md w-full">
-                                    <div className="flex-1">
-                                        <span className="font-medium text-lg">{itinerary.Itinerary_Name}</span> -{' '}
-                                        <span className="font-medium">{new Date(itinerary.Date).toLocaleDateString()}</span>
-                                    </div>
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            )}
+                            ))}
+                        </div>
+                    </div>
+                )}
 
-            {/* Display Past Paid Itineraries */}
-            {pastPaidItineraries.length > 0 && (
-                <div className="px-6 py-4">
-                    <h2 className="text-xl font-semibold mb-4">Past Paid Itineraries</h2>
-                    <ul className="flex flex-wrap list-none">
-                        {pastPaidItineraries.map((itinerary) => (
-                            <li key={itinerary.Itinerary_Name} className="flex items-start mb-4 w-1/2 p-2">
-                                <div className="flex items-start bg-gray-100 p-4 rounded-lg shadow-md w-full">
-                                    <div className="flex-1">
-                                        <span className="font-medium text-lg">{itinerary.Itinerary_Name}</span> -{' '}
-                                        <span className="font-medium">{new Date(itinerary.Date).toLocaleDateString()}</span>
+                {/* Display Paid Itineraries as Cards */}
+                {paidItineraries.length > 0 && (
+                    <div className="px-6 py-4">
+                        <h2 className="text-xl font-semibold mb-4">Paid Itineraries</h2>
+                        <div className="flex overflow-x-auto scrollbar-hide gap-6">
+                            {paidItineraries.map((itinerary) => (
+                                <div
+                                    key={itinerary.Itinerary_Name}
+                                    className="card w-96 h-auto bg-white rounded-lg shadow-lg overflow-hidden flex flex-col"
+                                    onClick={() => handleEventClick(itinerary.Itinerary_Name, 'itinerary')}
+                                >
+                                    {/* Image Section */}
+                                    <img
+                                        src={itinerary.Picture}
+                                        alt={itinerary.Itinerary_Name}
+                                        className="w-full h-48 object-cover"
+                                    />
+                                    <div className="p-4 flex flex-col justify-between flex-grow">
+                                        <div className="text-lg font-semibold text-gray-800">{itinerary.Itinerary_Name}</div>
                                     </div>
                                 </div>
-                            </li>
-                        ))}
-                    </ul>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {/* Display Past Paid Itineraries as Cards */}
+                {pastPaidItineraries.length > 0 && (
+                    <div className="px-6 py-4">
+                        <h2 className="text-xl font-semibold mb-4">Past Paid Itineraries</h2>
+                        <div className="flex overflow-x-auto scrollbar-hide gap-6">
+                            {pastPaidItineraries.map((itinerary) => (
+                                <div
+                                    key={itinerary.Itinerary_Name}
+                                    className="card w-96 h-auto bg-white rounded-lg shadow-lg overflow-hidden flex flex-col"
+                                    onClick={() => handleEventClick(itinerary.Itinerary_Name, 'itinerary')}
+                                >
+                                    {/* Image Section */}
+                                    <img
+                                        src={itinerary.Picture}
+                                        alt={itinerary.Itinerary_Name}
+                                        className="w-full h-48 object-cover"
+                                    />
+                                    <div className="p-4 flex flex-col justify-between flex-grow">
+                                        <div className="text-lg font-semibold text-gray-800">{itinerary.Itinerary_Name}</div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+             <footer id="footer" className="bg-black shadow m-0">
+                <div className="w-full mx-auto md:py-8">
+                    <div className="sm:flex sm:items-center sm:justify-between">
+                        <a href="/" className="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
+                            <img src={logo} className="w-44" alt="Flowbite Logo" />
+                        </a>
+                        <div className="flex justify-center w-full">
+                            <ul className="flex flex-wrap items-center mb-6 text-sm font-medium text-gray-500 sm:mb-0 dark:text-gray-400 -ml-14">
+                                <li>
+                                    <a href="/" className="hover:underline me-4 md:me-6">About</a>
+                                </li>
+                                <li>
+                                    <a href="/" className="hover:underline me-4 md:me-6">Privacy Policy</a>
+                                </li>
+                                <li>
+                                    <a href="/" className="hover:underline me-4 md:me-6">Licensing</a>
+                                </li>
+                                <li>
+                                    <a href="/" className="hover:underline">Contact</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <hr className="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
+                    <span className="block text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2023 <a href="/" className="hover:underline">Rehla™</a>. All Rights Reserved.</span>
                 </div>
-            )}
+            </footer>
+
+
         </div>
     );
 };

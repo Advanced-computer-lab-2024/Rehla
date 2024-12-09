@@ -64,8 +64,24 @@ const Home = () => {
             content: 'Click here to sign in to start planning your vacation.',
         },
         {
+            target: '#sign-up-button', // Target sign-in button
+            content: 'Click here to sign up to start planning your vacation.',
+        },
+        {
+            target: "#curr",
+            content: "Click here to switch between currencies.",
+        },
+        {
             target: "#search-form",
             content: "Use this form to search for activities and itineraries.",
+        },
+        {
+            target: '#filter-act', // Target itinerary filter section
+            content: 'Use the filter options to narrow down your preferred activities.',
+        },
+        {
+            target: '#view-detailsact', // Target the view details button
+            content: 'Click here to view more details of a specific activities.',
         },
         {
             target: '#filter-itinerary', // Target itinerary filter section
@@ -258,9 +274,13 @@ const Home = () => {
                         </button>
                     </form>
                     {/* Button to start the demo */}
-            <button onClick={handleStartTour} className="start-tour-button">
-                Start Demo
-            </button>
+<button
+    onClick={handleStartTour}
+    className="bg-white text-black font-medium px-6 py-2 rounded-full shadow hover:bg-gray-100 transition"
+>
+    Start Demo
+</button>
+
                     <Joyride
                 steps={steps}
                 run={isTourOpen}
@@ -276,7 +296,7 @@ const Home = () => {
 
             
                     <div className="flex items-center ml-auto">
-                        <select 
+                        <select id="curr"
                             value={currency} 
                             onChange={handleCurrencyChange} 
                             className="rounded p-1 mx-2 bg-transparent text-white"
@@ -291,11 +311,11 @@ const Home = () => {
                         
 
                         {/* Sign In/Sign Up Navigation */}
-                        <nav id="sign-in-button"className="text-lg font-medium text-white hover:text-logoOrange">
-                            <Link to="/signin" className="text-lg font-medium text-white hover:text-logoOrange">
+                        <nav className="text-lg font-medium text-white hover:text-logoOrange">
+                            <Link to="/signin" id="sign-in-button"className="text-lg font-medium text-white hover:text-logoOrange">
                                 Sign in
                             </Link>
-                            <Link to="/signup" className="text-lg font-medium text-white hover:text-logoOrange">
+                            <Link to="/signup" id="sign-up-button" className="text-lg font-medium text-white hover:text-logoOrange">
                                 Sign up
                             </Link>
                         </nav>
@@ -344,7 +364,7 @@ const Home = () => {
             <section className="mb-10">
             <h2 className="text-2xl font-semibold mb-4 ml-10">Discover Your Next Adventure</h2>
             <form onSubmit={handleFilterActivities} className="mb-4 mr-10 ml-auto">
-            <div className="flex items-center justify-end space-x-4">
+            <div id="filter-act" className="flex items-center justify-end space-x-4">
                 <select
                     value={activityFilterType}
                     onChange={handleActivityFilterChange}
@@ -446,7 +466,7 @@ const Home = () => {
                                 <div className="mt-1">Location: {activity.Location}</div>
                             </div>
                             <button 
-                                onClick={() => handleActivityClick(activity)} 
+                                onClick={() => handleActivityClick(activity)} id="view-detailsact"
                                 className="mt-4 bg-black text-white rounded-full py-2 px-4 w-full hover:bg-gray-700"
                             >
                                 View Details
