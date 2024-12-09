@@ -1867,6 +1867,17 @@ export const viewOrderDetails = async (Email) => {
     }
 };
 
+// Function to view order details based on email
+export const getCartDetails = async (Email, Cart_Num) => {
+    try {
+        const response = await axios.post(`${API_URL}/get-cart-details`, { Email, Cart_Num });
+        return response.data; // Return the order details
+    } catch (error) {
+        console.error("Error fetching order details:", error.response?.data || error.message);
+        throw error; // Re-throw the error for the caller to handle
+    }
+};
+
 //function add Product From Wish List To Cart 
 export const addProductFromWishListToCart = async (email, product) => {
     try {
