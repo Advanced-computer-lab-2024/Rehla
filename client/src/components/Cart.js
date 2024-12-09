@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { getTouristProfile, getProductsInCart } from '../services/api';
+import { getTouristProfile, getProductsInCart, updateCartItem } from '../services/api'; // Import updateCartItem
 import logo from '../images/logoWhite.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
@@ -45,18 +45,46 @@ const Cart = () => {
   useEffect(() => {
     const email = localStorage.getItem('email');
     const fetchCartDetails = async () => {
-        try {
-            setLoading(true);
-            const details = await getProductsInCart(email);
-            setCartDetails(details);
-        } catch (err) {
-            setError(err.response?.data?.message || 'An error occurred.');
-        } finally {
-            setLoading(false);
-        }
+      try {
+        setLoading(true);
+        const details = await getProductsInCart(email);
+        setCartDetails(details);
+      } catch (err) {
+        setError(err.response?.data?.message || 'An error occurred.');
+      } finally {
+        setLoading(false);
+      }
     };
     fetchCartDetails();
   }, []);
+
+  const handleCartUpdate = async (action, productName) => {
+    try {
+      const email = localStorage.getItem('email');
+      const response = await updateCartItem({
+        Email: email,
+        Productname: productName,
+        action: action
+      });
+
+      if (response.data) {
+        if (action === 'increment' || action === 'decrement') {
+          setCartDetails(prevCart =>
+            prevCart.map(item =>
+              item.Product_Name === productName
+                ? { ...item, Quantity_In_Cart: response.data.cartItem.Quantity }
+                : item
+            )
+          );
+        } else if (action === 'delete') {
+          setCartDetails(prevCart => prevCart.filter(item => item.Product_Name !== productName));
+        }
+      }
+    } catch (error) {
+      console.error('Error updating cart item:', error);
+      setError('Failed to update cart item.');
+    }
+  };
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -100,7 +128,7 @@ const Cart = () => {
           <Link to="/HistoricalPlaces" className="text-lg font-medium text-white hover:text-logoOrange">Historical Places</Link>
           <Link to="/Museums" className="text-lg font-medium text-white hover:text-logoOrange">Museums</Link>
           <Link to="/Wishlist" className="text-lg font-medium text-white hover:text-logoOrange">Wishlist</Link>
-          <Link to="/products" className="text-lg font-medium text-white">Gift Shop</Link>
+          <Link to="/products" className="text-lg font-medium text-white hover:text-logoOrange">Gift Shop</Link>
           <Link to="/Transportation" className="text-lg font-medium text-white hover:text-logoOrange">Transportation</Link>
         </nav>
       </div>
@@ -108,7 +136,9 @@ const Cart = () => {
       {/* Main Content - Cart Details */}
       <div className="flex-grow bg-white p-6">
         <h2 className="text-2xl font-semibold mb-6">Your Cart</h2>
-        {cartDetails.length === 0 ? (
+        {loading ? (
+          <p>Loading...</p>
+        ) : cartDetails.length === 0 ? (
           <p>Your cart is empty.</p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -125,10 +155,30 @@ const Cart = () => {
                   <p className="text-gray-600">Quantity in Cart: {item.Quantity_In_Cart}</p>
                   <p className="text-gray-600">Available Stock: {item.Quantity_Available}</p>
                   <p className="text-gray-600">Seller: {item.Seller_Name}</p>
+                  <p className="text-gray-500">Rating: {item.Rating}</p>
                 </div>
                 <div className="p-4 bg-gray-100 flex justify-between items-center">
-                  <button className="bg-logoOrange text-white px-4 py-2 rounded">Remove</button>
-                  <p className="text-gray-500">Rating: {item.Rating}</p>
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => handleCartUpdate('decrement', item.Product_Name)}
+                      className="bg-gray-300 text-black px-4 py-2 rounded"
+                      disabled={item.Quantity_In_Cart <= 1}
+                    >
+                      -
+                    </button>
+                    <button
+                      onClick={() => handleCartUpdate('increment', item.Product_Name)}
+                      className="bg-gray-300 text-black px-4 py-2 rounded"
+                    >
+                      +
+                    </button>
+                  </div>
+                  <button
+                    onClick={() => handleCartUpdate('delete', item.Product_Name)}
+                    className="bg-logoOrange text-white px-4 py-2 rounded-full"
+                  >
+                    Remove
+                  </button>
                 </div>
               </div>
             ))}
