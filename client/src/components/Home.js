@@ -441,7 +441,7 @@ const Home = () => {
 
                 <div className="flex justify-end space-x-2">
                     <button type="submit" className="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-700">Filter Activities</button>
-                    <button onClick={() => handleSortActivities('price')} className="bg-logoOrange text-white px-4 py-2 rounded-full hover:bg-orange-600">Sort by Price</button>
+                    <button onClick={() => handleSortActivities('price')} className="bg-logoOrange text-white px-4 py-2 rounded-full">Sort by Price</button>
                 </div>
             </div>
         </form>
@@ -563,7 +563,7 @@ const Home = () => {
 
                     <div className="flex justify-end space-x-2">
                         <button type="submit" className="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-700">Filter Itineraries</button>
-                        <button onClick={() => handleSortItineraries('price')} className="bg-logoOrange text-white px-4 py-2 rounded-full hover:bg-orange-600">Sort by Price</button>
+                        <button onClick={() => handleSortItineraries('price')} className="bg-logoOrange text-white px-4 py-2 rounded-full">Sort by Price</button>
                     </div>
                 </div>
             </form>
