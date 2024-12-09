@@ -75,7 +75,7 @@ const ProductList = () => {
   const [paymentMethod, setPaymentMethod] = useState("");
   const [messagee, setMessagee] = useState("");
   const [loadinggg, setLoadinggg] = useState(false);
-
+  const [orderDetails, setOrderDetails] = useState(null);
     const email = localStorage.getItem('email'); // Assuming the email is stored in localStorage
 
     const navigate = useNavigate();
@@ -102,22 +102,19 @@ const ProductList = () => {
       };
     
 
-    const handleViewOrderDetails = async () => {
-        if (!email) {
-            setError('No email found');
-            return;
-        }
-
-        setLoading(true);
-        setError(null); // Clear previous errors
-
+      const handleViewOrderDetails = async () => {
         try {
-            const response = await viewOrderDetails(email);
-            setCartDetails(response.cartDetails); // Store cart details in state
+            const email = localStorage.getItem('email');
+            if (!email) {
+                setError("Email not found in localStorage.");
+                return;
+            }
+
+            const data = await viewOrderDetails(email);
+            setOrderDetails(data.orderDetails); // Set the fetched order details to state
         } catch (err) {
-            setError('Failed to fetch cart details.');
-        } finally {
-            setLoading(false);
+            setError("An error occurred while fetching the order details.");
+            console.error("Error fetching order details:", err.message);
         }
     };
 
@@ -760,24 +757,25 @@ const handleAddToCart = async (productName) => {
             
             
             <div>
-            <button
-                onClick={handleViewOrderDetails}
-                className="bg-blue-500 text-white px-4 py-2 rounded"
-            >
+            {/* Button to fetch and view order details */}
+            <button onClick={handleViewOrderDetails}>
                 View Order Details
             </button>
 
-            {loading && <p>Loading...</p>}
+            {/* Display error message if any */}
+            {error && <p style={{ color: 'red' }}>{error}</p>}
 
-            {error && <p className="text-red-500">{error}</p>}
-
-            {cartDetails.length > 0 && (
+            {/* Display order details if available */}
+            {orderDetails && (
                 <div>
-                    <h3>Your Cart Details:</h3>
+                    <h2>Order Details</h2>
                     <ul>
-                        {cartDetails.map((item, index) => (
+                        {orderDetails.map((order, index) => (
                             <li key={index}>
-                                Product: {item.Productname} | Quantity: {item.Quantity} | Cart Number: {item.Cart_Num}
+                                <strong>Cart Number:</strong> {order.Cart_Num} <br />
+                                <strong>Status:</strong> {order.Status} <br />
+                                <strong>Address:</strong> {order.Address} <br />
+                                <strong>Payment Method:</strong> {order.Payment_Method} <br />
                             </li>
                         ))}
                     </ul>
