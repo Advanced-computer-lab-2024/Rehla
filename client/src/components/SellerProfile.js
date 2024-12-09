@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getSellerProfile, updateSellerProfile,requestDeleteProfile ,uploadsellerLogo} from '../services/api'; // Import your API functions
 import { Link, useNavigate } from 'react-router-dom';
-import logo from '../images/logo.png'; // Assuming you have a logo file
+import logo from '../images/logoWhite.png'; // Assuming you have a logo file
 
 const SellerProfile = () => {
     const [seller, setSeller] = useState({});

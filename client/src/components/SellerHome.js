@@ -463,7 +463,7 @@ const SellerHome = () => {
                             </div>
                         </nav>
                         <nav className="flex space-x-4 ml-2"> {/* Reduced ml-4 to ml-2 and space-x-6 to space-x-4 */}
-                            <Link to="/TouristHome/TouristProfile">
+                            <Link to="/SellerHome/SellerProfile">
                                 {/* Profile Picture */}
                                 <div className="">
                                     {formData.Profile_Pic ? (
