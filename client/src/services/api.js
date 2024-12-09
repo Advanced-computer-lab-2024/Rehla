@@ -1836,15 +1836,23 @@ export const bookHotel = async (bookingData) => {
 };
 
 // Function to book a flight
-export const bookFlight = async (bookingData) => {
+export const bookFlight = async (flightDetails) => {
     try {
-        const response = await axios.post(`${API_URL}/bookflight`, bookingData);
-        return response.data;
+      const response = await fetch('http://localhost:8000/bookflight', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(flightDetails),
+      });
+  
+      return await response.json();
     } catch (error) {
-        console.error('Error booking flight:', error);
-        throw error; // Rethrow the error for handling in the calling component
+      console.error('Error in booking flight:', error);
+      throw error;
     }
-};
+  };
+  
 
 export const shareactivtybyemail = async (to, link) => {
     try {

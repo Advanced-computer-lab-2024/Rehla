@@ -100,19 +100,32 @@ const Flights = () => {
 
   const handleBookFlight = async (flight) => {
     const Tourist_Email = localStorage.getItem('email');
+  
+    if (!Tourist_Email) {
+      alert('User is not authenticated. Please log in.');
+      return;
+    }
+  
+    // Ensure flight data is valid
+    if (!flight || !flight.name || !flight.price?.total || !flight.itineraries?.length) {
+      alert('Invalid flight data.');
+      return;
+    }
+  
     const flightDetails = {
       Tourist_Email,
       Flight_Name: flight.name,
-      Price: flight.price?.total,
-      Departure_Date: flight.itineraries[0]?.segments[0]?.departure?.at,
-      Return_Date: flight.itineraries[0]?.segments.slice(-1)[0]?.arrival?.at,
+      Price: parseFloat(flight.price.total), // Ensure Price is a number
+      Departure_Date: new Date(flight.itineraries[0]?.segments[0]?.departure?.at).toISOString(),
+      Return_Date: new Date(flight.itineraries[0]?.segments.slice(-1)[0]?.arrival?.at).toISOString(),
       Departure: flight.itineraries[0]?.segments[0]?.departure?.iataCode,
       Arrival: flight.itineraries[0]?.segments.slice(-1)[0]?.arrival?.iataCode,
       Duration: flight.itineraries[0]?.duration,
     };
-
+  
     try {
       const response = await bookFlight(flightDetails);
+  
       if (response.ok) {
         alert('Flight booked successfully!');
       } else {
@@ -122,7 +135,9 @@ const Flights = () => {
       alert('An error occurred while booking the flight.');
     }
   };
-
+  
+  
+  
   return (
     <div>
     <div className="w-full mx-auto px-6 py-1 bg-black shadow flex flex-col sticky z-50 top-0">
@@ -314,7 +329,7 @@ const Flights = () => {
                 </div>
                 <button
                   onClick={() => handleBookFlight(flight)}
-                  className="mt-4 py-2 px-4 bg-logoOrange text-white rounded-md"
+                  className="mt-4 py-2 px-4 bg-logoOrange text-white rounded-full w-44"
                 >
                   Book Flight
                 </button>
