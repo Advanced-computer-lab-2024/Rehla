@@ -1856,14 +1856,14 @@ export const shareactivtybyemail = async (to, link) => {
     }
 };
 
-// Function to view order details by email
-export const viewOrderDetails = async (email) => {
+// Function to view order details based on email
+export const viewOrderDetails = async (Email) => {
     try {
-        const response = await axios.post(`${API_URL}/view-order-details`, { Email: email });
-        return response.data; // Return the cart details from the server
+        const response = await axios.post(`${API_URL}/view-order-details`, { Email });
+        return response.data; // Return the order details
     } catch (error) {
-        console.error("Error fetching cart details:", error);
-        throw error; // Re-throw the error to handle it in the caller
+        console.error("Error fetching order details:", error.response?.data || error.message);
+        throw error; // Re-throw the error for the caller to handle
     }
 };
 
