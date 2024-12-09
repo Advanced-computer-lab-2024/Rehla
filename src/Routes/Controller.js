@@ -4902,12 +4902,20 @@ const searchFlights = async (req, res) => {
 };
 const checkout = async (req, res) => {
     try {
-        const { Email, Cart_Num, Address, Payment_Method } = req.body;
+        const { Email, Address, Payment_Method } = req.body;
 
         // Validate input
-        if (!Email || !Cart_Num || !Address || !Payment_Method) {
-            return res.status(400).json({ message: "Email, Cart_Num, Address, and Payment_Method are required." });
+        if (!Email || !Address || !Payment_Method) {
+            return res.status(400).json({ message: "Email, Address, and Payment_Method are required." });
         }
+
+        // Fetch the tourist record to retrieve Cart_Num
+        const tourist = await Tourist.findOne({ Email });
+        if (!tourist) {
+            return res.status(404).json({ message: `Tourist with email '${Email}' not found.` });
+        }
+
+        const Cart_Num = tourist.Cart_Num;
 
         // Fetch cart items for the provided email and cart number
         const cartItems = await cartm.find({ Email, Cart_Num });
@@ -4954,13 +4962,7 @@ const checkout = async (req, res) => {
             processedProducts.add(Productname);
         }
 
-        // Increment Cart_Num in the Tourist table based on the number of carts used
-        const tourist = await Tourist.findOne({ Email });
-        if (!tourist) {
-            return res.status(404).json({ message: `Tourist with email '${Email}' not found.` });
-        }
-
-        // Increment the Cart_Num for the tourist
+        // Increment Cart_Num in the Tourist table
         tourist.Cart_Num += 1;
         await tourist.save(); // Save the updated tourist document
 
@@ -4989,6 +4991,7 @@ const checkout = async (req, res) => {
         res.status(500).json({ message: "An error occurred during checkout.", error: error.message });
     }
 };
+
 
 
 
