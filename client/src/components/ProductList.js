@@ -468,7 +468,9 @@ const handleAddToCart = async (productName) => {
                     {searchResults.length > 0 ? (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                             {searchResults.map(product => (
-                                <div key={product._id} className="bg-white shadow-lg rounded-lg p-6 transform hover:scale-105 transition-transform duration-300">
+                                <div key={product._id} 
+                                onClick={() => handleProductClick(product)}
+                                className="bg-white shadow-lg rounded-lg p-6 transform hover:scale-105 transition-transform duration-300">
                                     <h3 className="text-xl font-medium">{product.Product_Name}</h3>
                                     <img 
                                         src={product.Picture} 
@@ -490,7 +492,9 @@ const handleAddToCart = async (productName) => {
                     {filteredProducts.length > 0 ? (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                             {filteredProducts.map(product => (
-                                <div key={product._id} className="bg-white shadow-lg rounded-lg p-6 transform hover:scale-105 transition-transform duration-300">
+                                <div key={product._id} 
+                                onClick={() => handleProductClick(product)}
+                                className="bg-white shadow-lg rounded-lg p-6 transform hover:scale-105 transition-transform duration-300">
                                     <h3 className="text-xl font-medium">{product.Product_Name}</h3>
                                     <img 
                                         src={product.Picture} 
@@ -508,10 +512,13 @@ const handleAddToCart = async (productName) => {
                 </div>
             ) : isSorted ? (
                 <div className="mt-8">
+                  
                     {sortedProducts.length > 0 ? (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                             {sortedProducts.map(product => (
-                                <div key={product._id} className="bg-white shadow-lg rounded-lg p-6 transform hover:scale-105 transition-transform duration-300">
+                                <div key={product._id} 
+                                className="bg-white shadow-lg rounded-lg p-6 transform hover:scale-105 transition-transform duration-300"
+                                onClick={() => handleProductClick(product)}>
                                     <h3 className="text-xl font-medium">{product.Product_Name}</h3>
                                     <img 
                                         src={product.Picture} 
