@@ -112,13 +112,19 @@ const SellerProfile = () => {
     return (
         <div className="min-h-screen flex flex-col justify-between bg-gray-100">
             {/* Navigation Bar */}
-            <div className="w-full bg-black shadow-md p-4 flex justify-between items-center">
-                <img src={logo} alt="Logo" className="w-16" />
-                <div className="space-x-4">
-                    <Link to="/SellerHome" className="text-lg font-medium text-white hover:text-blue-500">
+            <div className="w-full mx-auto px-6 py-1 bg-black shadow flex flex-col sticky z-50 top-0">
+                <div className="flex items-center">                
+                    {/* Logo */}
+                    <img src={logo} alt="Logo" className="w-44" />
+                </div>
+
+                {/* Main Navigation */}
+                <nav className="flex space-x-6">
+                    <Link to="/SellerHome" className="text-lg font-medium text-logoOrange ">
                         Home
                     </Link>
-                </div>
+                    
+                </nav>            
             </div>
 
             {/* Main Content with Padding */}
