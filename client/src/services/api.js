@@ -1867,6 +1867,17 @@ export const viewOrderDetails = async (Email) => {
     }
 };
 
+// Function to view order details based on email
+export const getCartDetails = async (Email, Cart_Num) => {
+    try {
+        const response = await axios.post(`${API_URL}/get-cart-details`, { Email, Cart_Num });
+        return response.data; // Return the order details
+    } catch (error) {
+        console.error("Error fetching order details:", error.response?.data || error.message);
+        throw error; // Re-throw the error for the caller to handle
+    }
+};
+
 //function add Product From Wish List To Cart 
 export const addProductFromWishListToCart = async (email, product) => {
     try {
@@ -2020,3 +2031,29 @@ export const getProductDetailsFromWishList = async (mail, productName) => {
         throw error.response ? error.response.data : { message: "Network error" };
     }
 };
+
+
+export const getProductsInCart = async (email) => {
+    try {
+        const response = await axios.post(`${API_URL}/getProductsInCart`, { email });
+        return response.data.cartDetails; // The array of products in the cart
+    } catch (error) {
+        console.error('Error fetching cart details:', error.response?.data || error.message);
+        throw error;
+    }
+};
+
+
+export const updateCartItem = async (cartData) => {
+    try {
+      // Sending a POST request to update the cart item
+      const response = await axios.put(`${API_URL}/updateCartItem`, cartData);
+      
+      // Return the response data (successful update)
+      return response.data;
+    } catch (error) {
+      // Handle error (e.g., invalid request, server issues)
+      console.error('Error updating cart item:', error.message);
+      throw error; // Rethrow the error so it can be caught in the calling function
+    }
+  };
