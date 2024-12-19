@@ -18,9 +18,15 @@
    - [Environment Variables](#environment-variables)
    - [Project Structure](#project-structure)
 3. [Tourist Usage](#tourist-usage)
-4. [Deployment](#deployment)
-5. [License](#license)
-6. [Contact](#contact)
+4. [Admin Usage](#admin-usage)
+5. [Tour Guide Usage](#tour-guide-usage)
+6. [Avertiser Usage](#advertiser-usage)
+7. [Tourism Governer Usage](#tourism-governer-usage)
+[Seller Usage](#seller-usage)
+8. [Deployment](#deployment)
+9. [License](#license)
+10. [Contact](#contact)
+
 
 
 
@@ -240,9 +246,49 @@ On our website, you will be able to fulfill whatever you want and see what you s
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+##  Admin Usage
+
+By signing in, you will be able to access everything on the website. 
+
+![alt text](image-16.png)
+You will be able to view all the account requests to be approved or deleted. Also, using the navigation bar, you can see the products and will be able to manage the activities and users that need to be approved or deleted.
+
+![alt text](image-17.png)
+Adding to that, you will be able to view all the complaints by the tourists and can reply to it or resolve it and can see its state.
+
+Also, you will be able to create promo codes. But also, you can check all the sale reports on the website. You can flag any activity or itenerary if you find it inappropriate.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+##  Tour Guide Usage
+As Tour Guide, you can create iteneraries, deactivate them or view the details regarding a certain itenerary of your choice.
+![alt text](image-18.png)
+
+And here is the creating form:
+![alt text](image-19.png)
 
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+##  Advertiser Usage
+As an Advertiser, you can create activities, deactivate them or view the details regarding a certain activity
+of your choice.
+![alt text](image-20.png)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+##  Tourism Governer Usage
+As a tourism Goverrner, you can view the landmarks that you added on the website. Also, you can create different tags for them.
+![alt text](image-21.png)
+
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+##  Seller Usage
+As a seller, you will be able to view all your products, a sales report for all the products saled and you will be able to add a product to the website freely.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- LICENSE -->
 ## License
