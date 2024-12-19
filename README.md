@@ -177,10 +177,42 @@ Configure your hosting platform to serve the built React app and the Express.js 
 ## API References and Test Routes 
 After the installations and deployment, you can use these API References and test routes for some testing.
 
-### API References
+### API References:
 
-### Test Routes 
+- axios.put(`${API_URL}/updateProduct`, productData);
+- axios.get(`${API_URL}/getAllUpcomingEventsAndPlaces`);
+- axios.get(`${API_URL}/sortActivities`, {params: { sortBy } });
+- axios.get(`${API_URL}/filterActivities?${queryParams}`);
+- axios.post(`${API_URL}/addProduct`, productData);
+- axios.get(`${API_URL}/filterProductsByPrice/${minPrice}/${maxPrice}`);
+- axios.post(`${API_URL}/checkout-order`, orderData);
+- axios.get(`${API_URL}/getProductsSortedByRating`);
+- fetch(`${API_URL}/searchByNameCategoryTag?searchTerm=${encodeURIComponent(searchTerm)}`);
+- axios.delete(`${API_URL}/deleteUser/${email}`);
+- axios.get(`${API_URL}/getCategory`);
+- axios.delete(`${API_URL}/deleteCategory`, { data: categoryData });
+- axios.get(`${API_URL}/getTag`);
+- axios.put(`${API_URL}/updateTag/${currentTagName}`, newTagName);
+- axios.post(`${API_URL}/createActivityByAdvert`, activityData);
+- axios.get(`${API_URL}/viewAllComplaintsSortedByDate`);
 
+
+### Test Routes:
+- app.put("/payForTouristActivity",payForTouristActivity);
+- app.put("/payForItinerary",payForItinerary);
+- app.post("/createComplaint", createComplaint);
+- app.post("/getMyComplaints" ,getMyComplaints);
+- app.put("/productRateReview" , productRateReview);
+- app.post("/commentOnEvent", commentOnEvent);
+- app.delete("/deleteTouristActivity",deleteTouristActivity);
+- app.post("/createTouristActivity",createTouristActivity);
+- app.get('/getAllFiles', getAllFiles);
+- app.put('/updateCartItem', updateCartItem);
+- app.get("/getAllUnarchivedProducts", getAllUnarchivedProducts);
+- app.post("/createTransportation", createTransportation);
+- app.get("/viewAllTransportation", viewAllTransportation);
+- app.post("/bookTransportation", bookTransportation);
+- app.delete("/deleteRequest", deleteRequest);
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
