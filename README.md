@@ -287,6 +287,7 @@ As a tourism Goverrner, you can view the landmarks that you added on the website
 
 ##  Seller Usage
 As a seller, you will be able to view all your products, a sales report for all the products saled and you will be able to add a product to the website freely.
+![alt text](image-22.png)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
