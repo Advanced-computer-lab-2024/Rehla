@@ -22,10 +22,11 @@
 5. [Tour Guide Usage](#tour-guide-usage)
 6. [Avertiser Usage](#advertiser-usage)
 7. [Tourism Governer Usage](#tourism-governer-usage)
-[Seller Usage](#seller-usage)
-8. [Deployment](#deployment)
-9. [License](#license)
-10. [Contact](#contact)
+8. [Seller Usage](#seller-usage)
+9. [Deployment](#deployment)
+10. [API References and Test Routes](#api-references-and-test-routes)
+11. [License](#license)
+12. [Contact](#contact)
 
 
 
@@ -173,7 +174,15 @@ Configure your hosting platform to serve the built React app and the Express.js 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+## API References and Test Routes 
+After the installations and deployment, you can use these API References and test routes for some testing.
 
+# API References
+
+# Test Routes 
+
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- USAGE EXAMPLES -->
 ##  Tourist Usage
