@@ -17,7 +17,7 @@
    - [Post Installation](#post-installation)
    - [Environment Variables](#environment-variables)
    - [Project Structure](#project-structure)
-3. [Usage](#usage)
+3. [Tourist Usage](#tourist-usage)
 4. [Deployment](#deployment)
 5. [License](#license)
 6. [Contact](#contact)
@@ -170,26 +170,71 @@ Configure your hosting platform to serve the built React app and the Express.js 
 
 
 <!-- USAGE EXAMPLES -->
-## Usage
+##  Tourist Usage
 
 ![alt text](image.png)
 
 Firstly, you can sign up to have an account to be able to explore everything on our website without constraints of being a guest. You will be able to navigate through pages using the navigation bar at the top of the page. From shopping gifts, to booking flights and hotels, all these things will be done by a click of a button on our website. 
 
+
 ![alt text](image-1.png)
 Using the sign in page, it will be your gateway of exploring this endlessly fun experience. 
 
+
 ![alt text](image-3.png)
 Here, you will be able to view all the activities that are on our website. You can navigate through them and click on any activity that you like to get to know al the information you need to know in order to jin this activity and enjoy it. 
+
 
 ![alt text](image-4.png)
 Adding to that, you will also be able to check the iteneraries, where this is a group of activities in one unforgetable day to enjoy your day to the maximum. This is your gateway to do multiple activities that are related to each other. 
 
 
+![alt text](image-5.png)
+Further scrolling means more fun unlocked. You will be able to view different museums and Historical Places that you may find joyful.
+
 
 ![alt text](image-2.png)
 
 Adding to that, you will be able to see whatever suits you the best without being obliged to view everything. 
+
+
+![alt text](image-6.png)
+Want some souvenirs? No worries, we got a full gift shop with all memorable item that you can purchase to remid you of your favourite world spot you recently visited. We have a wide range of products that will fill your heart as well as you loved ones' with wlove and joy.
+
+
+![alt text](image-7.png)
+Adding to that, you can check all the activities, events, iterneraries, historical places and musuems you enjoyed and visited right from the navigation bar when clicking on my events. 
+
+
+![alt text](image-8.png)
+ ![alt text](image-9.png)
+Not only booking places to see or activities to enjoy, you can also book Hotels, Flights and Transportations from our website. By choosing the dates, place or whatever it takes to enjoy your trip will be found on REHLA!
+
+
+![alt text](image-10.png)
+
+You will find your profile picture on the right top of the website, next to it the notification icon and the cart.These will give you quick access to your notifications and viewing your cart easily.
+
+
+![alt text](image-14.png)
+When clicking on the profile picture, this is what will appear to you. You will be able to see your saved activities and events. Also, you can edit whatever you want in you profile by just clicking edit profile. 
+
+And here what you will be seeing when clicking on edit profile:
+![alt text](image-15.png)
+
+
+![alt text](image-11.png)
+This will help you check any notifications that you have.
+
+![alt text](image-12.png)
+Here it a glance of what your cart will look like. You will be able to remove anything from it as well as increasing the quantity and adding it to your wish list if you want to still save it for further notice. 
+
+![alt text](image-13.png)
+
+As you know, we support all tourists. According to that, we add currency change to make it easier for you to choose the currency you want to view everything on the website with. 
+
+
+
 
 On our website, you will be able to fulfill whatever you want and see what you search for. With the customizable experience, you will recieve a promocode on your birthday, notifications to remind you of your activities, gifts to order and a wish list that is waiting for you to fill with gifts you want to purchase.
 
