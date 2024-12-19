@@ -179,7 +179,16 @@ Firstly, you can sign up to have an account to be able to explore everything on 
 ![alt text](image-1.png)
 Using the sign in page, it will be your gateway of exploring this endlessly fun experience. 
 
+![alt text](image-3.png)
+Here, you will be able to view all the activities that are on our website. You can navigate through them and click on any activity that you like to get to know al the information you need to know in order to jin this activity and enjoy it. 
+
+![alt text](image-4.png)
+Adding to that, you will also be able to check the iteneraries, where this is a group of activities in one unforgetable day to enjoy your day to the maximum. This is your gateway to do multiple activities that are related to each other. 
+
+
+
 ![alt text](image-2.png)
+
 Adding to that, you will be able to see whatever suits you the best without being obliged to view everything. 
 
 On our website, you will be able to fulfill whatever you want and see what you search for. With the customizable experience, you will recieve a promocode on your birthday, notifications to remind you of your activities, gifts to order and a wish list that is waiting for you to fill with gifts you want to purchase.
